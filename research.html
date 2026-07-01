@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Research Organizer — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:28px 40px 20px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hero-left h1{font-size:1.6rem;font-weight:900}.hero-left h1 span{color:#a5b4fc}
+.hero-left p{color:#7a8fa8;font-size:.85rem;margin-top:4px}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:8px 16px;border-radius:9px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-success{background:rgba(16,185,129,.2);color:#6ee7b7;border:1.5px solid rgba(16,185,129,.3)}.btn-success:hover{background:rgba(16,185,129,.3)}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 150px)}
+@media(max-width:768px){.layout{grid-template-columns:1fr}}
+.sidebar{background:#080e1c;border-right:1px solid #2a3a55;padding:16px;overflow-y:auto}
+.main{padding:24px 28px;overflow-y:auto}
+@media(max-width:768px){.sidebar{border-right:none;border-bottom:1px solid #2a3a55}.main{padding:16px}}
+
+/* Projects */
+.sb-label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8;margin-bottom:9px}
+.project-btn{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;border:none;background:transparent;color:#7a8fa8;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;margin-bottom:5px}
+.project-btn:hover{background:rgba(255,255,255,.06);color:#e8edf5}
+.project-btn.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.project-count{float:right;font-size:.68rem;padding:1px 7px;border-radius:20px;background:rgba(99,102,241,.15);color:#a5b4fc;font-weight:700}
+.add-project-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px;border-radius:9px;border:1.5px dashed #2a3a55;background:transparent;color:#7a8fa8;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-top:6px}
+.add-project-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#080e1c;border-radius:11px;padding:4px;width:fit-content}
+.tab{padding:7px 16px;border-radius:8px;border:none;background:transparent;color:#7a8fa8;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.tab.active{background:#6366f1;color:#fff}
+
+/* Source card */
+.source-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:18px;margin-bottom:14px;transition:.15s}
+.source-card:hover{border-color:#3d4f6e}
+.source-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.source-type-badge{font-size:.65rem;font-weight:800;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.type-book{background:rgba(99,102,241,.2);color:#a5b4fc}
+.type-article{background:rgba(16,185,129,.2);color:#6ee7b7}
+.type-website{background:rgba(14,165,233,.2);color:#7dd3fc}
+.type-video{background:rgba(239,68,68,.2);color:#fca5a5}
+.type-journal{background:rgba(245,158,11,.2);color:#fcd34d}
+.type-other{background:#1a2540;color:#7a8fa8}
+.source-title{font-size:.92rem;font-weight:700;flex:1;line-height:1.4}
+.source-author{font-size:.75rem;color:#7a8fa8;margin-bottom:8px}
+.source-citation{font-size:.75rem;color:#a5b4fc;font-style:italic;margin-bottom:10px;line-height:1.5}
+.source-notes-label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:5px}
+.source-ta{width:100%;padding:9px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.82rem;font-family:inherit;resize:vertical;min-height:60px;outline:none;transition:.15s;line-height:1.55}
+.source-ta:focus{border-color:#6366f1}
+.source-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.src-btn{padding:5px 12px;border-radius:7px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.src-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.src-btn.danger:hover{border-color:#ef4444;color:#f87171}
+
+/* Add source form */
+.add-form{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:18px;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:550px){.form-grid{grid-template-columns:1fr}}
+.field label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;display:block;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:8px 11px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#6366f1}
+.field textarea{min-height:60px;resize:vertical;line-height:1.5}
+
+/* Quotes section */
+.quote-card{background:#0d1628;border-left:3px solid #6366f1;border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:10px}
+.quote-text{font-size:.87rem;font-style:italic;line-height:1.6;margin-bottom:6px}
+.quote-source{font-size:.72rem;color:#7a8fa8;font-weight:600}
+.quote-tag{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(99,102,241,.15);color:#a5b4fc;margin-left:8px}
+.quote-del{float:right;border:none;background:transparent;color:#3d4f6e;cursor:pointer;font-size:.75rem;transition:.15s}
+.quote-del:hover{color:#f87171}
+
+/* Outline section */
+.outline-ta{width:100%;min-height:320px;padding:16px;background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;color:#e8edf5;font-size:.88rem;font-family:'Courier New',monospace;resize:vertical;outline:none;transition:.15s;line-height:1.7}
+.outline-ta:focus{border-color:#6366f1}
+.outline-tip{font-size:.75rem;color:#7a8fa8;margin-bottom:10px;line-height:1.55}
+
+/* Empty */
+.empty{text-align:center;padding:50px 20px;color:#7a8fa8;font-size:.88rem}
+.empty-icon{font-size:2.2rem;margin-bottom:10px}
+
+/* Stats row */
+.stats-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.stat-chip{background:#111c32;border:1.5px solid #2a3a55;border-radius:10px;padding:8px 14px;font-size:.78rem;font-weight:700;color:#a5b4fc}
+.stat-chip span{color:#7a8fa8;font-weight:500}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="research.html" class="nav-link active">🔬 Research</a>
+  <a href="cornellnotes.html" class="nav-link">📓 Cornell Notes</a>
+  <a href="citation.html" class="nav-link">📎 Citation</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
+  <a href="venn.html" class="nav-link">⭕ Venn</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
+  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-left">
+    <h1>🔬 Research <span>Organizer</span></h1>
+    <p>Collect sources, save quotes, write notes, and export an outline — all in one place.</p>
+  </div>
+  <div class="hero-btns">
+    <button class="btn btn-ghost" onclick="exportOutline()">📤 Export Outline</button>
+    <button class="btn btn-success" onclick="exportBib()">📚 Export Bibliography</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-label">Projects</div>
+    <div id="projectList"></div>
+    <button class="add-project-btn" onclick="addProject()">＋ New Project</button>
+  </div>
+
+  <div class="main" id="mainArea">
+    <div class="empty"><div class="empty-icon">🔬</div>Create or select a research project to get started.</div>
+  </div>
+</div>
+
+<script>
+let data = { projects: [], sources: {}, quotes: {}, outlines: {}, notes: {} };
+let currentProject = null;
+let currentTab = 'sources';
+try { data = JSON.parse(localStorage.getItem('research-data') || '{"projects":[],"sources":{},"quotes":{},"outlines":{},"notes":{}}'); } catch(e) {}
+['sources','quotes','outlines','notes'].forEach(k=>{ if(!data[k]) data[k]={}; });
+
+function save() { try { localStorage.setItem('research-data', JSON.stringify(data)); } catch(e) {} }
+
+function addProject() {
+  const name = prompt('Project / paper title:');
+  if (!name) return;
+  const id = 'p' + Date.now();
+  data.projects.unshift({ id, name, createdAt: new Date().toLocaleString() });
+  data.sources[id] = [];
+  data.quotes[id] = [];
+  data.outlines[id] = '';
+  data.notes[id] = '';
+  save();
+  currentProject = id;
+  renderProjectList();
+  renderMain();
+}
+
+function renderProjectList() {
+  const list = document.getElementById('projectList');
+  if (!data.projects.length) { list.innerHTML = '<div style="color:#7a8fa8;font-size:.78rem">No projects yet.</div>'; return; }
+  list.innerHTML = data.projects.map(p => {
+    const srcCount = (data.sources[p.id] || []).length;
+    const qCount = (data.quotes[p.id] || []).length;
+    return `<button class="project-btn${p.id === currentProject ? ' active' : ''}" onclick="selectProject('${p.id}')">
+      ${p.name}
+      <span class="project-count">${srcCount}s · ${qCount}q</span>
+    </button>`;
+  }).join('');
+}
+
+function selectProject(id) {
+  currentProject = id;
+  renderProjectList();
+  renderMain();
+}
+
+function renderMain() {
+  if (!currentProject) { document.getElementById('mainArea').innerHTML = '<div class="empty"><div class="empty-icon">🔬</div>Select a project from the sidebar.</div>'; return; }
+  const p = data.projects.find(p => p.id === currentProject);
+  const sources = data.sources[currentProject] || [];
+  const quotes = data.quotes[currentProject] || [];
+
+  document.getElementById('mainArea').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-size:1.1rem;font-weight:900">${p.name}</div>
+        <div style="font-size:.72rem;color:#7a8fa8;margin-top:2px">Created ${p.createdAt}</div>
+      </div>
+      <button onclick="deleteProject('${p.id}')" style="padding:6px 12px;border-radius:8px;border:1.5px solid rgba(239,68,68,.3);background:transparent;color:#f87171;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s">🗑 Delete Project</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-chip">${sources.length} <span>sources</span></div>
+      <div class="stat-chip">${quotes.length} <span>quotes</span></div>
+      <div class="stat-chip">${sources.filter(s=>s.notes?.trim()).length} <span>with notes</span></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab${currentTab==='sources'?' active':''}" onclick="switchTab('sources')">📖 Sources</button>
+      <button class="tab${currentTab==='quotes'?' active':''}" onclick="switchTab('quotes')">💬 Quotes</button>
+      <button class="tab${currentTab==='notes'?' active':''}" onclick="switchTab('notes')">📝 Notes</button>
+      <button class="tab${currentTab==='outline'?' active':''}" onclick="switchTab('outline')">🗂 Outline</button>
+    </div>
+
+    <div id="tabContent"></div>
+  `;
+  renderTab();
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  // update active tab button
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.textContent.toLowerCase().includes(tab.substring(0,3)));
+  });
+  renderTab();
+}
+
+function renderTab() {
+  const tc = document.getElementById('tabContent');
+  if (!tc) return;
+  if (currentTab === 'sources') renderSources(tc);
+  else if (currentTab === 'quotes') renderQuotes(tc);
+  else if (currentTab === 'notes') renderNotes(tc);
+  else if (currentTab === 'outline') renderOutline(tc);
+}
+
+function renderSources(tc) {
+  const sources = data.sources[currentProject] || [];
+  tc.innerHTML = `
+    <div class="add-form">
+      <div style="font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:12px">Add Source</div>
+      <div class="form-grid">
+        <div class="field"><label>Type</label>
+          <select id="srcType">
+            <option value="book">📚 Book</option>
+            <option value="article">📰 Article</option>
+            <option value="website">🌐 Website</option>
+            <option value="journal">🧬 Journal</option>
+            <option value="video">🎬 Video</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Author(s)</label><input id="srcAuthor" placeholder="Last, First; Last, First"></div>
+        <div class="field"><label>Title</label><input id="srcTitle" placeholder="Title of the source"></div>
+        <div class="field"><label>Year</label><input id="srcYear" placeholder="Publication year"></div>
+        <div class="field"><label>Publisher / URL / Journal</label><input id="srcPub" placeholder="Publisher, website URL, or journal name"></div>
+        <div class="field"><label>Page(s) / Volume</label><input id="srcPage" placeholder="e.g. pp. 45–52 or Vol. 3"></div>
+      </div>
+      <div class="field" style="margin-bottom:10px"><label>Your Notes on This Source</label>
+        <textarea id="srcNotes" placeholder="What does this source argue? How does it relate to your thesis? Key points to use?"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="addSource()">＋ Add Source</button>
+    </div>
+    ${sources.length ? sources.map((s, i) => `
+      <div class="source-card">
+        <div class="source-top">
+          <span class="source-type-badge type-${s.type}">${{book:'📚 Book',article:'📰 Article',website:'🌐 Website',journal:'🧬 Journal',video:'🎬 Video',other:'Other'}[s.type]||'Other'}</span>
+          <div class="source-title">${s.title || 'Untitled Source'}</div>
+        </div>
+        <div class="source-author">${s.author || ''}${s.year ? ' (' + s.year + ')' : ''}${s.pub ? ' · ' + s.pub : ''}${s.page ? ' · ' + s.page : ''}</div>
+        ${s.citation ? `<div class="source-citation">${s.citation}</div>` : ''}
+        <div class="source-notes-label">Your Notes</div>
+        <textarea class="source-ta" placeholder="Add notes about this source…" onblur="updateSourceNotes(${i}, this.value)">${s.notes || ''}</textarea>
+        <div class="source-actions">
+          <button class="src-btn" onclick="addQuoteFromSource(${i})">＋ Add Quote</button>
+          <button class="src-btn danger" onclick="deleteSource(${i})">✕ Remove</button>
+        </div>
+      </div>
+    `).join('') : '<div class="empty"><div class="empty-icon">📖</div>No sources yet. Add your first source above.</div>'}
+  `;
+}
+
+function addSource() {
+  const type = document.getElementById('srcType').value;
+  const author = document.getElementById('srcAuthor').value.trim();
+  const title = document.getElementById('srcTitle').value.trim();
+  const year = document.getElementById('srcYear').value.trim();
+  const pub = document.getElementById('srcPub').value.trim();
+  const page = document.getElementById('srcPage').value.trim();
+  const notes = document.getElementById('srcNotes').value.trim();
+  if (!title) { alert('Enter a title.'); return; }
+
+  // Auto-generate MLA citation
+  let citation = '';
+  if (type === 'book') citation = `${author ? author + '. ' : ''}*${title}*. ${pub ? pub + ', ' : ''}${year || ''}.`;
+  else if (type === 'article' || type === 'journal') citation = `${author ? author + '. ' : ''}"${title}." *${pub || 'Journal'}*, ${year || ''}, ${page || ''}.`;
+  else if (type === 'website') citation = `${author ? author + '. ' : ''}"${title}." ${pub || ''}, ${year || ''}, ${page || ''}.`;
+  else citation = `${author ? author + '. ' : ''}${title}. ${pub || ''}, ${year || ''}.`;
+
+  if (!data.sources[currentProject]) data.sources[currentProject] = [];
+  data.sources[currentProject].unshift({ type, author, title, year, pub, page, notes, citation });
+  save();
+  renderMain();
+}
+
+function updateSourceNotes(idx, val) {
+  if (data.sources[currentProject]?.[idx]) {
+    data.sources[currentProject][idx].notes = val;
+    save();
+  }
+}
+
+function deleteSource(idx) {
+  if (!confirm('Remove this source?')) return;
+  data.sources[currentProject].splice(idx, 1);
+  save();
+  renderMain();
+}
+
+function addQuoteFromSource(srcIdx) {
+  const src = data.sources[currentProject][srcIdx];
+  const quote = prompt('Paste the exact quote:');
+  if (!quote) return;
+  const page = prompt('Page number or timestamp (optional):') || '';
+  const tag = prompt('Tag/theme (optional, e.g. "evidence for thesis"):') || '';
+  if (!data.quotes[currentProject]) data.quotes[currentProject] = [];
+  data.quotes[currentProject].push({ quote, source: src.author ? src.author + (src.year ? ' (' + src.year + ')' : '') : src.title, page, tag });
+  save();
+  alert('Quote saved!');
+}
+
+function renderQuotes(tc) {
+  const quotes = data.quotes[currentProject] || [];
+  tc.innerHTML = `
+    <div class="add-form">
+      <div style="font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:12px">Add Quote</div>
+      <div class="field" style="margin-bottom:10px"><label>Quote</label>
+        <textarea id="qText" placeholder="Paste the exact quote here…" style="min-height:80px"></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Source (Author / Title)</label><input id="qSource" placeholder="e.g. Smith (2022)"></div>
+        <div class="field"><label>Page / Timestamp</label><input id="qPage" placeholder="e.g. p. 47"></div>
+        <div class="field"><label>Tag / Theme</label><input id="qTag" placeholder="e.g. counterargument, evidence"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addQuote()">＋ Save Quote</button>
+    </div>
+    ${quotes.length ? quotes.map((q, i) => `
+      <div class="quote-card">
+        <button class="quote-del" onclick="deleteQuote(${i})">✕</button>
+        <div class="quote-text">"${q.quote}"</div>
+        <div class="quote-source">${q.source || ''}${q.page ? ' · ' + q.page : ''}${q.tag ? `<span class="quote-tag">${q.tag}</span>` : ''}</div>
+      </div>
+    `).join('') : '<div class="empty"><div class="empty-icon">💬</div>No quotes yet. Add them above or via a source card.</div>'}
+  `;
+}
+
+function addQuote() {
+  const quote = document.getElementById('qText').value.trim();
+  if (!quote) return;
+  const source = document.getElementById('qSource').value.trim();
+  const page = document.getElementById('qPage').value.trim();
+  const tag = document.getElementById('qTag').value.trim();
+  if (!data.quotes[currentProject]) data.quotes[currentProject] = [];
+  data.quotes[currentProject].unshift({ quote, source, page, tag });
+  save();
+  renderMain();
+}
+
+function deleteQuote(idx) {
+  data.quotes[currentProject].splice(idx, 1);
+  save();
+  renderMain();
+}
+
+function renderNotes(tc) {
+  const notes = data.notes[currentProject] || '';
+  tc.innerHTML = `
+    <div style="font-size:.75rem;color:#7a8fa8;margin-bottom:10px">Free-form research notes, ideas, and thoughts for this project.</div>
+    <textarea style="width:100%;min-height:400px;padding:16px;background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;color:#e8edf5;font-size:.88rem;font-family:inherit;resize:vertical;outline:none;line-height:1.7;transition:.15s" placeholder="Write anything here — brainstorm, ideas, connections between sources, counterarguments to address…" onblur="saveProjectNotes(this.value)" onfocus="this.style.borderColor='#6366f1'" onblur2="this.style.borderColor='#2a3a55'">${notes}</textarea>
+  `;
+}
+
+function saveProjectNotes(val) {
+  data.notes[currentProject] = val;
+  save();
+}
+
+function renderOutline(tc) {
+  const outline = data.outlines[currentProject] || '';
+  const sources = data.sources[currentProject] || [];
+  const quotes = data.quotes[currentProject] || [];
+  tc.innerHTML = `
+    <div class="outline-tip">
+      Use this space to build your paper outline. Your sources and quotes are listed below for reference — copy what you need.
+    </div>
+    <textarea class="outline-ta" placeholder="I. Introduction&#10;   A. Hook&#10;   B. Background&#10;   C. Thesis Statement&#10;&#10;II. Body Paragraph 1&#10;   A. Topic Sentence&#10;   B. Evidence&#10;   C. Analysis&#10;&#10;III. Body Paragraph 2&#10;   A. Topic Sentence&#10;   B. Evidence&#10;   C. Analysis&#10;&#10;IV. Counterargument&#10;   A. Opposing view&#10;   B. Rebuttal&#10;&#10;V. Conclusion" onblur="saveOutline(this.value)">${outline}</textarea>
+    ${sources.length ? `<div style="margin-top:18px"><div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:10px">Your Sources (for reference)</div>
+    ${sources.map(s=>`<div style="font-size:.78rem;color:#7a8fa8;margin-bottom:5px;padding:6px 10px;background:#111c32;border-radius:7px"><strong style="color:#a5b4fc">${s.author||'—'}</strong> · ${s.title} ${s.year?'('+s.year+')':''}</div>`).join('')}
+    </div>` : ''}
+    ${quotes.length ? `<div style="margin-top:14px"><div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:10px">Your Quotes (for reference)</div>
+    ${quotes.map(q=>`<div style="font-size:.78rem;color:#7a8fa8;margin-bottom:6px;padding:8px 12px;background:#111c32;border-left:2px solid #6366f1;border-radius:0 7px 7px 0">"${q.quote.substring(0,100)}${q.quote.length>100?'…':''}" <span style="color:#a5b4fc">${q.source||''}</span></div>`).join('')}
+    </div>` : ''}
+  `;
+}
+
+function saveOutline(val) {
+  data.outlines[currentProject] = val;
+  save();
+}
+
+function deleteProject(id) {
+  if (!confirm('Delete this project and all its data?')) return;
+  data.projects = data.projects.filter(p => p.id !== id);
+  delete data.sources[id];
+  delete data.quotes[id];
+  delete data.outlines[id];
+  delete data.notes[id];
+  currentProject = data.projects.length ? data.projects[0].id : null;
+  save();
+  renderProjectList();
+  renderMain();
+}
+
+function exportOutline() {
+  if (!currentProject) { alert('Select a project first.'); return; }
+  const p = data.projects.find(p => p.id === currentProject);
+  const outline = data.outlines[currentProject] || '(No outline written yet)';
+  const sources = data.sources[currentProject] || [];
+  const text = `RESEARCH OUTLINE\n${p.name}\n${'='.repeat(p.name.length+18)}\n\n${outline}\n\n--- SOURCES ---\n${sources.map((s,i)=>`${i+1}. ${s.citation||s.title}`).join('\n')}`;
+  const blob = new Blob([text], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = p.name.replace(/[^a-z0-9]/gi,'_') + '_outline.txt'; a.click();
+}
+
+function exportBib() {
+  if (!currentProject) { alert('Select a project first.'); return; }
+  const p = data.projects.find(p => p.id === currentProject);
+  const sources = data.sources[currentProject] || [];
+  if (!sources.length) { alert('No sources to export.'); return; }
+  const sorted = [...sources].sort((a,b)=>(a.author||a.title).localeCompare(b.author||b.title));
+  const text = `Works Cited\n${p.name}\n\n` + sorted.map(s => s.citation || `${s.author||''}. ${s.title}. ${s.pub||''}, ${s.year||''}.`).join('\n\n');
+  const blob = new Blob([text], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = p.name.replace(/[^a-z0-9]/gi,'_') + '_bibliography.txt'; a.click();
+}
+
+// Init
+renderProjectList();
+if (data.projects.length) { currentProject = data.projects[0].id; renderMain(); }
+</script>
+</body>
+</html>

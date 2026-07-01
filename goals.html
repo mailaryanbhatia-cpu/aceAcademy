@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Goal Tracker — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#059669,#047857);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:580px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700}
+.btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:#047857}
+.btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--muted)}
+.btn-sm:hover{background:var(--bg)}.btn-sm.del{color:var(--red)}.btn-sm.del:hover{background:#fef2f2}
+
+.goals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.goal-card{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:16px;position:relative}
+.goal-card.completed{border-color:#6ee7b7;background:#f0fdf4}
+.goal-card .title{font-size:.95rem;font-weight:700;margin-bottom:4px;padding-right:60px}
+.goal-card .meta{font-size:.78rem;color:var(--muted);margin-bottom:10px}
+.goal-card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tag{padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700}
+.bar-track{background:#e5e7eb;border-radius:99px;height:8px;overflow:hidden;margin-bottom:6px}
+.bar-fill{height:100%;border-radius:99px;background:var(--green);transition:width .4s}
+.pct-label{font-size:.75rem;color:var(--muted);text-align:right;margin-bottom:10px}
+.milestones{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.milestone{display:flex;align-items:center;gap:8px;font-size:.82rem;cursor:pointer}
+.milestone input[type=checkbox]{width:16px;height:16px;accent-color:var(--green)}
+.milestone.done span{text-decoration:line-through;color:var(--muted)}
+.goal-card .actions{position:absolute;top:10px;right:10px;display:flex;gap:5px}
+
+.milestone-builder{display:flex;flex-direction:column;gap:6px}
+.milestone-row{display:flex;gap:6px;align-items:center}
+.milestone-row input{flex:1}
+.add-ms-btn{padding:6px 12px;border-radius:7px;border:1.5px dashed var(--border);background:#fff;cursor:pointer;font-size:.82rem;color:var(--muted);margin-top:4px;width:100%}
+.add-ms-btn:hover{border-color:var(--accent);color:var(--accent)}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}.goal-card{background:#12121f}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link active">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+
+  <a href="frq.html" class="nav-link">📝 FRQ</a>
+  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
+  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
+  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
+  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
+  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
+  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+</nav>
+<div class="hero">
+  <h1>🎯 Goal Tracker</h1>
+  <p>Set academic goals with milestones and track your progress — one step at a time.</p>
+</div>
+<div class="container">
+  <div class="card">
+    <h2>➕ New Goal</h2>
+    <div class="form-grid">
+      <div class="field full">
+        <label>Goal Title</label>
+        <input id="g-title" placeholder="e.g. Score 90%+ on AP Calculus unit test">
+      </div>
+      <div class="field">
+        <label>Subject</label>
+        <select id="g-subj">
+          <option>Math</option><option>Science</option><option>English</option><option>History</option>
+          <option>CS</option><option>AP Calculus</option><option>AP Biology</option><option>AP Chemistry</option>
+          <option>AP Physics</option><option>AP English</option><option>AP History</option><option>Languages</option><option>General</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Target Date</label>
+        <input type="date" id="g-date">
+      </div>
+      <div class="field full">
+        <label>Milestones (steps toward the goal)</label>
+        <div class="milestone-builder" id="msBuilder">
+          <div class="milestone-row"><input placeholder="Milestone 1 — e.g. Complete all unit flashcards"><button class="btn-sm del" onclick="this.parentElement.remove()">✕</button></div>
+          <div class="milestone-row"><input placeholder="Milestone 2 — e.g. Score 80%+ on practice test"><button class="btn-sm del" onclick="this.parentElement.remove()">✕</button></div>
+        </div>
+        <button class="add-ms-btn" onclick="addMilestoneField()">+ Add milestone</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="addGoal()" style="margin-top:14px">🎯 Add Goal</button>
+  </div>
+
+  <div id="goalsSection">
+    <div class="goals-grid" id="goalsGrid"></div>
+  </div>
+</div>
+
+<script>
+let goals = JSON.parse(localStorage.getItem('ace_goals')||'[]');
+function save(){ localStorage.setItem('ace_goals', JSON.stringify(goals)); }
+
+function addMilestoneField(){
+  const row = document.createElement('div');
+  row.className='milestone-row';
+  const n = document.querySelectorAll('.milestone-row').length+1;
+  row.innerHTML=`<input placeholder="Milestone ${n}"><button class="btn-sm del" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('msBuilder').appendChild(row);
+}
+
+function addGoal(){
+  const title = document.getElementById('g-title').value.trim();
+  if(!title){ alert('Enter a goal title.'); return; }
+  const milestones = [...document.querySelectorAll('.milestone-row input')]
+    .map(i=>i.value.trim()).filter(Boolean)
+    .map(text=>({text,done:false}));
+  const goal = {
+    id: Date.now(),
+    title,
+    subj: document.getElementById('g-subj').value,
+    date: document.getElementById('g-date').value,
+    milestones,
+    completed: false,
+    ts: Date.now(),
+  };
+  goals.unshift(goal);
+  save(); renderGoals();
+  document.getElementById('g-title').value='';
+  document.getElementById('g-date').value='';
+  document.querySelectorAll('.milestone-row input').forEach(i=>i.value='');
+}
+
+function toggleMilestone(goalId, msIdx){
+  const g = goals.find(g=>g.id===goalId);
+  if(!g) return;
+  g.milestones[msIdx].done = !g.milestones[msIdx].done;
+  g.completed = g.milestones.length>0 && g.milestones.every(m=>m.done);
+  save(); renderGoals();
+}
+
+function deleteGoal(id){
+  if(!confirm('Delete this goal?')) return;
+  goals = goals.filter(g=>g.id!==id);
+  save(); renderGoals();
+}
+
+function fmtDate(d){ if(!d) return ''; return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function daysLeft(d){ if(!d) return null; const diff=new Date(d+'T00:00:00')-new Date(); return Math.ceil(diff/86400000); }
+
+const SUBJ_COLORS = {
+  Math:'#dbeafe',Science:'#d1fae5',English:'#ede9fe',History:'#fef3c7',
+  CS:'#cffafe',General:'#f3f4f6',
+};
+
+function renderGoals(){
+  const grid = document.getElementById('goalsGrid');
+  if(!goals.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">No goals yet. Add your first goal above!</div>'; return; }
+
+  grid.innerHTML = goals.map(g=>{
+    const done = g.milestones.filter(m=>m.done).length;
+    const total = g.milestones.length;
+    const pct = total>0 ? Math.round(done/total*100) : 0;
+    const dl = daysLeft(g.date);
+    const dlStr = dl===null?'':`${dl>0?dl+' days left':dl===0?'Today!':Math.abs(dl)+' days ago'}`;
+    const dlColor = dl!==null&&dl<=3?'var(--red)':dl!==null&&dl<=7?'var(--amber)':'var(--green)';
+    const color = SUBJ_COLORS[g.subj]||'#f3f4f6';
+    return `<div class="goal-card${g.completed?' completed':''}">
+      <div class="actions">
+        <button class="btn-sm del" onclick="deleteGoal(${g.id})">✕</button>
+      </div>
+      <div class="tags">
+        <span class="tag" style="background:${color};color:#1e1b4b">${g.subj}</span>
+        ${g.completed?'<span class="tag" style="background:#d1fae5;color:#065f46">✅ Complete</span>':''}
+      </div>
+      <div class="title">${g.title}</div>
+      <div class="meta">${g.date?`📅 ${fmtDate(g.date)} · `:''}${dlStr?`<span style="color:${dlColor};font-weight:700">${dlStr}</span>`:''}</div>
+      ${total>0?`
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="pct-label">${done}/${total} milestones · ${pct}%</div>
+      <div class="milestones">
+        ${g.milestones.map((m,i)=>`
+          <label class="milestone${m.done?' done':''}">
+            <input type="checkbox" ${m.done?'checked':''} onchange="toggleMilestone(${g.id},${i})">
+            <span>${m.text}</span>
+          </label>`).join('')}
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+renderGoals();
+</script>
+</body>
+</html>

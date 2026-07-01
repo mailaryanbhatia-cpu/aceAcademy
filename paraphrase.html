@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paraphrase & Style Rewriter — aceAcademy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55}
+.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+.tabs{display:flex;background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;gap:4px}
+.tab{padding:12px 14px;font-size:.82rem;font-weight:700;color:#7a8fa8;cursor:pointer;border-bottom:2px solid transparent;transition:.15s;white-space:nowrap}
+.tab.active{color:#a5b4fc;border-bottom-color:#6366f1}
+.tab:hover{color:#e8edf5}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.container{max-width:900px;margin:0 auto;padding:24px 20px 60px}
+
+/* Rewriter tab */
+.rewrite-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:620px){.rewrite-grid{grid-template-columns:1fr}}
+.panel{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:18px}
+.panel-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:10px}
+textarea{width:100%;padding:10px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.88rem;font-family:inherit;outline:none;resize:vertical;line-height:1.7;transition:.15s}
+textarea:focus{border-color:#6366f1}
+textarea::placeholder{color:#3d4f6a}
+.word-count{font-size:.7rem;color:#7a8fa8;text-align:right;margin-top:4px}
+.style-btns{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.style-btn{padding:6px 13px;border-radius:9px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.76rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.style-btn.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
+.style-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.btn{padding:9px 18px;border-radius:9px;border:none;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-small{padding:5px 12px;font-size:.75rem}
+.output-box{background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;padding:12px 14px;min-height:120px;font-size:.88rem;line-height:1.75;color:#e8edf5;white-space:pre-wrap}
+.output-box.empty{color:#3d4f6a}
+.diff-del{background:rgba(239,68,68,.2);color:#fca5a5;text-decoration:line-through;border-radius:3px;padding:0 2px}
+.diff-add{background:rgba(16,185,129,.2);color:#6ee7b7;border-radius:3px;padding:0 2px}
+.tip-card{background:rgba(99,102,241,.08);border:1.5px solid rgba(99,102,241,.25);border-radius:11px;padding:12px 16px;font-size:.82rem;color:#b8c4d8;line-height:1.65;margin-top:12px}
+.tip-card strong{color:#a5b4fc}
+
+/* Synonym lookup */
+.syn-wrap{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.syn-input{flex:1;min-width:160px;padding:10px 14px;background:#111c32;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.95rem;font-family:inherit;outline:none;transition:.15s}
+.syn-input:focus{border-color:#6366f1}
+.syn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.syn-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;padding:14px 16px}
+.syn-word{font-size:.95rem;font-weight:800;color:#a5b4fc;margin-bottom:4px}
+.syn-def{font-size:.75rem;color:#7a8fa8;margin-bottom:8px;line-height:1.5}
+.syn-list{display:flex;flex-wrap:wrap;gap:5px}
+.syn-tag{background:#0d1628;border:1.5px solid #2a3a55;border-radius:7px;padding:3px 9px;font-size:.76rem;color:#b8c4d8;cursor:pointer;transition:.15s}
+.syn-tag:hover{border-color:#6366f1;color:#a5b4fc}
+.register{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:2px 5px;border-radius:5px;margin-left:4px}
+.reg-formal{background:rgba(99,102,241,.2);color:#a5b4fc}
+.reg-neutral{background:rgba(16,185,129,.2);color:#6ee7b7}
+.reg-informal{background:rgba(245,158,11,.2);color:#fcd34d}
+
+/* Style guide */
+.guide-section{margin-bottom:28px}
+.guide-title{font-size:.95rem;font-weight:800;margin-bottom:12px;color:#a5b4fc}
+.guide-table{width:100%;border-collapse:collapse}
+.guide-table th{text-align:left;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;padding:7px 12px;border-bottom:1px solid #2a3a55}
+.guide-table td{padding:9px 12px;border-bottom:1px solid #1a2a45;font-size:.83rem;vertical-align:top;line-height:1.6}
+.guide-table tr:last-child td{border-bottom:none}
+.guide-table .bad{color:#fca5a5;font-family:Georgia,serif;font-style:italic}
+.guide-table .good{color:#6ee7b7;font-family:Georgia,serif;font-style:italic}
+.guide-table .why{color:#7a8fa8;font-size:.76rem}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="paraphrase.html" class="nav-link active">✏️ Paraphrase</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
+</nav>
+<div class="hero">
+  <h1>✏️ Paraphrase & <span>Style Rewriter</span></h1>
+  <p>Rewrite sentences in different styles, look up academic synonyms, and learn style transformation patterns.</p>
+</div>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('rewriter',this)">✏️ Style Rewriter</div>
+  <div class="tab" onclick="switchTab('synonyms',this)">🔤 Academic Synonyms</div>
+  <div class="tab" onclick="switchTab('guide',this)">📋 Style Guide</div>
+</div>
+
+<!-- REWRITER TAB -->
+<div class="tab-panel active" id="tab-rewriter">
+<div class="container">
+  <div class="rewrite-grid">
+    <div class="panel">
+      <div class="panel-title">Your sentence or paragraph</div>
+      <textarea id="inputText" rows="6" placeholder="Paste your sentence here…&#10;&#10;e.g. The thing that caused the war was the fact that there were lots of different countries that had different ideas about trade and stuff."
+        oninput="updateCount()"></textarea>
+      <div class="word-count" id="wordCount">0 words</div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Choose a style goal</div>
+      <div class="style-btns">
+        <button class="style-btn active" onclick="setStyle('formal',this)">🎓 Formal / Academic</button>
+        <button class="style-btn" onclick="setStyle('concise',this)">✂️ More Concise</button>
+        <button class="style-btn" onclick="setStyle('varied',this)">🔄 Varied Sentence Structure</button>
+        <button class="style-btn" onclick="setStyle('active',this)">⚡ Active Voice</button>
+        <button class="style-btn" onclick="setStyle('precise',this)">🎯 More Precise</button>
+      </div>
+      <button class="btn btn-primary" onclick="rewrite()" style="margin-top:8px">Rewrite →</button>
+      <button class="btn btn-ghost" onclick="clearAll()" style="margin-top:8px">Clear</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div class="panel-title" style="margin-bottom:0">Suggested rewrite</div>
+      <button class="btn btn-ghost btn-small" onclick="copyOutput()">📋 Copy</button>
+    </div>
+    <div class="output-box empty" id="outputBox">Your rewritten version will appear here…</div>
+    <div id="tipCard"></div>
+  </div>
+</div>
+</div>
+
+<!-- SYNONYMS TAB -->
+<div class="tab-panel" id="tab-synonyms">
+<div class="container">
+  <div class="syn-wrap">
+    <input class="syn-input" id="synSearch" placeholder="Search a word… e.g. show, help, important, argue" oninput="renderSynonyms()">
+  </div>
+  <div class="syn-grid" id="synGrid"></div>
+</div>
+</div>
+
+<!-- STYLE GUIDE TAB -->
+<div class="tab-panel" id="tab-guide">
+<div class="container">
+
+  <div class="guide-section">
+    <div class="guide-title">🎓 Formal / Academic Rewrites</div>
+    <table class="guide-table">
+      <tr><th>Informal / Weak</th><th>Formal / Strong</th><th>Why it's better</th></tr>
+      <tr><td class="bad">The thing that caused this was…</td><td class="good">The primary cause of this was…</td><td class="why">Eliminates vague "thing"; uses precise noun phrase</td></tr>
+      <tr><td class="bad">A lot of people think that…</td><td class="good">Many scholars contend that… / A significant portion of the population believes that…</td><td class="why">Quantifies vague "a lot"; upgrades "think" to disciplinary verb</td></tr>
+      <tr><td class="bad">This shows that the author is trying to…</td><td class="good">This suggests that the author seeks to… / This illustrates the author's intent to…</td><td class="why">Removes weak "shows"; "trying" implies failure — "seeks" is stronger</td></tr>
+      <tr><td class="bad">The book is about…</td><td class="good">The novel explores… / The text examines…</td><td class="why">"About" is too generic; active verbs convey analytical engagement</td></tr>
+      <tr><td class="bad">There are many reasons why…</td><td class="good">Several factors contribute to… / Multiple causes account for…</td><td class="why">Eliminates weak "there are" construction; uses specific noun</td></tr>
+      <tr><td class="bad">In today's society…</td><td class="good">In contemporary society… / In the modern era… / Currently…</td><td class="why">Cliché opener; replace with specific or omit entirely</td></tr>
+      <tr><td class="bad">Since the beginning of time…</td><td class="good">Throughout history… / Historically… / Since antiquity…</td><td class="why">Overreaching claim; more precise alternatives</td></tr>
+      <tr><td class="bad">It is very important that…</td><td class="good">It is essential that… / Crucially, … / Of critical importance is…</td><td class="why">"Very important" is redundant; "essential" or "crucial" is stronger</td></tr>
+    </table>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-title">✂️ Conciseness Rewrites</div>
+    <table class="guide-table">
+      <tr><th>Wordy</th><th>Concise</th><th>Principle</th></tr>
+      <tr><td class="bad">due to the fact that</td><td class="good">because</td><td class="why">Replace wordy phrases with single words</td></tr>
+      <tr><td class="bad">at this point in time</td><td class="good">now / currently</td><td class="why">Eliminate filler phrases</td></tr>
+      <tr><td class="bad">in order to</td><td class="good">to</td><td class="why">"In order" is almost always unnecessary</td></tr>
+      <tr><td class="bad">has the ability to</td><td class="good">can</td><td class="why">Replace noun phrases with strong verbs</td></tr>
+      <tr><td class="bad">the majority of</td><td class="good">most</td><td class="why">Concise quantifier</td></tr>
+      <tr><td class="bad">is reflective of</td><td class="good">reflects</td><td class="why">Convert noun phrases to verbs</td></tr>
+      <tr><td class="bad">with regard to</td><td class="good">regarding / about</td><td class="why">Replace prepositional clusters</td></tr>
+      <tr><td class="bad">it is important to note that</td><td class="good">[delete — or start with the actual point]</td><td class="why">Meta-commentary rarely adds meaning</td></tr>
+      <tr><td class="bad">in spite of the fact that</td><td class="good">although / despite</td><td class="why">One word does the same work</td></tr>
+    </table>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-title">⚡ Passive → Active Voice Rewrites</div>
+    <table class="guide-table">
+      <tr><th>Passive (weak)</th><th>Active (strong)</th><th>Note</th></tr>
+      <tr><td class="bad">The experiment was conducted by the scientists.</td><td class="good">The scientists conducted the experiment.</td><td class="why">Subject → verb order clarifies who acts</td></tr>
+      <tr><td class="bad">Mistakes were made.</td><td class="good">The administration made mistakes.</td><td class="why">Passive hides responsibility</td></tr>
+      <tr><td class="bad">The law was passed by Congress in 1965.</td><td class="good">Congress passed the law in 1965.</td><td class="why">More direct; shorter</td></tr>
+      <tr><td class="bad">It was decided that the meeting would be postponed.</td><td class="good">The committee decided to postpone the meeting.</td><td class="why">Identifies who decided</td></tr>
+      <tr><td class="bad">The poem is widely considered to be…</td><td class="good">Critics widely consider the poem to be…</td><td class="why">Specifies the agent</td></tr>
+    </table>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-title">🔄 Sentence Variety Patterns</div>
+    <table class="guide-table">
+      <tr><th>Pattern</th><th>Example</th></tr>
+      <tr><td style="color:#a5b4fc;font-weight:700">Simple → Compound</td><td class="good">The character lies. He also manipulates others. → The character lies and manipulates others to achieve his goals.</td></tr>
+      <tr><td style="color:#a5b4fc;font-weight:700">Start with a gerund</td><td class="good">By examining the evidence, we can conclude that…</td></tr>
+      <tr><td style="color:#a5b4fc;font-weight:700">Start with an adverb</td><td class="good">Ultimately, the policy failed to address the root causes of inequality.</td></tr>
+      <tr><td style="color:#a5b4fc;font-weight:700">Inverted emphasis</td><td class="good">What the author achieves here is not merely description but revelation.</td></tr>
+      <tr><td style="color:#a5b4fc;font-weight:700">Periodic sentence</td><td class="good">Despite years of opposition, mounting evidence, and public outcry, the committee refused to act.</td></tr>
+      <tr><td style="color:#a5b4fc;font-weight:700">Cumulative sentence</td><td class="good">The economy collapsed, leaving millions unemployed, draining public coffers, and eroding trust in institutions.</td></tr>
+      <tr><td style="color:#a5b4fc;font-weight:700">Rhetorical question</td><td class="good">But what does freedom mean if it is not equally accessible to all?</td></tr>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<script>
+let selectedStyle = 'formal';
+
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  if (id === 'synonyms') renderSynonyms();
+}
+
+function setStyle(s, el) {
+  selectedStyle = s;
+  document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function updateCount() {
+  const text = document.getElementById('inputText').value.trim();
+  const count = text ? text.split(/\s+/).length : 0;
+  document.getElementById('wordCount').textContent = count + ' word' + (count !== 1 ? 's' : '');
+}
+
+function clearAll() {
+  document.getElementById('inputText').value = '';
+  document.getElementById('outputBox').textContent = 'Your rewritten version will appear here…';
+  document.getElementById('outputBox').classList.add('empty');
+  document.getElementById('tipCard').innerHTML = '';
+  updateCount();
+}
+
+function copyOutput() {
+  const txt = document.getElementById('outputBox').textContent;
+  if (!txt || txt.includes('appear here')) return;
+  navigator.clipboard.writeText(txt).catch(() => {});
+}
+
+// Rule-based rewriter using pattern substitutions
+const RULES = {
+  formal: [
+    [/\b(a lot of|lots of)\b/gi, 'numerous'],
+    [/\bstuff\b/gi, 'material'],
+    [/\bthings?\b/gi, 'elements'],
+    [/\bgot\b/gi, 'obtained'],
+    [/\bget\b/gi, 'obtain'],
+    [/\bgetting\b/gi, 'obtaining'],
+    [/\bkids?\b/gi, 'children'],
+    [/\bshow[s]?\b/gi, 'demonstrates'],
+    [/\bshow[s]? that\b/gi, 'illustrates that'],
+    [/\btalk[s]? about\b/gi, 'discusses'],
+    [/\bwrite[s]? about\b/gi, 'explores'],
+    [/\bbook\b/gi, 'text'],
+    [/\bnow ?a ?days\b/gi, 'in contemporary society'],
+    [/\bnowadays\b/gi, 'in contemporary society'],
+    [/\bpretty\b/gi, 'relatively'],
+    [/\breally\b/gi, ''],
+    [/\bvery important\b/gi, 'essential'],
+    [/\bvery\b/gi, 'particularly'],
+    [/\bI think\b/gi, 'It can be argued that'],
+    [/\bI believe\b/gi, 'The evidence suggests that'],
+    [/\bin today\'s society\b/gi, 'in contemporary society'],
+    [/\bIn today's society\b/gi, 'In contemporary society'],
+  ],
+  concise: [
+    [/\bdue to the fact that\b/gi, 'because'],
+    [/\bat this point in time\b/gi, 'currently'],
+    [/\bin order to\b/gi, 'to'],
+    [/\bhas the ability to\b/gi, 'can'],
+    [/\bthe majority of\b/gi, 'most'],
+    [/\bis reflective of\b/gi, 'reflects'],
+    [/\bwith regard to\b/gi, 'regarding'],
+    [/\bit is important to note that\b/gi, ''],
+    [/\bin spite of the fact that\b/gi, 'although'],
+    [/\bin the event that\b/gi, 'if'],
+    [/\bprior to\b/gi, 'before'],
+    [/\bsubsequent to\b/gi, 'after'],
+    [/\bin close proximity to\b/gi, 'near'],
+    [/\bfor the purpose of\b/gi, 'to'],
+    [/\bat the present time\b/gi, 'now'],
+    [/\bthere are many (ways|reasons|factors)\b/gi, 'several $1'],
+    [/\bit is (clear|evident|obvious) that\b/gi, ''],
+    [/\bvery (unique|essential|crucial|perfect)\b/gi, '$1'],
+  ],
+  active: [
+    [/\bwas (written|created|developed|conducted|made|passed|built) by\b/gi, '← REVERSE: move subject before verb — '],
+    [/\bwere (written|created|developed|conducted|made|passed|built) by\b/gi, '← REVERSE: move subject before verb — '],
+    [/\bhas been (shown|demonstrated|proven|found)\b/gi, 'shows / demonstrates / proves'],
+    [/\bit was decided that\b/gi, '[the decision-maker] decided to'],
+    [/\bmistakes were made\b/gi, '[subject] made mistakes'],
+    [/\bis considered to be\b/gi, 'is'],
+    [/\bwas found to be\b/gi, 'proved to be'],
+  ],
+  varied: [
+    [/^(The|This|These|It)\b/m, 'By examining this, we see that $1'],
+    [/\. (However|Therefore|Thus),? /g, ';\n$1, '],
+    [/\b(is|are) (important|significant|crucial)\b/gi, 'matters deeply'],
+  ],
+  precise: [
+    [/\bsome people\b/gi, 'certain scholars / a segment of the population'],
+    [/\bmany people\b/gi, 'numerous individuals / a significant portion'],
+    [/\bsomeone\b/gi, 'an individual / a person'],
+    [/\bsomething\b/gi, 'a specific factor / an element'],
+    [/\bsomewhere\b/gi, 'in a particular location'],
+    [/\bsomehow\b/gi, 'through a specific mechanism'],
+    [/\ba while\b/gi, 'an extended period'],
+    [/\bsoon\b/gi, 'in the near term'],
+    [/\bgood\b/gi, 'effective / beneficial'],
+    [/\bbad\b/gi, 'detrimental / adverse'],
+    [/\bbig\b/gi, 'substantial / significant'],
+    [/\bsmall\b/gi, 'minimal / negligible'],
+  ],
+};
+
+const TIPS = {
+  formal: 'Academic writing avoids contractions, vague quantifiers (a lot, stuff), and first-person opinion phrases. Use disciplinary verbs like <em>explores, contends, illustrates, examines</em>.',
+  concise: 'Remove filler phrases that add length without meaning. A good test: <em>Does removing this word change the meaning?</em> If no, cut it.',
+  active: 'Active voice puts the actor first: <strong>[Subject] [verb] [object]</strong>. Find "was/were/been + past participle" patterns and flip them.',
+  varied: 'Mix sentence lengths and openings. Try starting with: a gerund phrase ("By analyzing…"), an adverb ("Ultimately…"), a dependent clause ("Although the data suggest…").',
+  precise: 'Replace vague words with specific ones. Instead of "some people think," name who: "historians argue," "economists project," "a 2023 study found."',
+};
+
+function rewrite() {
+  const text = document.getElementById('inputText').value.trim();
+  if (!text) return;
+  const rules = RULES[selectedStyle] || [];
+  let out = text;
+  rules.forEach(([pat, rep]) => { out = out.replace(pat, rep); });
+  // Clean double spaces
+  out = out.replace(/\s{2,}/g, ' ').replace(/^\s+/gm, '').trim();
+
+  const box = document.getElementById('outputBox');
+  box.textContent = out;
+  box.classList.remove('empty');
+
+  document.getElementById('tipCard').innerHTML = `<div class="tip-card"><strong>Why this style works:</strong> ${TIPS[selectedStyle]}</div>`;
+}
+
+// ── SYNONYMS ──────────────────────────────────────────────────────────────────
+const SYNONYMS = [
+  {w:'show', def:'To demonstrate or make visible', syns:[
+    {s:'demonstrate',r:'formal'},{s:'illustrate',r:'formal'},{s:'reveal',r:'neutral'},
+    {s:'exhibit',r:'formal'},{s:'indicate',r:'neutral'},{s:'convey',r:'formal'},
+    {s:'depict',r:'formal'},{s:'portray',r:'neutral'},{s:'manifest',r:'formal'},
+  ]},
+  {w:'argue', def:'To present a position or contend', syns:[
+    {s:'contend',r:'formal'},{s:'assert',r:'formal'},{s:'maintain',r:'formal'},
+    {s:'posit',r:'formal'},{s:'claim',r:'neutral'},{s:'propose',r:'neutral'},
+    {s:'advance the view',r:'formal'},{s:'suggest',r:'neutral'},{s:'insist',r:'neutral'},
+  ]},
+  {w:'help', def:'To assist or support', syns:[
+    {s:'facilitate',r:'formal'},{s:'enable',r:'neutral'},{s:'assist',r:'neutral'},
+    {s:'support',r:'neutral'},{s:'bolster',r:'formal'},{s:'aid',r:'neutral'},
+    {s:'foster',r:'formal'},{s:'promote',r:'neutral'},{s:'contribute to',r:'formal'},
+  ]},
+  {w:'important', def:'Of significance or consequence', syns:[
+    {s:'significant',r:'formal'},{s:'crucial',r:'formal'},{s:'essential',r:'formal'},
+    {s:'pivotal',r:'formal'},{s:'fundamental',r:'formal'},{s:'critical',r:'formal'},
+    {s:'paramount',r:'formal'},{s:'notable',r:'neutral'},{s:'consequential',r:'formal'},
+  ]},
+  {w:'change', def:'To alter or transform', syns:[
+    {s:'transform',r:'formal'},{s:'alter',r:'neutral'},{s:'modify',r:'formal'},
+    {s:'shift',r:'neutral'},{s:'reshape',r:'formal'},{s:'revolutionize',r:'formal'},
+    {s:'evolve',r:'neutral'},{s:'adapt',r:'neutral'},{s:'redefine',r:'formal'},
+  ]},
+  {w:'say', def:'To express or communicate', syns:[
+    {s:'state',r:'formal'},{s:'assert',r:'formal'},{s:'declare',r:'formal'},
+    {s:'express',r:'neutral'},{s:'articulate',r:'formal'},{s:'maintain',r:'formal'},
+    {s:'proclaim',r:'formal'},{s:'observe',r:'neutral'},{s:'remark',r:'neutral'},
+  ]},
+  {w:'use', def:'To employ or utilize', syns:[
+    {s:'employ',r:'formal'},{s:'utilize',r:'formal'},{s:'implement',r:'formal'},
+    {s:'deploy',r:'formal'},{s:'apply',r:'neutral'},{s:'leverage',r:'formal'},
+    {s:'harness',r:'formal'},{s:'incorporate',r:'formal'},
+  ]},
+  {w:'think', def:'To believe or reason', syns:[
+    {s:'believe',r:'neutral'},{s:'contend',r:'formal'},{s:'hypothesize',r:'formal'},
+    {s:'theorize',r:'formal'},{s:'surmise',r:'formal'},{s:'speculate',r:'neutral'},
+    {s:'reason',r:'neutral'},{s:'conclude',r:'neutral'},{s:'posit',r:'formal'},
+  ]},
+  {w:'cause', def:'To bring about or produce', syns:[
+    {s:'precipitate',r:'formal'},{s:'engender',r:'formal'},{s:'generate',r:'neutral'},
+    {s:'produce',r:'neutral'},{s:'bring about',r:'neutral'},{s:'result in',r:'neutral'},
+    {s:'contribute to',r:'neutral'},{s:'trigger',r:'neutral'},{s:'give rise to',r:'formal'},
+  ]},
+  {w:'increase', def:'To grow or expand', syns:[
+    {s:'escalate',r:'formal'},{s:'expand',r:'neutral'},{s:'amplify',r:'formal'},
+    {s:'intensify',r:'formal'},{s:'augment',r:'formal'},{s:'surge',r:'neutral'},
+    {s:'proliferate',r:'formal'},{s:'accelerate',r:'neutral'},{s:'compound',r:'formal'},
+  ]},
+  {w:'decrease', def:'To reduce or diminish', syns:[
+    {s:'diminish',r:'formal'},{s:'reduce',r:'neutral'},{s:'decline',r:'neutral'},
+    {s:'wane',r:'formal'},{s:'dwindle',r:'formal'},{s:'mitigate',r:'formal'},
+    {s:'curtail',r:'formal'},{s:'alleviate',r:'neutral'},
+  ]},
+  {w:'problem', def:'An issue or difficulty', syns:[
+    {s:'challenge',r:'neutral'},{s:'issue',r:'neutral'},{s:'obstacle',r:'neutral'},
+    {s:'complication',r:'formal'},{s:'dilemma',r:'formal'},{s:'predicament',r:'formal'},
+    {s:'impediment',r:'formal'},{s:'concern',r:'neutral'},{s:'deficiency',r:'formal'},
+  ]},
+  {w:'good', def:'Of positive quality or benefit', syns:[
+    {s:'beneficial',r:'formal'},{s:'effective',r:'neutral'},{s:'advantageous',r:'formal'},
+    {s:'favorable',r:'neutral'},{s:'constructive',r:'formal'},{s:'valuable',r:'neutral'},
+    {s:'productive',r:'neutral'},{s:'meritable',r:'formal'},
+  ]},
+  {w:'bad', def:'Of negative quality or harm', syns:[
+    {s:'detrimental',r:'formal'},{s:'harmful',r:'neutral'},{s:'adverse',r:'formal'},
+    {s:'deleterious',r:'formal'},{s:'counterproductive',r:'formal'},{s:'damaging',r:'neutral'},
+    {s:'pernicious',r:'formal'},{s:'injurious',r:'formal'},
+  ]},
+  {w:'make', def:'To create or produce', syns:[
+    {s:'construct',r:'formal'},{s:'develop',r:'neutral'},{s:'establish',r:'formal'},
+    {s:'generate',r:'neutral'},{s:'formulate',r:'formal'},{s:'produce',r:'neutral'},
+    {s:'devise',r:'formal'},{s:'craft',r:'neutral'},{s:'render',r:'formal'},
+  ]},
+  {w:'begin', def:'To start or initiate', syns:[
+    {s:'initiate',r:'formal'},{s:'commence',r:'formal'},{s:'embark upon',r:'formal'},
+    {s:'launch',r:'neutral'},{s:'inaugurate',r:'formal'},{s:'undertake',r:'formal'},
+    {s:'institute',r:'formal'},
+  ]},
+  {w:'end', def:'To conclude or terminate', syns:[
+    {s:'conclude',r:'formal'},{s:'terminate',r:'formal'},{s:'cease',r:'formal'},
+    {s:'abolish',r:'formal'},{s:'dissolve',r:'formal'},{s:'resolve',r:'neutral'},
+    {s:'culminate in',r:'formal'},{s:'finalize',r:'neutral'},
+  ]},
+  {w:'many', def:'A large number of', syns:[
+    {s:'numerous',r:'formal'},{s:'myriad',r:'formal'},{s:'considerable',r:'formal'},
+    {s:'substantial',r:'formal'},{s:'an abundance of',r:'formal'},{s:'a multitude of',r:'formal'},
+    {s:'a significant number of',r:'formal'},
+  ]},
+  {w:'big', def:'Large in size or scope', syns:[
+    {s:'substantial',r:'formal'},{s:'considerable',r:'formal'},{s:'significant',r:'formal'},
+    {s:'extensive',r:'formal'},{s:'expansive',r:'formal'},{s:'large-scale',r:'neutral'},
+    {s:'monumental',r:'formal'},{s:'immense',r:'formal'},
+  ]},
+  {w:'look at', def:'To examine or analyze', syns:[
+    {s:'examine',r:'formal'},{s:'analyze',r:'formal'},{s:'investigate',r:'formal'},
+    {s:'scrutinize',r:'formal'},{s:'assess',r:'formal'},{s:'evaluate',r:'formal'},
+    {s:'explore',r:'neutral'},{s:'consider',r:'neutral'},
+  ]},
+];
+
+function renderSynonyms() {
+  const q = document.getElementById('synSearch').value.toLowerCase().trim();
+  const filtered = q ? SYNONYMS.filter(s =>
+    s.w.includes(q) || s.def.toLowerCase().includes(q) || s.syns.some(sy => sy.s.includes(q))
+  ) : SYNONYMS;
+
+  const REG_LABELS = {formal:'Formal',neutral:'Neutral',informal:'Informal'};
+  const grid = document.getElementById('synGrid');
+  if (!filtered.length) { grid.innerHTML = '<div style="color:#7a8fa8;padding:20px">No words found.</div>'; return; }
+
+  grid.innerHTML = filtered.map(entry => `
+    <div class="syn-card">
+      <div class="syn-word">${entry.w}</div>
+      <div class="syn-def">${entry.def}</div>
+      <div class="syn-list">
+        ${entry.syns.map(sy => `
+          <span class="syn-tag" onclick="insertWord('${sy.s}')" title="Click to copy">
+            ${sy.s}<span class="register reg-${sy.r}">${REG_LABELS[sy.r]}</span>
+          </span>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function insertWord(w) {
+  navigator.clipboard.writeText(w).catch(() => {});
+  // Flash feedback
+  const tags = document.querySelectorAll('.syn-tag');
+  tags.forEach(t => { if (t.textContent.includes(w)) { t.style.borderColor='#6366f1'; setTimeout(()=>t.style.borderColor='',800); } });
+}
+
+renderSynonyms();
+</script>
+</body>
+</html>

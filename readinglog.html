@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading Log — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:580px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:70px}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700}
+.btn-primary{background:#0891b2;color:#fff}.btn-primary:hover{background:#0e7490}
+.btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--muted)}
+.btn-sm:hover{background:var(--bg)}.btn-sm.del{color:#dc2626}.btn-sm.del:hover{background:#fef2f2}
+
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px;text-align:center}
+.stat .num{font-size:1.8rem;font-weight:900;line-height:1;color:#0891b2}
+.stat .lbl{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+
+.stars{font-size:1.1rem;cursor:pointer;display:flex;gap:2px}
+.star{color:#e5e7eb;transition:.1s}.star.filled{color:#f59e0b}
+
+.books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.book-card{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;position:relative}
+.book-card .title{font-size:.95rem;font-weight:800;margin-bottom:2px}
+.book-card .author{font-size:.82rem;color:var(--muted);margin-bottom:8px}
+.book-card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tag{padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700}
+.book-card .notes{font-size:.82rem;color:var(--muted);line-height:1.5;font-style:italic;margin-top:6px;border-top:1px solid var(--border);padding-top:6px}
+.book-card .meta{font-size:.72rem;color:var(--muted);margin-top:6px}
+.book-card .actions{position:absolute;top:10px;right:10px}
+.book-card .star-row{font-size:1rem}
+
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.filter-row select{padding:7px 10px;font-size:.83rem}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}.book-card{background:#12121f}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="curriculum.html" class="nav-link">📚 Curriculum</a>
+  <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="readinglog.html" class="nav-link active">📗 Reading Log</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+<div class="hero">
+  <h1>📗 Reading Log</h1>
+  <p>Track every book and article you read — add notes, ratings, and build your literary portfolio.</p>
+</div>
+<div class="container">
+  <div class="stat-row">
+    <div class="stat"><div class="num" id="s-total">0</div><div class="lbl">Books Read</div></div>
+    <div class="stat"><div class="num" id="s-pages">0</div><div class="lbl">Total Pages</div></div>
+    <div class="stat"><div class="num" id="s-avg">—</div><div class="lbl">Avg Rating</div></div>
+    <div class="stat"><div class="num" id="s-genre">—</div><div class="lbl">Top Genre</div></div>
+  </div>
+
+  <div class="card">
+    <h2>➕ Add a Book or Article</h2>
+    <div class="form-grid">
+      <div class="field full"><label>Title</label><input id="b-title" placeholder="The Great Gatsby"></div>
+      <div class="field"><label>Author</label><input id="b-author" placeholder="F. Scott Fitzgerald"></div>
+      <div class="field"><label>Genre</label>
+        <select id="b-genre">
+          <option>Fiction</option><option>Non-Fiction</option><option>Classic Literature</option>
+          <option>Historical Fiction</option><option>Science Fiction</option><option>Fantasy</option>
+          <option>Mystery</option><option>Biography</option><option>Science</option>
+          <option>History</option><option>Article</option><option>Poetry</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Pages (optional)</label><input type="number" id="b-pages" placeholder="180"></div>
+      <div class="field"><label>Date Finished</label><input type="date" id="b-date"></div>
+      <div class="field"><label>Subject Link (optional)</label>
+        <select id="b-subj">
+          <option value="">— None —</option>
+          <option>ELA / English</option><option>History</option><option>Science</option>
+          <option>AP English Language</option><option>AP English Literature</option><option>AP History</option>
+        </select>
+      </div>
+      <div class="field full"><label>Your Rating</label>
+        <div class="stars" id="ratingStars">
+          <span class="star" onclick="setRating(1)">★</span>
+          <span class="star" onclick="setRating(2)">★</span>
+          <span class="star" onclick="setRating(3)">★</span>
+          <span class="star" onclick="setRating(4)">★</span>
+          <span class="star" onclick="setRating(5)">★</span>
+        </div>
+      </div>
+      <div class="field full"><label>Notes / Summary / Favourite Quote</label>
+        <textarea id="b-notes" placeholder="What did you think? Key themes, a favourite quote, how it connects to class..."></textarea>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="addBook()" style="margin-top:14px">📗 Add to Log</button>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <h2 style="margin:0">📚 My Reading List</h2>
+      <div class="filter-row" style="margin:0">
+        <select id="fGenre" onchange="renderBooks()"><option value="">All Genres</option></select>
+        <select id="fSubj" onchange="renderBooks()"><option value="">All Subjects</option></select>
+      </div>
+    </div>
+    <div class="books-grid" id="booksGrid"></div>
+  </div>
+</div>
+
+<script>
+let books = JSON.parse(localStorage.getItem('ace_books')||'[]');
+let currentRating = 0;
+function save(){ localStorage.setItem('ace_books', JSON.stringify(books)); }
+
+function setRating(r){
+  currentRating = r;
+  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('filled',i<r));
+}
+
+function addBook(){
+  const title = document.getElementById('b-title').value.trim();
+  if(!title){ alert('Enter a title.'); return; }
+  const book = {
+    id: Date.now(),
+    title,
+    author: document.getElementById('b-author').value.trim(),
+    genre: document.getElementById('b-genre').value,
+    pages: parseInt(document.getElementById('b-pages').value)||0,
+    date: document.getElementById('b-date').value || new Date().toISOString().split('T')[0],
+    subj: document.getElementById('b-subj').value,
+    rating: currentRating,
+    notes: document.getElementById('b-notes').value.trim(),
+  };
+  books.unshift(book);
+  save(); renderAll();
+  ['b-title','b-author','b-pages','b-notes'].forEach(id=>document.getElementById(id).value='');
+  currentRating=0; setRating(0);
+}
+
+function deleteBook(id){
+  if(!confirm('Remove this book?')) return;
+  books = books.filter(b=>b.id!==id);
+  save(); renderAll();
+}
+
+function starsHtml(r){ return '★'.repeat(r)+'☆'.repeat(5-r); }
+function fmtDate(d){ if(!d) return ''; return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',year:'numeric'}); }
+
+const GENRE_COLORS={
+  'Fiction':'#dbeafe','Non-Fiction':'#d1fae5','Classic Literature':'#ede9fe',
+  'Historical Fiction':'#fef3c7','Science Fiction':'#cffafe','Fantasy':'#fdf4ff',
+  'Mystery':'#fef2f2','Biography':'#fff7ed','Science':'#ecfdf5','History':'#fefce8',
+  'Article':'#f0f9ff','Poetry':'#fdf2f8','Other':'#f3f4f6',
+};
+
+function renderStats(){
+  document.getElementById('s-total').textContent = books.length;
+  document.getElementById('s-pages').textContent = books.reduce((a,b)=>a+(b.pages||0),0).toLocaleString();
+  const rated = books.filter(b=>b.rating>0);
+  document.getElementById('s-avg').textContent = rated.length ? (rated.reduce((a,b)=>a+b.rating,0)/rated.length).toFixed(1)+'★' : '—';
+  const gc={};books.forEach(b=>{gc[b.genre]=(gc[b.genre]||0)+1;});
+  const top=Object.entries(gc).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('s-genre').textContent = top?top[0].split(' ')[0]:'—';
+}
+
+function populateFilters(){
+  const genres=[...new Set(books.map(b=>b.genre))];
+  const subjs=[...new Set(books.map(b=>b.subj).filter(Boolean))];
+  document.getElementById('fGenre').innerHTML='<option value="">All Genres</option>'+genres.map(g=>`<option>${g}</option>`).join('');
+  document.getElementById('fSubj').innerHTML='<option value="">All Subjects</option>'+subjs.map(s=>`<option>${s}</option>`).join('');
+}
+
+function renderBooks(){
+  const fg=document.getElementById('fGenre').value;
+  const fs=document.getElementById('fSubj').value;
+  let list=books;
+  if(fg) list=list.filter(b=>b.genre===fg);
+  if(fs) list=list.filter(b=>b.subj===fs);
+  const grid=document.getElementById('booksGrid');
+  if(!list.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">No books logged yet. Add your first one above!</div>'; return; }
+  grid.innerHTML=list.map(b=>`
+    <div class="book-card">
+      <div class="actions"><button class="btn-sm del" onclick="deleteBook(${b.id})">✕</button></div>
+      <div class="title">${b.title}</div>
+      ${b.author?`<div class="author">by ${b.author}</div>`:''}
+      <div class="tags">
+        <span class="tag" style="background:${GENRE_COLORS[b.genre]||'#f3f4f6'};color:#1e1b4b">${b.genre}</span>
+        ${b.subj?`<span class="tag" style="background:#ede9fe;color:#4c1d95">${b.subj}</span>`:''}
+        ${b.pages?`<span class="tag" style="background:#f3f4f6;color:var(--muted)">${b.pages} pp</span>`:''}
+      </div>
+      ${b.rating?`<div class="star-row" style="color:#f59e0b;font-size:.95rem">${starsHtml(b.rating)}</div>`:''}
+      ${b.date?`<div class="meta">Finished ${fmtDate(b.date)}</div>`:''}
+      ${b.notes?`<div class="notes">${b.notes}</div>`:''}
+    </div>`).join('');
+}
+
+function renderAll(){ renderStats(); populateFilters(); renderBooks(); }
+renderAll();
+</script>
+</body>
+</html>

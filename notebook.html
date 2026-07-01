@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>aceAcademy — Notebook</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f4f6fb;
+  --surface:#fff;
+  --border:#e2e8f0;
+  --text:#1a1a2e;
+  --muted:#64748b;
+  --accent:#2563eb;
+  --accent-light:#eff6ff;
+  --green:#059669;
+  --purple:#7c3aed;
+  --radius:10px;
+  --font:'Segoe UI',system-ui,sans-serif;
+  --sidebar-w:230px;
+  --list-w:260px;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── TOP NAV ── */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;
+  display:flex;align-items:center;gap:10px;flex-shrink:0;z-index:10;flex-wrap:wrap;}
+.logo{font-size:1.15rem;font-weight:800;color:var(--accent);letter-spacing:-.02em;white-space:nowrap;}
+.nav-links{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap;}
+.nav-link{text-decoration:none;padding:6px 12px;border-radius:8px;font-weight:600;font-size:.8rem;white-space:nowrap;transition:opacity .15s;}
+.nav-link:hover{opacity:.85;}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex:1;min-height:0;}
+
+/* ── FOLDER SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sidebar-head{padding:16px 14px 10px;font-size:.7rem;font-weight:700;color:var(--muted);
+  letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+.folder-item{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;
+  border-left:3px solid transparent;transition:background .12s,border-color .12s;user-select:none;}
+.folder-item:hover{background:#f8faff;}
+.folder-item.active{background:var(--accent-light);border-left-color:var(--accent);}
+.folder-item.active .folder-name{color:var(--accent);font-weight:700;}
+.folder-icon{font-size:1.1rem;width:22px;text-align:center;flex-shrink:0;}
+.folder-name{font-size:.85rem;font-weight:600;color:var(--text);}
+.folder-count{margin-left:auto;font-size:.7rem;background:#e2e8f0;color:var(--muted);
+  padding:1px 6px;border-radius:10px;font-weight:600;}
+
+/* ── NOTE LIST ── */
+.note-list-pane{width:var(--list-w);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;background:#fafbfc;flex-shrink:0;}
+.nlp-head{padding:14px 14px 10px;border-bottom:1px solid var(--border);background:var(--surface);}
+.nlp-title{font-size:.95rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.new-note-btn{width:100%;padding:8px;background:var(--accent);color:#fff;border:none;
+  border-radius:8px;font-weight:700;font-size:.82rem;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;gap:6px;transition:opacity .15s;}
+.new-note-btn:hover{opacity:.88;}
+.note-list{flex:1;overflow-y:auto;padding:8px;}
+.note-item{padding:10px 12px;border-radius:8px;cursor:pointer;border:1px solid transparent;
+  margin-bottom:4px;background:var(--surface);transition:all .12s;position:relative;}
+.note-item:hover{border-color:var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.note-item.active{border-color:var(--accent);background:var(--accent-light);}
+.note-item-title{font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:22px;}
+.note-item.active .note-item-title{color:var(--accent);}
+.note-item-preview{font-size:.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.note-item-date{font-size:.67rem;color:#b0b8c9;margin-top:3px;}
+.note-del-btn{position:absolute;top:8px;right:8px;background:none;border:none;color:#ccc;
+  cursor:pointer;font-size:.85rem;opacity:0;transition:opacity .15s,color .15s;line-height:1;}
+.note-item:hover .note-del-btn{opacity:1;}
+.note-del-btn:hover{color:#ef4444;}
+.empty-list{text-align:center;padding:40px 16px;color:var(--muted);font-size:.83rem;}
+.empty-list .big{font-size:2rem;margin-bottom:8px;}
+
+/* ── EDITOR ── */
+.editor-pane{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--surface);}
+.editor-toolbar{padding:12px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--surface);}
+.editor-title-input{flex:1;font-size:1.1rem;font-weight:700;border:none;outline:none;
+  color:var(--text);background:transparent;font-family:var(--font);}
+.editor-title-input::placeholder{color:#c7d0e0;}
+.tb-btn{padding:5px 12px;border:1px solid var(--border);border-radius:7px;background:#1a2540;
+  cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);display:flex;
+  align-items:center;gap:5px;transition:all .13s;white-space:nowrap;}
+.tb-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+.tb-btn.danger:hover{border-color:#ef4444;color:#ef4444;background:#fff5f5;}
+.save-indicator{font-size:.72rem;color:var(--muted);margin-left:auto;white-space:nowrap;}
+.save-indicator.saved{color:var(--green);}
+.editor-body{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.editor-textarea{flex:1;width:100%;border:none;outline:none;resize:none;
+  padding:24px 32px;font-size:.95rem;font-family:var(--font);line-height:1.8;
+  color:var(--text);background:#1a2540;tab-size:2;}
+.editor-footer{padding:8px 20px;border-top:1px solid var(--border);background:#fafbfc;
+  display:flex;align-items:center;gap:16px;font-size:.72rem;color:var(--muted);flex-shrink:0;}
+.editor-footer span b{color:var(--text);}
+
+/* ── EMPTY EDITOR STATE ── */
+.editor-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--muted);text-align:center;padding:40px;}
+.editor-empty .big{font-size:3.5rem;margin-bottom:16px;}
+.editor-empty h2{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:8px;}
+.editor-empty p{font-size:.85rem;line-height:1.6;max-width:300px;}
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .sidebar{width:52px;}
+  .folder-name,.folder-count{display:none;}
+  .folder-item{justify-content:center;padding:10px 0;}
+  .note-list-pane{width:200px;}
+  .editor-textarea{padding:16px;}
+}
+</style>
+  <link rel="stylesheet" href="ace-theme.css">
+
+<style id="ace-nav-css">
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+nav.topnav{background:#080e1c!important;border-bottom:1px solid #2a3a55!important;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5)!important;padding:0 20px!important;height:60px!important;display:flex!important;align-items:center!important;gap:2px!important;position:sticky!important;top:0!important;z-index:500!important;overflow-x:auto!important;}
+nav.topnav::-webkit-scrollbar{display:none;}
+nav.topnav .logo,nav.topnav a.logo{font-size:1.1rem!important;font-weight:800!important;color:#fff!important;text-decoration:none!important;margin-right:10px!important;white-space:nowrap!important;flex-shrink:0!important;display:flex!important;align-items:center!important;gap:6px!important;}
+nav.topnav .logo span,nav.topnav a.logo span{color:#a5b4fc!important;}
+nav.topnav a.nav-link,nav.topnav a.back-link{display:inline-flex!important;align-items:center!important;gap:3px!important;text-decoration:none!important;padding:6px 9px!important;border-radius:7px!important;font-size:.76rem!important;font-weight:600!important;white-space:nowrap!important;color:#7a8fa8!important;transition:background .15s,color .15s!important;font-family:inherit!important;}
+nav.topnav a.nav-link:hover,nav.topnav a.back-link:hover{background:rgba(255,255,255,.07)!important;color:#e8edf5!important;}
+nav.topnav a.nav-link.active{background:rgba(99,102,241,.18)!important;color:#a5b4fc!important;}
+nav.topnav .spacer,nav.topnav h1.nav-title{flex:1!important;color:#7a8fa8!important;font-size:.8rem!important;font-weight:500!important;}
+nav.topnav input,nav.topnav select{background:#111827!important;border:1px solid #2a3a55!important;color:#e8edf5!important;border-radius:6px!important;padding:5px 10px!important;font-size:.78rem!important;font-family:inherit!important;outline:none!important;}
+:root{--bg:#0b1120;--surface:#1a2540;--border:#2a3a55;--text:#e8edf5;--muted:#7a8fa8;--accent:#6366f1;--accent-light:rgba(99,102,241,0.18);}
+body{background:var(--bg);color:var(--text);}
+footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid #2a3a55!important;}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#334466;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#7a8fa8}
+</style>
+<script src="auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+  <a href="curriculum.html" class="brand">
+    <span class="brand-icon">🎓</span>
+    <span class="brand-name">ace<span class="brand-accent">Academy</span></span>
+  </a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+    <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
+  <a href="citation.html" class="nav-link">📖 Citations</a>
+  <a href="tools.html" class="nav-link">🔬 Tools</a>
+  <a href="assign.html" class="nav-link">📋 Assignments</a>
+  <a href="parent.html" class="nav-link">👪 Parent View</a>
+  <div class="nav-spacer"></div>
+  <nav class="nav-links">
+  <a href="curriculum.html" class="nav-link" data-color="#4f46e5">📚 Curriculum</a>
+  <a href="worksheets.html" class="nav-link" data-color="#0284c7">📄 Worksheets</a>
+  <a href="tests.html" class="nav-link" data-color="#059669">✏️ Tests</a>
+  <a href="language.html" class="nav-link" data-color="#0891b2">🌏 Languages</a>
+  <a href="flashcards.html" class="nav-link" data-color="#7c3aed">🃏 Flashcards</a>
+  <a href="notebook.html" class="nav-link active" data-color="#d97706">📁 Notebook</a>
+  <a href="calendar.html" class="nav-link" data-color="#0ea5e9">📅 Calendar</a>
+  <a href="progress.html" class="nav-link" data-color="#059669">📊 Progress</a>
+  <a href="tutor.html" class="nav-link" data-color="#6366f1">🎓 AI Tutor</a>
+  
+  <a href="frq.html" class="nav-link">📝 FRQ</a>
+  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
+  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
+  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
+  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
+  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
+  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+</nav>
+</header>
+
+<div class="app">
+
+  <!-- ── FOLDER SIDEBAR ── -->
+  <div class="sidebar" id="sidebar"></div>
+
+  <!-- ── NOTE LIST ── -->
+  <div class="note-list-pane">
+    <div class="nlp-head">
+      <div class="nlp-title" id="folderTitle">📓 General</div>
+      <button class="new-note-btn" onclick="newNote()">＋ New Note</button>
+    </div>
+    <div class="note-list" id="noteList"></div>
+  </div>
+
+  <!-- ── EDITOR ── -->
+  <div class="editor-pane" id="editorPane">
+    <div class="editor-empty" id="editorEmpty">
+      <div class="big">📝</div>
+      <h2>Select or create a note</h2>
+      <p>Pick a subject folder on the left, then open a note or click <strong>+ New Note</strong> to start writing.</p>
+    </div>
+    <div id="editorActive" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+      <div class="editor-toolbar">
+        <input class="editor-title-input" id="editorTitle" placeholder="Note title…"
+               oninput="scheduleAutoSave()"/>
+        <button class="tb-btn" onclick="insertTemplate('cornell')">📋 Cornell</button>
+        <button class="tb-btn" onclick="insertTemplate('vocab')">🔤 Vocab</button>
+        <button class="tb-btn" onclick="insertTemplate('summary')">📝 Summary</button>
+        <button class="tb-btn" onclick="copyNote()">📋 Copy</button>
+        <button class="tb-btn danger" onclick="deleteCurrentNote()">🗑 Delete</button>
+        <span class="save-indicator" id="saveIndicator">—</span>
+      </div>
+      <div class="editor-body">
+        <textarea class="editor-textarea" id="editorBody"
+          placeholder="Start writing your notes here…&#10;&#10;Tips:&#10;• Use === headings === for sections&#10;• Put *key terms* in asterisks&#10;• Write formulas between [ ]&#10;• Use the template buttons above for structured layouts"
+          oninput="scheduleAutoSave();updateFooter()"></textarea>
+      </div>
+      <div class="editor-footer">
+        <span><b id="footWords">0</b> words</span>
+        <span><b id="footChars">0</b> chars</span>
+        <span>Folder: <b id="footFolder">—</b></span>
+        <span>Modified: <b id="footDate">—</b></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const FOLDERS = [
+  {key:'general',   icon:'📓', label:'General'},
+  {key:'math',      icon:'➕', label:'Math'},
+  {key:'science',   icon:'🔬', label:'Science'},
+  {key:'ela',       icon:'📖', label:'ELA'},
+  {key:'history',   icon:'🌍', label:'History'},
+  {key:'cs',        icon:'💻', label:'CS'},
+  {key:'health',    icon:'❤️', label:'Health'},
+  {key:'languages', icon:'🌏', label:'Languages'},
+];
+
+const TEMPLATES = {
+  cornell: `=== Main Notes ===
+[Write your main notes here]
+
+
+=== Key Questions ===
+[What questions came up?]
+
+
+=== Summary ===
+[Summarize the lesson in 2-3 sentences]
+`,
+  vocab: `=== Vocabulary List ===
+
+Term:
+Definition:
+Example:
+
+Term:
+Definition:
+Example:
+
+Term:
+Definition:
+Example:
+`,
+  summary: `=== Topic ===
+
+
+=== Main Ideas ===
+1.
+2.
+3.
+
+=== Important Details ===
+
+
+=== My Questions ===
+
+
+=== Connection to Other Topics ===
+`,
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let activeFolder = 'general';
+let activeNoteId = null;
+let autoSaveTimer = null;
+
+// ── STORAGE ───────────────────────────────────────────────────────────────────
+function storageKey(folder){ return 'aceNB_' + folder; }
+
+function getNotes(folder){
+  try{
+    return JSON.parse(localStorage.getItem(storageKey(folder)) || '[]');
+  }catch(e){ return []; }
+}
+
+function saveNotes(folder, notes){
+  try{ localStorage.setItem(storageKey(folder), JSON.stringify(notes)); }catch(e){}
+}
+
+function getNote(folder, id){
+  return getNotes(folder).find(n => n.id === id) || null;
+}
+
+function putNote(folder, note){
+  const notes = getNotes(folder).filter(n => n.id !== note.id);
+  // Put updated note at top of list
+  notes.unshift(note);
+  saveNotes(folder, notes);
+}
+
+function removeNote(folder, id){
+  saveNotes(folder, getNotes(folder).filter(n => n.id !== id));
+}
+
+function makeId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function fmtDate(ts){
+  if(!ts) return '—';
+  const d = new Date(ts);
+  const now = new Date();
+  const diff = now - d;
+  if(diff < 60000) return 'just now';
+  if(diff < 3600000) return Math.floor(diff/60000) + 'm ago';
+  if(diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+// ── RENDER SIDEBAR ────────────────────────────────────────────────────────────
+function renderSidebar(){
+  const el = document.getElementById('sidebar');
+  el.innerHTML = `<div class="sidebar-head">Subjects</div>` +
+    FOLDERS.map(f => {
+      const count = getNotes(f.key).length;
+      return `<div class="folder-item${f.key===activeFolder?' active':''}" onclick="openFolder('${f.key}')">
+        <span class="folder-icon">${f.icon}</span>
+        <span class="folder-name">${f.label}</span>
+        ${count ? `<span class="folder-count">${count}</span>` : ''}
+      </div>`;
+    }).join('');
+}
+
+// ── RENDER NOTE LIST ──────────────────────────────────────────────────────────
+function renderNoteList(){
+  const f = FOLDERS.find(x=>x.key===activeFolder);
+  document.getElementById('folderTitle').textContent = f.icon + ' ' + f.label;
+  const notes = getNotes(activeFolder);
+  const el = document.getElementById('noteList');
+  if(!notes.length){
+    el.innerHTML = `<div class="empty-list"><div class="big">${f.icon}</div>No notes yet.<br>Click <strong>+ New Note</strong> to start!</div>`;
+    return;
+  }
+  el.innerHTML = notes.map(n => `
+    <div class="note-item${n.id===activeNoteId?' active':''}" onclick="openNote('${n.id}')" id="ni-${n.id}">
+      <button class="note-del-btn" onclick="deleteNote(event,'${n.id}')" title="Delete">✕</button>
+      <div class="note-item-title">${esc(n.title||'Untitled')}</div>
+      <div class="note-item-preview">${esc((n.body||'').replace(/\n/g,' ').slice(0,60)) || '<em>Empty note</em>'}</div>
+      <div class="note-item-date">${fmtDate(n.modified)}</div>
+    </div>`).join('');
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── OPEN FOLDER ───────────────────────────────────────────────────────────────
+function openFolder(key){
+  // Save current note before switching
+  flushSave();
+  activeFolder = key;
+  activeNoteId = null;
+  renderSidebar();
+  renderNoteList();
+  showEmptyEditor();
+}
+
+// ── OPEN NOTE ─────────────────────────────────────────────────────────────────
+function openNote(id){
+  flushSave();
+  activeNoteId = id;
+  const note = getNote(activeFolder, id);
+  if(!note) return;
+  document.getElementById('editorTitle').value = note.title || '';
+  document.getElementById('editorBody').value = note.body || '';
+  document.getElementById('editorEmpty').style.display = 'none';
+  const ea = document.getElementById('editorActive');
+  ea.style.display = 'flex';
+  updateFooter();
+  setSaveIndicator('saved');
+  renderNoteList(); // highlight active
+}
+
+// ── NEW NOTE ──────────────────────────────────────────────────────────────────
+function newNote(){
+  flushSave();
+  const note = {
+    id: makeId(),
+    title: '',
+    body: '',
+    created: Date.now(),
+    modified: Date.now(),
+  };
+  const notes = getNotes(activeFolder);
+  notes.unshift(note);
+  saveNotes(activeFolder, notes);
+  activeNoteId = note.id;
+  renderSidebar();
+  renderNoteList();
+  document.getElementById('editorEmpty').style.display = 'none';
+  const ea = document.getElementById('editorActive');
+  ea.style.display = 'flex';
+  document.getElementById('editorTitle').value = '';
+  document.getElementById('editorBody').value = '';
+  document.getElementById('editorTitle').focus();
+  updateFooter();
+  setSaveIndicator('—');
+}
+
+// ── SAVE ─────────────────────────────────────────────────────────────────────
+function scheduleAutoSave(){
+  setSaveIndicator('saving…');
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(flushSave, 800);
+}
+
+function flushSave(){
+  clearTimeout(autoSaveTimer);
+  if(!activeNoteId) return;
+  const note = getNote(activeFolder, activeNoteId) || {id:activeNoteId, created:Date.now()};
+  note.title = document.getElementById('editorTitle')?.value || '';
+  note.body  = document.getElementById('editorBody')?.value || '';
+  note.modified = Date.now();
+  putNote(activeFolder, note);
+  renderSidebar();
+  renderNoteList();
+  setSaveIndicator('saved');
+}
+
+function setSaveIndicator(state){
+  const el = document.getElementById('saveIndicator');
+  if(!el) return;
+  if(state==='saved'){ el.textContent='✅ Saved'; el.className='save-indicator saved'; }
+  else if(state==='saving…'){ el.textContent='⏳ Saving…'; el.className='save-indicator'; }
+  else { el.textContent='—'; el.className='save-indicator'; }
+}
+
+// ── DELETE ────────────────────────────────────────────────────────────────────
+function deleteNote(e, id){
+  e.stopPropagation();
+  if(!confirm('Delete this note?')) return;
+  removeNote(activeFolder, id);
+  if(activeNoteId === id){
+    activeNoteId = null;
+    showEmptyEditor();
+  }
+  renderSidebar();
+  renderNoteList();
+}
+
+function deleteCurrentNote(){
+  if(!activeNoteId) return;
+  deleteNote({stopPropagation:()=>{}}, activeNoteId);
+}
+
+// ── EMPTY EDITOR ──────────────────────────────────────────────────────────────
+function showEmptyEditor(){
+  document.getElementById('editorEmpty').style.display = 'flex';
+  document.getElementById('editorActive').style.display = 'none';
+}
+
+// ── FOOTER ────────────────────────────────────────────────────────────────────
+function updateFooter(){
+  const body = document.getElementById('editorBody')?.value || '';
+  const words = body.trim() ? body.trim().split(/\s+/).length : 0;
+  document.getElementById('footWords').textContent = words;
+  document.getElementById('footChars').textContent = body.length;
+  const f = FOLDERS.find(x=>x.key===activeFolder);
+  document.getElementById('footFolder').textContent = f ? f.icon+' '+f.label : '—';
+  const note = getNote(activeFolder, activeNoteId);
+  document.getElementById('footDate').textContent = note ? fmtDate(note.modified) : '—';
+}
+
+// ── TEMPLATES ─────────────────────────────────────────────────────────────────
+function insertTemplate(key){
+  const ta = document.getElementById('editorBody');
+  if(!ta) return;
+  const tmpl = TEMPLATES[key] || '';
+  const existing = ta.value.trim();
+  ta.value = existing ? existing + '\n\n' + tmpl : tmpl;
+  ta.focus();
+  scheduleAutoSave();
+  updateFooter();
+}
+
+// ── COPY ──────────────────────────────────────────────────────────────────────
+function copyNote(){
+  const title = document.getElementById('editorTitle')?.value || '';
+  const body  = document.getElementById('editorBody')?.value || '';
+  const text  = (title ? title + '\n' + '='.repeat(title.length) + '\n\n' : '') + body;
+  if(!text.trim()){ alert('Nothing to copy!'); return; }
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = event.target;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✅ Copied!';
+    setTimeout(()=>{ btn.innerHTML = orig; }, 1500);
+  }).catch(()=>{
+    document.getElementById('editorBody').select();
+    document.execCommand('copy');
+  });
+}
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if((e.ctrlKey||e.metaKey) && e.key==='s'){ e.preventDefault(); flushSave(); }
+  if((e.ctrlKey||e.metaKey) && e.key==='n'){ e.preventDefault(); newNote(); }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderSidebar();
+renderNoteList();
+</script>
+
+<!-- ══ STUDY TIMER WIDGET ══════════════════════════════════════════════ -->
+<style>
+#timerBtn{position:fixed;bottom:84px;right:24px;width:52px;height:52px;border-radius:50%;
+  background:#059669;color:#fff;border:none;font-size:1.3rem;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,0,0,.22);z-index:9997;display:flex;align-items:center;
+  justify-content:center;transition:transform .15s,box-shadow .15s;}
+#timerBtn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.3);}
+#timerBtn.running{animation:timerPulse 2s ease-in-out infinite;}
+@keyframes timerPulse{0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,.5);}50%{box-shadow:0 0 0 10px rgba(5,150,105,0);}}
+#timerPanel{position:fixed;bottom:148px;right:24px;width:300px;background:#1a2540;
+  border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.22);z-index:9998;
+  display:flex;flex-direction:column;opacity:0;pointer-events:none;
+  transform:translateY(14px);transition:opacity .2s,transform .2s;overflow:hidden;}
+#timerPanel.open{opacity:1;pointer-events:auto;transform:translateY(0);}
+.tp-head{background:#059669;color:#fff;padding:13px 16px;
+  display:flex;align-items:center;justify-content:space-between;}
+.tp-head h3{margin:0;font-size:.95rem;font-weight:700;}
+.tp-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;
+  padding:3px 9px;cursor:pointer;font-size:.85rem;}
+.tp-close:hover{background:rgba(255,255,255,.35);}
+.tp-mode-row{display:flex;border-bottom:1px solid #e2e8f0;background:#1e2d45;}
+.tp-mode-btn{flex:1;padding:8px;border:none;background:none;cursor:pointer;font-size:.72rem;
+  font-weight:700;color:#94a3b8;letter-spacing:.04em;transition:all .15s;}
+.tp-mode-btn.active{color:#059669;border-bottom:2px solid #059669;background:#1a2540;}
+.tp-circle-wrap{display:flex;justify-content:center;align-items:center;padding:22px 0 14px;}
+.tp-svg{transform:rotate(-90deg);}
+.tp-circle-bg{fill:none;stroke:#e2e8f0;stroke-width:8;}
+.tp-circle-fg{fill:none;stroke:#059669;stroke-width:8;stroke-linecap:round;
+  stroke-dasharray:283;stroke-dashoffset:0;transition:stroke-dashoffset .5s linear,stroke .3s;}
+.tp-time-text{position:absolute;font-size:1.8rem;font-weight:800;color:#ffffff;letter-spacing:-.02em;}
+.tp-session-label{position:absolute;top:68px;font-size:.65rem;font-weight:700;
+  color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;}
+.tp-circle-center{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.tp-controls{display:flex;justify-content:center;gap:10px;padding:0 16px 16px;}
+.tp-ctrl-btn{padding:9px 22px;border-radius:10px;border:none;font-weight:700;
+  font-size:.85rem;cursor:pointer;transition:all .15s;}
+.tp-start{background:#059669;color:#fff;}
+.tp-start:hover{background:#047857;}
+.tp-reset{background:#0b1120;color:#7a8fa8;}
+.tp-reset:hover{background:#e2e8f0;}
+.tp-footer{background:#1e2d45;border-top:1px solid #e2e8f0;padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:#7a8fa8;}
+.tp-sessions{font-weight:700;color:#059669;}
+.tp-settings-row{display:flex;gap:8px;padding:0 16px 12px;align-items:center;}
+.tp-settings-row label{font-size:.72rem;color:#7a8fa8;font-weight:600;}
+.tp-num{width:52px;padding:5px 6px;border:1px solid #2a3a55;border-radius:7px;
+  font-size:.82rem;font-weight:700;text-align:center;outline:none;}
+.tp-num:focus{border-color:#059669;}
+</style>
+
+<button id="timerBtn" onclick="toggleTimer()" title="Study Timer">⏱</button>
+
+<div id="timerPanel">
+  <div class="tp-head">
+    <h3>⏱ Study Timer</h3>
+    <button class="tp-close" onclick="toggleTimer()">✕</button>
+  </div>
+  <div class="tp-mode-row">
+    <button class="tp-mode-btn active" id="tmWork"  onclick="setTimerMode('work')">FOCUS</button>
+    <button class="tp-mode-btn"        id="tmShort" onclick="setTimerMode('short')">SHORT BREAK</button>
+    <button class="tp-mode-btn"        id="tmLong"  onclick="setTimerMode('long')">LONG BREAK</button>
+  </div>
+  <div class="tp-circle-wrap">
+    <svg class="tp-svg" width="120" height="120" viewBox="0 0 100 100">
+      <circle class="tp-circle-bg" cx="50" cy="50" r="45"/>
+      <circle class="tp-circle-fg" id="timerArc" cx="50" cy="50" r="45"/>
+    </svg>
+    <div class="tp-circle-center" style="position:absolute;">
+      <div class="tp-time-text" id="timerDisplay">25:00</div>
+      <div class="tp-session-label" id="timerModeLabel">Focus Time</div>
+    </div>
+  </div>
+  <div class="tp-settings-row">
+    <label>Focus</label>
+    <input class="tp-num" id="tpFocusMin" type="number" min="1" max="99" value="25" onchange="updateTimerSettings()"/>
+    <label>min &nbsp; Short</label>
+    <input class="tp-num" id="tpShortMin" type="number" min="1" max="30" value="5" onchange="updateTimerSettings()"/>
+    <label>min</label>
+  </div>
+  <div class="tp-controls">
+    <button class="tp-ctrl-btn tp-start" id="timerStartBtn" onclick="toggleTimerRun()">▶ Start</button>
+    <button class="tp-ctrl-btn tp-reset" onclick="resetTimer()">↺ Reset</button>
+  </div>
+  <div class="tp-footer">
+    <span>Sessions today: <span class="tp-sessions" id="tpSessionCount">0</span></span>
+    <span id="tpStatusText" style="color:#94a3b8;">Ready</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  const MODES = {
+    work:  {label:'Focus Time',  color:'#059669'},
+    short: {label:'Short Break', color:'#0891b2'},
+    long:  {label:'Long Break',  color:'#7c3aed'},
+  };
+  let mode='work', running=false, remaining=25*60, total=25*60;
+  let intervalId=null, sessions=0, longBreakMin=15;
+
+  function getFocusMin(){ return Math.max(1,parseInt(document.getElementById('tpFocusMin')?.value||25)); }
+  function getShortMin(){ return Math.max(1,parseInt(document.getElementById('tpShortMin')?.value||5)); }
+
+  function modeSeconds(m){
+    if(m==='work')  return getFocusMin()*60;
+    if(m==='short') return getShortMin()*60;
+    return longBreakMin*60;
+  }
+
+  window.updateTimerSettings = function(){
+    if(!running){ total=modeSeconds(mode); remaining=total; updateDisplay(); }
+  };
+
+  window.setTimerMode = function(m){
+    if(running) stopTimer();
+    mode=m;
+    total=modeSeconds(m);
+    remaining=total;
+    document.querySelectorAll('.tp-mode-btn').forEach(b=>b.classList.remove('active'));
+    const ids={work:'tmWork',short:'tmShort',long:'tmLong'};
+    document.getElementById(ids[m])?.classList.add('active');
+    document.getElementById('timerArc').style.stroke=MODES[m].color;
+    document.getElementById('timerBtn').style.background=MODES[m].color;
+    document.getElementById('timerModeLabel').textContent=MODES[m].label;
+    updateDisplay();
+    document.getElementById('tpStatusText').textContent='Ready';
+  };
+
+  window.toggleTimer = function(){
+    const p=document.getElementById('timerPanel');
+    p.classList.toggle('open');
+  };
+
+  window.toggleTimerRun = function(){
+    running ? stopTimer() : startTimer();
+  };
+
+  function startTimer(){
+    if(remaining<=0) resetTimer();
+    running=true;
+    intervalId=setInterval(tick,1000);
+    document.getElementById('timerStartBtn').textContent='⏸ Pause';
+    document.getElementById('timerBtn').classList.add('running');
+    document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
+  }
+
+  function stopTimer(){
+    running=false;
+    clearInterval(intervalId);
+    document.getElementById('timerStartBtn').textContent='▶ Start';
+    document.getElementById('timerBtn').classList.remove('running');
+    document.getElementById('tpStatusText').textContent='Paused';
+  }
+
+  window.resetTimer = function(){
+    stopTimer();
+    remaining=total=modeSeconds(mode);
+    updateDisplay();
+    document.getElementById('tpStatusText').textContent='Ready';
+  };
+
+  function tick(){
+    remaining--;
+    if(remaining<=0){
+      remaining=0;
+      updateDisplay();
+      stopTimer();
+      playBell();
+      if(mode==='work'){
+        sessions++;
+        document.getElementById('tpSessionCount').textContent=sessions;
+        // auto-switch to break
+        const nextMode = sessions%4===0?'long':'short';
+        setTimeout(()=>{ setTimerMode(nextMode); playBell(); },500);
+        document.getElementById('tpStatusText').textContent='Session done! 🎉';
+      } else {
+        setTimeout(()=>{ setTimerMode('work'); },500);
+        document.getElementById('tpStatusText').textContent='Break over!';
+      }
+      // open panel so user sees the notification
+      document.getElementById('timerPanel').classList.add('open');
+      return;
+    }
+    updateDisplay();
+  }
+
+  function updateDisplay(){
+    const m=Math.floor(remaining/60), s=remaining%60;
+    document.getElementById('timerDisplay').textContent =
+      String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    const arc=document.getElementById('timerArc');
+    if(arc){
+      const pct = total>0 ? remaining/total : 1;
+      arc.style.strokeDashoffset = String(Math.round(283*(1-pct)));
+    }
+    // Update page title while running
+    if(running){
+      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — aceAcademy';
+    } else {
+      document.title = document.title.replace(/^⏱.*?—\s*/,'');
+    }
+  }
+
+  function playBell(){
+    try{
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      [0,0.15,0.3].forEach((delay,i)=>{
+        const osc=ctx.createOscillator(), gain=ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value=i===0?880:i===1?1046:1318;
+        gain.gain.setValueAtTime(0.3,ctx.currentTime+delay);
+        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+0.6);
+        osc.start(ctx.currentTime+delay);
+        osc.stop(ctx.currentTime+delay+0.7);
+      });
+    }catch(e){}
+  }
+
+  // Close on outside click (avoid conflicting with notes panel)
+  document.addEventListener('click',function(e){
+    const p=document.getElementById('timerPanel');
+    const b=document.getElementById('timerBtn');
+    if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!b.contains(e.target)){
+      p.classList.remove('open');
+    }
+  });
+
+  // Shift notes button up so they don't overlap
+  const nb=document.getElementById('notesBtn');
+  if(nb) nb.style.bottom='84px';
+  const tp=document.getElementById('timerBtn');
+  if(tp) tp.style.bottom='24px';
+})();
+</script>
+<!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
+
+</body>
+</html>

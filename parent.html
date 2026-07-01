@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Parent Dashboard — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.spacer{flex:1}
+.hero{text-align:center;padding:40px 20px 24px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.hero p{opacity:.85;max-width:560px;margin:0 auto}
+.container{max-width:960px;margin:28px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.05rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:18px;text-align:center}
+.stat .num{font-size:1.9rem;font-weight:900;line-height:1}
+.stat .lbl{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:5px}
+.stat.blue .num{color:var(--accent)}.stat.green .num{color:var(--green)}.stat.amber .num{color:var(--amber)}.stat.purple .num{color:var(--accent2)}
+
+.btn{padding:10px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
+
+.subj-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.subj-row:last-child{border:none}
+.bar-track{flex:1;background:#e5e7eb;border-radius:99px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px}
+
+.hist-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.hist-row:last-child{border:none}
+.badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;flex-shrink:0}
+
+.print-header{display:none}
+@media print{
+  .topnav,.hero,.no-print{display:none!important}
+  .print-header{display:block;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #333}
+  .print-header h1{font-size:1.5rem;font-weight:800}
+  .print-header .meta{font-size:.85rem;color:#555;margin-top:4px}
+  body,html{background:#fff!important}
+  .card{border:1px solid #ccc;margin-bottom:16px;break-inside:avoid}
+  .btn{display:none}
+}
+
+.ap-score-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.ap-score-row:last-child{border:none}
+.ap-badge{font-size:1.4rem;font-weight:900;min-width:28px;text-align:center}
+
+.empty{text-align:center;padding:32px;color:var(--muted);font-size:.9rem}
+
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  .topnav{background:#12121f;border-color:var(--border)}
+  .stat,.btn-outline{background:#1a1a2e}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="curriculum.html" class="nav-link">📚 Curriculum</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
+  <a href="citation.html" class="nav-link">📖 Citations</a>
+  <a href="tools.html" class="nav-link">🔬 Tools</a>
+  <a href="assign.html" class="nav-link">📋 Assignments</a>
+  <a href="parent.html" class="nav-link active">👪 Parent View</a>
+  <div class="spacer"></div>
+  <button class="btn btn-primary no-print" onclick="window.print()">🖨 Print / Save PDF</button>
+</nav>
+
+<div class="hero no-print">
+  <h1>👪 Parent Dashboard</h1>
+  <p>A full view of your student's progress — print or save as PDF to share with teachers.</p>
+</div>
+
+<div class="container">
+  <div class="print-header">
+    <h1>aceAcademy — Student Progress Report</h1>
+    <div class="meta" id="printDate"></div>
+  </div>
+
+  <div class="stat-row" id="statRow">
+    <div class="stat blue"><div class="num" id="s-total">—</div><div class="lbl">Tests Taken</div></div>
+    <div class="stat green"><div class="num" id="s-avg">—</div><div class="lbl">Average Score</div></div>
+    <div class="stat amber"><div class="num" id="s-streak">—</div><div class="lbl">Day Streak 🔥</div></div>
+    <div class="stat purple"><div class="num" id="s-best">—</div><div class="lbl">Best Score</div></div>
+  </div>
+
+  <div class="card">
+    <h2>📚 Performance by Subject</h2>
+    <div id="subjBreakdown"><div class="empty">No test data yet.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>🎯 AP Score Predictions</h2>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px">Based on practice test averages. Official AP scores may differ.</p>
+    <div id="apPredictions"><div class="empty">No AP tests taken yet.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>🕐 Recent Test History</h2>
+    <div id="recentHistory"><div class="empty">No history yet.</div></div>
+  </div>
+
+  <div class="card no-print">
+    <h2>📤 Share This Report</h2>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:14px">Click <strong>Print / Save PDF</strong> in the top right to save a copy, then share with teachers or advisors. This report reflects all tests completed on this device.</p>
+    <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save PDF</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('printDate').textContent = 'Generated: ' + new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+const SUBJECTS = {
+  math:{label:'Math',icon:'➕',color:'#2563eb'},
+  science:{label:'Science',icon:'🔬',color:'#059669'},
+  ela:{label:'English (ELA)',icon:'📖',color:'#7c3aed'},
+  history:{label:'History',icon:'🌍',color:'#d97706'},
+  cs:{label:'Computer Science',icon:'💻',color:'#0891b2'},
+  arts:{label:'Arts',icon:'🎨',color:'#db2777'},
+  languages:{label:'World Languages',icon:'🗣️',color:'#0284c7'},
+  capstone:{label:'Capstone',icon:'🎓',color:'#6d28d9'},
+  health:{label:'Health',icon:'❤️',color:'#e11d48'},
+};
+
+const AP_SUBJECTS = {
+  math:{label:'AP Math',icon:'➕'},science:{label:'AP Science',icon:'🔬'},
+  ela:{label:'AP English',icon:'📖'},history:{label:'AP History',icon:'🌍'},
+  cs:{label:'AP CS',icon:'💻'},arts:{label:'AP Arts',icon:'🎨'},
+  languages:{label:'AP Languages',icon:'🗣️'},capstone:{label:'AP Capstone',icon:'🎓'},
+};
+
+function pctToAPScore(p){if(p>=88)return 5;if(p>=76)return 4;if(p>=60)return 3;if(p>=44)return 2;return 1;}
+function barColor(p){return p>=90?'var(--green)':p>=70?'var(--accent)':p>=50?'var(--amber)':'var(--red)';}
+function letterGrade(p){if(p>=90)return{l:'A',c:'#d1fae5',t:'var(--green)'};if(p>=80)return{l:'B',c:'#dbeafe',t:'#2563eb'};if(p>=70)return{l:'C',c:'#fef3c7',t:'var(--amber)'};return{l:'D',c:'#fee2e2',t:'var(--red)'};}
+
+function fmtDate(ts){if(!ts)return'';const d=new Date(ts);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+
+function loadAllScores(){
+  const out=[];
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('aceTestScore_')){const v=JSON.parse(localStorage.getItem(k)||'null');if(v)out.push(v);}}}catch(e){}
+  return out;
+}
+
+function loadHistory(){
+  try{return JSON.parse(localStorage.getItem('aceTestHistory')||'[]');}catch(e){return[];}
+}
+
+function calcStreak(history){
+  if(!history.length)return 0;
+  const days=new Set(history.map(h=>{const d=new Date(h.ts);return`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;}));
+  let streak=0,d=new Date();
+  while(true){const k=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;if(!days.has(k))break;streak++;d.setDate(d.getDate()-1);}
+  return streak;
+}
+
+function render(){
+  const scores = loadAllScores();
+  const history = loadHistory();
+
+  if(!scores.length){
+    document.getElementById('s-total').textContent='0';
+    document.getElementById('s-avg').textContent='—';
+    document.getElementById('s-streak').textContent='0';
+    document.getElementById('s-best').textContent='—';
+    return;
+  }
+
+  const total=scores.length;
+  const avgPct=Math.round(scores.reduce((a,s)=>a+Math.round(s.correct/s.total*100),0)/total);
+  const best=Math.max(...scores.map(s=>Math.round(s.correct/s.total*100)));
+  const streak=calcStreak(history);
+
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-avg').textContent=avgPct+'%';
+  document.getElementById('s-streak').textContent=streak+' days';
+  document.getElementById('s-best').textContent=best+'%';
+
+  // Subject breakdown (all grades combined)
+  const bySubj={};
+  scores.forEach(s=>{
+    if(!bySubj[s.subj])bySubj[s.subj]={correct:0,total:0,count:0};
+    bySubj[s.subj].correct+=s.correct;bySubj[s.subj].total+=s.total;bySubj[s.subj].count+=1;
+  });
+  const subjHtml=Object.entries(bySubj).map(([subj,d])=>{
+    const pct=Math.round(d.correct/d.total*100);
+    const info=SUBJECTS[subj]||{label:subj,icon:'📝',color:'#888'};
+    return `<div class="subj-row">
+      <span style="font-size:1.1rem">${info.icon}</span>
+      <span style="flex:0 0 140px;font-size:.88rem;font-weight:600">${info.label}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${info.color||barColor(pct)}"></div></div>
+      <span style="font-size:.85rem;font-weight:700;color:${barColor(pct)};min-width:44px;text-align:right">${pct}%</span>
+      <span style="font-size:.75rem;color:var(--muted);min-width:60px;text-align:right">${d.count} test${d.count!==1?'s':''}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('subjBreakdown').innerHTML=subjHtml||'<div class="empty">No data.</div>';
+
+  // AP predictions
+  const apScores=scores.filter(s=>s.grade==='ap');
+  const apBySubj={};
+  apScores.forEach(s=>{
+    if(!apBySubj[s.subj])apBySubj[s.subj]={correct:0,total:0,count:0};
+    apBySubj[s.subj].correct+=s.correct;apBySubj[s.subj].total+=s.total;apBySubj[s.subj].count+=1;
+  });
+  const apHtml=Object.entries(apBySubj).map(([subj,d])=>{
+    const pct=Math.round(d.correct/d.total*100);
+    const pred=pctToAPScore(pct);
+    const color=pred>=4?'var(--green)':pred===3?'var(--amber)':'var(--red)';
+    const info=AP_SUBJECTS[subj]||{label:subj,icon:'📝'};
+    const msg=pred===5?'Excellent — likely to pass':pred===4?'Strong — good chance':pred===3?'Passing — keep practicing':pred===2?'Developing — needs work':'Needs significant study';
+    return `<div class="ap-score-row">
+      <span style="font-size:1rem">${info.icon}</span>
+      <span style="flex:1;font-weight:600">${info.label}</span>
+      <span style="font-size:.78rem;color:var(--muted)">${pct}% avg · ${d.count} test${d.count!==1?'s':''}</span>
+      <span style="font-size:.78rem;color:${color};font-weight:600">${msg}</span>
+      <span class="ap-badge" style="color:${color}">${pred}</span>
+      <span style="font-size:.72rem;color:var(--muted)">/5</span>
+    </div>`;
+  }).join('');
+  document.getElementById('apPredictions').innerHTML=apHtml||'<div class="empty">No AP tests taken yet.</div>';
+
+  // Recent history
+  const histHtml=history.slice(0,20).map(s=>{
+    const pct=Math.round(s.correct/s.total*100);
+    const lg=letterGrade(pct);
+    const info=SUBJECTS[s.subj]||{label:s.subj,icon:'📝'};
+    const gradeLabel=s.grade==='ap'?'AP':('Grade '+s.grade);
+    return `<div class="hist-row">
+      <div class="badge" style="background:${lg.c};color:${lg.t}">${lg.l}</div>
+      <div style="flex:1">
+        <div style="font-weight:600">${info.icon} ${info.label} — ${gradeLabel}, Unit ${(s.unitIdx||0)+1}</div>
+        <div style="font-size:.75rem;color:var(--muted)">${s.correct}/${s.total} correct · ${fmtDate(s.ts)}</div>
+      </div>
+      <div style="font-weight:800;color:${barColor(pct)}">${pct}%</div>
+    </div>`;
+  }).join('');
+  document.getElementById('recentHistory').innerHTML=histHtml||'<div class="empty">No history yet.</div>';
+}
+
+render();
+</script>
+</body>
+</html>

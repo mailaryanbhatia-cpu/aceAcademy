@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>History Timeline Builder — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:28px 40px 20px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hero-text h1{font-size:1.6rem;font-weight:900}
+.hero-text h1 span{color:#a5b4fc}
+.hero-text p{color:#7a8fa8;font-size:.85rem;margin-top:4px}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:8px 16px;border-radius:9px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-danger{background:transparent;border:1.5px solid rgba(239,68,68,.3);color:#f87171}.btn-danger:hover{background:rgba(239,68,68,.1)}
+
+.workspace{display:grid;grid-template-columns:320px 1fr;min-height:calc(100vh - 148px)}
+@media(max-width:768px){.workspace{grid-template-columns:1fr}}
+.panel{background:#080e1c;border-right:1px solid #2a3a55;padding:18px 16px;overflow-y:auto}
+.canvas{padding:28px 32px;overflow-y:auto}
+@media(max-width:768px){.panel{border-right:none;border-bottom:1px solid #2a3a55}.canvas{padding:18px 16px}}
+
+/* Form */
+.panel-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8;margin-bottom:12px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:5px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;background:#111c32;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#6366f1}
+.form-group textarea{min-height:65px;resize:vertical;line-height:1.5}
+.add-event-btn{width:100%;padding:10px;background:#6366f1;border:none;border-radius:9px;color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.add-event-btn:hover{background:#5254d8}
+.divider{height:1px;background:#2a3a55;margin:16px 0}
+.tl-title-input{width:100%;padding:9px 12px;background:#111c32;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.9rem;font-family:inherit;font-weight:700;outline:none;margin-bottom:12px;transition:.15s}
+.tl-title-input:focus{border-color:#6366f1}
+
+/* Category colors */
+.cat-colors{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.cat-color-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.15s}
+.cat-color-dot.selected{border-color:#fff;transform:scale(1.2)}
+
+/* Templates */
+.template-list{display:flex;flex-direction:column;gap:7px}
+.template-btn{padding:8px 12px;border-radius:8px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;text-align:left}
+.template-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+/* Timeline canvas */
+.tl-title{font-size:1.3rem;font-weight:900;margin-bottom:8px;color:#e8edf5;text-align:center}
+.tl-subtitle{font-size:.78rem;color:#7a8fa8;text-align:center;margin-bottom:28px}
+.tl-wrap{position:relative;padding:0 24px}
+.tl-line{position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,#6366f1,#8b5cf6);border-radius:2px;transform:translateX(-50%)}
+@media(max-width:600px){.tl-line{left:24px}}
+.tl-event{position:relative;display:flex;margin-bottom:28px;align-items:flex-start}
+.tl-event:nth-child(odd){flex-direction:row-reverse}
+@media(max-width:600px){.tl-event{flex-direction:row !important}}
+.tl-dot{position:absolute;left:50%;top:14px;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);z-index:2;border:3px solid #0b1120;flex-shrink:0}
+@media(max-width:600px){.tl-dot{left:24px}}
+.tl-card{width:calc(50% - 40px);background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:14px 16px;position:relative;transition:.15s}
+.tl-card:hover{border-color:#6366f1}
+@media(max-width:600px){.tl-card{width:calc(100% - 60px);margin-left:50px !important;margin-right:0 !important}}
+.tl-event:nth-child(odd) .tl-card{margin-right:40px}
+.tl-event:nth-child(even) .tl-card{margin-left:40px}
+.tl-year{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.tl-event-title{font-size:.92rem;font-weight:800;margin-bottom:4px;color:#e8edf5}
+.tl-event-desc{font-size:.78rem;color:#7a8fa8;line-height:1.5}
+.tl-cat{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;background:#1a2540;color:#7a8fa8;margin-top:6px;display:inline-block}
+.tl-del{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:5px;border:none;background:transparent;color:#3d4f6e;cursor:pointer;font-size:.75rem;display:none;transition:.15s;font-family:inherit;line-height:1}
+.tl-card:hover .tl-del{display:block}
+.tl-del:hover{color:#f87171;background:rgba(239,68,68,.1)}
+
+.empty-tl{text-align:center;padding:60px 20px;color:#7a8fa8}
+.empty-tl-icon{font-size:2.5rem;margin-bottom:12px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="timeline.html" class="nav-link active">📅 Timeline</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
+  <a href="research.html" class="nav-link">🔬 Research</a>
+  <a href="venn.html" class="nav-link">⭕ Venn</a>
+  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-text">
+    <h1>🗓 History <span>Timeline Builder</span></h1>
+    <p>Add events, color-code by category, and export your timeline.</p>
+  </div>
+  <div class="hero-btns">
+    <button class="btn btn-ghost" onclick="clearAll()">🗑 Clear</button>
+    <button class="btn btn-ghost" onclick="exportTimeline()">📤 Export</button>
+    <button class="btn btn-primary" onclick="saveTimeline()">💾 Save</button>
+  </div>
+</div>
+
+<div class="workspace">
+  <div class="panel">
+    <div class="panel-title">Timeline Title</div>
+    <input class="tl-title-input" id="tlTitle" placeholder="e.g. French Revolution Timeline" oninput="renderTimeline()">
+
+    <div class="panel-title">Add Event</div>
+    <div class="form-group">
+      <label>Year / Date</label>
+      <input type="text" id="evYear" placeholder="e.g. 1789 or June 1940">
+    </div>
+    <div class="form-group">
+      <label>Event Title</label>
+      <input type="text" id="evTitle" placeholder="e.g. Storming of the Bastille">
+    </div>
+    <div class="form-group">
+      <label>Description (optional)</label>
+      <textarea id="evDesc" placeholder="Brief description of the event and its significance…"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select id="evCat">
+        <option value="Political">Political</option>
+        <option value="Military">Military</option>
+        <option value="Economic">Economic</option>
+        <option value="Social">Social</option>
+        <option value="Cultural">Cultural</option>
+        <option value="Scientific">Scientific</option>
+        <option value="Religious">Religious</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Color</label>
+      <div class="cat-colors" id="colorPicker"></div>
+    </div>
+    <button class="add-event-btn" onclick="addEvent()">＋ Add Event</button>
+
+    <div class="divider"></div>
+    <div class="panel-title">Templates</div>
+    <div class="template-list">
+      <button class="template-btn" onclick="loadTemplate('french')">🇫🇷 French Revolution</button>
+      <button class="template-btn" onclick="loadTemplate('ww2')">⚔️ World War II</button>
+      <button class="template-btn" onclick="loadTemplate('civilrights')">✊ Civil Rights Movement</button>
+      <button class="template-btn" onclick="loadTemplate('coldwar')">🌍 Cold War</button>
+    </div>
+  </div>
+
+  <div class="canvas">
+    <div id="tlCanvas"></div>
+  </div>
+</div>
+
+<script>
+const COLORS = ['#6366f1','#8b5cf6','#10b981','#f59e0b','#ef4444','#0ea5e9','#ec4899','#84cc16'];
+let selectedColor = COLORS[0];
+
+function renderColorPicker(){
+  document.getElementById('colorPicker').innerHTML = COLORS.map(c=>
+    `<div class="cat-color-dot${c===selectedColor?' selected':''}" style="background:${c}" onclick="selectedColor='${c}';renderColorPicker()" title="${c}"></div>`
+  ).join('');
+}
+
+let events = [];
+try{ events = JSON.parse(localStorage.getItem('tl-events')||'[]'); }catch(e){}
+
+function addEvent(){
+  const year = document.getElementById('evYear').value.trim();
+  const title = document.getElementById('evTitle').value.trim();
+  if(!year || !title){ alert('Year/date and event title are required.'); return; }
+  const desc = document.getElementById('evDesc').value.trim();
+  const cat  = document.getElementById('evCat').value;
+  events.push({year, title, desc, cat, color: selectedColor, sortKey: parseSortKey(year)});
+  events.sort((a,b)=>a.sortKey-b.sortKey);
+  saveEvents();
+  renderTimeline();
+  document.getElementById('evYear').value='';
+  document.getElementById('evTitle').value='';
+  document.getElementById('evDesc').value='';
+}
+
+function parseSortKey(yearStr){
+  const m = yearStr.match(/(-?\d{1,4})/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+function deleteEvent(i){
+  events.splice(i,1);
+  saveEvents();
+  renderTimeline();
+}
+
+function saveEvents(){
+  try{ localStorage.setItem('tl-events', JSON.stringify(events)); }catch(e){}
+}
+
+function renderTimeline(){
+  const title = document.getElementById('tlTitle').value || 'My Timeline';
+  const canvas = document.getElementById('tlCanvas');
+  if(!events.length){
+    canvas.innerHTML=`<div class="empty-tl"><div class="empty-tl-icon">🗓</div><div>No events yet. Add your first event using the panel on the left.</div></div>`;
+    return;
+  }
+  const years = events.map(e=>e.sortKey);
+  const minY = Math.min(...years), maxY = Math.max(...years);
+  const span = maxY - minY || 1;
+  canvas.innerHTML = `
+    <div class="tl-title">${title}</div>
+    <div class="tl-subtitle">${events.length} events · ${minY}${minY!==maxY?` – ${maxY}`:''}</div>
+    <div class="tl-wrap">
+      <div class="tl-line"></div>
+      ${events.map((e,i)=>`
+        <div class="tl-event">
+          <div class="tl-dot" style="background:${e.color}"></div>
+          <div class="tl-card">
+            <button class="tl-del" onclick="deleteEvent(${i})">✕</button>
+            <div class="tl-year" style="color:${e.color}">${e.year}</div>
+            <div class="tl-event-title">${e.title}</div>
+            ${e.desc?`<div class="tl-event-desc">${e.desc}</div>`:''}
+            <span class="tl-cat">${e.cat}</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function clearAll(){
+  if(!confirm('Clear all events on this timeline?')) return;
+  events=[];
+  saveEvents();
+  renderTimeline();
+}
+
+function saveTimeline(){
+  const title = document.getElementById('tlTitle').value || 'My Timeline';
+  let saved = [];
+  try{ saved = JSON.parse(localStorage.getItem('tl-saved')||'[]'); }catch(e){}
+  const idx = saved.findIndex(t=>t.title===title);
+  const obj = {title, events: JSON.parse(JSON.stringify(events)), savedAt: new Date().toLocaleString()};
+  if(idx>=0) saved[idx]=obj; else saved.unshift(obj);
+  try{ localStorage.setItem('tl-saved', JSON.stringify(saved.slice(0,10))); }catch(e){}
+  alert('Timeline saved!');
+}
+
+function exportTimeline(){
+  const title = document.getElementById('tlTitle').value || 'Timeline';
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
+  <style>body{font-family:Georgia,serif;max-width:760px;margin:40px auto;color:#111}h1{font-size:1.6rem;text-align:center;margin-bottom:4px}h2{font-size:.8rem;text-align:center;color:#666;margin-bottom:28px}.tl{position:relative;padding:0 20px}.line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#6366f1}.ev{display:flex;margin-bottom:20px;position:relative}.ev:nth-child(odd){flex-direction:row-reverse}.dot{position:absolute;left:50%;top:12px;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);border:3px solid #fff}.card{width:calc(50% - 32px);background:#f8f8f8;border-radius:10px;padding:12px 14px;font-size:.85rem}.ev:nth-child(odd) .card{margin-right:32px}.ev:nth-child(even) .card{margin-left:32px}.yr{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}.ti{font-weight:700;margin-bottom:3px}.de{color:#555;font-size:.78rem;line-height:1.5}.ct{font-size:.65rem;background:#eee;border-radius:20px;padding:2px 8px;margin-top:5px;display:inline-block}@media print{.line{display:none}}</style>
+  </head><body>
+  <h1>${title}</h1><h2>${events.length} events · ${events.map(e=>e.year).join(' · ')}</h2>
+  <div class="tl"><div class="line"></div>
+  ${events.map(e=>`<div class="ev"><div class="dot" style="background:${e.color}"></div><div class="card"><div class="yr" style="color:${e.color}">${e.year}</div><div class="ti">${e.title}</div>${e.desc?`<div class="de">${e.desc}</div>`:''}<span class="ct">${e.cat}</span></div></div>`).join('')}
+  </div></body></html>`;
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>w.print(),400);
+}
+
+// Templates
+const TEMPLATES = {
+  french:{
+    title:'French Revolution Timeline',
+    events:[
+      {year:'1789',title:'Estates-General Convened',desc:'Louis XVI calls the Estates-General for the first time since 1614 to address France\'s financial crisis.',cat:'Political',color:'#6366f1',sortKey:1789},
+      {year:'June 1789',title:'Tennis Court Oath',desc:'Third Estate representatives swear to write a new constitution.',cat:'Political',color:'#6366f1',sortKey:1789},
+      {year:'July 1789',title:'Storming of the Bastille',desc:'Parisian crowds storm the Bastille fortress — symbolic start of the Revolution.',cat:'Military',color:'#ef4444',sortKey:1789},
+      {year:'Aug 1789',title:'Declaration of Rights of Man',desc:'National Assembly adopts the Declaration of the Rights of Man and of the Citizen.',cat:'Social',color:'#10b981',sortKey:1789},
+      {year:'1793',title:'Execution of Louis XVI',desc:'King Louis XVI is guillotined on January 21, 1793.',cat:'Political',color:'#ef4444',sortKey:1793},
+      {year:'1793–94',title:'The Reign of Terror',desc:'Radical phase led by Robespierre; thousands executed as enemies of the Revolution.',cat:'Political',color:'#ef4444',sortKey:1793},
+      {year:'1799',title:'Napoleon\'s Coup (18 Brumaire)',desc:'Napoleon Bonaparte seizes power in a coup, ending the Directory.',cat:'Political',color:'#8b5cf6',sortKey:1799},
+    ]
+  },
+  ww2:{
+    title:'World War II Timeline',
+    events:[
+      {year:'Sept 1939',title:'Germany Invades Poland',desc:'Nazi Germany\'s invasion of Poland triggers Britain and France to declare war.',cat:'Military',color:'#ef4444',sortKey:1939},
+      {year:'June 1940',title:'Fall of France',desc:'France falls to Germany; the Vichy regime is established.',cat:'Military',color:'#ef4444',sortKey:1940},
+      {year:'June 1941',title:'Operation Barbarossa',desc:'Germany launches the largest military invasion in history against the Soviet Union.',cat:'Military',color:'#ef4444',sortKey:1941},
+      {year:'Dec 1941',title:'Attack on Pearl Harbor',desc:'Japan attacks the US naval base; US enters WWII.',cat:'Military',color:'#f59e0b',sortKey:1941},
+      {year:'June 1944',title:'D-Day (Normandy)',desc:'Allied forces launch the largest seaborne invasion in history.',cat:'Military',color:'#0ea5e9',sortKey:1944},
+      {year:'Apr 1945',title:'Fall of Berlin',desc:'Soviet forces capture Berlin; Hitler dies by suicide.',cat:'Military',color:'#10b981',sortKey:1945},
+      {year:'Aug 1945',title:'Atomic Bombs / Japan Surrenders',desc:'US drops atomic bombs on Hiroshima and Nagasaki; Japan surrenders Sept 2.',cat:'Military',color:'#8b5cf6',sortKey:1945},
+    ]
+  },
+  civilrights:{
+    title:'Civil Rights Movement Timeline',
+    events:[
+      {year:'1954',title:'Brown v. Board of Education',desc:'Supreme Court rules school segregation unconstitutional.',cat:'Political',color:'#6366f1',sortKey:1954},
+      {year:'1955',title:'Montgomery Bus Boycott',desc:'381-day boycott led by Rosa Parks and MLK challenges bus segregation.',cat:'Social',color:'#10b981',sortKey:1955},
+      {year:'1957',title:'Little Rock Crisis',desc:'Federal troops escort Black students into Central High School, Arkansas.',cat:'Social',color:'#f59e0b',sortKey:1957},
+      {year:'1960',title:'Greensboro Sit-Ins',desc:'Four Black students sit at a whites-only Woolworth\'s lunch counter.',cat:'Social',color:'#ec4899',sortKey:1960},
+      {year:'Aug 1963',title:'March on Washington',desc:'250,000 attend; MLK delivers "I Have a Dream" speech.',cat:'Social',color:'#10b981',sortKey:1963},
+      {year:'1964',title:'Civil Rights Act',desc:'Outlaws discrimination based on race, color, religion, sex, or national origin.',cat:'Political',color:'#6366f1',sortKey:1964},
+      {year:'1965',title:'Voting Rights Act',desc:'Prohibits discriminatory voting practices; follows Bloody Sunday in Selma.',cat:'Political',color:'#6366f1',sortKey:1965},
+    ]
+  },
+  coldwar:{
+    title:'Cold War Timeline',
+    events:[
+      {year:'1947',title:'Truman Doctrine & Marshall Plan',desc:'US commits to containing communism and rebuilding Europe.',cat:'Political',color:'#6366f1',sortKey:1947},
+      {year:'1949',title:'NATO Founded / USSR Tests Atomic Bomb',desc:'NATO alliance formed; Soviet atomic bomb test surprises the West.',cat:'Military',color:'#ef4444',sortKey:1949},
+      {year:'1950–53',title:'Korean War',desc:'UN forces (led by US) fight North Korea backed by China/USSR.',cat:'Military',color:'#ef4444',sortKey:1950},
+      {year:'1957',title:'Sputnik Launched',desc:'Soviet Union launches the first artificial satellite, triggering the Space Race.',cat:'Scientific',color:'#8b5cf6',sortKey:1957},
+      {year:'1962',title:'Cuban Missile Crisis',desc:'13-day standoff between US and USSR over Soviet missiles in Cuba.',cat:'Military',color:'#ef4444',sortKey:1962},
+      {year:'1975',title:'Fall of Saigon',desc:'North Vietnam captures Saigon, ending the Vietnam War.',cat:'Military',color:'#f59e0b',sortKey:1975},
+      {year:'1989',title:'Fall of the Berlin Wall',desc:'East Germany opens the Berlin Wall; Cold War begins to end.',cat:'Political',color:'#10b981',sortKey:1989},
+      {year:'1991',title:'USSR Dissolves',desc:'Soviet Union formally dissolved on December 25; Cold War ends.',cat:'Political',color:'#10b981',sortKey:1991},
+    ]
+  }
+};
+
+function loadTemplate(key){
+  if(!confirm('Load this template? This will replace your current timeline.')) return;
+  const t = TEMPLATES[key];
+  events = JSON.parse(JSON.stringify(t.events));
+  document.getElementById('tlTitle').value = t.title;
+  saveEvents();
+  renderTimeline();
+}
+
+// Init
+renderColorPicker();
+renderTimeline();
+</script>
+</body>
+</html>

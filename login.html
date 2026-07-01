@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>aceAcademy — Sign In</title>
+<link rel="stylesheet" href="ace-theme.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Inter','Segoe UI',system-ui,sans-serif;}
+body{
+  background:radial-gradient(ellipse at 60% 0%,#1a2080 0%,#0b1120 55%);
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:24px;
+  color:#e8edf5;
+}
+
+/* ── Brand ── */
+.brand-wrap{text-align:center;margin-bottom:32px;}
+.brand-icon{font-size:2.8rem;display:block;margin-bottom:8px;}
+.brand-name{font-size:1.8rem;font-weight:900;letter-spacing:-1px;color:#fff;}
+.brand-name span{color:#a5b4fc;}
+.brand-tagline{font-size:.85rem;color:#7a8fa8;margin-top:4px;}
+
+/* ── Card ── */
+.auth-card{
+  background:#1a2540;
+  border:1px solid #2a3a55;
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  width:100%;max-width:420px;
+  overflow:hidden;
+}
+
+/* ── Tabs ── */
+.tab-row{display:flex;border-bottom:1px solid #2a3a55;}
+.tab-btn{
+  flex:1;padding:14px;border:none;background:none;cursor:pointer;
+  font-size:.85rem;font-weight:700;color:#7a8fa8;
+  font-family:inherit;transition:color .15s,background .15s;
+  letter-spacing:.3px;
+}
+.tab-btn.active{
+  color:#a5b4fc;
+  border-bottom:2px solid #6366f1;
+  background:#1e2d45;
+}
+.tab-btn:hover:not(.active){color:#b0bdd0;background:rgba(255,255,255,.04);}
+
+/* ── Form ── */
+.form-panel{display:none;padding:28px;}
+.form-panel.active{display:block;}
+
+.field{margin-bottom:18px;}
+.field label{
+  display:block;font-size:.75rem;font-weight:700;
+  color:#7a8fa8;text-transform:uppercase;letter-spacing:.7px;
+  margin-bottom:6px;
+}
+.field input{
+  width:100%;padding:11px 14px;
+  background:#0f172a;border:1px solid #2a3a55;
+  border-radius:9px;color:#e8edf5;font-size:.92rem;
+  font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.field input:focus{
+  border-color:#6366f1;
+  box-shadow:0 0 0 3px rgba(99,102,241,.2);
+}
+.field input::placeholder{color:#3d5070;}
+
+.hint{font-size:.72rem;color:#7a8fa8;margin-top:5px;}
+
+/* Grade select */
+.field select{
+  width:100%;padding:11px 14px;
+  background:#0f172a;border:1px solid #2a3a55;
+  border-radius:9px;color:#e8edf5;font-size:.92rem;
+  font-family:inherit;outline:none;cursor:pointer;
+  transition:border-color .15s;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8fa8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:36px;
+}
+.field select:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.2);}
+
+/* Submit */
+.submit-btn{
+  width:100%;padding:13px;
+  background:#6366f1;color:#fff;
+  border:none;border-radius:10px;
+  font-size:.95rem;font-weight:700;font-family:inherit;
+  cursor:pointer;transition:background .15s,transform .1s;
+  letter-spacing:.2px;margin-top:6px;
+}
+.submit-btn:hover{background:#4f52d9;transform:translateY(-1px);}
+.submit-btn:active{transform:translateY(0);}
+
+/* Error / success */
+.msg{
+  padding:10px 14px;border-radius:8px;font-size:.82rem;font-weight:600;
+  margin-bottom:18px;display:none;
+}
+.msg.error{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.4);color:#f87171;}
+.msg.success{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.35);color:#34d399;}
+.msg.show{display:block;}
+
+/* Divider */
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:#3d5070;font-size:.75rem;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#2a3a55;}
+
+/* Footer note */
+.switch-note{text-align:center;font-size:.78rem;color:#7a8fa8;margin-top:18px;}
+.switch-note a{color:#a5b4fc;text-decoration:none;font-weight:600;}
+.switch-note a:hover{text-decoration:underline;}
+
+/* Password strength */
+.strength-bar{height:3px;border-radius:3px;margin-top:6px;background:#1e2d45;overflow:hidden;}
+.strength-fill{height:100%;width:0;border-radius:3px;transition:width .3s,background .3s;}
+
+/* ── Footer ── */
+.page-footer{margin-top:24px;font-size:.72rem;color:#3d5070;text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="brand-wrap">
+  <span class="brand-icon">🎓</span>
+  <div class="brand-name">ace<span>Academy</span></div>
+  <div class="brand-tagline">Free grades 6–12 learning platform</div>
+</div>
+
+<div class="auth-card">
+  <div class="tab-row">
+    <button class="tab-btn active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+    <button class="tab-btn"        id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+  </div>
+
+  <!-- ── Sign In ── -->
+  <div class="form-panel active" id="panel-signin">
+    <div class="msg" id="signin-msg"></div>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="si-user" placeholder="your username" autocomplete="username"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="si-pass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')doSignIn()"/>
+    </div>
+    <button class="submit-btn" onclick="doSignIn()">Sign In →</button>
+    <div class="switch-note">No account? <a href="#" onclick="switchTab('signup');return false;">Create one free</a></div>
+  </div>
+
+  <!-- ── Sign Up ── -->
+  <div class="form-panel" id="panel-signup">
+    <div class="msg" id="signup-msg"></div>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="su-user" placeholder="choose a username" autocomplete="username"/>
+      <div class="hint">Letters, numbers, underscores only. Min 3 characters.</div>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="su-pass" placeholder="min 6 characters" autocomplete="new-password"
+             oninput="checkStrength(this.value)"/>
+      <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+      <div class="hint" id="strengthLabel"></div>
+    </div>
+    <div class="field">
+      <label>Confirm Password</label>
+      <input type="password" id="su-pass2" placeholder="repeat password" autocomplete="new-password"
+             onkeydown="if(event.key==='Enter')doSignUp()"/>
+    </div>
+    <button class="submit-btn" onclick="doSignUp()">Create Account →</button>
+    <div class="switch-note">Already have an account? <a href="#" onclick="switchTab('signin');return false;">Sign in</a></div>
+  </div>
+</div>
+
+<div class="page-footer">Your data stays in your browser — nothing is sent to any server.</div>
+
+<script>
+// ── Redirect if already logged in ───────────────────────────────
+(function(){
+  try{
+    const s = JSON.parse(localStorage.getItem('aceSession')||'null');
+    if(s && s.username) window.location.replace('index.html');
+  }catch(e){}
+})();
+
+// ── Tab switching ────────────────────────────────────────────────
+function switchTab(t){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  document.getElementById('panel-'+t).classList.add('active');
+}
+
+// ── SHA-256 via Web Crypto ────────────────────────────────────────
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── Accounts stored as {username:{hash,name,grade,created}} ──────
+function getAccounts(){ try{return JSON.parse(localStorage.getItem('aceAccounts')||'{}')}catch{return{}} }
+function saveAccounts(a){ localStorage.setItem('aceAccounts', JSON.stringify(a)); }
+
+function showMsg(id, text, type){
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg '+type+' show';
+}
+function clearMsg(id){ const el=document.getElementById(id); el.className='msg'; }
+
+// ── Password strength ────────────────────────────────────────────
+function checkStrength(pw){
+  let score=0;
+  if(pw.length>=6) score++;
+  if(pw.length>=10) score++;
+  if(/[A-Z]/.test(pw)) score++;
+  if(/[0-9]/.test(pw)) score++;
+  if(/[^A-Za-z0-9]/.test(pw)) score++;
+  const fill=document.getElementById('strengthFill');
+  const label=document.getElementById('strengthLabel');
+  const colors=['#f87171','#f87171','#fbbf24','#34d399','#34d399'];
+  const labels=['Too short','Weak','Fair','Strong','Very strong'];
+  fill.style.width=(score*20)+'%';
+  fill.style.background=colors[Math.max(0,score-1)]||'transparent';
+  label.textContent=pw.length?labels[Math.max(0,score-1)]:'';
+}
+
+// ── Sign Up ──────────────────────────────────────────────────────
+async function doSignUp(){
+  clearMsg('signup-msg');
+  const user  = document.getElementById('su-user').value.trim().toLowerCase();
+  const pass  = document.getElementById('su-pass').value;
+  const pass2 = document.getElementById('su-pass2').value;
+
+  if(!user || user.length<3 || !/^[a-z0-9_]+$/.test(user))
+    return showMsg('signup-msg','Username must be 3+ characters (letters, numbers, _).','error');
+  if(pass.length<6) return showMsg('signup-msg','Password must be at least 6 characters.','error');
+  if(pass!==pass2) return showMsg('signup-msg','Passwords do not match.','error');
+
+  const accounts = getAccounts();
+  if(accounts[user]) return showMsg('signup-msg','Username already taken. Try another.','error');
+
+  const hash = await sha256('aceAcademy:'+user+':'+pass);
+  accounts[user] = { hash, created: Date.now() };
+  saveAccounts(accounts);
+
+  const session = { username:user, loginTime:Date.now() };
+  localStorage.setItem('aceSession', JSON.stringify(session));
+
+  showMsg('signup-msg','Account created! Signing you in…','success');
+  setTimeout(()=>window.location.replace('index.html'), 900);
+}
+
+// ── Sign In ──────────────────────────────────────────────────────
+async function doSignIn(){
+  clearMsg('signin-msg');
+  const user = document.getElementById('si-user').value.trim().toLowerCase();
+  const pass = document.getElementById('si-pass').value;
+
+  if(!user||!pass) return showMsg('signin-msg','Please fill in both fields.','error');
+
+  const accounts = getAccounts();
+  if(!accounts[user]) return showMsg('signin-msg','No account found for that username.','error');
+
+  const hash = await sha256('aceAcademy:'+user+':'+pass);
+  if(hash !== accounts[user].hash) return showMsg('signin-msg','Incorrect password. Please try again.','error');
+
+  const session = { username: user, loginTime: Date.now() };
+  localStorage.setItem('aceSession', JSON.stringify(session));
+
+  showMsg('signin-msg','Welcome back, '+user+'!','success');
+  setTimeout(()=>window.location.replace('index.html'), 700);
+}
+</script>
+</body>
+</html>

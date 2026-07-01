@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Science Tools — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.spacer{flex:1}
+.hero{text-align:center;padding:40px 20px 24px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto}
+.container{max-width:1100px;margin:0 auto;padding:28px 20px}
+.tab-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:9px 20px;border-radius:10px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--muted);transition:.15s}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.panel{display:none}.panel.active{display:block}
+
+/* Graphing calc */
+.graph-wrap{background:var(--card);border-radius:14px;border:1px solid var(--border);overflow:hidden;height:580px}
+.graph-wrap iframe{width:100%;height:100%;border:none}
+
+/* Unit converter */
+.conv-card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:24px}
+.conv-category{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.conv-box{background:var(--bg);border-radius:10px;border:1px solid var(--border);padding:16px}
+.conv-box h3{font-size:.9rem;font-weight:700;margin-bottom:12px;color:var(--accent)}
+.conv-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.conv-row input{width:90px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
+.conv-row input:focus{border-color:var(--accent)}
+.conv-row select{padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.85rem;background:#fff;color:var(--text);outline:none;cursor:pointer}
+.conv-row .arrow{color:var(--muted);font-size:1.1rem}
+.conv-row .result{font-weight:700;color:var(--accent2);min-width:80px;font-size:.9rem}
+
+/* Periodic Table */
+.pt-wrap{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:20px;overflow-x:auto}
+.pt-grid{display:grid;grid-template-columns:repeat(18,1fr);gap:3px;min-width:900px}
+.element{border-radius:5px;padding:3px;cursor:pointer;text-align:center;border:1.5px solid transparent;transition:.1s;min-width:42px}
+.element:hover{transform:scale(1.12);z-index:10;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.element .num{font-size:.55rem;color:rgba(0,0,0,.6);line-height:1}
+.element .sym{font-size:.95rem;font-weight:800;line-height:1.2}
+.element .name{font-size:.42rem;line-height:1;opacity:.8}
+/* Element categories */
+.alkali{background:#fecaca;border-color:#f87171}
+.alkaline{background:#fed7aa;border-color:#fb923c}
+.transition{background:#fde68a;border-color:#fbbf24}
+.post-transition{background:#bbf7d0;border-color:#4ade80}
+.metalloid{background:#a7f3d0;border-color:#34d399}
+.nonmetal{background:#bfdbfe;border-color:#60a5fa}
+.halogen{background:#ddd6fe;border-color:#a78bfa}
+.noble{background:#fbcfe8;border-color:#f472b6}
+.lanthanide{background:#fef9c3;border-color:#fde047}
+.actinide{background:#fde8d0;border-color:#fdba74}
+.blank{background:transparent;border-color:transparent;cursor:default}
+
+.element-detail{background:var(--bg);border:1.5px solid var(--accent);border-radius:10px;padding:14px;margin-top:14px;display:none}
+.element-detail h3{font-size:1.1rem;font-weight:800;color:var(--accent2);margin-bottom:6px}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.detail-item{font-size:.82rem}.detail-item .lbl{color:var(--muted);font-size:.75rem}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:.75rem}
+.leg-swatch{width:14px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.2)}
+
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  .tab,.conv-row input,.conv-row select{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}
+  .conv-box,.element-detail{background:#12121f}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="curriculum.html" class="nav-link">📚 Curriculum</a>
+  <a href="worksheets.html" class="nav-link">📄 Worksheets</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="flashcards.html" class="nav-link">🃏 Flashcards</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
+  <a href="citation.html" class="nav-link">📖 Citations</a>
+  <a href="tools.html" class="nav-link active">🔬 Tools</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <div class="spacer"></div>
+  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
+  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
+</nav>
+
+<div class="hero">
+  <h1>🔬 Science Tools</h1>
+  <p>Graphing calculator, unit converter, and interactive periodic table — all in one place.</p>
+</div>
+
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showPanel('graph',this)">📈 Graphing Calculator</button>
+    <button class="tab" onclick="showPanel('convert',this)">🔄 Unit Converter</button>
+    <button class="tab" onclick="showPanel('periodic',this)">⚗️ Periodic Table</button>
+  </div>
+
+  <!-- Graphing Calculator -->
+  <div class="panel active" id="panel-graph">
+    <div class="graph-wrap">
+      <iframe src="https://www.desmos.com/calculator" title="Desmos Graphing Calculator"></iframe>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:8px;text-align:center">Powered by Desmos — type equations in the left panel to graph them.</p>
+  </div>
+
+  <!-- Unit Converter -->
+  <div class="panel" id="panel-convert">
+    <div class="conv-card">
+      <div class="conv-category">
+
+        <!-- Length -->
+        <div class="conv-box">
+          <h3>📏 Length</h3>
+          <div class="conv-row">
+            <input id="len-val" type="number" value="1" oninput="convertLength()">
+            <select id="len-from" onchange="convertLength()">
+              <option>meters</option><option>kilometers</option><option>centimeters</option>
+              <option>millimeters</option><option>miles</option><option>yards</option>
+              <option>feet</option><option>inches</option>
+            </select>
+            <span class="arrow">→</span>
+            <select id="len-to" onchange="convertLength()">
+              <option>feet</option><option>meters</option><option>kilometers</option>
+              <option>centimeters</option><option>millimeters</option><option>miles</option>
+              <option>yards</option><option>inches</option>
+            </select>
+          </div>
+          <div class="result" id="len-result">—</div>
+        </div>
+
+        <!-- Mass -->
+        <div class="conv-box">
+          <h3>⚖️ Mass</h3>
+          <div class="conv-row">
+            <input id="mass-val" type="number" value="1" oninput="convertMass()">
+            <select id="mass-from" onchange="convertMass()">
+              <option>grams</option><option>kilograms</option><option>milligrams</option>
+              <option>pounds</option><option>ounces</option><option>metric tons</option>
+            </select>
+            <span class="arrow">→</span>
+            <select id="mass-to" onchange="convertMass()">
+              <option>pounds</option><option>grams</option><option>kilograms</option>
+              <option>milligrams</option><option>ounces</option><option>metric tons</option>
+            </select>
+          </div>
+          <div class="result" id="mass-result">—</div>
+        </div>
+
+        <!-- Temperature -->
+        <div class="conv-box">
+          <h3>🌡️ Temperature</h3>
+          <div class="conv-row">
+            <input id="temp-val" type="number" value="100" oninput="convertTemp()">
+            <select id="temp-from" onchange="convertTemp()">
+              <option>Celsius</option><option>Fahrenheit</option><option>Kelvin</option>
+            </select>
+            <span class="arrow">→</span>
+            <select id="temp-to" onchange="convertTemp()">
+              <option>Fahrenheit</option><option>Celsius</option><option>Kelvin</option>
+            </select>
+          </div>
+          <div class="result" id="temp-result">—</div>
+        </div>
+
+        <!-- Volume -->
+        <div class="conv-box">
+          <h3>💧 Volume</h3>
+          <div class="conv-row">
+            <input id="vol-val" type="number" value="1" oninput="convertVolume()">
+            <select id="vol-from" onchange="convertVolume()">
+              <option>liters</option><option>milliliters</option><option>gallons</option>
+              <option>quarts</option><option>cups</option><option>fluid ounces</option><option>cubic meters</option>
+            </select>
+            <span class="arrow">→</span>
+            <select id="vol-to" onchange="convertVolume()">
+              <option>gallons</option><option>liters</option><option>milliliters</option>
+              <option>quarts</option><option>cups</option><option>fluid ounces</option><option>cubic meters</option>
+            </select>
+          </div>
+          <div class="result" id="vol-result">—</div>
+        </div>
+
+        <!-- Speed -->
+        <div class="conv-box">
+          <h3>🚀 Speed</h3>
+          <div class="conv-row">
+            <input id="spd-val" type="number" value="60" oninput="convertSpeed()">
+            <select id="spd-from" onchange="convertSpeed()">
+              <option>mph</option><option>kph</option><option>m/s</option><option>knots</option><option>ft/s</option>
+            </select>
+            <span class="arrow">→</span>
+            <select id="spd-to" onchange="convertSpeed()">
+              <option>kph</option><option>mph</option><option>m/s</option><option>knots</option><option>ft/s</option>
+            </select>
+          </div>
+          <div class="result" id="spd-result">—</div>
+        </div>
+
+        <!-- Energy -->
+        <div class="conv-box">
+          <h3>⚡ Energy</h3>
+          <div class="conv-row">
+            <input id="eng-val" type="number" value="1" oninput="convertEnergy()">
+            <select id="eng-from" onchange="convertEnergy()">
+              <option>joules</option><option>calories</option><option>kilocalories</option>
+              <option>kWh</option><option>BTU</option><option>electron volts</option>
+            </select>
+            <span class="arrow">→</span>
+            <select id="eng-to" onchange="convertEnergy()">
+              <option>calories</option><option>joules</option><option>kilocalories</option>
+              <option>kWh</option><option>BTU</option><option>electron volts</option>
+            </select>
+          </div>
+          <div class="result" id="eng-result">—</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Periodic Table -->
+  <div class="panel" id="panel-periodic">
+    <div class="pt-wrap">
+      <div class="legend">
+        <div class="leg-item"><div class="leg-swatch alkali"></div>Alkali Metal</div>
+        <div class="leg-item"><div class="leg-swatch alkaline"></div>Alkaline Earth</div>
+        <div class="leg-item"><div class="leg-swatch transition"></div>Transition Metal</div>
+        <div class="leg-item"><div class="leg-swatch post-transition"></div>Post-Transition</div>
+        <div class="leg-item"><div class="leg-swatch metalloid"></div>Metalloid</div>
+        <div class="leg-item"><div class="leg-swatch nonmetal"></div>Nonmetal</div>
+        <div class="leg-item"><div class="leg-swatch halogen"></div>Halogen</div>
+        <div class="leg-item"><div class="leg-swatch noble"></div>Noble Gas</div>
+        <div class="leg-item"><div class="leg-swatch lanthanide"></div>Lanthanide</div>
+        <div class="leg-item"><div class="leg-swatch actinide"></div>Actinide</div>
+      </div>
+      <div class="pt-grid" id="ptGrid"></div>
+      <div class="element-detail" id="elemDetail">
+        <h3 id="ed-name"></h3>
+        <div class="detail-grid" id="ed-props"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPanel(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Unit Converter ────────────────────────────────────────────────────────────
+const toMeters={meters:1,kilometers:1000,centimeters:.01,millimeters:.001,miles:1609.34,yards:.9144,feet:.3048,inches:.0254};
+const toGrams={grams:1,kilograms:1000,milligrams:.001,pounds:453.592,ounces:28.3495,'metric tons':1e6};
+const toLiters={liters:1,milliliters:.001,gallons:3.78541,quarts:.946353,cups:.236588,'fluid ounces':.0295735,'cubic meters':1000};
+const toMS={mph:.44704,kph:.27778,'m/s':1,knots:.514444,'ft/s':.3048};
+const toJoules={joules:1,calories:4.184,kilocalories:4184,kWh:3.6e6,BTU:1055.06,'electron volts':1.602e-19};
+
+function fmt(n){ return n >= 0.001 && n < 1e9 ? parseFloat(n.toPrecision(6)).toString() : n.toExponential(4); }
+
+function convertUnit(val,fromSel,toSel,table,outId){
+  const v=parseFloat(val); if(isNaN(v)){document.getElementById(outId).textContent='—';return;}
+  const base=v*(table[fromSel]||1); const out=base/(table[toSel]||1);
+  document.getElementById(outId).textContent=fmt(out)+' '+toSel;
+}
+function convertLength(){convertUnit(document.getElementById('len-val').value,document.getElementById('len-from').value,document.getElementById('len-to').value,toMeters,'len-result');}
+function convertMass(){convertUnit(document.getElementById('mass-val').value,document.getElementById('mass-from').value,document.getElementById('mass-to').value,toGrams,'mass-result');}
+function convertVolume(){convertUnit(document.getElementById('vol-val').value,document.getElementById('vol-from').value,document.getElementById('vol-to').value,toLiters,'vol-result');}
+function convertSpeed(){convertUnit(document.getElementById('spd-val').value,document.getElementById('spd-from').value,document.getElementById('spd-to').value,toMS,'spd-result');}
+function convertEnergy(){convertUnit(document.getElementById('eng-val').value,document.getElementById('eng-from').value,document.getElementById('eng-to').value,toJoules,'eng-result');}
+
+function convertTemp(){
+  const v=parseFloat(document.getElementById('temp-val').value);
+  const fr=document.getElementById('temp-from').value, to=document.getElementById('temp-to').value;
+  if(isNaN(v)){document.getElementById('temp-result').textContent='—';return;}
+  let c; // to Celsius first
+  if(fr==='Celsius') c=v; else if(fr==='Fahrenheit') c=(v-32)*5/9; else c=v-273.15;
+  let out;
+  if(to==='Celsius') out=c; else if(to==='Fahrenheit') out=c*9/5+32; else out=c+273.15;
+  document.getElementById('temp-result').textContent=fmt(out)+' '+to;
+}
+
+// Init converters
+convertLength(); convertMass(); convertTemp(); convertVolume(); convertSpeed(); convertEnergy();
+
+// ── Periodic Table Data ───────────────────────────────────────────────────────
+const ELEMENTS=[
+  // period 1
+  {n:1,sym:'H',name:'Hydrogen',mass:'1.008',cat:'nonmetal',group:1,period:1,state:'Gas',config:'1s¹'},
+  {n:2,sym:'He',name:'Helium',mass:'4.003',cat:'noble',group:18,period:1,state:'Gas',config:'1s²'},
+  // period 2
+  {n:3,sym:'Li',name:'Lithium',mass:'6.941',cat:'alkali',group:1,period:2,state:'Solid',config:'[He]2s¹'},
+  {n:4,sym:'Be',name:'Beryllium',mass:'9.012',cat:'alkaline',group:2,period:2,state:'Solid',config:'[He]2s²'},
+  {n:5,sym:'B',name:'Boron',mass:'10.811',cat:'metalloid',group:13,period:2,state:'Solid',config:'[He]2s²2p¹'},
+  {n:6,sym:'C',name:'Carbon',mass:'12.011',cat:'nonmetal',group:14,period:2,state:'Solid',config:'[He]2s²2p²'},
+  {n:7,sym:'N',name:'Nitrogen',mass:'14.007',cat:'nonmetal',group:15,period:2,state:'Gas',config:'[He]2s²2p³'},
+  {n:8,sym:'O',name:'Oxygen',mass:'15.999',cat:'nonmetal',group:16,period:2,state:'Gas',config:'[He]2s²2p⁴'},
+  {n:9,sym:'F',name:'Fluorine',mass:'18.998',cat:'halogen',group:17,period:2,state:'Gas',config:'[He]2s²2p⁵'},
+  {n:10,sym:'Ne',name:'Neon',mass:'20.180',cat:'noble',group:18,period:2,state:'Gas',config:'[He]2s²2p⁶'},
+  // period 3
+  {n:11,sym:'Na',name:'Sodium',mass:'22.990',cat:'alkali',group:1,period:3,state:'Solid',config:'[Ne]3s¹'},
+  {n:12,sym:'Mg',name:'Magnesium',mass:'24.305',cat:'alkaline',group:2,period:3,state:'Solid',config:'[Ne]3s²'},
+  {n:13,sym:'Al',name:'Aluminum',mass:'26.982',cat:'post-transition',group:13,period:3,state:'Solid',config:'[Ne]3s²3p¹'},
+  {n:14,sym:'Si',name:'Silicon',mass:'28.086',cat:'metalloid',group:14,period:3,state:'Solid',config:'[Ne]3s²3p²'},
+  {n:15,sym:'P',name:'Phosphorus',mass:'30.974',cat:'nonmetal',group:15,period:3,state:'Solid',config:'[Ne]3s²3p³'},
+  {n:16,sym:'S',name:'Sulfur',mass:'32.065',cat:'nonmetal',group:16,period:3,state:'Solid',config:'[Ne]3s²3p⁴'},
+  {n:17,sym:'Cl',name:'Chlorine',mass:'35.453',cat:'halogen',group:17,period:3,state:'Gas',config:'[Ne]3s²3p⁵'},
+  {n:18,sym:'Ar',name:'Argon',mass:'39.948',cat:'noble',group:18,period:3,state:'Gas',config:'[Ne]3s²3p⁶'},
+  // period 4
+  {n:19,sym:'K',name:'Potassium',mass:'39.098',cat:'alkali',group:1,period:4,state:'Solid',config:'[Ar]4s¹'},
+  {n:20,sym:'Ca',name:'Calcium',mass:'40.078',cat:'alkaline',group:2,period:4,state:'Solid',config:'[Ar]4s²'},
+  {n:21,sym:'Sc',name:'Scandium',mass:'44.956',cat:'transition',group:3,period:4,state:'Solid',config:'[Ar]3d¹4s²'},
+  {n:22,sym:'Ti',name:'Titanium',mass:'47.867',cat:'transition',group:4,period:4,state:'Solid',config:'[Ar]3d²4s²'},
+  {n:23,sym:'V',name:'Vanadium',mass:'50.942',cat:'transition',group:5,period:4,state:'Solid',config:'[Ar]3d³4s²'},
+  {n:24,sym:'Cr',name:'Chromium',mass:'51.996',cat:'transition',group:6,period:4,state:'Solid',config:'[Ar]3d⁵4s¹'},
+  {n:25,sym:'Mn',name:'Manganese',mass:'54.938',cat:'transition',group:7,period:4,state:'Solid',config:'[Ar]3d⁵4s²'},
+  {n:26,sym:'Fe',name:'Iron',mass:'55.845',cat:'transition',group:8,period:4,state:'Solid',config:'[Ar]3d⁶4s²'},
+  {n:27,sym:'Co',name:'Cobalt',mass:'58.933',cat:'transition',group:9,period:4,state:'Solid',config:'[Ar]3d⁷4s²'},
+  {n:28,sym:'Ni',name:'Nickel',mass:'58.693',cat:'transition',group:10,period:4,state:'Solid',config:'[Ar]3d⁸4s²'},
+  {n:29,sym:'Cu',name:'Copper',mass:'63.546',cat:'transition',group:11,period:4,state:'Solid',config:'[Ar]3d¹⁰4s¹'},
+  {n:30,sym:'Zn',name:'Zinc',mass:'65.38',cat:'transition',group:12,period:4,state:'Solid',config:'[Ar]3d¹⁰4s²'},
+  {n:31,sym:'Ga',name:'Gallium',mass:'69.723',cat:'post-transition',group:13,period:4,state:'Solid',config:'[Ar]3d¹⁰4s²4p¹'},
+  {n:32,sym:'Ge',name:'Germanium',mass:'72.63',cat:'metalloid',group:14,period:4,state:'Solid',config:'[Ar]3d¹⁰4s²4p²'},
+  {n:33,sym:'As',name:'Arsenic',mass:'74.922',cat:'metalloid',group:15,period:4,state:'Solid',config:'[Ar]3d¹⁰4s²4p³'},
+  {n:34,sym:'Se',name:'Selenium',mass:'78.96',cat:'nonmetal',group:16,period:4,state:'Solid',config:'[Ar]3d¹⁰4s²4p⁴'},
+  {n:35,sym:'Br',name:'Bromine',mass:'79.904',cat:'halogen',group:17,period:4,state:'Liquid',config:'[Ar]3d¹⁰4s²4p⁵'},
+  {n:36,sym:'Kr',name:'Krypton',mass:'83.798',cat:'noble',group:18,period:4,state:'Gas',config:'[Ar]3d¹⁰4s²4p⁶'},
+  // period 5
+  {n:37,sym:'Rb',name:'Rubidium',mass:'85.468',cat:'alkali',group:1,period:5,state:'Solid',config:'[Kr]5s¹'},
+  {n:38,sym:'Sr',name:'Strontium',mass:'87.62',cat:'alkaline',group:2,period:5,state:'Solid',config:'[Kr]5s²'},
+  {n:39,sym:'Y',name:'Yttrium',mass:'88.906',cat:'transition',group:3,period:5,state:'Solid',config:'[Kr]4d¹5s²'},
+  {n:40,sym:'Zr',name:'Zirconium',mass:'91.224',cat:'transition',group:4,period:5,state:'Solid',config:'[Kr]4d²5s²'},
+  {n:41,sym:'Nb',name:'Niobium',mass:'92.906',cat:'transition',group:5,period:5,state:'Solid',config:'[Kr]4d⁴5s¹'},
+  {n:42,sym:'Mo',name:'Molybdenum',mass:'95.96',cat:'transition',group:6,period:5,state:'Solid',config:'[Kr]4d⁵5s¹'},
+  {n:43,sym:'Tc',name:'Technetium',mass:'(98)',cat:'transition',group:7,period:5,state:'Solid',config:'[Kr]4d⁵5s²'},
+  {n:44,sym:'Ru',name:'Ruthenium',mass:'101.07',cat:'transition',group:8,period:5,state:'Solid',config:'[Kr]4d⁷5s¹'},
+  {n:45,sym:'Rh',name:'Rhodium',mass:'102.906',cat:'transition',group:9,period:5,state:'Solid',config:'[Kr]4d⁸5s¹'},
+  {n:46,sym:'Pd',name:'Palladium',mass:'106.42',cat:'transition',group:10,period:5,state:'Solid',config:'[Kr]4d¹⁰'},
+  {n:47,sym:'Ag',name:'Silver',mass:'107.868',cat:'transition',group:11,period:5,state:'Solid',config:'[Kr]4d¹⁰5s¹'},
+  {n:48,sym:'Cd',name:'Cadmium',mass:'112.411',cat:'transition',group:12,period:5,state:'Solid',config:'[Kr]4d¹⁰5s²'},
+  {n:49,sym:'In',name:'Indium',mass:'114.818',cat:'post-transition',group:13,period:5,state:'Solid',config:'[Kr]4d¹⁰5s²5p¹'},
+  {n:50,sym:'Sn',name:'Tin',mass:'118.71',cat:'post-transition',group:14,period:5,state:'Solid',config:'[Kr]4d¹⁰5s²5p²'},
+  {n:51,sym:'Sb',name:'Antimony',mass:'121.76',cat:'metalloid',group:15,period:5,state:'Solid',config:'[Kr]4d¹⁰5s²5p³'},
+  {n:52,sym:'Te',name:'Tellurium',mass:'127.6',cat:'metalloid',group:16,period:5,state:'Solid',config:'[Kr]4d¹⁰5s²5p⁴'},
+  {n:53,sym:'I',name:'Iodine',mass:'126.904',cat:'halogen',group:17,period:5,state:'Solid',config:'[Kr]4d¹⁰5s²5p⁵'},
+  {n:54,sym:'Xe',name:'Xenon',mass:'131.293',cat:'noble',group:18,period:5,state:'Gas',config:'[Kr]4d¹⁰5s²5p⁶'},
+  // period 6 (selected)
+  {n:55,sym:'Cs',name:'Cesium',mass:'132.905',cat:'alkali',group:1,period:6,state:'Solid',config:'[Xe]6s¹'},
+  {n:56,sym:'Ba',name:'Barium',mass:'137.327',cat:'alkaline',group:2,period:6,state:'Solid',config:'[Xe]6s²'},
+  {n:57,sym:'La*',name:'Lanthanum',mass:'138.905',cat:'lanthanide',group:3,period:6,state:'Solid',config:'[Xe]5d¹6s²'},
+  {n:72,sym:'Hf',name:'Hafnium',mass:'178.49',cat:'transition',group:4,period:6,state:'Solid',config:'[Xe]4f¹⁴5d²6s²'},
+  {n:73,sym:'Ta',name:'Tantalum',mass:'180.948',cat:'transition',group:5,period:6,state:'Solid',config:'[Xe]4f¹⁴5d³6s²'},
+  {n:74,sym:'W',name:'Tungsten',mass:'183.84',cat:'transition',group:6,period:6,state:'Solid',config:'[Xe]4f¹⁴5d⁴6s²'},
+  {n:75,sym:'Re',name:'Rhenium',mass:'186.207',cat:'transition',group:7,period:6,state:'Solid',config:'[Xe]4f¹⁴5d⁵6s²'},
+  {n:76,sym:'Os',name:'Osmium',mass:'190.23',cat:'transition',group:8,period:6,state:'Solid',config:'[Xe]4f¹⁴5d⁶6s²'},
+  {n:77,sym:'Ir',name:'Iridium',mass:'192.217',cat:'transition',group:9,period:6,state:'Solid',config:'[Xe]4f¹⁴5d⁷6s²'},
+  {n:78,sym:'Pt',name:'Platinum',mass:'195.084',cat:'transition',group:10,period:6,state:'Solid',config:'[Xe]4f¹⁴5d⁹6s¹'},
+  {n:79,sym:'Au',name:'Gold',mass:'196.967',cat:'transition',group:11,period:6,state:'Solid',config:'[Xe]4f¹⁴5d¹⁰6s¹'},
+  {n:80,sym:'Hg',name:'Mercury',mass:'200.59',cat:'transition',group:12,period:6,state:'Liquid',config:'[Xe]4f¹⁴5d¹⁰6s²'},
+  {n:81,sym:'Tl',name:'Thallium',mass:'204.383',cat:'post-transition',group:13,period:6,state:'Solid',config:'[Xe]4f¹⁴5d¹⁰6s²6p¹'},
+  {n:82,sym:'Pb',name:'Lead',mass:'207.2',cat:'post-transition',group:14,period:6,state:'Solid',config:'[Xe]4f¹⁴5d¹⁰6s²6p²'},
+  {n:83,sym:'Bi',name:'Bismuth',mass:'208.980',cat:'post-transition',group:15,period:6,state:'Solid',config:'[Xe]4f¹⁴5d¹⁰6s²6p³'},
+  {n:84,sym:'Po',name:'Polonium',mass:'(209)',cat:'post-transition',group:16,period:6,state:'Solid',config:'[Xe]4f¹⁴5d¹⁰6s²6p⁴'},
+  {n:85,sym:'At',name:'Astatine',mass:'(210)',cat:'halogen',group:17,period:6,state:'Solid',config:'[Xe]4f¹⁴5d¹⁰6s²6p⁵'},
+  {n:86,sym:'Rn',name:'Radon',mass:'(222)',cat:'noble',group:18,period:6,state:'Gas',config:'[Xe]4f¹⁴5d¹⁰6s²6p⁶'},
+  // period 7 (selected)
+  {n:87,sym:'Fr',name:'Francium',mass:'(223)',cat:'alkali',group:1,period:7,state:'Solid',config:'[Rn]7s¹'},
+  {n:88,sym:'Ra',name:'Radium',mass:'(226)',cat:'alkaline',group:2,period:7,state:'Solid',config:'[Rn]7s²'},
+  {n:89,sym:'Ac†',name:'Actinium',mass:'(227)',cat:'actinide',group:3,period:7,state:'Solid',config:'[Rn]6d¹7s²'},
+  {n:92,sym:'U',name:'Uranium',mass:'238.029',cat:'actinide',group:3,period:7,state:'Solid',config:'[Rn]5f³6d¹7s²'},
+  // Lanthanides
+  {n:58,sym:'Ce',name:'Cerium',mass:'140.116',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f¹5d¹6s²'},
+  {n:59,sym:'Pr',name:'Praseodymium',mass:'140.908',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f³6s²'},
+  {n:60,sym:'Nd',name:'Neodymium',mass:'144.242',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f⁴6s²'},
+  {n:61,sym:'Pm',name:'Promethium',mass:'(145)',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f⁵6s²'},
+  {n:62,sym:'Sm',name:'Samarium',mass:'150.36',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f⁶6s²'},
+  {n:63,sym:'Eu',name:'Europium',mass:'151.964',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f⁷6s²'},
+  {n:64,sym:'Gd',name:'Gadolinium',mass:'157.25',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f⁷5d¹6s²'},
+  {n:65,sym:'Tb',name:'Terbium',mass:'158.925',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f⁹6s²'},
+  {n:66,sym:'Dy',name:'Dysprosium',mass:'162.5',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f¹⁰6s²'},
+  {n:67,sym:'Ho',name:'Holmium',mass:'164.930',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f¹¹6s²'},
+  {n:68,sym:'Er',name:'Erbium',mass:'167.259',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f¹²6s²'},
+  {n:69,sym:'Tm',name:'Thulium',mass:'168.934',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f¹³6s²'},
+  {n:70,sym:'Yb',name:'Ytterbium',mass:'173.045',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f¹⁴6s²'},
+  {n:71,sym:'Lu',name:'Lutetium',mass:'174.967',cat:'lanthanide',group:'La',period:'La',state:'Solid',config:'[Xe]4f¹⁴5d¹6s²'},
+  // Actinides
+  {n:90,sym:'Th',name:'Thorium',mass:'232.038',cat:'actinide',group:'Ac',period:'Ac',state:'Solid',config:'[Rn]6d²7s²'},
+  {n:91,sym:'Pa',name:'Protactinium',mass:'231.036',cat:'actinide',group:'Ac',period:'Ac',state:'Solid',config:'[Rn]5f²6d¹7s²'},
+  {n:93,sym:'Np',name:'Neptunium',mass:'(237)',cat:'actinide',group:'Ac',period:'Ac',state:'Solid',config:'[Rn]5f⁴6d¹7s²'},
+  {n:94,sym:'Pu',name:'Plutonium',mass:'(244)',cat:'actinide',group:'Ac',period:'Ac',state:'Solid',config:'[Rn]5f⁶7s²'},
+  {n:95,sym:'Am',name:'Americium',mass:'(243)',cat:'actinide',group:'Ac',period:'Ac',state:'Solid',config:'[Rn]5f⁷7s²'},
+];
+
+function buildPT(){
+  const grid = document.getElementById('ptGrid');
+  // Build 7 periods × 18 groups grid
+  const cells = Array.from({length:7*18}, ()=>null);
+
+  // Place main-table elements
+  ELEMENTS.filter(e=>typeof e.group==='number').forEach(e=>{
+    const row=(e.period-1), col=(e.group-1);
+    cells[row*18+col]=e;
+  });
+
+  let html='';
+  for(let r=0;r<7;r++){
+    for(let c=0;c<18;c++){
+      const e=cells[r*18+c];
+      if(e){
+        html+=`<div class="element ${e.cat}" onclick="showElement(${e.n})" title="${e.name}">
+          <div class="num">${e.n}</div>
+          <div class="sym">${e.sym}</div>
+          <div class="name">${e.name.substring(0,6)}</div>
+        </div>`;
+      } else {
+        // Gap in period 6/7 col 3 (lanthanide/actinide placeholder)
+        html+='<div class="element blank"></div>';
+      }
+    }
+  }
+  // Lanthanide row
+  html+='<div class="element blank" style="grid-column:1/3"></div>';
+  html+='<div class="element blank" style="font-size:.65rem;color:var(--muted);display:flex;align-items:center;justify-content:center">* La series</div>';
+  ELEMENTS.filter(e=>e.period==='La').forEach(e=>{
+    html+=`<div class="element ${e.cat}" onclick="showElement(${e.n})" title="${e.name}">
+      <div class="num">${e.n}</div><div class="sym">${e.sym}</div><div class="name">${e.name.substring(0,6)}</div>
+    </div>`;
+  });
+  // Actinide row
+  html+='<div class="element blank" style="grid-column:1/3"></div>';
+  html+='<div class="element blank" style="font-size:.65rem;color:var(--muted);display:flex;align-items:center;justify-content:center">† Ac series</div>';
+  ELEMENTS.filter(e=>e.period==='Ac').forEach(e=>{
+    html+=`<div class="element ${e.cat}" onclick="showElement(${e.n})" title="${e.name}">
+      <div class="num">${e.n}</div><div class="sym">${e.sym}</div><div class="name">${e.name.substring(0,6)}</div>
+    </div>`;
+  });
+
+  grid.innerHTML=html;
+}
+
+function showElement(n){
+  const e=ELEMENTS.find(el=>el.n===n);
+  if(!e) return;
+  document.getElementById('ed-name').textContent=`${e.sym} — ${e.name}`;
+  document.getElementById('ed-props').innerHTML=`
+    <div class="detail-item"><div class="lbl">Atomic Number</div><strong>${e.n}</strong></div>
+    <div class="detail-item"><div class="lbl">Atomic Mass</div><strong>${e.mass} u</strong></div>
+    <div class="detail-item"><div class="lbl">Category</div><strong>${e.cat.replace('-',' ')}</strong></div>
+    <div class="detail-item"><div class="lbl">State (STP)</div><strong>${e.state}</strong></div>
+    <div class="detail-item"><div class="lbl">Period</div><strong>${e.period}</strong></div>
+    <div class="detail-item"><div class="lbl">Group</div><strong>${e.group}</strong></div>
+    <div class="detail-item" style="grid-column:1/-1"><div class="lbl">Electron Configuration</div><strong>${e.config}</strong></div>
+  `;
+  const det=document.getElementById('elemDetail');
+  det.style.display='block';
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+buildPT();
+</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Essay Outline Builder — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.container{max-width:860px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:60px}
+label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px}
+.field{margin-bottom:12px}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-right:8px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
+.btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--muted)}
+.btn-sm:hover{background:var(--bg)}.btn-sm.del{color:var(--red)}.btn-sm.del:hover{background:#fef2f2}
+.btn-sm.add{color:var(--accent);border-color:var(--accent)}.btn-sm.add:hover{background:#eff6ff}
+
+/* Outline editor */
+.outline-area{display:grid;grid-template-columns:220px 1fr;gap:0;border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+.outline-sidebar{background:#f9fafb;border-right:1.5px solid var(--border);padding:14px}
+.outline-sidebar .section-btn{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:8px;border:none;background:none;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:3px}
+.outline-sidebar .section-btn:hover{background:#ede9fe;color:var(--accent)}
+.outline-sidebar .section-btn.active{background:#ede9fe;color:var(--accent)}
+.outline-main{padding:18px;min-height:340px}
+.section-header{font-size:.95rem;font-weight:800;margin-bottom:12px;color:var(--accent);display:flex;justify-content:space-between;align-items:center}
+.point-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+.point-row .handle{cursor:grab;color:var(--muted);font-size:1rem;padding-top:9px;flex-shrink:0}
+.point-row textarea{flex:1;min-height:52px}
+.point-num{font-size:.75rem;font-weight:700;color:var(--muted);padding-top:10px;flex-shrink:0;min-width:18px}
+.sub-point-row{display:flex;gap:6px;margin:6px 0 6px 28px;align-items:flex-start}
+.sub-point-row textarea{flex:1;min-height:44px}
+
+/* Outline preview (print) */
+.outline-preview{display:none}
+@media print{.topnav,.hero,.card:not(.preview-card){display:none!important}.outline-preview{display:block}.preview-card{display:block!important}}
+.preview-section{margin-bottom:20px}
+.preview-section h3{font-size:1rem;font-weight:800;border-bottom:1.5px solid var(--border);padding-bottom:4px;margin-bottom:8px}
+.preview-main-point{font-size:.9rem;margin:6px 0 2px 10px;font-weight:600}
+.preview-sub-point{font-size:.85rem;color:var(--muted);margin:3px 0 3px 30px}
+
+@media(max-width:640px){.outline-area{grid-template-columns:1fr;}.outline-sidebar{border-right:none;border-bottom:1.5px solid var(--border)}}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}
+  .outline-sidebar{background:#12121f}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="outline.html" class="nav-link active">🗂 Outline</a>
+  <a href="citation.html" class="nav-link">📎 Citations</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
+  <a href="research.html" class="nav-link">🔬 Research</a>
+  <a href="venn.html" class="nav-link">⭕ Venn</a>
+  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
+  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
+</nav>
+<div class="hero">
+  <h1>🗂 Essay Outline Builder</h1>
+  <p>Structure your essay with a clear outline — intro, body paragraphs, conclusion, with evidence and sub-points.</p>
+</div>
+
+<div class="container">
+  <!-- Setup -->
+  <div class="card" id="setupCard">
+    <h2>Essay Setup</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field" style="grid-column:1/-1"><label>Essay Title / Topic</label><input id="e-title" placeholder="The causes of the American Revolution"></div>
+      <div class="field"><label>Essay Type</label>
+        <select id="e-type" onchange="updateStructure()">
+          <option value="argumentative">Argumentative</option>
+          <option value="analytical">Analytical</option>
+          <option value="expository">Expository</option>
+          <option value="compare">Compare & Contrast</option>
+          <option value="narrative">Narrative</option>
+        </select>
+      </div>
+      <div class="field"><label>Number of Body Paragraphs</label>
+        <select id="e-bodies" onchange="updateStructure()">
+          <option value="2">2</option>
+          <option value="3" selected>3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>Thesis Statement (optional — you can fill it in the outline)</label><textarea id="e-thesis" placeholder="Enter your thesis here or write it in the outline..." style="min-height:52px"></textarea></div>
+    </div>
+    <button class="btn btn-primary" onclick="buildOutline()" style="margin-top:4px">🗂 Build Outline</button>
+  </div>
+
+  <!-- Outline editor -->
+  <div class="card" id="outlineCard" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0">📄 <span id="outlineTitle">Outline</span></h2>
+      <div>
+        <button class="btn btn-outline" onclick="copyOutline()">📋 Copy Text</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨 Print</button>
+        <button class="btn-sm" onclick="resetOutline()" style="margin-left:4px">↩ Reset</button>
+      </div>
+    </div>
+    <div class="outline-area">
+      <div class="outline-sidebar" id="sidebarSections"></div>
+      <div class="outline-main" id="mainPanel"></div>
+    </div>
+  </div>
+
+  <!-- Print preview -->
+  <div class="outline-preview card preview-card" id="printPreview"></div>
+</div>
+
+<script>
+let sections = [];
+let activeIdx = 0;
+
+const TYPE_HINTS = {
+  argumentative: {intro:['Hook','Background','Thesis (claim)'], body:['Topic Sentence','Evidence/Quote','Analysis','Transition'], conclusion:['Restate Thesis','Summary of Arguments','Call to Action / Broader Significance']},
+  analytical: {intro:['Hook','Context','Thesis (analysis claim)'], body:['Topic Sentence','Textual Evidence','Analysis/Interpretation','Connection to Thesis'], conclusion:['Restate Thesis','Key Findings','Significance']},
+  expository: {intro:['Hook','Background','Thesis (main idea)'], body:['Topic Sentence','Supporting Details','Examples','Transition'], conclusion:['Restate Thesis','Summary','Final Thought']},
+  compare: {intro:['Hook','Introduce Both Subjects','Thesis (comparison point)'], body:['Aspect Being Compared','Subject A Point','Subject B Point','Analysis'], conclusion:['Restate Thesis','Overall Similarities/Differences','Final Evaluation']},
+  narrative: {intro:['Setting the Scene','Introduce Characters','Inciting Incident'], body:['Event / Plot Point','Details & Description','Significance'], conclusion:['Resolution','Reflection','Lesson / Theme']},
+};
+
+function buildOutline(){
+  const title = document.getElementById('e-title').value.trim()||'My Essay';
+  const type = document.getElementById('e-type').value;
+  const bodies = parseInt(document.getElementById('e-bodies').value);
+  const thesis = document.getElementById('e-thesis').value.trim();
+  const hints = TYPE_HINTS[type];
+
+  document.getElementById('outlineTitle').textContent = title;
+
+  // Build sections
+  sections = [];
+  // Intro
+  sections.push({name:'I. Introduction', points: hints.intro.map((h,i)=>({text: i===2&&thesis?thesis:'', hint:h, subs:[]}))});
+  // Body paragraphs
+  for(let b=0;b<bodies;b++){
+    const roman = ['II','III','IV','V','VI'][b];
+    sections.push({name:`${roman}. Body Paragraph ${b+1}`, points: hints.body.map(h=>({text:'',hint:h,subs:[]}))});
+  }
+  // Conclusion
+  sections.push({name:`${['III','IV','V','VI','VII'][bodies-1]}. Conclusion`, points: hints.conclusion.map(h=>({text:'',hint:h,subs:[]}))});
+
+  activeIdx = 0;
+  document.getElementById('setupCard').style.display='none';
+  document.getElementById('outlineCard').style.display='block';
+  renderSidebar(); renderPanel();
+}
+
+function renderSidebar(){
+  document.getElementById('sidebarSections').innerHTML = sections.map((s,i)=>`
+    <button class="section-btn${i===activeIdx?' active':''}" onclick="switchSection(${i})">${s.name}</button>
+  `).join('');
+}
+
+function switchSection(i){ activeIdx=i; renderSidebar(); renderPanel(); }
+
+function renderPanel(){
+  const s = sections[activeIdx];
+  let html = `<div class="section-header">${s.name}</div>`;
+  s.points.forEach((p,pi)=>{
+    html += `<div class="point-row">
+      <span class="point-num">${pi+1}.</span>
+      <textarea placeholder="${p.hint}" oninput="sections[${activeIdx}].points[${pi}].text=this.value">${p.text}</textarea>
+      <button class="btn-sm del" onclick="removePoint(${pi})">✕</button>
+    </div>`;
+    p.subs.forEach((sub,si)=>{
+      html += `<div class="sub-point-row">
+        <span style="color:var(--muted);font-size:.85rem;padding-top:9px">↳</span>
+        <textarea placeholder="Sub-point..." oninput="sections[${activeIdx}].points[${pi}].subs[${si}]=this.value">${sub}</textarea>
+        <button class="btn-sm del" onclick="removeSub(${pi},${si})">✕</button>
+      </div>`;
+    });
+    html += `<div style="margin:0 0 10px 28px"><button class="btn-sm add" onclick="addSub(${pi})">+ sub-point</button></div>`;
+  });
+  html += `<button class="btn-sm add" onclick="addPoint()" style="margin-top:6px">+ point</button>`;
+  document.getElementById('mainPanel').innerHTML = html;
+}
+
+function addPoint(){ sections[activeIdx].points.push({text:'',hint:'New point',subs:[]}); renderPanel(); }
+function removePoint(pi){ sections[activeIdx].points.splice(pi,1); renderPanel(); }
+function addSub(pi){ sections[activeIdx].points[pi].subs.push(''); renderPanel(); }
+function removeSub(pi,si){ sections[activeIdx].points[pi].subs.splice(si,1); renderPanel(); }
+
+function copyOutline(){
+  let txt = '';
+  sections.forEach(s=>{
+    txt += s.name+'\n';
+    s.points.forEach((p,pi)=>{
+      txt += `  ${pi+1}. ${p.text||p.hint}\n`;
+      p.subs.forEach(sub=>{ if(sub) txt += `     - ${sub}\n`; });
+    });
+    txt += '\n';
+  });
+  navigator.clipboard.writeText(txt).then(()=>alert('Outline copied to clipboard!'));
+}
+
+function resetOutline(){
+  if(!confirm('Start over?')) return;
+  sections=[];
+  document.getElementById('setupCard').style.display='block';
+  document.getElementById('outlineCard').style.display='none';
+}
+
+// Print preview population
+window.onbeforeprint = function(){
+  let html = `<h2 style="margin-bottom:16px">${document.getElementById('outlineTitle').textContent}</h2>`;
+  sections.forEach(s=>{
+    html += `<div class="preview-section"><h3>${s.name}</h3>`;
+    s.points.forEach((p,pi)=>{
+      html += `<div class="preview-main-point">${pi+1}. ${p.text||p.hint}</div>`;
+      p.subs.forEach(sub=>{ if(sub) html+=`<div class="preview-sub-point">↳ ${sub}</div>`; });
+    });
+    html += '</div>';
+  });
+  document.getElementById('printPreview').innerHTML = html;
+};
+</script>
+</body>
+</html>

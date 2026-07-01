@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Citation Generator — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.spacer{flex:1}
+.hero{text-align:center;padding:40px 20px 24px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto}
+.container{max-width:800px;margin:28px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.05rem;font-weight:700;margin-bottom:16px}
+.type-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.type-btn{padding:8px 16px;border-radius:9px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.87rem;color:var(--muted);font-weight:600;transition:.15s}
+.type-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
+input:focus{border-color:var(--accent)}
+.btn{padding:10px 24px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;transition:.15s;margin-top:14px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-sm{padding:6px 14px;font-size:.82rem;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--text)}
+.btn-sm:hover{background:var(--bg)}
+.result-card{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-top:12px}
+.result-card .style-label{font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.result-card .citation-text{font-size:.9rem;line-height:1.7;color:var(--text);font-family:'Times New Roman',serif}
+.copy-row{display:flex;justify-content:flex-end;margin-top:8px}
+.saved-list{display:flex;flex-direction:column;gap:8px}
+.saved-item{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;font-size:.85rem;line-height:1.6;font-family:'Times New Roman',serif;position:relative}
+.saved-item .del-btn{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem}
+.empty-msg{color:var(--muted);font-size:.9rem;text-align:center;padding:20px 0}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  input,.type-btn,.btn-sm{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="curriculum.html" class="nav-link">📚 Curriculum</a>
+  <a href="worksheets.html" class="nav-link">📄 Worksheets</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="flashcards.html" class="nav-link">🃏 Flashcards</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
+  <a href="citation.html" class="nav-link active">📖 Citations</a>
+  <a href="tools.html" class="nav-link">🔬 Tools</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <div class="spacer"></div>
+  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
+  <a href="research.html" class="nav-link">🔬 Research</a>
+  <a href="venn.html" class="nav-link">⭕ Venn</a>
+  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+</nav>
+
+<div class="hero">
+  <h1>📖 Citation Generator</h1>
+  <p>Generate MLA, APA, and Chicago citations for books, articles, and websites instantly.</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>Source Type</h2>
+    <div class="type-row">
+      <button class="type-btn active" onclick="setSource(this,'book')">📚 Book</button>
+      <button class="type-btn" onclick="setSource(this,'article')">📰 Journal Article</button>
+      <button class="type-btn" onclick="setSource(this,'website')">🌐 Website</button>
+      <button class="type-btn" onclick="setSource(this,'newspaper')">🗞 Newspaper</button>
+    </div>
+
+    <!-- BOOK FORM -->
+    <div id="form-book">
+      <div class="form-grid">
+        <div class="field full"><label>Author Last Name</label><input id="b-last" placeholder="Smith"></div>
+        <div class="field full"><label>Author First Name</label><input id="b-first" placeholder="John"></div>
+        <div class="field full"><label>Book Title</label><input id="b-title" placeholder="The Great Adventure"></div>
+        <div class="field"><label>Publisher</label><input id="b-publisher" placeholder="Penguin Books"></div>
+        <div class="field"><label>Year Published</label><input id="b-year" placeholder="2021" type="number"></div>
+        <div class="field"><label>City of Publication</label><input id="b-city" placeholder="New York"></div>
+        <div class="field"><label>Edition (optional)</label><input id="b-edition" placeholder="2nd"></div>
+      </div>
+    </div>
+
+    <!-- ARTICLE FORM -->
+    <div id="form-article" style="display:none">
+      <div class="form-grid">
+        <div class="field full"><label>Author Last Name</label><input id="a-last" placeholder="Johnson"></div>
+        <div class="field full"><label>Author First Name</label><input id="a-first" placeholder="Emily"></div>
+        <div class="field full"><label>Article Title</label><input id="a-title" placeholder="Climate Change and Society"></div>
+        <div class="field full"><label>Journal Name</label><input id="a-journal" placeholder="Nature Climate Change"></div>
+        <div class="field"><label>Volume</label><input id="a-volume" placeholder="12"></div>
+        <div class="field"><label>Issue</label><input id="a-issue" placeholder="3"></div>
+        <div class="field"><label>Year</label><input id="a-year" placeholder="2023" type="number"></div>
+        <div class="field"><label>Pages</label><input id="a-pages" placeholder="45–60"></div>
+        <div class="field full"><label>DOI (optional)</label><input id="a-doi" placeholder="10.1038/..."></div>
+      </div>
+    </div>
+
+    <!-- WEBSITE FORM -->
+    <div id="form-website" style="display:none">
+      <div class="form-grid">
+        <div class="field full"><label>Author Last Name (if known)</label><input id="w-last" placeholder="Garcia"></div>
+        <div class="field full"><label>Author First Name (if known)</label><input id="w-first" placeholder="Maria"></div>
+        <div class="field full"><label>Page / Article Title</label><input id="w-title" placeholder="How Solar Panels Work"></div>
+        <div class="field full"><label>Website Name</label><input id="w-site" placeholder="National Geographic"></div>
+        <div class="field full"><label>URL</label><input id="w-url" placeholder="https://www.example.com/article"></div>
+        <div class="field"><label>Publish Date</label><input id="w-pubdate" placeholder="March 15, 2023"></div>
+        <div class="field"><label>Access Date</label><input id="w-accdate" placeholder="June 1, 2024"></div>
+      </div>
+    </div>
+
+    <!-- NEWSPAPER FORM -->
+    <div id="form-newspaper" style="display:none">
+      <div class="form-grid">
+        <div class="field full"><label>Author Last Name</label><input id="n-last" placeholder="Lee"></div>
+        <div class="field full"><label>Author First Name</label><input id="n-first" placeholder="Sarah"></div>
+        <div class="field full"><label>Article Title</label><input id="n-title" placeholder="City Council Approves New Budget"></div>
+        <div class="field full"><label>Newspaper Name</label><input id="n-paper" placeholder="The New York Times"></div>
+        <div class="field"><label>Date Published</label><input id="n-date" placeholder="January 5, 2024"></div>
+        <div class="field"><label>Page(s) (optional)</label><input id="n-page" placeholder="A1"></div>
+        <div class="field full"><label>URL (if online)</label><input id="n-url" placeholder="https://..."></div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="generate()">📋 Generate Citations</button>
+  </div>
+
+  <div id="results" style="display:none">
+    <div class="card">
+      <h2>Your Citations</h2>
+      <div id="mla-result" class="result-card">
+        <div class="style-label">MLA 9th Edition</div>
+        <div class="citation-text" id="mla-text"></div>
+        <div class="copy-row"><button class="btn-sm" onclick="copy('mla-text')">📋 Copy</button></div>
+      </div>
+      <div id="apa-result" class="result-card" style="margin-top:12px">
+        <div class="style-label">APA 7th Edition</div>
+        <div class="citation-text" id="apa-text"></div>
+        <div class="copy-row"><button class="btn-sm" onclick="copy('apa-text')">📋 Copy</button></div>
+      </div>
+      <div id="chi-result" class="result-card" style="margin-top:12px">
+        <div class="style-label">Chicago 17th Edition</div>
+        <div class="citation-text" id="chi-text"></div>
+        <div class="copy-row"><button class="btn-sm" onclick="copy('chi-text')">📋 Copy</button></div>
+      </div>
+      <button class="btn btn-primary" onclick="saveToList()" style="margin-top:14px">💾 Save to Works Cited List</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h2>📚 Works Cited List</h2>
+      <div style="display:flex;gap:8px">
+        <button class="btn-sm" onclick="copyAll()">📋 Copy All</button>
+        <button class="btn-sm" onclick="clearAll()">🗑 Clear</button>
+      </div>
+    </div>
+    <div id="savedList"><p class="empty-msg">No citations saved yet. Generate one above and click "Save."</p></div>
+  </div>
+</div>
+
+<script>
+let sourceType = 'book';
+let savedCitations = JSON.parse(localStorage.getItem('ace_citations') || '[]');
+let lastMLA='', lastAPA='', lastChi='';
+
+function setSource(btn, type){
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  sourceType = type;
+  ['book','article','website','newspaper'].forEach(t=>{
+    document.getElementById('form-'+t).style.display = t===type?'block':'none';
+  });
+  document.getElementById('results').style.display='none';
+}
+
+function v(id){ return (document.getElementById(id)||{}).value?.trim()||''; }
+
+function italics(t){ return `<em>${t}</em>`; }
+
+function generate(){
+  let mla='', apa='', chi='';
+
+  if(sourceType==='book'){
+    const last=v('b-last'), first=v('b-first'), title=v('b-title'),
+          pub=v('b-publisher'), year=v('b-year'), city=v('b-city'), ed=v('b-edition');
+    const author = last&&first ? `${last}, ${first}` : last||first||'Author';
+    const authorAPA = last&&first ? `${last}, ${first[0]}.` : last||first||'Author';
+    const edStr = ed ? ` ${ed} ed.` : '';
+    const cityStr = city ? `${city}: ` : '';
+    mla = `${author}. ${italics(title)}.${edStr} ${cityStr}${pub}, ${year}.`;
+    apa = `${authorAPA} (${year}). ${italics(title)}${ed?' ('+ed+' ed.)':''}. ${pub}.`;
+    chi = `${author}. ${italics(title)}.${edStr} ${cityStr}${pub}, ${year}.`;
+  }
+
+  else if(sourceType==='article'){
+    const last=v('a-last'), first=v('a-first'), title=v('a-title'),
+          journal=v('a-journal'), vol=v('a-volume'), iss=v('a-issue'),
+          year=v('a-year'), pages=v('a-pages'), doi=v('a-doi');
+    const author = last&&first ? `${last}, ${first}` : last||first||'Author';
+    const authorAPA = last&&first ? `${last}, ${first[0]}.` : last||first||'Author';
+    const volIss = vol&&iss ? `${vol}(${iss})` : vol||'';
+    const doiStr = doi ? ` https://doi.org/${doi.replace('https://doi.org/','')}` : '';
+    mla = `${author}. "${title}." ${italics(journal)}, vol. ${vol}, no. ${iss}, ${year}, pp. ${pages}.${doi?' doi:'+doi:''}`;
+    apa = `${authorAPA} (${year}). ${title}. ${italics(journal)}, ${italics(volIss)}, ${pages}.${doiStr}`;
+    chi = `${author}. "${title}." ${italics(journal)} ${vol}, no. ${iss} (${year}): ${pages}.${doi?' https://doi.org/'+doi:''}`;
+  }
+
+  else if(sourceType==='website'){
+    const last=v('w-last'), first=v('w-first'), title=v('w-title'),
+          site=v('w-site'), url=v('w-url'), pub=v('w-pubdate'), acc=v('w-accdate');
+    const author = last&&first ? `${last}, ${first}` : last&&!first ? last : '';
+    const authorAPA = last&&first ? `${last}, ${first[0]}.` : last ? last+'.' : '';
+    const authorChi = author;
+    const accStr = acc ? ` Accessed ${acc}.` : '';
+    const pubStr = pub ? ` ${pub}.` : '';
+    mla = `${author ? author+'. ' : ''}"${title}." ${italics(site)},${pubStr} ${url}.${accStr}`;
+    apa = `${authorAPA ? authorAPA+' ' : ''}${pub ? '('+pub+'). ' : '(n.d.). '}${title}. ${italics(site)}. ${url}`;
+    chi = `${authorChi ? authorChi+'. ' : ''}"${title}."${pubStr} ${italics(site)}. ${url}.`;
+  }
+
+  else if(sourceType==='newspaper'){
+    const last=v('n-last'), first=v('n-first'), title=v('n-title'),
+          paper=v('n-paper'), date=v('n-date'), page=v('n-page'), url=v('n-url');
+    const author = last&&first ? `${last}, ${first}` : last||first||'Author';
+    const authorAPA = last&&first ? `${last}, ${first[0]}.` : last||first||'Author';
+    const pageStr = page ? `, ${page}` : '';
+    const urlStr = url ? ` ${url}` : '';
+    mla = `${author}. "${title}." ${italics(paper)}, ${date}${pageStr}.${url?' '+url:''}`;
+    apa = `${authorAPA} (${date}). ${title}. ${italics(paper)}.${urlStr}`;
+    chi = `${author}. "${title}." ${italics(paper)}, ${date}${pageStr}.`;
+  }
+
+  document.getElementById('mla-text').innerHTML = mla;
+  document.getElementById('apa-text').innerHTML = apa;
+  document.getElementById('chi-text').innerHTML = chi;
+  lastMLA=mla; lastAPA=apa; lastChi=chi;
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copy(id){
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(()=>{
+    const orig = el.nextElementSibling?.querySelector('button')?.textContent;
+    // flash feedback
+  });
+  alert('Copied: '+el.innerText);
+}
+
+function saveToList(){
+  if(!lastMLA){ return; }
+  savedCitations.push({mla:lastMLA,apa:lastAPA,chi:lastChi});
+  localStorage.setItem('ace_citations', JSON.stringify(savedCitations));
+  renderList();
+}
+
+function renderList(){
+  const el = document.getElementById('savedList');
+  if(!savedCitations.length){
+    el.innerHTML='<p class="empty-msg">No citations saved yet.</p>'; return;
+  }
+  el.innerHTML = savedCitations.map((c,i)=>`
+    <div class="saved-item">
+      <div style="font-size:.7rem;font-weight:700;color:var(--accent);margin-bottom:4px">MLA</div>
+      ${c.mla}
+      <button class="del-btn" onclick="deleteCitation(${i})">✕</button>
+    </div>`).join('');
+}
+
+function deleteCitation(i){
+  savedCitations.splice(i,1);
+  localStorage.setItem('ace_citations', JSON.stringify(savedCitations));
+  renderList();
+}
+
+function copyAll(){
+  const text = savedCitations.map(c=>c.mla.replace(/<[^>]+>/g,'')).join('\n\n');
+  navigator.clipboard.writeText(text);
+  alert('All citations copied!');
+}
+
+function clearAll(){
+  if(confirm('Clear all saved citations?')){ savedCitations=[]; localStorage.setItem('ace_citations','[]'); renderList(); }
+}
+
+renderList();
+</script>
+</body>
+</html>

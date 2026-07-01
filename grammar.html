@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grammar Reference — aceAcademy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+
+.search-bar{padding:14px 24px;background:#080e1c;border-bottom:1px solid #2a3a55;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;padding:9px 14px;background:#111c32;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.9rem;font-family:inherit;outline:none;transition:.15s}
+.search-input:focus{border-color:#6366f1}
+.search-input::placeholder{color:#4a5568}
+.clear-btn{padding:8px 14px;border-radius:9px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.clear-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+.cats-bar{padding:10px 20px;background:#080e1c;border-bottom:1px solid #2a3a55;display:flex;gap:6px;flex-wrap:wrap}
+.cat-chip{padding:5px 13px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.cat-chip.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
+
+.container{max-width:900px;margin:0 auto;padding:24px 20px 60px}
+
+.section-header{display:flex;align-items:center;gap:12px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid #2a3a55}
+.section-title{font-size:1rem;font-weight:800}
+.section-count{font-size:.72rem;background:rgba(99,102,241,.2);color:#a5b4fc;padding:2px 8px;border-radius:12px;font-weight:700}
+
+.rule-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:13px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:.15s}
+.rule-card:hover{border-color:#6366f1;background:#131f38}
+.rule-card.expanded{border-color:#6366f1;background:#131f38}
+.rule-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rule-title{font-size:.9rem;font-weight:700;flex:1}
+.rule-tag{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:8px}
+.tag-comma{background:rgba(99,102,241,.2);color:#a5b4fc}
+.tag-semicolon{background:rgba(16,185,129,.2);color:#6ee7b7}
+.tag-apostrophe{background:rgba(245,158,11,.2);color:#fcd34d}
+.tag-agreement{background:rgba(239,68,68,.2);color:#fca5a5}
+.tag-confused{background:rgba(236,72,153,.2);color:#f9a8d4}
+.tag-sentence{background:rgba(59,130,246,.2);color:#93c5fd}
+.tag-punctuation{background:rgba(168,85,247,.2);color:#d8b4fe}
+.tag-pronoun{background:rgba(20,184,166,.2);color:#5eead4}
+.tag-modifier{background:rgba(249,115,22,.2);color:#fdba74}
+.tag-tense{background:rgba(132,204,22,.2);color:#bef264}
+.rule-chevron{color:#7a8fa8;font-size:.9rem;transition:.2s}
+.rule-card.expanded .rule-chevron{transform:rotate(180deg)}
+
+.rule-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid #2a3a55}
+.rule-card.expanded .rule-body{display:block}
+.rule-desc{font-size:.86rem;color:#b8c4d8;line-height:1.7;margin-bottom:12px}
+.examples-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:8px}
+.example-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+@media(max-width:560px){.example-row{grid-template-columns:1fr}}
+.ex-box{padding:9px 12px;border-radius:9px;font-size:.82rem;font-family:Georgia,serif;line-height:1.5}
+.ex-wrong{background:rgba(239,68,68,.1);border-left:3px solid #ef4444;color:#fca5a5}
+.ex-wrong::before{content:'✗ ';font-weight:700}
+.ex-right{background:rgba(16,185,129,.1);border-left:3px solid #10b981;color:#6ee7b7}
+.ex-right::before{content:'✓ ';font-weight:700}
+.rule-tip{margin-top:12px;padding:10px 12px;background:rgba(99,102,241,.1);border-radius:9px;font-size:.8rem;color:#a5b4fc;line-height:1.6}
+.rule-tip::before{content:'💡 Tip: ';font-weight:700}
+
+.no-results{text-align:center;padding:60px 20px;color:#7a8fa8;font-size:.9rem}
+.no-results-icon{font-size:2rem;margin-bottom:10px}
+
+.quick-ref{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:20px;margin-bottom:28px}
+.qr-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:14px}
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.qr-item{padding:9px 12px;background:#0d1628;border-radius:9px;font-size:.79rem;cursor:pointer;border:1.5px solid transparent;transition:.15s}
+.qr-item:hover{border-color:#6366f1;background:#131f38}
+.qr-item strong{display:block;color:#a5b4fc;margin-bottom:3px;font-size:.75rem}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="grammar.html" class="nav-link active">📖 Grammar</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
+  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
+  <a href="research.html" class="nav-link">🔬 Research</a>
+  <a href="venn.html" class="nav-link">⭕ Venn</a>
+  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
+  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
+</nav>
+
+<div class="hero">
+  <div>
+    <h1>📖 Grammar <span>Reference</span></h1>
+    <p>Quick-access grammar rules — commas, semicolons, apostrophes, commonly confused words, and more.</p>
+  </div>
+</div>
+
+<div class="search-bar">
+  <input class="search-input" id="searchInput" placeholder="Search rules… e.g. &quot;comma&quot;, &quot;their/there&quot;, &quot;semicolon&quot;" oninput="filterRules()">
+  <button class="clear-btn" onclick="clearSearch()">✕ Clear</button>
+</div>
+
+<div class="cats-bar" id="catBar"></div>
+
+<div class="container">
+  <div class="quick-ref">
+    <div class="qr-title">⚡ Quick Lookup</div>
+    <div class="qr-grid" id="quickRef"></div>
+  </div>
+  <div id="output"></div>
+</div>
+
+<script>
+const RULES = [
+  // ── COMMAS ──────────────────────────────────────────────────────────────────
+  {
+    cat: 'Comma', tag: 'comma',
+    title: 'Serial (Oxford) Comma',
+    desc: 'Use a comma before the coordinating conjunction (and, or, nor) in a series of three or more items. The Oxford comma prevents ambiguity.',
+    examples: [
+      ['I love my parents, Lady Gaga and Humpty Dumpty.', 'I love my parents, Lady Gaga, and Humpty Dumpty.'],
+      ['We bought eggs, milk and bread.', 'We bought eggs, milk, and bread.'],
+    ],
+    tip: 'When in doubt, include the Oxford comma. Most style guides (APA, Chicago) require it.'
+  },
+  {
+    cat: 'Comma', tag: 'comma',
+    title: 'Comma with Coordinating Conjunctions (FANBOYS)',
+    desc: 'Use a comma before a coordinating conjunction (for, and, nor, but, or, yet, so) when it joins two independent clauses.',
+    examples: [
+      ['She studied hard but she failed the exam.', 'She studied hard, but she failed the exam.'],
+      ['He wanted to leave so he called a cab.', 'He wanted to leave, so he called a cab.'],
+    ],
+    tip: 'Only use the comma if both sides could stand alone as sentences. "She ran and jumped" — no comma needed (jumped is not an independent clause).'
+  },
+  {
+    cat: 'Comma', tag: 'comma',
+    title: 'Comma after Introductory Elements',
+    desc: 'Place a comma after introductory words, phrases, or clauses that come before the main clause.',
+    examples: [
+      ['However she was not ready.', 'However, she was not ready.'],
+      ['After the long race James collapsed.', 'After the long race, James collapsed.'],
+    ],
+    tip: 'A 5-word rule of thumb: introductory phrases of 5+ words almost always need a comma.'
+  },
+  {
+    cat: 'Comma', tag: 'comma',
+    title: 'Comma with Nonessential (Nonrestrictive) Clauses',
+    desc: 'Set off a clause with commas if it adds extra information that could be removed without changing the sentence\'s core meaning. Use "which" for nonessential clauses, "that" for essential ones.',
+    examples: [
+      ['The book that I borrowed was amazing.', 'The book, which I borrowed from the library, was amazing.'],
+      ['My sister who lives in Paris is a chef.', 'My sister, who lives in Paris, is a chef. (Only if you have one sister.)'],
+    ],
+    tip: '"Which" = nonessential (use commas). "That" = essential (no commas). Read the clause aloud — if you can drop it without losing meaning, it needs commas.'
+  },
+  {
+    cat: 'Comma', tag: 'comma',
+    title: 'Comma in Dates and Addresses',
+    desc: 'Use commas to separate elements in dates and addresses.',
+    examples: [
+      ['July 4 1776 was a hot day.', 'July 4, 1776, was a hot day.'],
+      ['I live at 42 Wallaby Way Sydney Australia.', 'I live at 42 Wallaby Way, Sydney, Australia.'],
+    ],
+    tip: 'When the year follows a full date (month + day), put a comma after the year too: "July 4, 1776, was..."'
+  },
+
+  // ── SEMICOLONS ──────────────────────────────────────────────────────────────
+  {
+    cat: 'Semicolon', tag: 'semicolon',
+    title: 'Semicolon between Independent Clauses',
+    desc: 'Use a semicolon to join two closely related independent clauses without a coordinating conjunction.',
+    examples: [
+      ['I have a big test tomorrow I can\'t go out tonight.', 'I have a big test tomorrow; I can\'t go out tonight.'],
+      ['The rain fell hard. We stayed inside.', 'The rain fell hard; we stayed inside.'],
+    ],
+    tip: 'The semicolon implies a stronger connection than a period but doesn\'t name the relationship. Use it when the clauses logically follow each other.'
+  },
+  {
+    cat: 'Semicolon', tag: 'semicolon',
+    title: 'Semicolon with Transitional Adverbs',
+    desc: 'Use a semicolon before transitional adverbs (however, therefore, moreover, furthermore, consequently) that join two independent clauses, and a comma after the adverb.',
+    examples: [
+      ['I studied hard, however I still failed.', 'I studied hard; however, I still failed.'],
+      ['She was tired, therefore she slept early.', 'She was tired; therefore, she slept early.'],
+    ],
+    tip: 'Pattern: [Independent clause]; [however/therefore/moreover], [independent clause].'
+  },
+  {
+    cat: 'Semicolon', tag: 'semicolon',
+    title: 'Semicolon in Complex Lists',
+    desc: 'Use semicolons to separate items in a list when the items themselves contain commas.',
+    examples: [
+      ['The guests were from Paris, France, London, England and Rome, Italy.', 'The guests were from Paris, France; London, England; and Rome, Italy.'],
+    ],
+    tip: 'Think of semicolons as "super commas" — they organize the higher-level structure when inner commas already exist.'
+  },
+
+  // ── APOSTROPHES ─────────────────────────────────────────────────────────────
+  {
+    cat: 'Apostrophe', tag: 'apostrophe',
+    title: "Apostrophe for Possessives",
+    desc: "Add 's to show possession for singular nouns, even if they already end in s. For plural nouns ending in s, add only an apostrophe.",
+    examples: [
+      ["The dogs bowl is empty. The students essay.", "The dog's bowl is empty. The student's essay."],
+      ["The students essays (multiple students)", "The students' essays. James's car. (or James' car — both acceptable)"],
+    ],
+    tip: "Trick: flip the phrase. 'The essay of the student' = the student's essay. 'The essays of the students' = the students' essays."
+  },
+  {
+    cat: 'Apostrophe', tag: 'apostrophe',
+    title: "Apostrophe in Contractions",
+    desc: "Use an apostrophe to show where letters have been omitted in a contraction.",
+    examples: [
+      ["do not → dont   it is → its   they are → theyre", "do not → don't   it is → it's   they are → they're"],
+      ["would not → wouldnt   I am → Im", "would not → wouldn't   I am → I'm"],
+    ],
+    tip: "Never use apostrophes for possessive pronouns: its, yours, hers, theirs, ours, whose — no apostrophes needed."
+  },
+  {
+    cat: 'Apostrophe', tag: 'apostrophe',
+    title: "Its vs. It's",
+    desc: "'It's' is ONLY a contraction of 'it is' or 'it has.' 'Its' (no apostrophe) is the possessive pronoun. This is one of the most common errors in English.",
+    examples: [
+      ["The dog wagged it's tail. Its raining outside.", "The dog wagged its tail. It's raining outside."],
+      ["Its been a long day. The company increased it's profits.", "It's been a long day. The company increased its profits."],
+    ],
+    tip: "Substitute 'it is' or 'it has.' If it reads correctly, use it's. If not, use its."
+  },
+
+  // ── SUBJECT-VERB AGREEMENT ──────────────────────────────────────────────────
+  {
+    cat: 'Agreement', tag: 'agreement',
+    title: "Subject-Verb Agreement Basics",
+    desc: "Singular subjects take singular verbs; plural subjects take plural verbs. Don't be misled by phrases between the subject and verb.",
+    examples: [
+      ["The box of chocolates are on the table.", "The box of chocolates is on the table."],
+      ["Neither the teachers nor the student were ready.", "Neither the teachers nor the student was ready. (verb agrees with closer noun)"],
+    ],
+    tip: "Cross out the prepositional phrase to find the true subject: 'The box [of chocolates] is on the table.' Box is singular."
+  },
+  {
+    cat: 'Agreement', tag: 'agreement',
+    title: "Collective Nouns",
+    desc: "Collective nouns (team, class, committee, jury, family) are usually singular in American English when acting as a single unit.",
+    examples: [
+      ["The team are playing well.", "The team is playing well. (acting as one unit)"],
+      ["The jury have reached a verdict.", "The jury has reached a verdict."],
+    ],
+    tip: "British English treats collective nouns as plural more often. Stick to singular in academic American English."
+  },
+  {
+    cat: 'Agreement', tag: 'agreement',
+    title: "Indefinite Pronouns",
+    desc: "Indefinite pronouns like everyone, someone, anyone, nobody, each, either, neither are SINGULAR.",
+    examples: [
+      ["Everyone in both classes are responsible.", "Everyone in both classes is responsible."],
+      ["Each of the students are required to attend.", "Each of the students is required to attend."],
+    ],
+    tip: "SANAM pronouns (Some, Any, None, All, Most) can be singular OR plural depending on the noun in the prepositional phrase that follows."
+  },
+
+  // ── COMMONLY CONFUSED WORDS ─────────────────────────────────────────────────
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Their / There / They're",
+    desc: "'Their' is possessive (belonging to them). 'There' refers to a place or introduces a sentence. 'They're' is a contraction of 'they are.'",
+    examples: [
+      ["Their going to there house with they're friends.", "They're going to their house with their friends."],
+      ["There is no reason to doubt there claims.", "There is no reason to doubt their claims."],
+    ],
+    tip: "They're = they are (contraction test). There = place (here with a T). Their = belonging (heir → inheritance)."
+  },
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Your / You're",
+    desc: "'Your' is a possessive pronoun. 'You're' is a contraction of 'you are.'",
+    examples: [
+      ["Your going to love you're new job.", "You're going to love your new job."],
+      ["Is that you're backpack? Your really smart.", "Is that your backpack? You're really smart."],
+    ],
+    tip: "Substitute 'you are.' 'You are backpack' doesn't work → your. 'You are going' works → you're."
+  },
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Effect / Affect",
+    desc: "'Affect' is usually a VERB (to influence). 'Effect' is usually a NOUN (the result). Rare exceptions: effect as a verb means 'to bring about'; affect as a noun is a psychology term.",
+    examples: [
+      ["The rain effected her mood. What affect did the drug have?", "The rain affected her mood. What effect did the drug have?"],
+      ["She effected change in the company.", "She effected change in the company. (✓ rare: 'to bring about')"],
+    ],
+    tip: "RAVEN: Remember Affect Verb Effect Noun."
+  },
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Then / Than",
+    desc: "'Then' relates to time or sequence. 'Than' is used for comparisons.",
+    examples: [
+      ["She is smarter then her brother.", "She is smarter than her brother."],
+      ["First we eat, than we leave.", "First we eat, then we leave."],
+    ],
+    tip: "Than = comparisons (both have an 'a'). Then = time (sequence, like 'when' or 'next')."
+  },
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Fewer / Less",
+    desc: "'Fewer' is used for things you can count (countable nouns). 'Less' is used for quantities you cannot count (mass nouns).",
+    examples: [
+      ["I have less friends than you. She drank less glasses of water.", "I have fewer friends than you. She drank fewer glasses of water."],
+      ["There is fewer traffic today. Less work is done.", "There is less traffic today. Less work is done."],
+    ],
+    tip: "If you can count it individually (apples, dollars, people), use fewer. If it's a bulk quantity (water, time, money as a concept), use less."
+  },
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Who / Whom",
+    desc: "'Who' is a subject pronoun (like he/she/they). 'Whom' is an object pronoun (like him/her/them).",
+    examples: [
+      ["Who did you give the book to? Whom wrote the letter?", "Whom did you give the book to? Who wrote the letter?"],
+      ["The teacher whom taught me retired.", "The teacher who taught me retired."],
+    ],
+    tip: "Substitute he/him. If 'he' sounds right → who. If 'him' sounds right → whom. (Both end in M.)"
+  },
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Lie / Lay",
+    desc: "'Lie' = to recline (intransitive — no object). 'Lay' = to place something (transitive — needs an object). The confusion is worsened because 'lay' is also the past tense of 'lie.'",
+    examples: [
+      ["I'm going to lay down for a nap. Lay your head back.", "I'm going to lie down for a nap. Lay your head back. (✓)"],
+      ["Yesterday I lied on the couch all day.", "Yesterday I lay on the couch all day. (past tense of lie)"],
+    ],
+    tip: "Lie (recline): lie, lay, lain. Lay (place): lay, laid, laid. Ask: does it have a direct object? If yes → lay."
+  },
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Principal / Principle",
+    desc: "'Principal' can be a noun (the school leader; the main person/amount) or adjective (main, chief). 'Principle' is always a noun meaning a fundamental rule or belief.",
+    examples: [
+      ["She stood by her principals. The principle reason was cost.", "She stood by her principles. The principal reason was cost."],
+    ],
+    tip: "The principal is your pal (both end in 'pal'). A principle is a rule — like a rule of science."
+  },
+  {
+    cat: 'Confused Words', tag: 'confused',
+    title: "Imply / Infer",
+    desc: "'Imply' means to suggest without directly stating (the speaker/writer implies). 'Infer' means to draw a conclusion from evidence (the reader/listener infers).",
+    examples: [
+      ["The author infers that the character is lonely.", "The author implies that the character is lonely."],
+      ["From the evidence, we can imply he was there.", "From the evidence, we can infer he was there."],
+    ],
+    tip: "The author implies; the reader infers. Writers → imply; readers → infer."
+  },
+
+  // ── SENTENCE STRUCTURE ──────────────────────────────────────────────────────
+  {
+    cat: 'Sentence Structure', tag: 'sentence',
+    title: "Run-On Sentences",
+    desc: "A run-on sentence occurs when two or more independent clauses are joined without proper punctuation or a conjunction. Fix with: (1) a period, (2) a semicolon, (3) a comma + conjunction, or (4) a subordinating conjunction.",
+    examples: [
+      ["I love science I want to be a biologist.", "I love science; I want to be a biologist. (OR: ...science, and I want...)"],
+      ["The game was fun we played for hours then we went home.", "The game was fun. We played for hours, and then we went home."],
+    ],
+    tip: "Read the sentence aloud. If you naturally pause at a spot where there's no punctuation, you may have a run-on."
+  },
+  {
+    cat: 'Sentence Structure', tag: 'sentence',
+    title: "Sentence Fragments",
+    desc: "A fragment is an incomplete sentence missing a subject, verb, or both — or it is a dependent clause standing alone.",
+    examples: [
+      ["Because she was tired. Running through the park. A huge storm.", "Because she was tired, she left early. (attached the dependent clause) / She was running through the park."],
+    ],
+    tip: "Check: (1) Does it have a subject? (2) Does it have a verb? (3) Is it a complete thought? All three must be yes."
+  },
+  {
+    cat: 'Sentence Structure', tag: 'sentence',
+    title: "Parallel Structure",
+    desc: "Elements in a series or comparison should use the same grammatical form (all nouns, all gerunds, all infinitives, etc.).",
+    examples: [
+      ["She likes running, to swim, and the gym.", "She likes running, swimming, and going to the gym."],
+      ["He was tall, smart, and had a good sense of humor.", "He was tall, smart, and funny."],
+    ],
+    tip: "List the elements and ask: are they all the same part of speech or structure? Nouns with nouns, -ing with -ing, to + verb with to + verb."
+  },
+
+  // ── PUNCTUATION ─────────────────────────────────────────────────────────────
+  {
+    cat: 'Punctuation', tag: 'punctuation',
+    title: "Colon Usage",
+    desc: "Use a colon after an independent clause to introduce a list, explanation, quote, or elaboration. Do NOT use a colon after a verb or preposition.",
+    examples: [
+      ["You need to bring: a pencil, paper, and a ruler.", "You need to bring a pencil, paper, and a ruler. (no colon after verb)"],
+      ["She had one goal: to win the championship.", "She had one goal: to win the championship. ✓"],
+    ],
+    tip: "Ask: can the text before the colon stand alone as a sentence? If yes, a colon is appropriate. If no, remove it."
+  },
+  {
+    cat: 'Punctuation', tag: 'punctuation',
+    title: "Dash vs. Hyphen",
+    desc: "A hyphen (-) connects compound words and modifiers. An em dash (—) signals a break in thought, adds emphasis, or sets off information. An en dash (–) shows ranges.",
+    examples: [
+      ["My well known friend—who I met ten years ago—is here.", "My well-known friend—who I met ten years ago—is here."],
+      ["Pages 12-25   2019–2023   a state-of-the-art device", "Pages 12–25 (en dash)   2019–2023   a state-of-the-art device (hyphen)"],
+    ],
+    tip: "Hyphens connect (-). Em dashes interrupt or emphasize (—). En dashes show ranges (–). Most keyboards: em dash = Alt+0151, en dash = Alt+0150."
+  },
+  {
+    cat: 'Punctuation', tag: 'punctuation',
+    title: "Quotation Marks and Punctuation Placement",
+    desc: "In American English, periods and commas always go INSIDE quotation marks. Question marks and exclamation points go inside only if they are part of the quote.",
+    examples: [
+      ['She said, "I\'m ready". He called it "brilliant".', 'She said, "I\'m ready." He called it "brilliant."'],
+      ['Did you say "leave"? She shouted, "Help!"', 'Did you say "leave"? ✓   She shouted, "Help!" ✓'],
+    ],
+    tip: "American rule: periods and commas always inside. British rule is opposite. Check which style guide your class uses."
+  },
+
+  // ── PRONOUNS ────────────────────────────────────────────────────────────────
+  {
+    cat: 'Pronoun', tag: 'pronoun',
+    title: "Pronoun-Antecedent Agreement",
+    desc: "A pronoun must agree in number and gender with the noun it replaces (its antecedent). Singular antecedents need singular pronouns.",
+    examples: [
+      ["Every student should bring their textbook. (traditional grammar)", "Every student should bring his or her textbook. (traditional) OR Every student should bring their textbook. (widely accepted today)"],
+      ["The committee made their decision. (American English)", "The committee made its decision. (committee = singular unit)"],
+    ],
+    tip: "'They/their' as a singular pronoun is now accepted by most style guides when the gender is unknown or the person uses they/them pronouns."
+  },
+  {
+    cat: 'Pronoun', tag: 'pronoun',
+    title: "Pronoun Case: I vs. Me",
+    desc: "Use subject pronouns (I, he, she, we, they) as subjects. Use object pronouns (me, him, her, us, them) as objects. The confusion increases in compound constructions.",
+    examples: [
+      ["Between you and I, this is wrong. Her and I went to the store.", "Between you and me, this is wrong. She and I went to the store."],
+      ["They gave the award to she and I.", "They gave the award to her and me."],
+    ],
+    tip: "Remove the other person: 'They gave it to I' or 'They gave it to me'? → me. 'I went' or 'Me went'? → I."
+  },
+  {
+    cat: 'Pronoun', tag: 'pronoun',
+    title: "Vague Pronoun Reference",
+    desc: "Every pronoun should clearly refer to a specific antecedent. Avoid using 'this,' 'it,' 'they,' or 'which' when the referent is unclear.",
+    examples: [
+      ["When I called the store, they said it was closed.", "When I called the store, the manager said the store was closed."],
+      ["She told her sister that she had passed. This showed great growth.", "Maria told her sister that Maria had passed. This achievement showed great growth."],
+    ],
+    tip: "After writing a pronoun, ask: 'could this refer to more than one noun?' If yes, replace it with the specific noun."
+  },
+
+  // ── MODIFIERS ───────────────────────────────────────────────────────────────
+  {
+    cat: 'Modifiers', tag: 'modifier',
+    title: "Dangling Modifiers",
+    desc: "A dangling modifier is a phrase that doesn't have a clear subject to modify. The subject implied in the modifier must match the grammatical subject of the main clause.",
+    examples: [
+      ["Running to catch the bus, my backpack fell off.", "Running to catch the bus, I dropped my backpack. (Now 'I' is the subject of both clauses)"],
+      ["Having studied all night, the exam seemed easy.", "Having studied all night, she found the exam easy."],
+    ],
+    tip: "Ask: who or what is performing the action in the opening phrase? That noun must be the subject of the main clause."
+  },
+  {
+    cat: 'Modifiers', tag: 'modifier',
+    title: "Misplaced Modifiers",
+    desc: "A modifier should be placed as close as possible to the word it modifies. Misplaced modifiers create unintended — sometimes humorous — meanings.",
+    examples: [
+      ["She almost drove her children to school every day.", "She drove her children to school almost every day."],
+      ["He only eats vegetables on weekdays.", "He eats only vegetables on weekdays. (OR: He eats vegetables only on weekdays.)"],
+    ],
+    tip: "'Only,' 'nearly,' 'almost,' 'just,' 'even,' and 'merely' are the most commonly misplaced modifiers. Put them directly before the word they modify."
+  },
+
+  // ── VERB TENSE ──────────────────────────────────────────────────────────────
+  {
+    cat: 'Verb Tense', tag: 'tense',
+    title: "Tense Consistency",
+    desc: "Don't shift verb tenses unnecessarily within a passage. If you start in past tense, stay in past tense unless marking a genuine time shift.",
+    examples: [
+      ["She walked into the room and sees everyone. Then she noticed they were all staring.", "She walked into the room and saw everyone. Then she noticed they were all staring."],
+    ],
+    tip: "Pick a tense before writing and review for unnecessary switches. Literary analysis traditionally uses present tense ('Hamlet hesitates; he fears...')."
+  },
+  {
+    cat: 'Verb Tense', tag: 'tense',
+    title: "Active vs. Passive Voice",
+    desc: "Active voice: the subject performs the action. Passive voice: the subject receives the action. Prefer active voice for clear, concise writing; passive voice is acceptable when the actor is unknown or unimportant.",
+    examples: [
+      ["The ball was kicked by John. Mistakes were made.", "John kicked the ball. We made mistakes. (OR: The team made mistakes.)"],
+      ["The solution was prepared by the researcher.", "The researcher prepared the solution."],
+    ],
+    tip: "Find 'was/were/been + past participle' patterns — these are passive. Ask: can I say who's doing the action? If yes, rewrite in active voice."
+  },
+];
+
+const CATS = [...new Set(RULES.map(r => r.cat))];
+let activeCat = 'All';
+let searchTerm = '';
+
+function init() {
+  // Build cat bar
+  const bar = document.getElementById('catBar');
+  bar.innerHTML = ['All', ...CATS].map(c =>
+    `<button class="cat-chip${c==='All'?' active':''}" onclick="setCat('${c}',this)">${c}</button>`
+  ).join('');
+
+  // Quick reference
+  const qr = document.getElementById('quickRef');
+  const quickItems = [
+    { k: 'their/there/they\'re', v: 'their = possessive, there = place, they\'re = they are' },
+    { k: 'affect/effect', v: 'affect = verb (influence), effect = noun (result)' },
+    { k: 'it\'s vs its', v: 'it\'s = it is, its = possessive' },
+    { k: 'fewer/less', v: 'fewer = countable, less = uncountable' },
+    { k: 'who/whom', v: 'who = subject (he), whom = object (him)' },
+    { k: 'then/than', v: 'than = comparison, then = time' },
+    { k: 'semicolon', v: '[clause]; [clause] — related independent clauses' },
+    { k: 'Oxford comma', v: 'Use comma before "and/or" in a series of 3+' },
+    { k: 'colon', v: 'Only after a complete independent clause' },
+    { k: 'dangling modifier', v: 'Opening phrase subject must = main clause subject' },
+    { k: 'active voice', v: 'Subject does the action (not receives it)' },
+    { k: 'parallel structure', v: 'Matching grammatical form in lists/comparisons' },
+  ];
+  qr.innerHTML = quickItems.map(item =>
+    `<div class="qr-item" onclick="searchFor('${item.k}')"><strong>${item.k}</strong>${item.v}</div>`
+  ).join('');
+
+  render();
+}
+
+function searchFor(term) {
+  document.getElementById('searchInput').value = term;
+  searchTerm = term.toLowerCase();
+  activeCat = 'All';
+  document.querySelectorAll('.cat-chip').forEach((c, i) => c.classList.toggle('active', i === 0));
+  render();
+}
+
+function setCat(cat, el) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  searchTerm = '';
+  document.getElementById('searchInput').value = '';
+  render();
+}
+
+function filterRules() {
+  searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  activeCat = 'All';
+  document.querySelectorAll('.cat-chip').forEach((c, i) => c.classList.toggle('active', i === 0));
+  render();
+}
+
+function clearSearch() {
+  searchTerm = '';
+  document.getElementById('searchInput').value = '';
+  render();
+}
+
+function matchesSearch(rule) {
+  if (!searchTerm) return true;
+  return (
+    rule.title.toLowerCase().includes(searchTerm) ||
+    rule.desc.toLowerCase().includes(searchTerm) ||
+    rule.cat.toLowerCase().includes(searchTerm) ||
+    (rule.tip || '').toLowerCase().includes(searchTerm) ||
+    rule.examples.some(ex => ex[0].toLowerCase().includes(searchTerm) || ex[1].toLowerCase().includes(searchTerm))
+  );
+}
+
+function render() {
+  const out = document.getElementById('output');
+  let filtered = RULES.filter(r => {
+    if (activeCat !== 'All' && r.cat !== activeCat) return false;
+    if (searchTerm && !matchesSearch(r)) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    out.innerHTML = '<div class="no-results"><div class="no-results-icon">🔍</div>No rules found. Try a different search term.</div>';
+    return;
+  }
+
+  // Group by category
+  const grouped = {};
+  filtered.forEach(r => { if (!grouped[r.cat]) grouped[r.cat] = []; grouped[r.cat].push(r); });
+
+  out.innerHTML = Object.entries(grouped).map(([cat, rules]) => `
+    <div>
+      <div class="section-header">
+        <span class="section-title">${catEmoji(cat)} ${cat}</span>
+        <span class="section-count">${rules.length} rule${rules.length !== 1 ? 's' : ''}</span>
+      </div>
+      ${rules.map((r, i) => {
+        const id = 'r-' + cat.replace(/\s/g, '') + i;
+        return `
+          <div class="rule-card" id="${id}" onclick="toggle('${id}')">
+            <div class="rule-header">
+              <span class="rule-title">${r.title}</span>
+              <span class="rule-tag tag-${r.tag}">${cat}</span>
+              <span class="rule-chevron">▾</span>
+            </div>
+            <div class="rule-body">
+              <div class="rule-desc">${r.desc}</div>
+              <div class="examples-label">Examples</div>
+              ${r.examples.map(ex => `
+                <div class="example-row">
+                  <div class="ex-box ex-wrong">${ex[0]}</div>
+                  <div class="ex-box ex-right">${ex[1]}</div>
+                </div>
+              `).join('')}
+              ${r.tip ? `<div class="rule-tip">${r.tip}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `).join('');
+
+  // If search, auto-expand results
+  if (searchTerm && filtered.length <= 4) {
+    document.querySelectorAll('.rule-card').forEach(c => c.classList.add('expanded'));
+  }
+}
+
+function toggle(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('expanded');
+}
+
+function catEmoji(cat) {
+  const map = { 'Comma': '✏️', 'Semicolon': '⚡', 'Apostrophe': '🔑', 'Agreement': '⚖️', 'Confused Words': '🔄', 'Sentence Structure': '🏗️', 'Punctuation': '🔣', 'Pronoun': '👤', 'Modifiers': '🎯', 'Verb Tense': '⏱️' };
+  return map[cat] || '📖';
+}
+
+init();
+</script>
+</body>
+</html>

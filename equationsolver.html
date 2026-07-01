@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Equation Solver — aceAcademy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55}
+.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+.container{max-width:800px;margin:0 auto;padding:24px 20px 60px}
+.type-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.type-btn{padding:8px 16px;border-radius:10px;border:1.5px solid #2a3a55;background:#111c32;color:#7a8fa8;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.type-btn.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
+.type-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.input-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:22px;margin-bottom:20px}
+.form-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:14px}
+.eq-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.eq-label{font-size:.85rem;font-weight:700;color:#7a8fa8;white-space:nowrap;min-width:80px}
+.eq-input{padding:10px 14px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:1rem;font-family:'Consolas',monospace;outline:none;transition:.15s;width:180px;text-align:center}
+.eq-input:focus{border-color:#6366f1}
+.eq-sep{font-size:1.1rem;color:#7a8fa8;font-weight:700}
+.eq-display{font-size:1.1rem;font-family:'Consolas',monospace;color:#a5b4fc;background:#0d1628;padding:10px 16px;border-radius:9px;min-width:220px;text-align:center;letter-spacing:.05em}
+.hint{font-size:.72rem;color:#7a8fa8;margin-top:4px}
+.btn-row{display:flex;gap:8px;margin-top:14px}
+.btn{padding:9px 18px;border-radius:9px;border:none;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.examples{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.ex-btn{padding:4px 10px;border-radius:8px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Consolas',monospace;transition:.15s}
+.ex-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+/* Steps */
+.steps-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:22px;display:none}
+.steps-card.show{display:block}
+.step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,.25);color:#a5b4fc;font-size:.78rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body{}
+.step-action{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:4px}
+.step-eq{font-family:'Consolas',monospace;font-size:1.05rem;color:#e8edf5;margin-bottom:2px}
+.step-note{font-size:.78rem;color:#7a8fa8;line-height:1.5}
+.answer-box{background:rgba(99,102,241,.12);border:2px solid #6366f1;border-radius:12px;padding:16px 20px;margin-top:14px;display:flex;align-items:center;gap:14px}
+.answer-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8}
+.answer-value{font-family:'Consolas',monospace;font-size:1.4rem;font-weight:900;color:#a5b4fc}
+.no-real-sol{color:#f87171;font-weight:700;font-size:.9rem;margin-top:10px;padding:12px 16px;background:rgba(239,68,68,.1);border-radius:9px;border-left:3px solid #ef4444}
+.error-msg{background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;color:#f87171;font-size:.85rem;margin-top:10px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="equationsolver.html" class="nav-link active">🔢 Eq. Solver</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="mathgen.html" class="nav-link">🧮 Math Gen</a>
+  <a href="tools.html" class="nav-link">🛠 Calculators</a>
+  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
+  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
+</nav>
+<div class="hero">
+  <h1>🔢 Step-by-Step <span>Equation Solver</span></h1>
+  <p>Enter coefficients and see every step of the solution — linear, quadratic, and systems of equations.</p>
+</div>
+<div class="container">
+  <div class="type-bar">
+    <button class="type-btn active" onclick="setType('linear',this)">Linear (ax + b = c)</button>
+    <button class="type-btn" onclick="setType('quadratic',this)">Quadratic (ax² + bx + c = 0)</button>
+    <button class="type-btn" onclick="setType('system',this)">System of 2 Equations</button>
+    <button class="type-btn" onclick="setType('proportion',this)">Proportion (a/b = c/d)</button>
+  </div>
+
+  <!-- LINEAR -->
+  <div id="form-linear" class="input-card">
+    <div class="form-title">Linear Equation — ax + b = c</div>
+    <div class="eq-row">
+      <div class="eq-display" id="lin-display">__ x + __ = __</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <div><label class="hint" style="display:block;margin-bottom:4px">a (coefficient)</label><input class="eq-input" id="la" placeholder="2" oninput="updateDisplay('linear')" style="width:90px"></div>
+      <div style="align-self:flex-end;font-size:1.1rem;padding-bottom:8px;color:#7a8fa8">x +</div>
+      <div><label class="hint" style="display:block;margin-bottom:4px">b (constant, left)</label><input class="eq-input" id="lb" placeholder="3" oninput="updateDisplay('linear')" style="width:90px"></div>
+      <div style="align-self:flex-end;font-size:1.1rem;padding-bottom:8px;color:#7a8fa8">=</div>
+      <div><label class="hint" style="display:block;margin-bottom:4px">c (right side)</label><input class="eq-input" id="lc" placeholder="11" oninput="updateDisplay('linear')" style="width:90px"></div>
+    </div>
+    <div class="examples">
+      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Examples:</span>
+      <button class="ex-btn" onclick="setLinear(2,3,11)">2x+3=11</button>
+      <button class="ex-btn" onclick="setLinear(5,-2,18)">5x−2=18</button>
+      <button class="ex-btn" onclick="setLinear(-3,9,0)">−3x+9=0</button>
+      <button class="ex-btn" onclick="setLinear(1,0,7)">x=7</button>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="solveLinear()">Solve →</button><button class="btn btn-ghost" onclick="clearSteps()">Clear</button></div>
+  </div>
+
+  <!-- QUADRATIC -->
+  <div id="form-quadratic" class="input-card" style="display:none">
+    <div class="form-title">Quadratic Equation — ax² + bx + c = 0</div>
+    <div class="eq-row">
+      <div class="eq-display" id="quad-display">__x² + __x + __ = 0</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <div><label class="hint" style="display:block;margin-bottom:4px">a</label><input class="eq-input" id="qa" placeholder="1" oninput="updateDisplay('quadratic')" style="width:80px"></div>
+      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:#7a8fa8">x² +</div>
+      <div><label class="hint" style="display:block;margin-bottom:4px">b</label><input class="eq-input" id="qb" placeholder="-5" oninput="updateDisplay('quadratic')" style="width:80px"></div>
+      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:#7a8fa8">x +</div>
+      <div><label class="hint" style="display:block;margin-bottom:4px">c</label><input class="eq-input" id="qc" placeholder="6" oninput="updateDisplay('quadratic')" style="width:80px"></div>
+      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:#7a8fa8">= 0</div>
+    </div>
+    <div class="examples">
+      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Examples:</span>
+      <button class="ex-btn" onclick="setQuad(1,-5,6)">x²−5x+6=0</button>
+      <button class="ex-btn" onclick="setQuad(2,3,-5)">2x²+3x−5=0</button>
+      <button class="ex-btn" onclick="setQuad(1,0,-9)">x²−9=0</button>
+      <button class="ex-btn" onclick="setQuad(1,-4,4)">x²−4x+4=0</button>
+      <button class="ex-btn" onclick="setQuad(1,2,5)">x²+2x+5=0 (complex)</button>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="solveQuadratic()">Solve →</button><button class="btn btn-ghost" onclick="clearSteps()">Clear</button></div>
+  </div>
+
+  <!-- SYSTEM -->
+  <div id="form-system" class="input-card" style="display:none">
+    <div class="form-title">System of 2 Linear Equations</div>
+    <div style="margin-bottom:12px">
+      <div class="eq-row">
+        <span class="eq-label">Equation 1:</span>
+        <input class="eq-input" id="s1a" placeholder="2" style="width:70px"> <span class="eq-sep">x +</span>
+        <input class="eq-input" id="s1b" placeholder="3" style="width:70px"> <span class="eq-sep">y =</span>
+        <input class="eq-input" id="s1c" placeholder="8" style="width:70px">
+      </div>
+      <div class="eq-row">
+        <span class="eq-label">Equation 2:</span>
+        <input class="eq-input" id="s2a" placeholder="1" style="width:70px"> <span class="eq-sep">x +</span>
+        <input class="eq-input" id="s2b" placeholder="-1" style="width:70px"> <span class="eq-sep">y =</span>
+        <input class="eq-input" id="s2c" placeholder="1" style="width:70px">
+      </div>
+    </div>
+    <div class="hint">Uses elimination method.</div>
+    <div class="examples">
+      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Examples:</span>
+      <button class="ex-btn" onclick="setSystem(2,3,8,1,-1,1)">2x+3y=8, x−y=1</button>
+      <button class="ex-btn" onclick="setSystem(3,2,12,1,1,5)">3x+2y=12, x+y=5</button>
+      <button class="ex-btn" onclick="setSystem(4,-2,10,2,3,13)">4x−2y=10, 2x+3y=13</button>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="solveSystem()">Solve →</button><button class="btn btn-ghost" onclick="clearSteps()">Clear</button></div>
+  </div>
+
+  <!-- PROPORTION -->
+  <div id="form-proportion" class="input-card" style="display:none">
+    <div class="form-title">Proportion — a/b = c/d (solve for x)</div>
+    <div class="hint" style="margin-bottom:12px">Place x in exactly one field. Leave the others as numbers.</div>
+    <div class="eq-row">
+      <input class="eq-input" id="pa" placeholder="3" style="width:80px">
+      <span class="eq-sep" style="font-size:1.4rem">/</span>
+      <input class="eq-input" id="pb" placeholder="x" style="width:80px">
+      <span class="eq-sep">=</span>
+      <input class="eq-input" id="pc" placeholder="6" style="width:80px">
+      <span class="eq-sep" style="font-size:1.4rem">/</span>
+      <input class="eq-input" id="pd" placeholder="10" style="width:80px">
+    </div>
+    <div class="examples">
+      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Examples:</span>
+      <button class="ex-btn" onclick="setProp('3','x','6','10')">3/x = 6/10</button>
+      <button class="ex-btn" onclick="setProp('x','4','9','12')">x/4 = 9/12</button>
+      <button class="ex-btn" onclick="setProp('5','8','x','24')">5/8 = x/24</button>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="solveProportion()">Solve →</button><button class="btn btn-ghost" onclick="clearSteps()">Clear</button></div>
+  </div>
+
+  <!-- STEPS OUTPUT -->
+  <div class="steps-card" id="stepsCard">
+    <div id="stepsOutput"></div>
+  </div>
+</div>
+
+<script>
+let currentType = 'linear';
+
+function setType(type, el) {
+  currentType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  ['linear','quadratic','system','proportion'].forEach(t => {
+    document.getElementById('form-'+t).style.display = t === type ? 'block' : 'none';
+  });
+  clearSteps();
+}
+
+function clearSteps() {
+  const c = document.getElementById('stepsCard');
+  c.classList.remove('show');
+}
+
+function showSteps(html) {
+  const c = document.getElementById('stepsCard');
+  document.getElementById('stepsOutput').innerHTML = html;
+  c.classList.add('show');
+  c.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function getNum(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  if (isNaN(v)) throw new Error(`Field "${id}" must be a number.`);
+  return v;
+}
+
+function fmtN(n) {
+  if (Number.isInteger(n)) return n.toString();
+  return parseFloat(n.toFixed(6)).toString();
+}
+
+function coefStr(coef, varName, first=false) {
+  if (coef === 0) return '';
+  if (coef === 1) return (first ? '' : ' + ') + varName;
+  if (coef === -1) return (first ? '-' : ' − ') + varName;
+  if (coef > 0 && !first) return ` + ${fmtN(coef)}${varName}`;
+  if (coef < 0 && !first) return ` − ${fmtN(Math.abs(coef))}${varName}`;
+  return `${fmtN(coef)}${varName}`;
+}
+
+function step(num, action, eq, note='') {
+  return `<div class="step">
+    <div class="step-num">${num}</div>
+    <div class="step-body">
+      <div class="step-action">${action}</div>
+      <div class="step-eq">${eq}</div>
+      ${note ? `<div class="step-note">${note}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function answer(label, val) {
+  return `<div class="answer-box">
+    <div><div class="answer-label">Answer</div><div class="answer-value">${label}</div></div>
+    <div style="font-size:.78rem;color:#7a8fa8">${val}</div>
+  </div>`;
+}
+
+// ── LINEAR ──────────────────────────────────────────────────────────────────
+function setLinear(a,b,c) {
+  document.getElementById('la').value=a;
+  document.getElementById('lb').value=b;
+  document.getElementById('lc').value=c;
+  updateDisplay('linear');
+}
+
+function updateDisplay(type) {
+  if (type === 'linear') {
+    const a = document.getElementById('la').value || '__';
+    const b = document.getElementById('lb').value || '__';
+    const c = document.getElementById('lc').value || '__';
+    const bsign = parseFloat(b) < 0 ? `− ${Math.abs(b)}` : `+ ${b}`;
+    document.getElementById('lin-display').textContent = `${a}x ${bsign} = ${c}`;
+  }
+  if (type === 'quadratic') {
+    const a = document.getElementById('qa').value || '__';
+    const b = document.getElementById('qb').value || '__';
+    const c = document.getElementById('qc').value || '__';
+    const bsign = parseFloat(b) < 0 ? `− ${Math.abs(b)}` : `+ ${b}`;
+    const csign = parseFloat(c) < 0 ? `− ${Math.abs(c)}` : `+ ${c}`;
+    document.getElementById('quad-display').textContent = `${a}x² ${bsign}x ${csign} = 0`;
+  }
+}
+
+function solveLinear() {
+  let a,b,c;
+  try { a=getNum('la'); b=getNum('lb'); c=getNum('lc'); } catch(e) { showErr(e.message); return; }
+  const bsign = b >= 0 ? `+ ${fmtN(b)}` : `− ${fmtN(Math.abs(b))}`;
+  let html = step(1, 'Write the equation', `${fmtN(a)}x ${bsign} = ${fmtN(c)}`);
+
+  if (a === 0) {
+    if (b === c) { showSteps(html + `<div class="answer-box"><div class="answer-value">All real numbers (∞ solutions)</div></div>`); return; }
+    else { showSteps(html + `<div class="no-real-sol">No solution — 0x term eliminates x entirely and ${fmtN(b)} ≠ ${fmtN(c)}</div>`); return; }
+  }
+
+  // Step 2: subtract b
+  const rhs2 = c - b;
+  const op = b >= 0 ? `Subtract ${fmtN(b)}` : `Add ${fmtN(Math.abs(b))}`;
+  html += step(2, `${op} from both sides`, `${fmtN(a)}x = ${fmtN(rhs2)}`, b >= 0 ? `Both sides minus ${fmtN(b)} to isolate the x-term.` : `Both sides plus ${fmtN(Math.abs(b))} to isolate the x-term.`);
+
+  // Step 3: divide by a
+  const x = rhs2 / a;
+  html += step(3, `Divide both sides by ${fmtN(a)}`, `x = ${fmtN(rhs2)} ÷ ${fmtN(a)} = ${fmtN(x)}`, `Divide each side by the coefficient of x.`);
+
+  // Verify
+  const check = a * x + b;
+  html += step(4, 'Verify', `${fmtN(a)}(${fmtN(x)}) ${bsign} = ${fmtN(check)} ✓`, `Substitute x = ${fmtN(x)} back into the original equation.`);
+  html += answer(`x = ${fmtN(x)}`, `${fmtN(a)}(${fmtN(x)}) ${bsign} = ${fmtN(c)} ✓`);
+  showSteps(html);
+}
+
+// ── QUADRATIC ───────────────────────────────────────────────────────────────
+function setQuad(a,b,c) {
+  document.getElementById('qa').value=a;
+  document.getElementById('qb').value=b;
+  document.getElementById('qc').value=c;
+  updateDisplay('quadratic');
+}
+
+function solveQuadratic() {
+  let a,b,c;
+  try { a=getNum('qa'); b=getNum('qb'); c=getNum('qc'); } catch(e) { showErr(e.message); return; }
+  if (a === 0) { showErr('a cannot be 0 for a quadratic equation.'); return; }
+
+  const bsign = b >= 0 ? `+ ${fmtN(b)}` : `− ${fmtN(Math.abs(b))}`;
+  const csign = c >= 0 ? `+ ${fmtN(c)}` : `− ${fmtN(Math.abs(c))}`;
+
+  let html = step(1, 'Write the equation', `${fmtN(a)}x² ${bsign}x ${csign} = 0`);
+  html += step(2, 'Identify a, b, c', `a = ${fmtN(a)},  b = ${fmtN(b)},  c = ${fmtN(c)}`, 'These are the coefficients we plug into the quadratic formula.');
+  html += step(3, 'Apply the Quadratic Formula', `x = (−b ± √(b² − 4ac)) / (2a)`, 'The quadratic formula works for any quadratic equation.');
+
+  const bsq = b * b;
+  const fac = 4 * a * c;
+  const disc = bsq - fac;
+  html += step(4, 'Calculate the discriminant (b² − 4ac)',
+    `b² = ${fmtN(b)}² = ${fmtN(bsq)}`,
+    `4ac = 4 × ${fmtN(a)} × ${fmtN(c)} = ${fmtN(fac)}`);
+  html += step(5, 'Discriminant = b² − 4ac',
+    `Δ = ${fmtN(bsq)} − ${fmtN(fac)} = ${fmtN(disc)}`,
+    disc > 0 ? 'Δ > 0 → two distinct real solutions' : disc === 0 ? 'Δ = 0 → one repeated solution' : 'Δ < 0 → no real solutions (complex roots)');
+
+  const negB = -b;
+  const denom = 2 * a;
+
+  if (disc < 0) {
+    const re = -b / (2*a);
+    const im = Math.sqrt(-disc) / (2*a);
+    html += step(6, 'Complex roots (no real solution)',
+      `x = (${fmtN(negB)} ± √${fmtN(disc)}) / ${fmtN(denom)}`,
+      `Since Δ < 0, √Δ is imaginary. The solutions are complex numbers.`);
+    html += answer(`x = ${fmtN(re)} ± ${fmtN(im)}i`, 'Complex / imaginary roots — no real solution');
+  } else if (disc === 0) {
+    const x = -b / (2*a);
+    html += step(6, 'One repeated root',
+      `x = ${fmtN(negB)} / ${fmtN(denom)} = ${fmtN(x)}`,
+      'When Δ = 0, both roots are the same.');
+    html += answer(`x = ${fmtN(x)}`, 'Repeated root (double solution)');
+  } else {
+    const sqrtD = Math.sqrt(disc);
+    html += step(6, 'Compute √discriminant', `√${fmtN(disc)} ≈ ${fmtN(sqrtD)}`);
+    const x1 = (negB + sqrtD) / denom;
+    const x2 = (negB - sqrtD) / denom;
+    html += step(7, 'Calculate both roots',
+      `x₁ = (${fmtN(negB)} + ${fmtN(sqrtD)}) / ${fmtN(denom)} = ${fmtN(x1)}<br>x₂ = (${fmtN(negB)} − ${fmtN(sqrtD)}) / ${fmtN(denom)} = ${fmtN(x2)}`);
+    // Verify
+    const chk1 = a*x1*x1 + b*x1 + c;
+    const chk2 = a*x2*x2 + b*x2 + c;
+    html += step(8, 'Verify both solutions',
+      `x₁: ${fmtN(a)}(${fmtN(x1)})² ${bsign}(${fmtN(x1)}) ${csign} ≈ ${fmtN(Math.round(chk1*1e9)/1e9)} ✓<br>x₂: ${fmtN(a)}(${fmtN(x2)})² ${bsign}(${fmtN(x2)}) ${csign} ≈ ${fmtN(Math.round(chk2*1e9)/1e9)} ✓`);
+    html += answer(`x₁ = ${fmtN(x1)},  x₂ = ${fmtN(x2)}`, `Two real solutions`);
+  }
+  showSteps(html);
+}
+
+// ── SYSTEM ──────────────────────────────────────────────────────────────────
+function setSystem(a1,b1,c1,a2,b2,c2) {
+  document.getElementById('s1a').value=a1; document.getElementById('s1b').value=b1; document.getElementById('s1c').value=c1;
+  document.getElementById('s2a').value=a2; document.getElementById('s2b').value=b2; document.getElementById('s2c').value=c2;
+}
+
+function solveSystem() {
+  let a1,b1,c1,a2,b2,c2;
+  try {
+    a1=getNum('s1a'); b1=getNum('s1b'); c1=getNum('s1c');
+    a2=getNum('s2a'); b2=getNum('s2b'); c2=getNum('s2c');
+  } catch(e) { showErr(e.message); return; }
+
+  const eq1str = `${fmtN(a1)}x + ${fmtN(b1)}y = ${fmtN(c1)}`;
+  const eq2str = `${fmtN(a2)}x + ${fmtN(b2)}y = ${fmtN(c2)}`;
+  let html = step(1, 'Write the system', `(1): ${eq1str}<br>(2): ${eq2str}`);
+
+  // Elimination — eliminate x by scaling
+  const det = a1*b2 - a2*b1;
+  if (Math.abs(det) < 1e-10) {
+    // Check consistent or inconsistent
+    if (Math.abs(a1*c2 - a2*c1) < 1e-10) {
+      html += '<div class="no-real-sol">The equations are the same line — infinitely many solutions.</div>';
+    } else {
+      html += '<div class="no-real-sol">No solution — the lines are parallel (inconsistent system).</div>';
+    }
+    showSteps(html); return;
+  }
+
+  // Scale eq1 by a2, eq2 by a1 to eliminate x
+  const m1 = a2, m2 = a1;
+  html += step(2, `Multiply to eliminate x`,
+    `(1) × ${fmtN(m1)}: ${fmtN(a1*m1)}x + ${fmtN(b1*m1)}y = ${fmtN(c1*m1)}<br>(2) × ${fmtN(m2)}: ${fmtN(a2*m2)}x + ${fmtN(b2*m2)}y = ${fmtN(c2*m2)}`,
+    `Multiply so that the x-coefficients are equal, then subtract.`);
+
+  const newB = b1*m1 - b2*m2;
+  const newC = c1*m1 - c2*m2;
+  html += step(3, 'Subtract equation (2) from (1)',
+    `${fmtN(newB)}y = ${fmtN(newC)}`,
+    'The x-terms cancel out.');
+
+  const y = newC / newB;
+  html += step(4, 'Solve for y', `y = ${fmtN(newC)} / ${fmtN(newB)} = ${fmtN(y)}`);
+
+  // Back-substitute into eq1
+  const xNum = c1 - b1*y;
+  const x = xNum / a1;
+  html += step(5, 'Substitute y into equation (1)',
+    `${fmtN(a1)}x + ${fmtN(b1)}(${fmtN(y)}) = ${fmtN(c1)}<br>${fmtN(a1)}x = ${fmtN(c1)} − ${fmtN(b1*y)} = ${fmtN(xNum)}<br>x = ${fmtN(x)}`);
+
+  // Verify in eq2
+  const check2 = a2*x + b2*y;
+  html += step(6, 'Verify in equation (2)',
+    `${fmtN(a2)}(${fmtN(x)}) + ${fmtN(b2)}(${fmtN(y)}) = ${fmtN(check2)} ✓`);
+
+  html += answer(`x = ${fmtN(x)},  y = ${fmtN(y)}`, `Solution: (${fmtN(x)}, ${fmtN(y)})`);
+  showSteps(html);
+}
+
+// ── PROPORTION ──────────────────────────────────────────────────────────────
+function setProp(a,b,c,d) {
+  document.getElementById('pa').value=a;
+  document.getElementById('pb').value=b;
+  document.getElementById('pc').value=c;
+  document.getElementById('pd').value=d;
+}
+
+function solveProportion() {
+  const vals = ['pa','pb','pc','pd'].map(id => document.getElementById(id).value.trim().toLowerCase());
+  const xi = vals.indexOf('x');
+  if (xi === -1) { showErr('Place "x" in exactly one field.'); return; }
+  const nums = vals.map((v,i) => i===xi ? null : parseFloat(v));
+  if (nums.some((v,i) => i!==xi && isNaN(v))) { showErr('All non-x fields must be numbers.'); return; }
+
+  const [a,b,c,d] = nums;
+  let x, html;
+  const names = ['a','b','c','d'];
+  const positions = ['numerator left','denominator left','numerator right','denominator right'];
+  html = step(1, 'Write the proportion', `${vals[0]} / ${vals[1]} = ${vals[2]} / ${vals[3]}`);
+  html += step(2, 'Cross-multiply', `${vals[0]} × ${vals[3]} = ${vals[1]} × ${vals[2]}`, 'Multiply diagonally — both sides of the cross.');
+
+  // a/b = c/d → a*d = b*c
+  // xi = 0: x*d = b*c → x = b*c/d
+  // xi = 1: a*d = x*c → x = a*d/c
+  // xi = 2: a*d = b*x → x = a*d/b
+  // xi = 3: a*x = b*c → x = b*c/a
+  let crossL, crossR;
+  if (xi===0){ crossL='x × '+fmtN(d); crossR=fmtN(b)+' × '+fmtN(c); x=b*c/d; }
+  else if(xi===1){ crossL=fmtN(a)+' × '+fmtN(d); crossR='x × '+fmtN(c); x=a*d/c; }
+  else if(xi===2){ crossL=fmtN(a)+' × '+fmtN(d); crossR=fmtN(b)+' × x'; x=a*d/b; }
+  else { crossL=fmtN(a)+' × x'; crossR=fmtN(b)+' × '+fmtN(c); x=b*c/a; }
+
+  const knownSide = xi<2 ? fmtN(b*(c??x)) : fmtN((a??x)*d);
+  html += step(3, 'Simplified cross-multiplication', `${crossL} = ${crossR}`);
+  html += step(4, 'Solve for x', `x = ${fmtN(x)}`);
+  // Verify
+  const finalVals = nums.map((v,i) => i===xi ? x : v);
+  const [fa,fb,fc,fd] = finalVals;
+  html += step(5, 'Verify', `${fmtN(fa)}/${fmtN(fb)} = ${fmtN(fc)}/${fmtN(fd)} → ${fmtN(fa/fb).slice(0,6)} = ${fmtN(fc/fd).slice(0,6)} ✓`);
+  html += answer(`x = ${fmtN(x)}`, `Check: ${fmtN(fa)}/${fmtN(fb)} = ${fmtN(fc)}/${fmtN(fd)} ✓`);
+  showSteps(html);
+}
+
+function showErr(msg) {
+  const html = `<div class="error-msg">⚠ ${msg}</div>`;
+  document.getElementById('stepsOutput').innerHTML = html;
+  document.getElementById('stepsCard').classList.add('show');
+}
+</script>
+</body>
+</html>

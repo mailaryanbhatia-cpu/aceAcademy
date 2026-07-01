@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Annotated Bibliography — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:8px 14px;border-radius:9px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-success{background:rgba(16,185,129,.2);color:#6ee7b7;border:1.5px solid rgba(16,185,129,.3)}.btn-success:hover{background:rgba(16,185,129,.3)}
+
+/* Style bar */
+.style-bar{background:#080e1c;border-bottom:1px solid #2a3a55;padding:10px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.style-label{font-size:.72rem;font-weight:700;color:#7a8fa8}
+.style-chips{display:flex;gap:6px}
+.style-chip{padding:5px 13px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.style-chip.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
+.title-input{flex:1;min-width:200px;max-width:350px;padding:7px 12px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.85rem;font-family:inherit;outline:none;font-weight:700;transition:.15s}
+.title-input:focus{border-color:#6366f1}
+
+.container{max-width:860px;margin:0 auto;padding:24px 20px 60px}
+
+/* Add form */
+.add-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:22px;margin-bottom:24px}
+.form-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+.field label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;display:block;margin-bottom:5px}
+.field input,.field select{width:100%;padding:8px 11px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.field input:focus,.field select:focus{border-color:#6366f1}
+.field-full{margin-bottom:12px}
+.field-full label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;display:block;margin-bottom:5px}
+.field-full textarea{width:100%;padding:10px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;resize:vertical;line-height:1.6;transition:.15s}
+.field-full textarea:focus{border-color:#6366f1}
+.anno-tip{font-size:.72rem;color:#7a8fa8;margin-top:4px;line-height:1.5}
+.char-count{float:right;color:#a5b4fc;font-weight:700}
+
+/* Entry cards */
+.entry-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:20px;margin-bottom:14px}
+.entry-citation{font-size:.9rem;line-height:1.65;margin-bottom:12px;color:#e8edf5}
+.entry-citation em{font-style:italic}
+.entry-annotation{font-size:.85rem;color:#b8c4d8;line-height:1.7;padding:12px 14px;background:#0d1628;border-radius:9px;border-left:3px solid #6366f1;margin-bottom:12px}
+.entry-actions{display:flex;gap:8px;flex-wrap:wrap}
+.entry-btn{padding:5px 12px;border-radius:7px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.entry-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.entry-btn.danger:hover{border-color:#ef4444;color:#f87171}
+.entry-num{display:inline-block;width:24px;height:24px;border-radius:7px;background:rgba(99,102,241,.2);color:#a5b4fc;font-size:.75rem;font-weight:800;text-align:center;line-height:24px;margin-right:8px;flex-shrink:0}
+
+/* Preview pane */
+.preview-card{background:#fff;border-radius:14px;padding:28px 32px;margin-top:28px;color:#111}
+.preview-title{font-size:1rem;font-weight:700;text-align:center;margin-bottom:4px}
+.preview-author{font-size:.82rem;text-align:center;color:#555;margin-bottom:20px}
+.preview-entry{margin-bottom:18px;font-size:.87rem;line-height:1.7}
+.preview-entry .cit{font-family:Georgia,serif;text-indent:-2em;padding-left:2em}
+.preview-entry .ann{margin-top:8px;padding-left:2em;color:#333;font-family:Georgia,serif;font-size:.83rem}
+
+.empty{text-align:center;padding:40px;color:#7a8fa8;font-size:.88rem}
+.empty-icon{font-size:2rem;margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="annotatedbib.html" class="nav-link active">📚 Annot. Bib.</a>
+  <a href="citation.html" class="nav-link">📎 Citation</a>
+  <a href="research.html" class="nav-link">🔬 Research</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
+  <a href="venn.html" class="nav-link">⭕ Venn</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
+  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
+</nav>
+
+<div class="hero">
+  <div>
+    <h1>📚 Annotated <span>Bibliography</span></h1>
+    <p>Add sources with annotations — export formatted MLA, APA, or Chicago output.</p>
+  </div>
+  <div class="hero-btns">
+    <button class="btn btn-ghost" onclick="showPreview()">👁 Preview</button>
+    <button class="btn btn-success" onclick="exportBib()">📤 Export</button>
+    <button class="btn btn-ghost" onclick="printBib()">🖨 Print</button>
+  </div>
+</div>
+
+<div class="style-bar">
+  <span class="style-label">Citation Style:</span>
+  <div class="style-chips">
+    <button class="style-chip active" onclick="setStyle('MLA',this)">MLA</button>
+    <button class="style-chip" onclick="setStyle('APA',this)">APA</button>
+    <button class="style-chip" onclick="setStyle('Chicago',this)">Chicago</button>
+  </div>
+  <span class="style-label" style="margin-left:12px">Bibliography Title:</span>
+  <input class="title-input" id="bibTitle" placeholder="Annotated Bibliography" oninput="save()">
+</div>
+
+<div class="container">
+  <div class="add-card">
+    <div class="form-title">➕ Add Source</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Source Type</label>
+        <select id="srcType" onchange="updateFields()">
+          <option value="book">Book</option>
+          <option value="article">Journal Article</option>
+          <option value="website">Website</option>
+          <option value="newspaper">Newspaper Article</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Author(s) <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:#7a8fa8">Last, First</span></label>
+        <input id="srcAuthor" placeholder="e.g. Smith, John; Jones, Mary">
+      </div>
+      <div class="field">
+        <label>Title</label>
+        <input id="srcTitle" placeholder="Title of article, chapter, or webpage">
+      </div>
+      <div class="field">
+        <label id="pubLabel">Book / Journal Title</label>
+        <input id="srcPub" placeholder="Publisher or journal name">
+      </div>
+      <div class="field">
+        <label>Year</label>
+        <input id="srcYear" placeholder="e.g. 2023">
+      </div>
+      <div class="field">
+        <label id="pageLabel">Pages / Volume</label>
+        <input id="srcPage" placeholder="e.g. pp. 45–67 or Vol. 12(3)">
+      </div>
+      <div class="field" id="urlField">
+        <label>URL <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:#7a8fa8">(for websites)</span></label>
+        <input id="srcUrl" placeholder="https://...">
+      </div>
+      <div class="field" id="dateField">
+        <label>Access Date <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:#7a8fa8">(websites)</span></label>
+        <input id="srcAccess" placeholder="e.g. 30 June 2026">
+      </div>
+    </div>
+    <div class="field-full">
+      <label>Annotation <span class="char-count" id="charCount">0 / 150 words</span></label>
+      <textarea id="srcAnnotation" rows="4" placeholder="Write 2–4 sentences:&#10;1. What does this source argue or present? (summary)&#10;2. How credible or useful is it? (evaluation)&#10;3. How does it relate to your paper's argument? (reflection)" oninput="countWords(this)"></textarea>
+      <div class="anno-tip">💡 Tip: A strong annotation summarizes the main argument, evaluates the source's credibility or bias, and explains its relevance to your thesis.</div>
+    </div>
+    <button class="btn btn-primary" onclick="addEntry()">＋ Add to Bibliography</button>
+  </div>
+
+  <div id="entriesList"></div>
+  <div id="previewSection" style="display:none"></div>
+</div>
+
+<script>
+let style = 'MLA';
+let entries = [];
+try { entries = JSON.parse(localStorage.getItem('annotatedbib') || '[]'); } catch(e) {}
+
+function save() { try { localStorage.setItem('annotatedbib', JSON.stringify(entries)); } catch(e) {} }
+
+function setStyle(s, el) {
+  style = s;
+  document.querySelectorAll('.style-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderEntries();
+}
+
+function countWords(ta) {
+  const count = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+  document.getElementById('charCount').textContent = count + ' / 150 words';
+  document.getElementById('charCount').style.color = count > 150 ? '#f87171' : '#a5b4fc';
+}
+
+function updateFields() {
+  const type = document.getElementById('srcType').value;
+  document.getElementById('pubLabel').textContent = type === 'book' ? 'Publisher' : type === 'website' ? 'Website Name' : 'Journal / Newspaper';
+  document.getElementById('pageLabel').textContent = type === 'book' ? 'Edition / Volume' : 'Pages / Volume';
+  document.getElementById('urlField').style.display = (type === 'website') ? '' : 'none';
+  document.getElementById('dateField').style.display = (type === 'website') ? '' : 'none';
+}
+
+function buildCitation(e) {
+  const a = e.author || '';
+  const t = e.title || '';
+  const pub = e.pub || '';
+  const year = e.year || 'n.d.';
+  const page = e.page || '';
+  const url = e.url || '';
+  const access = e.access || '';
+
+  if (style === 'MLA') {
+    if (e.type === 'book')
+      return `${a}. <em>${t}</em>. ${pub}, ${year}.`;
+    if (e.type === 'website')
+      return `${a}. "${t}." <em>${pub}</em>, ${year}, ${url}. Accessed ${access}.`;
+    return `${a}. "${t}." <em>${pub}</em>, ${year}, ${page}.`;
+  }
+  if (style === 'APA') {
+    const authorApa = a ? a.split(';').map(au => { const p=au.trim().split(','); return p.length>1?p[0].trim()+', '+p[1].trim()[0]+'.':au.trim(); }).join(', & ') : '';
+    if (e.type === 'book')
+      return `${authorApa} (${year}). <em>${t}</em>. ${pub}.`;
+    if (e.type === 'website')
+      return `${authorApa} (${year}). ${t}. ${pub}. ${url}`;
+    return `${authorApa} (${year}). ${t}. <em>${pub}</em>, ${page}.`;
+  }
+  if (style === 'Chicago') {
+    if (e.type === 'book')
+      return `${a}. <em>${t}</em>. ${pub}, ${year}.`;
+    if (e.type === 'website')
+      return `${a}. "${t}." ${pub}. Last modified ${year}. ${url}.`;
+    return `${a}. "${t}." <em>${pub}</em> (${year}): ${page}.`;
+  }
+  return `${a}. ${t}. ${pub}, ${year}.`;
+}
+
+function addEntry() {
+  const title = document.getElementById('srcTitle').value.trim();
+  if (!title) { alert('Enter a title.'); return; }
+  const annotation = document.getElementById('srcAnnotation').value.trim();
+  if (!annotation) { alert('Add an annotation (2–4 sentences).'); return; }
+  entries.push({
+    type: document.getElementById('srcType').value,
+    author: document.getElementById('srcAuthor').value.trim(),
+    title,
+    pub: document.getElementById('srcPub').value.trim(),
+    year: document.getElementById('srcYear').value.trim(),
+    page: document.getElementById('srcPage').value.trim(),
+    url: document.getElementById('srcUrl').value.trim(),
+    access: document.getElementById('srcAccess').value.trim(),
+    annotation,
+    addedAt: Date.now()
+  });
+  save();
+  // Clear form
+  ['srcAuthor','srcTitle','srcPub','srcYear','srcPage','srcUrl','srcAccess','srcAnnotation'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('charCount').textContent = '0 / 150 words';
+  renderEntries();
+}
+
+function deleteEntry(idx) {
+  if (!confirm('Remove this entry?')) return;
+  entries.splice(idx, 1);
+  save();
+  renderEntries();
+}
+
+function moveEntry(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= entries.length) return;
+  [entries[idx], entries[newIdx]] = [entries[newIdx], entries[idx]];
+  save();
+  renderEntries();
+}
+
+function renderEntries() {
+  const list = document.getElementById('entriesList');
+  if (!entries.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📚</div>No entries yet. Add your first source above.</div>';
+    return;
+  }
+  // Sort alphabetically by author/title
+  const sorted = [...entries].map((e, i) => ({ ...e, origIdx: i }))
+    .sort((a, b) => (a.author || a.title).localeCompare(b.author || b.title));
+
+  list.innerHTML = sorted.map((e, si) => `
+    <div class="entry-card">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+        <span class="entry-num">${si + 1}</span>
+        <div class="entry-citation" style="flex:1">${buildCitation(e)}</div>
+      </div>
+      <div class="entry-annotation">${e.annotation}</div>
+      <div class="entry-actions">
+        <button class="entry-btn" onclick="moveEntry(${e.origIdx},-1)">↑</button>
+        <button class="entry-btn" onclick="moveEntry(${e.origIdx},1)">↓</button>
+        <button class="entry-btn danger" onclick="deleteEntry(${e.origIdx})">✕ Remove</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showPreview() {
+  const sec = document.getElementById('previewSection');
+  if (sec.style.display !== 'none') { sec.style.display = 'none'; return; }
+  const title = document.getElementById('bibTitle').value || 'Annotated Bibliography';
+  const sorted = [...entries].sort((a, b) => (a.author || a.title).localeCompare(b.author || b.title));
+  sec.style.display = 'block';
+  sec.innerHTML = `
+    <div class="preview-card">
+      <div class="preview-title">${title}</div>
+      <div class="preview-author" style="font-size:.75rem;color:#666;margin-bottom:20px">${style} Format · ${sorted.length} source${sorted.length !== 1 ? 's' : ''}</div>
+      ${sorted.map(e => `
+        <div class="preview-entry">
+          <div class="cit">${buildCitation(e)}</div>
+          <div class="ann">${e.annotation}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  sec.scrollIntoView({ behavior: 'smooth' });
+}
+
+function exportBib() {
+  const title = document.getElementById('bibTitle').value || 'Annotated Bibliography';
+  const sorted = [...entries].sort((a, b) => (a.author || a.title).localeCompare(b.author || b.title));
+  // Strip HTML tags from citations for plain text
+  const strip = s => s.replace(/<[^>]+>/g, '');
+  const text = title + '\n' + style + ' Format\n\n' +
+    sorted.map((e, i) => `${strip(buildCitation(e))}\n\n    ${e.annotation}`).join('\n\n');
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'annotated_bibliography.txt';
+  a.click();
+}
+
+function printBib() {
+  const title = document.getElementById('bibTitle').value || 'Annotated Bibliography';
+  const sorted = [...entries].sort((a, b) => (a.author || a.title).localeCompare(b.author || b.title));
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
+  <style>body{font-family:Georgia,serif;max-width:720px;margin:40px auto;color:#111;font-size:13px;line-height:1.7}
+  h1{font-size:1.1rem;text-align:center;margin-bottom:4px}h2{font-size:.8rem;text-align:center;color:#666;margin-bottom:24px}
+  .entry{margin-bottom:20px}.cit{text-indent:-2em;padding-left:2em;margin-bottom:8px}.ann{padding-left:2em;color:#333;font-size:.85rem}
+  em{font-style:italic}@media print{body{margin:20px}}</style>
+  </head><body>
+  <h1>${title}</h1><h2>${style} Format · ${sorted.length} sources</h2>
+  ${sorted.map(e=>`<div class="entry"><div class="cit">${buildCitation(e)}</div><div class="ann">${e.annotation}</div></div>`).join('')}
+  </body></html>`;
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(() => w.print(), 400);
+}
+
+updateFields();
+renderEntries();
+</script>
+</body>
+</html>

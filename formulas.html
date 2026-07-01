@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Formula Sheets — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.spacer{flex:1}
+
+.hero{text-align:center;padding:40px 20px 24px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto}
+
+.container{max-width:960px;margin:28px auto;padding:0 20px}
+.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
+select{padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:.9rem;color:var(--text);background:#fff;outline:none;cursor:pointer}
+select:focus{border-color:var(--accent)}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
+
+.sheet{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:28px}
+.sheet-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.sheet-title{font-size:1.3rem;font-weight:800;color:var(--text)}
+.sheet-sub{font-size:.85rem;color:var(--muted);margin-top:2px}
+
+.section{margin-bottom:24px}
+.section h3{font-size:.95rem;font-weight:700;color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:5px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.formula-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.formula-box{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px}
+.formula-box .formula{font-family:'Courier New',monospace;font-size:.95rem;font-weight:700;color:var(--accent2);margin-bottom:4px}
+.formula-box .desc{font-size:.8rem;color:var(--muted);line-height:1.4}
+
+@media print{
+  .topnav,.controls,.btn{display:none!important}
+  .sheet{border:none;box-shadow:none;padding:0}
+  body{background:#fff}
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  select{background:#1a1a2e;color:var(--text)} .btn-outline{background:#1a1a2e}
+  .topnav{background:#12121f;border-color:var(--border)}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="curriculum.html" class="nav-link">📚 Curriculum</a>
+  <a href="worksheets.html" class="nav-link">📄 Worksheets</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="flashcards.html" class="nav-link">🃏 Flashcards</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="formulas.html" class="nav-link active">🔢 Formulas</a>
+  <a href="citation.html" class="nav-link">📖 Citations</a>
+  <a href="tools.html" class="nav-link">🔬 Tools</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <div class="spacer"></div>
+
+  <a href="frq.html" class="nav-link">📝 FRQ</a>
+  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
+  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
+  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
+  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
+  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
+  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+</nav>
+
+<div class="hero">
+  <h1>🔢 Formula Sheet Builder</h1>
+  <p>Select your grade and subject to generate a printable reference card.</p>
+</div>
+
+<div class="container">
+  <div class="controls">
+    <select id="gradeSelect" onchange="buildSheet()">
+      <option value="6">Grade 6</option>
+      <option value="7">Grade 7</option>
+      <option value="8">Grade 8</option>
+      <option value="9">Grade 9</option>
+      <option value="10" selected>Grade 10</option>
+      <option value="11">Grade 11</option>
+      <option value="12">Grade 12</option>
+      <option value="ap">AP Courses</option>
+    </select>
+    <select id="subjectSelect" onchange="buildSheet()">
+      <option value="math">Mathematics</option>
+      <option value="science">Science</option>
+      <option value="physics">Physics</option>
+      <option value="chemistry">Chemistry</option>
+    </select>
+    <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save PDF</button>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title" id="sheetTitle">Formula Sheet</div>
+        <div class="sheet-sub" id="sheetSub">aceAcademy Reference Card</div>
+      </div>
+    </div>
+    <div id="sheetContent"></div>
+  </div>
+</div>
+
+<script>
+const FORMULAS = {
+  '6': {
+    math: [
+      {section:'Number & Operations', items:[
+        {f:'a/b × c/d = ac/bd', d:'Multiplying fractions'},
+        {f:'a/b ÷ c/d = a/b × d/c', d:'Dividing fractions (multiply by reciprocal)'},
+        {f:'LCM(a,b)', d:'Least common multiple — smallest shared multiple'},
+        {f:'GCF(a,b)', d:'Greatest common factor — largest shared factor'},
+      ]},
+      {section:'Ratios & Proportions', items:[
+        {f:'a/b = c/d → ad = bc', d:'Cross-multiplication for proportions'},
+        {f:'Rate = quantity / time', d:'Unit rate formula'},
+        {f:'% = part/whole × 100', d:'Percent formula'},
+      ]},
+      {section:'Geometry', items:[
+        {f:'A = lw', d:'Area of rectangle'},
+        {f:'A = ½bh', d:'Area of triangle'},
+        {f:'V = lwh', d:'Volume of rectangular prism'},
+        {f:'P = 2l + 2w', d:'Perimeter of rectangle'},
+      ]},
+      {section:'Statistics', items:[
+        {f:'Mean = Σx / n', d:'Average of a data set'},
+        {f:'Median = middle value', d:'Middle value when ordered'},
+        {f:'Mode = most frequent', d:'Most common value'},
+        {f:'Range = max − min', d:'Spread of the data'},
+      ]},
+    ],
+    science:[
+      {section:'Scientific Method', items:[
+        {f:'Hypothesis → Experiment → Data → Conclusion', d:'Basic scientific method steps'},
+        {f:'Independent variable', d:'Variable you change'},
+        {f:'Dependent variable', d:'Variable you measure'},
+      ]},
+      {section:'Measurement', items:[
+        {f:'1 km = 1000 m', d:'Kilometer conversion'},
+        {f:'1 m = 100 cm', d:'Meter conversion'},
+        {f:'Density = mass / volume', d:'D = m/V'},
+        {f:'°C = (°F − 32) × 5/9', d:'Celsius from Fahrenheit'},
+      ]},
+    ],
+  },
+  '7': {
+    math:[
+      {section:'Algebra', items:[
+        {f:'ax + b = c → x = (c−b)/a', d:'Solving a two-step equation'},
+        {f:'Distributive: a(b+c) = ab+ac', d:'Distribute multiplication'},
+        {f:'Combining like terms', d:'Add/subtract terms with same variable'},
+      ]},
+      {section:'Geometry', items:[
+        {f:'A = πr²', d:'Area of circle'},
+        {f:'C = 2πr = πd', d:'Circumference of circle'},
+        {f:'V = πr²h', d:'Volume of cylinder'},
+        {f:'A = ½d₁d₂', d:'Area of rhombus (diagonals)'},
+      ]},
+      {section:'Proportions & Percent', items:[
+        {f:'% change = (new−old)/old × 100', d:'Percent change'},
+        {f:'Simple Interest: I = Prt', d:'P=principal, r=rate, t=time'},
+        {f:'Scale factor = new/original', d:'Ratio of similar figures'},
+      ]},
+      {section:'Probability', items:[
+        {f:'P(event) = favorable / total', d:'Basic probability'},
+        {f:'P(A and B) = P(A) × P(B)', d:'Independent events'},
+        {f:'P(A or B) = P(A)+P(B)−P(A∩B)', d:'Addition rule'},
+      ]},
+    ],
+    science:[
+      {section:'Life Science', items:[
+        {f:'Cell theory', d:'All living things are made of cells'},
+        {f:'Photosynthesis: 6CO₂+6H₂O→C₆H₁₂O₆+6O₂', d:'Plants convert sunlight to sugar'},
+        {f:'Respiration: C₆H₁₂O₆+6O₂→6CO₂+6H₂O+ATP', d:'Cells release energy from glucose'},
+      ]},
+      {section:'Physical Science', items:[
+        {f:'Speed = distance / time', d:'s = d/t'},
+        {f:'Force = mass × acceleration', d:'F = ma (Newton\'s 2nd Law)'},
+        {f:'Work = force × distance', d:'W = Fd'},
+      ]},
+    ],
+  },
+  '8': {
+    math:[
+      {section:'Linear Equations', items:[
+        {f:'y = mx + b', d:'Slope-intercept form; m=slope, b=y-intercept'},
+        {f:'m = (y₂−y₁)/(x₂−x₁)', d:'Slope formula'},
+        {f:'Ax + By = C', d:'Standard form of a line'},
+        {f:'Point-slope: y−y₁ = m(x−x₁)', d:'Line through a point with slope m'},
+      ]},
+      {section:'Systems of Equations', items:[
+        {f:'Substitution: solve one, plug into other', d:'Substitution method'},
+        {f:'Elimination: add equations to cancel variable', d:'Elimination method'},
+      ]},
+      {section:'Exponents & Roots', items:[
+        {f:'aᵐ × aⁿ = aᵐ⁺ⁿ', d:'Product rule of exponents'},
+        {f:'(aᵐ)ⁿ = aᵐⁿ', d:'Power rule'},
+        {f:'a⁻ⁿ = 1/aⁿ', d:'Negative exponents'},
+        {f:'√(a×b) = √a × √b', d:'Product property of radicals'},
+      ]},
+      {section:'Geometry', items:[
+        {f:'Pythagorean: a² + b² = c²', d:'Right triangle (c = hypotenuse)'},
+        {f:'V = (4/3)πr³', d:'Volume of sphere'},
+        {f:'SA = 4πr²', d:'Surface area of sphere'},
+        {f:'V = (1/3)πr²h', d:'Volume of cone'},
+      ]},
+    ],
+    science:[
+      {section:'Chemistry Basics', items:[
+        {f:'Density = m/V', d:'D = m/V (g/cm³)'},
+        {f:'Conservation of mass', d:'Mass of reactants = mass of products'},
+        {f:'Atomic number = protons', d:'Identifies the element'},
+        {f:'Mass number = p⁺ + n⁰', d:'Protons + neutrons'},
+      ]},
+      {section:'Motion & Forces', items:[
+        {f:'v = d/t', d:'Velocity = distance/time'},
+        {f:'a = Δv/t', d:'Acceleration = change in velocity / time'},
+        {f:'F = ma', d:'Newton\'s 2nd Law'},
+        {f:'Momentum = mv', d:'p = mass × velocity'},
+      ]},
+    ],
+  },
+  '9': {
+    math:[
+      {section:'Algebra I Core', items:[
+        {f:'Quadratic: ax²+bx+c=0', d:'Standard form of quadratic'},
+        {f:'x = (−b ± √(b²−4ac)) / 2a', d:'Quadratic Formula'},
+        {f:'Discriminant = b²−4ac', d:'>0: 2 real roots; =0: 1 root; <0: no real roots'},
+        {f:'FOIL: (a+b)(c+d) = ac+ad+bc+bd', d:'Expanding two binomials'},
+      ]},
+      {section:'Functions', items:[
+        {f:'f(x) notation', d:'Function notation — f of x'},
+        {f:'Domain = set of valid inputs (x)', d:'Input values'},
+        {f:'Range = set of outputs (y)', d:'Output values'},
+        {f:'Vertical line test', d:'A relation is a function if each x has one y'},
+      ]},
+      {section:'Geometry', items:[
+        {f:'Sum of interior angles = (n−2)×180°', d:'For a polygon with n sides'},
+        {f:'Exterior angle theorem', d:'Ext. angle = sum of two non-adjacent interior angles'},
+        {f:'Similar triangles: ratios of sides equal', d:'AA, SAS, SSS similarity'},
+        {f:'Area of regular polygon = ½ × perimeter × apothem', d:''},
+      ]},
+    ],
+    science:[
+      {section:'Biology Core', items:[
+        {f:'DNA → RNA → Protein', d:'Central dogma of molecular biology'},
+        {f:'Mitosis: PMAT', d:'Prophase, Metaphase, Anaphase, Telophase'},
+        {f:'Meiosis: produces haploid gametes (n)', d:'Sexual reproduction'},
+        {f:'Hardy-Weinberg: p² + 2pq + q² = 1', d:'Allele frequency equilibrium'},
+      ]},
+      {section:'Physical Science', items:[
+        {f:'KE = ½mv²', d:'Kinetic energy'},
+        {f:'PE = mgh', d:'Gravitational potential energy'},
+        {f:'KE + PE = constant', d:'Conservation of mechanical energy'},
+        {f:'Power = Work / time = W/t', d:'Unit: watts (W)'},
+      ]},
+    ],
+  },
+  '10': {
+    math:[
+      {section:'Geometry Core', items:[
+        {f:'a² + b² = c²', d:'Pythagorean theorem'},
+        {f:'sin θ = opposite/hypotenuse', d:'SOH'},
+        {f:'cos θ = adjacent/hypotenuse', d:'CAH'},
+        {f:'tan θ = opposite/adjacent', d:'TOA'},
+        {f:'Law of Sines: a/sin A = b/sin B = c/sin C', d:''},
+        {f:'Law of Cosines: c² = a²+b²−2ab·cos C', d:''},
+      ]},
+      {section:'Circle Theorems', items:[
+        {f:'Arc length = rθ (θ in radians)', d:''},
+        {f:'Area of sector = ½r²θ', d:''},
+        {f:'Inscribed angle = ½ central angle', d:''},
+      ]},
+      {section:'Algebra II Preview', items:[
+        {f:'Vertex form: y = a(x−h)²+k', d:'h,k = vertex'},
+        {f:'log_b(x) = y ↔ bʸ = x', d:'Definition of logarithm'},
+        {f:'log(ab) = log a + log b', d:'Product rule'},
+        {f:'log(a/b) = log a − log b', d:'Quotient rule'},
+        {f:'log(aⁿ) = n·log a', d:'Power rule'},
+      ]},
+    ],
+    science:[
+      {section:'Chemistry', items:[
+        {f:'Moles = mass / molar mass', d:'n = m/M'},
+        {f:'PV = nRT', d:'Ideal gas law; R = 8.314 J/mol·K'},
+        {f:'pH = −log[H⁺]', d:'Acidity scale'},
+        {f:'Rate = k[A]ᵐ[B]ⁿ', d:'Rate law expression'},
+        {f:'ΔG = ΔH − TΔS', d:'Gibbs free energy'},
+      ]},
+      {section:'Physics Preview', items:[
+        {f:'v = v₀ + at', d:'Velocity with constant acceleration'},
+        {f:'x = v₀t + ½at²', d:'Position with constant acceleration'},
+        {f:'v² = v₀² + 2ax', d:'Velocity-position relation'},
+        {f:'F_g = Gm₁m₂/r²', d:'Newton\'s law of gravitation'},
+      ]},
+    ],
+    physics:[
+      {section:'Kinematics', items:[
+        {f:'v = v₀ + at', d:'Final velocity'},
+        {f:'x = v₀t + ½at²', d:'Displacement'},
+        {f:'v² = v₀² + 2ax', d:'No-time equation'},
+        {f:'x = ½(v+v₀)t', d:'Average velocity displacement'},
+      ]},
+      {section:'Forces', items:[
+        {f:'F = ma', d:'Newton\'s 2nd Law'},
+        {f:'F_friction = μN', d:'Friction force'},
+        {f:'F_gravity = mg', d:'Weight (g ≈ 9.8 m/s²)'},
+        {f:'F_spring = −kx', d:'Hooke\'s Law'},
+      ]},
+      {section:'Energy & Work', items:[
+        {f:'W = Fd cos θ', d:'Work done by force'},
+        {f:'KE = ½mv²', d:'Kinetic energy'},
+        {f:'PE = mgh', d:'Gravitational PE'},
+        {f:'P = W/t = Fv', d:'Power'},
+      ]},
+    ],
+  },
+  '11': {
+    math:[
+      {section:'Precalculus', items:[
+        {f:'sin²θ + cos²θ = 1', d:'Pythagorean identity'},
+        {f:'tan θ = sin θ / cos θ', d:'Tangent identity'},
+        {f:'sin(A±B) = sinA cosB ± cosA sinB', d:'Sum/difference of angles'},
+        {f:'cos(2θ) = cos²θ − sin²θ', d:'Double angle formula'},
+        {f:'e^(iθ) = cos θ + i sin θ', d:'Euler\'s formula'},
+        {f:'Arithmetic: aₙ = a₁ + (n−1)d', d:'nth term of arithmetic sequence'},
+        {f:'Geometric: aₙ = a₁·rⁿ⁻¹', d:'nth term of geometric sequence'},
+        {f:'Geometric sum: Sₙ = a₁(1−rⁿ)/(1−r)', d:'Sum of n geometric terms'},
+      ]},
+      {section:'Statistics', items:[
+        {f:'z = (x − μ) / σ', d:'Z-score (standard score)'},
+        {f:'P(A|B) = P(A∩B)/P(B)', d:'Conditional probability'},
+        {f:'Binomial: P(X=k) = C(n,k)pᵏ(1−p)ⁿ⁻ᵏ', d:'Binomial probability'},
+        {f:'μ = Σ(x·P(x))', d:'Expected value'},
+        {f:'σ² = Σ[(x−μ)²·P(x)]', d:'Variance'},
+      ]},
+    ],
+    science:[
+      {section:'Chemistry', items:[
+        {f:'ΔH°rxn = Σ ΔH°f(products) − Σ ΔH°f(reactants)', d:'Hess\'s Law'},
+        {f:'Kp = Kc(RT)^Δn', d:'Equilibrium constants relation'},
+        {f:'Nernst: E = E° − (RT/nF)ln Q', d:'Cell potential at non-standard conditions'},
+        {f:'q = mcΔT', d:'Heat equation'},
+        {f:'Rate = Δ[product]/Δt', d:'Reaction rate'},
+      ]},
+      {section:'Physics', items:[
+        {f:'F = kq₁q₂/r²', d:'Coulomb\'s Law (electrostatics)'},
+        {f:'E = F/q', d:'Electric field'},
+        {f:'V = Ed', d:'Electric potential (uniform field)'},
+        {f:'I = V/R', d:'Ohm\'s Law'},
+        {f:'P = IV = I²R = V²/R', d:'Power in a circuit'},
+      ]},
+    ],
+    chemistry:[
+      {section:'Thermochemistry', items:[
+        {f:'q = mcΔT', d:'Heat; m=mass, c=specific heat, ΔT=temp change'},
+        {f:'ΔH = H_products − H_reactants', d:'Enthalpy change'},
+        {f:'ΔG = ΔH − TΔS', d:'Gibbs free energy (ΔG<0: spontaneous)'},
+        {f:'ΔS = q_rev / T', d:'Entropy change'},
+      ]},
+      {section:'Kinetics & Equilibrium', items:[
+        {f:'Rate = k[A]ⁿ', d:'Rate law'},
+        {f:'Half-life (1st order): t½ = 0.693/k', d:''},
+        {f:'K_eq = [products] / [reactants]', d:'Equilibrium expression'},
+        {f:'K_w = [H⁺][OH⁻] = 1×10⁻¹⁴', d:'Water equilibrium at 25°C'},
+        {f:'pH + pOH = 14', d:''},
+      ]},
+      {section:'Electrochemistry', items:[
+        {f:'E°cell = E°cathode − E°anode', d:'Standard cell potential'},
+        {f:'ΔG° = −nFE°', d:'n=moles electrons, F=96485 C/mol'},
+        {f:'Oxidation: loss of electrons', d:'OIL'},
+        {f:'Reduction: gain of electrons', d:'RIG'},
+      ]},
+    ],
+    physics:[
+      {section:'Electricity & Magnetism', items:[
+        {f:'F = kq₁q₂/r²', d:'Coulomb\'s Law; k = 8.99×10⁹ N·m²/C²'},
+        {f:'E = kq/r²', d:'Electric field from point charge'},
+        {f:'V = kq/r', d:'Electric potential from point charge'},
+        {f:'C = Q/V', d:'Capacitance'},
+        {f:'U = ½CV²', d:'Energy stored in capacitor'},
+        {f:'R_series = R₁+R₂+...', d:'Resistors in series'},
+        {f:'1/R_parallel = 1/R₁+1/R₂+...', d:'Resistors in parallel'},
+      ]},
+      {section:'Waves & Optics', items:[
+        {f:'v = fλ', d:'Wave speed = frequency × wavelength'},
+        {f:'T = 1/f', d:'Period = 1/frequency'},
+        {f:'n₁sin θ₁ = n₂sin θ₂', d:'Snell\'s Law (refraction)'},
+        {f:'1/f = 1/d_o + 1/d_i', d:'Thin lens equation'},
+        {f:'Magnification: m = −d_i/d_o', d:''},
+      ]},
+    ],
+  },
+  '12': {
+    math:[
+      {section:'Calculus Concepts', items:[
+        {f:'lim_{x→a} [f(x)+g(x)] = L+M', d:'Limit sum rule'},
+        {f:"f'(x) = lim_{h→0} [f(x+h)−f(x)]/h", d:'Definition of derivative'},
+        {f:'d/dx[xⁿ] = nxⁿ⁻¹', d:'Power rule'},
+        {f:'d/dx[eˣ] = eˣ', d:'Derivative of e^x'},
+        {f:'d/dx[ln x] = 1/x', d:'Derivative of natural log'},
+        {f:'d/dx[sin x] = cos x', d:''},
+        {f:'d/dx[cos x] = −sin x', d:''},
+        {f:'Chain rule: d/dx[f(g(x))] = f\'(g(x))·g\'(x)', d:''},
+        {f:'Product rule: (fg)\' = f\'g + fg\'', d:''},
+        {f:'Quotient rule: (f/g)\' = (f\'g−fg\')/g²', d:''},
+      ]},
+      {section:'Integrals', items:[
+        {f:'∫xⁿ dx = xⁿ⁺¹/(n+1) + C', d:'Power rule for integration'},
+        {f:'∫eˣ dx = eˣ + C', d:''},
+        {f:'∫(1/x) dx = ln|x| + C', d:''},
+        {f:'∫sin x dx = −cos x + C', d:''},
+        {f:'∫cos x dx = sin x + C', d:''},
+        {f:'FTC: ∫_a^b f(x)dx = F(b)−F(a)', d:'Fundamental Theorem of Calculus'},
+      ]},
+    ],
+    science:[
+      {section:'AP Physics / Advanced', items:[
+        {f:'E = mc²', d:'Mass-energy equivalence (Einstein)'},
+        {f:'λ = h/p', d:'de Broglie wavelength; h = 6.626×10⁻³⁴ J·s'},
+        {f:'ΔxΔp ≥ ℏ/2', d:'Heisenberg Uncertainty Principle'},
+        {f:'PV = nRT', d:'Ideal gas law'},
+        {f:'ΔU = Q − W', d:'First law of thermodynamics'},
+      ]},
+    ],
+  },
+  'ap': {
+    math:[
+      {section:'AP Calculus AB/BC', items:[
+        {f:"f'(x) = lim_{h→0} [f(x+h)−f(x)]/h", d:'Limit definition of derivative'},
+        {f:'d/dx[xⁿ] = nxⁿ⁻¹', d:'Power rule'},
+        {f:'Chain, Product, Quotient rules', d:'See Grade 12 sheet'},
+        {f:'∫f(x)dx: use antiderivative rules', d:'Integration'},
+        {f:'FTC: d/dx[∫_a^x f(t)dt] = f(x)', d:'FTC Part 1'},
+        {f:'∫_a^b f(x)dx = F(b)−F(a)', d:'FTC Part 2'},
+        {f:'Integration by parts: ∫u dv = uv − ∫v du', d:'BC topic'},
+        {f:'Taylor series: Σ f⁽ⁿ⁾(a)/n! (x−a)ⁿ', d:'BC topic'},
+      ]},
+      {section:'AP Statistics', items:[
+        {f:'z = (x̄ − μ₀)/(σ/√n)', d:'One-sample z-test statistic'},
+        {f:'t = (x̄ − μ₀)/(s/√n)', d:'One-sample t-test statistic'},
+        {f:'ME = z* × (σ/√n)', d:'Margin of error'},
+        {f:'χ² = Σ (O−E)²/E', d:'Chi-square test statistic'},
+        {f:'r² = coefficient of determination', d:'Proportion of variance explained'},
+        {f:'ŷ = a + bx', d:'Least-squares regression line'},
+        {f:"b = r(s_y/s_x), a = ȳ − b·x̄", d:'Regression coefficients'},
+      ]},
+    ],
+    science:[
+      {section:'AP Physics 1', items:[
+        {f:'F_net = ma', d:'Newton\'s 2nd Law'},
+        {f:'Impulse: J = FΔt = Δp', d:'Impulse-momentum theorem'},
+        {f:'p = mv', d:'Momentum'},
+        {f:'KE = ½mv²', d:'Kinetic energy'},
+        {f:'W = Fd cos θ', d:'Work'},
+        {f:'T_pendulum = 2π√(L/g)', d:'Period of simple pendulum'},
+        {f:'T_spring = 2π√(m/k)', d:'Period of mass-spring system'},
+        {f:'ω = 2π/T = 2πf', d:'Angular frequency'},
+      ]},
+      {section:'AP Chemistry', items:[
+        {f:'ΔG° = −RT ln K', d:'Free energy and equilibrium'},
+        {f:'ΔG° = −nFE°', d:'Electrochemistry'},
+        {f:'Kp = Kc(RT)^Δn', d:'Pressure/concentration equilibrium'},
+        {f:'Henderson-Hasselbalch: pH = pKa + log([A⁻]/[HA])', d:'Buffer equation'},
+        {f:'t½ = 0.693/k (1st order)', d:'Half-life'},
+        {f:'E = hf = hc/λ', d:'Photon energy; h=6.626×10⁻³⁴ J·s'},
+      ]},
+    ],
+    chemistry:[
+      {section:'AP Chemistry Key Equations', items:[
+        {f:'PV = nRT', d:'Ideal gas law (R = 0.08206 L·atm/mol·K)'},
+        {f:'(P₁V₁)/T₁ = (P₂V₂)/T₂', d:'Combined gas law'},
+        {f:'q = mcΔT', d:'Heat (calorimetry)'},
+        {f:'ΔH°rxn = Σ ΔH°f(prod) − Σ ΔH°f(react)', d:'Hess\'s law'},
+        {f:'ΔG° = ΔH° − TΔS°', d:'Gibbs free energy'},
+        {f:'ΔG° = −RT ln K = −nFE°', d:'Connecting ΔG, K, and E°'},
+        {f:'pH = −log[H⁺]', d:''},
+        {f:'Kw = [H⁺][OH⁻] = 1×10⁻¹⁴', d:''},
+        {f:'Henderson-Hasselbalch: pH = pKa + log([A⁻]/[HA])', d:'Buffer pH'},
+        {f:'t½ = 0.693/k', d:'First-order half-life'},
+        {f:'ln[A]_t = −kt + ln[A]₀', d:'First-order integrated rate law'},
+        {f:'E°cell = E°cathode − E°anode', d:'Standard cell potential'},
+        {f:'n = m/M', d:'Moles = mass/molar mass'},
+      ]},
+      {section:'AP Constants', items:[
+        {f:'R = 8.314 J/mol·K', d:'Gas constant'},
+        {f:'F = 96485 C/mol', d:'Faraday\'s constant'},
+        {f:'Nₐ = 6.022×10²³ mol⁻¹', d:'Avogadro\'s number'},
+        {f:'h = 6.626×10⁻³⁴ J·s', d:'Planck\'s constant'},
+        {f:'c = 3.00×10⁸ m/s', d:'Speed of light'},
+      ]},
+    ],
+    physics:[
+      {section:'AP Physics C: Mechanics', items:[
+        {f:'F = ma', d:'Newton\'s second law (vector)'},
+        {f:'W = ∫F·dx', d:'Work as integral of force'},
+        {f:'L = Iω = r × p', d:'Angular momentum'},
+        {f:'τ = Iα = r × F', d:'Torque and angular acceleration'},
+        {f:'I = Σmr²', d:'Moment of inertia (discrete)'},
+        {f:'I_cm + Md²', d:'Parallel axis theorem'},
+        {f:'KE_rot = ½Iω²', d:'Rotational kinetic energy'},
+        {f:'F_g = −GMm/r²', d:'Gravitational force'},
+        {f:"U_g = −GMm/r", d:'Gravitational potential energy'},
+      ]},
+      {section:'AP Physics C: E&M', items:[
+        {f:'F = kq₁q₂/r²', d:'Coulomb\'s law'},
+        {f:'∮E·dA = Q_enc/ε₀', d:'Gauss\'s Law'},
+        {f:'∮B·dl = μ₀I_enc', d:'Ampère\'s Law'},
+        {f:'EMF = −dΦ_B/dt', d:'Faraday\'s Law of induction'},
+        {f:'F = qv × B', d:'Magnetic force on charge'},
+        {f:'C = Q/V', d:'Capacitance'},
+        {f:'U_C = Q²/(2C) = ½CV²', d:'Energy in capacitor'},
+        {f:'U_L = ½LI²', d:'Energy in inductor'},
+        {f:'EMF = −L dI/dt', d:'Self-inductance'},
+      ]},
+    ],
+  },
+};
+
+function buildSheet(){
+  const g = document.getElementById('gradeSelect').value;
+  const s = document.getElementById('subjectSelect').value;
+  const data = (FORMULAS[g] || {})[s] || null;
+
+  const gradeLabel = g==='ap'?'AP Courses':'Grade '+g;
+  const subjectLabel = {math:'Mathematics',science:'Science',physics:'Physics',chemistry:'Chemistry'}[s]||s;
+  document.getElementById('sheetTitle').textContent = gradeLabel+' — '+subjectLabel;
+  document.getElementById('sheetSub').textContent = 'aceAcademy Reference Card • Print-ready';
+
+  if(!data){
+    document.getElementById('sheetContent').innerHTML = '<p style="color:var(--muted);padding:20px 0">Formula sheet for this combination coming soon. Try a different grade or subject.</p>';
+    return;
+  }
+
+  document.getElementById('sheetContent').innerHTML = data.map(sec=>`
+    <div class="section">
+      <h3>${sec.section}</h3>
+      <div class="formula-grid">
+        ${sec.items.map(f=>`
+          <div class="formula-box">
+            <div class="formula">${f.f}</div>
+            ${f.d?`<div class="desc">${f.d}</div>`:''}
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// Populate subject options based on grade
+document.getElementById('gradeSelect').addEventListener('change', function(){
+  const g = this.value;
+  const sel = document.getElementById('subjectSelect');
+  const base = '<option value="math">Mathematics</option><option value="science">Science</option>';
+  const extra = (g==='10'||g==='11'||g==='ap') ? '<option value="physics">Physics</option><option value="chemistry">Chemistry</option>' : '';
+  sel.innerHTML = base + extra;
+  buildSheet();
+});
+
+buildSheet();
+</script>
+</body>
+</html>

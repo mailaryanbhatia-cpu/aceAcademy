@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grade Book — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:32px 40px 24px;border-bottom:1px solid #2a3a55}
+.hero h1{font-size:1.7rem;font-weight:900;margin-bottom:4px}
+.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.88rem}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 150px)}
+@media(max-width:768px){.layout{grid-template-columns:1fr}}
+.sidebar{background:#080e1c;border-right:1px solid #2a3a55;padding:18px 14px}
+.main{padding:24px 28px;overflow-y:auto}
+@media(max-width:768px){.sidebar{border-right:none;border-bottom:1px solid #2a3a55}.main{padding:18px 16px}}
+.sb-label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8;margin:14px 0 8px}
+.sb-label:first-child{margin-top:0}
+.class-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:9px 12px;border-radius:9px;border:none;background:transparent;color:#7a8fa8;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;text-align:left}
+.class-btn:hover{background:rgba(255,255,255,.06);color:#e8edf5}
+.class-btn.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.class-gpa{font-size:.7rem;padding:2px 8px;border-radius:20px;background:rgba(99,102,241,.2);color:#a5b4fc;font-weight:700}
+.add-class-btn{display:flex;align-items:center;gap:6px;width:100%;padding:9px 12px;border-radius:9px;border:1.5px dashed #2a3a55;background:transparent;color:#7a8fa8;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;margin-top:8px;justify-content:center}
+.add-class-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+/* Overall GPA card */
+.gpa-card{background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1));border:1.5px solid rgba(99,102,241,.3);border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.gpa-num{font-size:3rem;font-weight:900;color:#a5b4fc;line-height:1}
+.gpa-label{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8}
+.gpa-grade{font-size:1.4rem;font-weight:900;color:#e8edf5}
+.gpa-stats{display:flex;gap:20px;flex-wrap:wrap}
+.gpa-stat{text-align:center}
+.gpa-stat-val{font-size:1.1rem;font-weight:800;color:#e8edf5}
+.gpa-stat-label{font-size:.68rem;color:#7a8fa8;font-weight:600}
+
+/* Class header */
+.class-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.class-name-title{font-size:1.2rem;font-weight:900}
+.class-avg{font-size:.85rem;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(99,102,241,.2);color:#a5b4fc}
+.del-class-btn{padding:5px 12px;border-radius:8px;border:1.5px solid rgba(239,68,68,.3);background:transparent;color:#f87171;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:auto;transition:.15s}
+.del-class-btn:hover{background:rgba(239,68,68,.1)}
+
+/* Add entry form */
+.add-form{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:18px;margin-bottom:20px}
+.form-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;align-items:end}
+@media(max-width:640px){.form-row{grid-template-columns:1fr 1fr}}
+.form-field label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;display:block;margin-bottom:5px}
+.form-field input,.form-field select{width:100%;padding:8px 11px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.form-field input:focus,.form-field select:focus{border-color:#6366f1}
+.add-btn{padding:8px 18px;background:#6366f1;border:none;border-radius:8px;color:#fff;font-size:.83rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.15s;height:36px;align-self:end}
+.add-btn:hover{background:#5254d8}
+
+/* Entries table */
+.entries-table{width:100%;border-collapse:collapse}
+.entries-table th{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;padding:8px 12px;text-align:left;border-bottom:1px solid #2a3a55}
+.entries-table td{padding:10px 12px;border-bottom:1px solid #1a2540;font-size:.85rem;vertical-align:middle}
+.entries-table tr:last-child td{border-bottom:none}
+.grade-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:800}
+.grade-A{background:rgba(16,185,129,.2);color:#6ee7b7}
+.grade-B{background:rgba(99,102,241,.2);color:#a5b4fc}
+.grade-C{background:rgba(245,158,11,.2);color:#fcd34d}
+.grade-D,.grade-F{background:rgba(239,68,68,.2);color:#fca5a5}
+.cat-badge{font-size:.67rem;font-weight:700;padding:2px 8px;border-radius:20px;background:#1a2540;color:#7a8fa8}
+.del-entry-btn{padding:3px 10px;border-radius:6px;border:none;background:transparent;color:#3d4f6e;font-size:.75rem;cursor:pointer;font-family:inherit;transition:.15s}
+.del-entry-btn:hover{color:#f87171}
+.empty-entries{text-align:center;padding:40px;color:#7a8fa8;font-size:.85rem}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#111c32;border:1.5px solid #2a3a55;border-radius:18px;padding:28px;width:100%;max-width:380px}
+.modal h3{font-size:1.1rem;font-weight:800;margin-bottom:18px}
+.modal input{width:100%;padding:10px 14px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.9rem;font-family:inherit;outline:none;margin-bottom:12px;transition:.15s}
+.modal input:focus{border-color:#6366f1}
+.modal-btns{display:flex;gap:10px;margin-top:4px}
+.modal-btn{flex:1;padding:10px;border-radius:9px;border:none;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.modal-btn.primary{background:#6366f1;color:#fff}
+.modal-btn.ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="gradebook.html" class="nav-link active">📒 Grade Book</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+
+<div class="hero">
+  <h1>📒 Grade <span>Book</span></h1>
+  <p>Track every assignment, quiz, and test. Your running GPA updates automatically.</p>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-label">Overall GPA</div>
+    <div style="font-size:2rem;font-weight:900;color:#a5b4fc;padding:4px 12px" id="overallGpaDisplay">—</div>
+
+    <div class="sb-label" style="margin-top:20px">Classes</div>
+    <div id="classList"></div>
+    <button class="add-class-btn" onclick="openAddClass()">＋ Add Class</button>
+  </div>
+
+  <div class="main" id="mainArea">
+    <div style="text-align:center;padding:60px 20px;color:#7a8fa8">
+      <div style="font-size:2.5rem;margin-bottom:12px">📒</div>
+      <div style="font-size:.9rem">Add a class to get started.<br>Track every grade and watch your GPA update live.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Class Modal -->
+<div class="modal-bg" id="addClassModal">
+  <div class="modal">
+    <h3>➕ Add Class</h3>
+    <input type="text" id="newClassName" placeholder="e.g. AP Calculus AB" maxlength="40">
+    <input type="text" id="newClassTeacher" placeholder="Teacher name (optional)" maxlength="40">
+    <select id="newClassPeriod" style="width:100%;padding:10px 14px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.9rem;font-family:inherit;outline:none;margin-bottom:12px">
+      <option value="">Select period (optional)</option>
+      <option>Period 1</option><option>Period 2</option><option>Period 3</option>
+      <option>Period 4</option><option>Period 5</option><option>Period 6</option><option>Period 7</option>
+    </select>
+    <div class="modal-btns">
+      <button class="modal-btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn primary" onclick="addClass()">Add Class</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LETTER_GRADE = pct => pct>=97?'A+':pct>=93?'A':pct>=90?'A-':pct>=87?'B+':pct>=83?'B':pct>=80?'B-':pct>=77?'C+':pct>=73?'C':pct>=70?'C-':pct>=67?'D+':pct>=63?'D':pct>=60?'D-':'F';
+const GPA_POINTS  = pct => pct>=93?4.0:pct>=90?3.7:pct>=87?3.3:pct>=83?3.0:pct>=80?2.7:pct>=77?2.3:pct>=73?2.0:pct>=70?1.7:pct>=67?1.3:pct>=63?1.0:pct>=60?0.7:0.0;
+const GRADE_CLASS = g => g.startsWith('A')?'A':g.startsWith('B')?'B':g.startsWith('C')?'C':g.startsWith('D')?'D':'F';
+
+let data = {classes:[], entries:{}};
+let activeClass = null;
+try{ data = JSON.parse(localStorage.getItem('gradebook')||'{"classes":[],"entries":{}}'); }catch(e){}
+
+function save(){ try{ localStorage.setItem('gradebook', JSON.stringify(data)); }catch(e){} }
+
+function classAverage(cid){
+  const entries = data.entries[cid]||[];
+  if(!entries.length) return null;
+  const total = entries.reduce((s,e)=>s+e.pct,0);
+  return Math.round(total/entries.length);
+}
+
+function renderOverallGPA(){
+  const gpas = data.classes.map(c=>{ const a=classAverage(c.id); return a!==null?GPA_POINTS(a):null; }).filter(g=>g!==null);
+  if(!gpas.length){ document.getElementById('overallGpaDisplay').textContent='—'; return; }
+  const avg = (gpas.reduce((s,g)=>s+g,0)/gpas.length).toFixed(2);
+  document.getElementById('overallGpaDisplay').textContent = avg;
+}
+
+function renderClassList(){
+  const list = document.getElementById('classList');
+  list.innerHTML = data.classes.map(c=>{
+    const avg = classAverage(c.id);
+    const letter = avg!==null ? LETTER_GRADE(avg) : '—';
+    return `<button class="class-btn${c.id===activeClass?' active':''}" onclick="selectClass('${c.id}')">
+      <span>${c.name}</span>
+      <span class="class-gpa">${letter}</span>
+    </button>`;
+  }).join('');
+}
+
+function selectClass(cid){
+  activeClass = cid;
+  renderClassList();
+  renderMain();
+}
+
+function renderMain(){
+  const cls = data.classes.find(c=>c.id===activeClass);
+  if(!cls){ document.getElementById('mainArea').innerHTML='<div style="text-align:center;padding:60px 20px;color:#7a8fa8;font-size:.9rem">Select a class from the sidebar.</div>'; return; }
+
+  const entries = data.entries[cls.id]||[];
+  const avg = classAverage(cls.id);
+  const letter = avg!==null ? LETTER_GRADE(avg) : '—';
+
+  const rowsHTML = entries.length ? entries.map((e,i)=>{
+    const g = LETTER_GRADE(e.pct);
+    return `<tr>
+      <td>${e.name}</td>
+      <td><span class="cat-badge">${e.cat}</span></td>
+      <td>${e.scored}/${e.total}</td>
+      <td>${e.pct}%</td>
+      <td><span class="grade-pill grade-${GRADE_CLASS(g)}">${g}</span></td>
+      <td><button class="del-entry-btn" onclick="deleteEntry('${cls.id}',${i})">✕</button></td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="6" class="empty-entries">No grades yet — add one above!</td></tr>`;
+
+  document.getElementById('mainArea').innerHTML = `
+    <div class="class-header">
+      <div class="class-name-title">${cls.name}</div>
+      ${cls.teacher?`<span style="color:#7a8fa8;font-size:.82rem">${cls.teacher}</span>`:''}
+      ${cls.period?`<span class="cat-badge">${cls.period}</span>`:''}
+      ${avg!==null?`<span class="class-avg">${avg}% — ${letter}</span>`:''}
+      <button class="del-class-btn" onclick="deleteClass('${cls.id}')">🗑 Remove Class</button>
+    </div>
+
+    <div class="add-form">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Assignment / Test Name</label>
+          <input type="text" id="entryName" placeholder="e.g. Unit 3 Test">
+        </div>
+        <div class="form-field">
+          <label>Category</label>
+          <select id="entryCat">
+            <option>Test</option><option>Quiz</option><option>Homework</option>
+            <option>Project</option><option>Lab</option><option>Classwork</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Score</label>
+          <input type="number" id="entryScored" placeholder="e.g. 88" min="0">
+        </div>
+        <div class="form-field">
+          <label>Out of</label>
+          <input type="number" id="entryTotal" placeholder="100" min="1" value="100">
+        </div>
+        <button class="add-btn" onclick="addEntry('${cls.id}')">Add</button>
+      </div>
+    </div>
+
+    <table class="entries-table">
+      <thead><tr><th>Assignment</th><th>Category</th><th>Score</th><th>%</th><th>Grade</th><th></th></tr></thead>
+      <tbody id="entriesBody">${rowsHTML}</tbody>
+    </table>
+  `;
+}
+
+function addEntry(cid){
+  const name = document.getElementById('entryName').value.trim();
+  const cat  = document.getElementById('entryCat').value;
+  const scored = parseFloat(document.getElementById('entryScored').value);
+  const total  = parseFloat(document.getElementById('entryTotal').value) || 100;
+  if(!name||isNaN(scored)){ alert('Enter an assignment name and score.'); return; }
+  const pct = Math.round(scored/total*100);
+  if(!data.entries[cid]) data.entries[cid]=[];
+  data.entries[cid].push({name,cat,scored,total,pct});
+  save();
+  renderOverallGPA();
+  renderClassList();
+  renderMain();
+}
+
+function deleteEntry(cid,idx){
+  data.entries[cid].splice(idx,1);
+  save();
+  renderOverallGPA();
+  renderClassList();
+  renderMain();
+}
+
+function deleteClass(cid){
+  if(!confirm('Remove this class and all its grades?')) return;
+  data.classes = data.classes.filter(c=>c.id!==cid);
+  delete data.entries[cid];
+  activeClass = data.classes.length ? data.classes[0].id : null;
+  save();
+  renderOverallGPA();
+  renderClassList();
+  renderMain();
+}
+
+function openAddClass(){ document.getElementById('addClassModal').classList.add('open'); document.getElementById('newClassName').focus(); }
+function closeModal(){ document.getElementById('addClassModal').classList.remove('open'); }
+
+function addClass(){
+  const name = document.getElementById('newClassName').value.trim();
+  if(!name){ alert('Enter a class name.'); return; }
+  const teacher = document.getElementById('newClassTeacher').value.trim();
+  const period  = document.getElementById('newClassPeriod').value;
+  const id = 'cls-' + Date.now();
+  data.classes.push({id,name,teacher,period});
+  data.entries[id]=[];
+  save();
+  closeModal();
+  activeClass = id;
+  renderClassList();
+  renderMain();
+  renderOverallGPA();
+  document.getElementById('newClassName').value='';
+  document.getElementById('newClassTeacher').value='';
+  document.getElementById('newClassPeriod').value='';
+}
+
+// Init
+renderOverallGPA();
+renderClassList();
+if(data.classes.length){ activeClass=data.classes[0].id; renderMain(); }
+</script>
+</body>
+</html>

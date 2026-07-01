@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Assignment Builder — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav::-webkit-scrollbar{display:none}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 22px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.hero p{opacity:.85;max-width:540px;margin:0 auto}
+.container{max-width:960px;margin:28px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.05rem;font-weight:700;margin-bottom:16px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:5px}
+label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+select,input[type=number],input[type=text]{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
+select:focus,input:focus{border-color:var(--accent)}
+.type-row{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:16px}
+.type-btn{padding:8px 16px;border-radius:9px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--muted);transition:.15s}
+.type-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn{padding:10px 24px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
+.assignment{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:28px;display:none}
+.assign-header{border-bottom:2px solid var(--text);padding-bottom:14px;margin-bottom:20px}
+.assign-header .title{font-size:1.2rem;font-weight:800}
+.assign-header .meta{font-size:.85rem;color:var(--muted);margin-top:4px}
+.assign-header .info-row{display:flex;gap:24px;margin-top:12px;font-size:.85rem;flex-wrap:wrap}
+.q-section h3{font-size:1rem;font-weight:700;margin:20px 0 12px;border-left:3px solid var(--accent);padding-left:10px}
+.mc-item{margin-bottom:16px;padding:14px;border:1px solid var(--border);border-radius:9px}
+.mc-item .q-text{font-size:.92rem;font-weight:600;margin-bottom:10px;line-height:1.5}
+.mc-item .choices{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.choice{font-size:.85rem;padding:7px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg)}
+.fr-item{margin-bottom:16px;padding:14px;border:1px solid var(--border);border-radius:9px}
+.fr-item .q-text{font-size:.92rem;font-weight:600;margin-bottom:10px;line-height:1.5;white-space:pre-line}
+.answer-line{height:1px;background:var(--border);width:100%;margin-top:10px}
+.answer-key{margin-top:24px;padding-top:16px;border-top:2px dashed var(--border);display:none}
+.answer-key h3{font-size:.9rem;font-weight:700;margin-bottom:10px;color:var(--accent)}
+.answer-key-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.ak-item{font-size:.82rem;padding:8px 10px;background:var(--bg);border-radius:7px;border:1px solid var(--border)}
+.ak-label{color:var(--muted);font-size:.75rem;font-weight:700}
+.ak-ans{font-weight:700;color:var(--green);font-size:.9rem}
+.ak-exp{color:var(--muted);font-size:.75rem;margin-top:2px}
+.no-data-note{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;font-size:.85rem;color:#92400e;margin-bottom:12px}
+.print-actions{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+@media print{
+  .topnav,.hero,.print-actions,.no-print{display:none!important}
+  .assignment{display:block!important;border:none;padding:0}
+  body{background:#fff}
+  .mc-item,.fr-item{break-inside:avoid}
+  .answer-key{display:none}
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  select,input{background:#1a1a2e;color:var(--text)}
+  .type-btn,.btn-outline{background:#1a1a2e}
+  .choice{background:#12121f}
+  .topnav{background:#12121f;border-color:var(--border)}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="assign.html" class="nav-link active">📋 Assignments</a>
+  <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+</nav>
+
+<div class="hero">
+  <h1>📋 Assignment Builder</h1>
+  <p>Select grade, subject, and unit — generate a printable assignment with real problems and an answer key.</p>
+</div>
+
+<div class="container">
+  <div class="card no-print">
+    <h2>Build Your Assignment</h2>
+    <div class="controls">
+      <div class="field">
+        <label>Grade</label>
+        <select id="gradeSelect" onchange="updateSubjects()">
+          <option value="6">Grade 6</option>
+          <option value="7">Grade 7</option>
+          <option value="8">Grade 8</option>
+          <option value="9">Grade 9</option>
+          <option value="10">Grade 10</option>
+          <option value="11">Grade 11</option>
+          <option value="12">Grade 12</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Subject</label>
+        <select id="subjectSelect" onchange="updateUnits()"></select>
+      </div>
+      <div class="field">
+        <label>Unit / Topic</label>
+        <select id="unitSelect"></select>
+      </div>
+      <div class="field">
+        <label>Number of Questions</label>
+        <input type="number" id="numQs" min="2" max="10" value="5"/>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:8px">Assignment Type</label>
+      <div class="type-row">
+        <button class="type-btn active" onclick="setType(this,'quiz')">✏️ Quiz (Multiple Choice)</button>
+        <button class="type-btn" onclick="setType(this,'worksheet')">📄 Worksheet (Free Response)</button>
+        <button class="type-btn" onclick="setType(this,'mixed')">📋 Mixed</button>
+      </div>
+    </div>
+    <div class="field" style="max-width:300px;margin-bottom:16px">
+      <label>Class / Period</label>
+      <input type="text" id="className" placeholder="e.g., Period 3 — Fall 2025"/>
+    </div>
+    <button class="btn btn-primary" onclick="generateAssignment()">📋 Generate Assignment</button>
+  </div>
+
+  <div class="print-actions no-print" id="printActions" style="display:none">
+    <button class="btn btn-primary" onclick="window.print()">🖨 Print Assignment</button>
+    <button class="btn btn-outline" onclick="printWithKey()">🔑 Print with Answer Key</button>
+    <button class="btn btn-outline" onclick="document.getElementById('assignment').style.display='none';document.getElementById('printActions').style.display='none'">✕ Close</button>
+  </div>
+
+  <div class="assignment" id="assignment">
+    <div class="assign-header">
+      <div class="title" id="aTitle"></div>
+      <div class="meta" id="aMeta"></div>
+      <div class="info-row">
+        <div><strong>Name:</strong> ________________________________</div>
+        <div><strong>Date:</strong> ______________</div>
+        <div><strong>Score:</strong> _______ / <span id="totalPts"></span></div>
+      </div>
+      <div id="classLabel" style="margin-top:8px;font-size:.85rem;color:var(--muted)"></div>
+    </div>
+    <div id="assignmentContent"></div>
+    <div class="answer-key" id="answerKey">
+      <h3>🔑 Answer Key (Teacher Copy)</h3>
+      <div class="answer-key-grid" id="answerKeyGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BANK = {"math": {"6": {"Ratios & Proportional Relationships": {"mc": [{"q": "If 3 apples cost $1.50, how much do 8 apples cost?", "c": ["$3.00", "$3.50", "$4.00", "$4.50"], "a": 2, "exp": "Unit rate: $0.50 each; 8×$0.50=$4.00"}, {"q": "A recipe uses 2 cups of flour for 24 cookies. How much for 36 cookies?", "c": ["2.5 cups", "3 cups", "3.5 cups", "4 cups"], "a": 1, "exp": "36/24=1.5; 1.5×2=3 cups"}, {"q": "A map uses a scale of 1 inch = 50 miles. If two cities are 3.5 inches apart on the map, how far apart are they actually?", "c": ["150 miles", "175 miles", "200 miles", "225 miles"], "a": 1, "exp": "3.5×50=175 miles"}, {"q": "A store sells 5 notebooks for $8. At this rate, how much do 15 notebooks cost?", "c": ["$20", "$22", "$24", "$26"], "a": 2, "exp": "5→$8; 15→$8×3=$24"}, {"q": "If the ratio of boys to girls in a class is 3:4 and there are 21 boys, how many girls are there?", "c": ["24", "28", "32", "36"], "a": 1, "exp": "3 parts=21 → 1 part=7; 4 parts=28 girls"}], "fr": ["A runner completes 3 laps in 12 minutes. At this rate, how many laps can the runner complete in 40 minutes? Show your work and explain your reasoning.", "A car travels at a constant speed. It covers 150 miles in 3 hours. (a) What is the car's unit rate in miles per hour? (b) How far will it travel in 7 hours? Show your work."]}, "The Number System": {"mc": [{"q": "What is −8 + 5?", "c": ["13", "3", "−3", "−13"], "a": 2, "exp": "Start at −8, move 5 right: −3"}, {"q": "What is the absolute value of −14?", "c": ["−14", "14", "0", "1/14"], "a": 1, "exp": "|−14|=14"}, {"q": "Which is the greatest: −3, −7, 0, −1?", "c": ["−7", "−3", "−1", "0"], "a": 3, "exp": "0 is greater than all negatives"}, {"q": "What is (−4) × (−6)?", "c": ["−24", "24", "−10", "10"], "a": 1, "exp": "Negative × negative = positive: 24"}, {"q": "−18 ÷ 3 = ?", "c": ["−6", "6", "−21", "−54"], "a": 0, "exp": "Negative ÷ positive = negative: −6"}], "fr": ["Plot the following numbers on a number line and order them from least to greatest: −5, 2, −1, 4, −3. Explain how you know which is greatest.", "The temperature was −8°F in the morning and rose 15°F by noon. What was the temperature at noon? Write an equation and show your work."]}}, "7": {"Ratios & Proportions": {"mc": [{"q": "A shirt costs $24 and is 20% off. What is the sale price?", "c": ["$4.80", "$18.20", "$19.20", "$20.00"], "a": 2, "exp": "20% of 24=$4.80; 24−4.80=$19.20"}, {"q": "A solution is 35% salt. How many grams of salt are in 200 grams of solution?", "c": ["35g", "45g", "65g", "70g"], "a": 3, "exp": "0.35×200=70g"}, {"q": "The ratio of red to blue marbles is 5:3. There are 40 total. How many are red?", "c": ["20", "25", "24", "15"], "a": 1, "exp": "5/8×40=25"}, {"q": "Sales tax is 7%. What is the total cost of a $60 item?", "c": ["$60.70", "$64.20", "$67.00", "$64.00"], "a": 1, "exp": "60×1.07=$64.20"}, {"q": "A price increased from $50 to $65. What is the % increase?", "c": ["15%", "25%", "30%", "35%"], "a": 2, "exp": "15/50=0.30=30%"}], "fr": ["A store is having a sale: buy 2 items, get 1 free. If shirts cost $15 each, how much would you pay for 6 shirts? What percent are you saving? Show all work.", "A school survey found that 3 out of every 5 students prefer math over ELA. If the school has 450 students, how many prefer math? How many prefer ELA? Set up and solve a proportion."]}}, "8": {"Functions": {"mc": [{"q": "Which set of ordered pairs represents a function?", "c": ["(1,2),(2,3),(1,4)", "(1,2),(2,3),(3,4)", "(1,1),(1,2),(1,3)", "(0,0),(0,1),(0,2)"], "a": 1, "exp": "A function has exactly one output for each input"}, {"q": "If f(x) = 3x − 2, what is f(4)?", "c": ["8", "10", "12", "14"], "a": 1, "exp": "f(4)=3(4)−2=10"}, {"q": "What is the slope of a line that rises 6 units for every 2 units it runs?", "c": ["1/3", "2/6", "3", "12"], "a": 2, "exp": "slope = rise/run = 6/2 = 3"}, {"q": "Which equation represents a proportional relationship?", "c": ["y=3x+1", "y=x²", "y=3x", "y=3/x"], "a": 2, "exp": "Proportional: passes through origin, no added constant"}, {"q": "Which table shows a linear function?", "c": ["x:1,2,3 y:2,4,8", "x:1,2,3 y:3,5,7", "x:1,2,3 y:1,4,9", "x:0,1,2 y:0,1,3"], "a": 1, "exp": "y increases by 2 for each increase of 1 in x — linear"}], "fr": ["The table below shows values: x: 1,2,3,4 and y: 5,8,11,14.\n(a) Is this a linear function? How do you know?\n(b) Write the equation in y = mx + b form.\n(c) What is y when x = 10?", "A cell phone plan charges $25 per month plus $0.10 per text message.\n(a) Write an equation for the total monthly cost C based on the number of texts t.\n(b) If someone sends 80 texts, what is their bill?\n(c) What does the slope represent in this situation?"]}}, "9": {"Algebra I — Linear Equations": {"mc": [{"q": "Solve: 3x + 7 = 22", "c": ["3", "4", "5", "6"], "a": 2, "exp": "3x=15 → x=5"}, {"q": "What is the slope of the line through (2, 5) and (4, 11)?", "c": ["2", "3", "4", "6"], "a": 1, "exp": "(11−5)/(4−2)=3"}, {"q": "Which equation has no solution?", "c": ["2x=8", "2x+3=3x", "2x+3=2x+5", "3x=9"], "a": 2, "exp": "2x+3=2x+5 → 3=5, impossible"}, {"q": "A line passes through (0, −3) with slope 2. Its equation is:", "c": ["y=2x", "y=2x+3", "y=2x−3", "y=−3x+2"], "a": 2, "exp": "y=mx+b=2x+(−3)"}, {"q": "Solve: 2(x + 4) = 3x − 1", "c": ["7", "8", "9", "10"], "a": 2, "exp": "2x+8=3x−1 → x=9"}], "fr": ["A cell phone costs $299 and a monthly plan costs $45.\n(a) Write an equation for the total cost T after m months.\n(b) When will the total cost exceed $1000? Show your inequality and solve it.\n(c) A second phone costs $0 upfront but $80/month. Write and solve an equation to find when both plans cost the same.", "Solve and show every step:\n(a) 4x − 9 = 2x + 7\n(b) 3(2x − 1) = 4x + 9\n(c) 5 − 2x = 3x − 10\nFor each, check your answer by substituting back."]}}, "10": {"Algebra II — Polynomials": {"mc": [{"q": "Expand: (x + 3)(x − 5)", "c": ["x²−2x−15", "x²+2x−15", "x²−8x+15", "x²−2x+15"], "a": 0, "exp": "FOIL: x²−5x+3x−15=x²−2x−15"}, {"q": "Factor: x² − 9", "c": ["(x−3)²", "(x+3)(x−3)", "(x−9)(x+1)", "(x+9)(x−1)"], "a": 1, "exp": "Difference of squares"}, {"q": "The solutions of x² − 5x + 6 = 0 are:", "c": ["x=1 and 6", "x=2 and 3", "x=−2 and −3", "x=3 and −2"], "a": 1, "exp": "(x−2)(x−3)=0"}, {"q": "Which is a factor of 2x² + 7x + 3?", "c": ["(2x+1)", "(x+3)", "(2x+3)", "(x+1)"], "a": 2, "exp": "(2x+1)(x+3)=2x²+7x+3"}, {"q": "The vertex of y = x² − 6x + 8 is at:", "c": ["(3,−1)", "(3,1)", "(−3,−1)", "(6,8)"], "a": 0, "exp": "x=−b/2a=3; y=9−18+8=−1"}], "fr": ["Given f(x) = x² − 4x − 12:\n(a) Factor the expression completely.\n(b) Find the zeros (x-intercepts) of the function.\n(c) Find the vertex and determine whether it is a maximum or minimum.\n(d) Sketch the parabola, labeling the vertex, axis of symmetry, and x-intercepts.", "A ball is thrown upward. Its height in feet is h(t) = −16t² + 48t + 4, where t is time in seconds.\n(a) What is the initial height of the ball?\n(b) At what time does the ball reach its maximum height?\n(c) What is the maximum height?\n(d) When does the ball hit the ground?"]}}, "11": {"Precalculus — Functions": {"mc": [{"q": "If f(x) = 2x + 1 and g(x) = x², what is f(g(3))?", "c": ["13", "17", "19", "21"], "a": 2, "exp": "g(3)=9; f(9)=19"}, {"q": "Which function is even?", "c": ["f(x)=x³+1", "f(x)=x²−4", "f(x)=x³", "f(x)=x+1"], "a": 1, "exp": "f(−x)=f(x): (−x)²−4=x²−4"}, {"q": "The inverse of f(x) = 3x − 6 is:", "c": ["f⁻¹(x)=(x−6)/3", "f⁻¹(x)=(x+6)/3", "f⁻¹(x)=3x+6", "f⁻¹(x)=x/3+6"], "a": 1, "exp": "Swap x and y: x=3y−6 → y=(x+6)/3"}, {"q": "Which represents exponential decay?", "c": ["y=2(3)ˣ", "y=5(0.8)ˣ", "y=3x²", "y=4+2x"], "a": 1, "exp": "Decay: base between 0 and 1 (0.8)"}, {"q": "log₂(32) = ?", "c": ["3", "4", "5", "6"], "a": 2, "exp": "2⁵=32"}], "fr": ["Given f(x) = x³ − 3x and g(x) = x + 2:\n(a) Find f(g(x)).\n(b) Find the domain and range of g(x).\n(c) Is f(x) even, odd, or neither? Justify using algebra.", "The population of a city doubles every 25 years. In 2000, the population was 50,000.\n(a) Write an exponential growth model P(t) where t is years after 2000.\n(b) What is the predicted population in 2075?\n(c) In what year will the population exceed 1,000,000?"]}}, "12": {"Calculus — Limits & Derivatives": {"mc": [{"q": "What is lim(x→2) of (x² − 4)/(x − 2)?", "c": ["0", "2", "4", "Undefined"], "a": 2, "exp": "Factor: (x+2)(x−2)/(x−2)=x+2; as x→2: 4"}, {"q": "The derivative of f(x) = 5x³ is:", "c": ["5x²", "10x", "15x²", "15x³"], "a": 2, "exp": "Power rule: 3×5x²=15x²"}, {"q": "At what x does f(x) = x² − 4x + 3 have a minimum?", "c": ["x=1", "x=2", "x=3", "x=4"], "a": 1, "exp": "f'(x)=2x−4=0 → x=2"}, {"q": "Which is the derivative of sin(x)?", "c": ["−sin(x)", "cos(x)", "−cos(x)", "tan(x)"], "a": 1, "exp": "d/dx sin(x) = cos(x)"}, {"q": "If f(x) = x⁴ − 2x², then f'(x) = ?", "c": ["4x³−2x", "4x³−4x", "x³−2x", "3x³−2x"], "a": 1, "exp": "4x³−4x"}], "fr": ["Given f(x) = x³ − 6x² + 9x + 1:\n(a) Find f'(x).\n(b) Find all critical points.\n(c) Use the first derivative test to classify each as a local max or min.\n(d) Find f''(x) and identify intervals of concavity.", "A particle's position is given by s(t) = t³ − 6t² + 9t (in meters, t in seconds).\n(a) Find the velocity function v(t).\n(b) When is the particle at rest?\n(c) Find the acceleration function a(t).\n(d) When is the particle moving in the positive direction?"]}}}, "science": {"6": {"Matter & Its Interactions": {"mc": [{"q": "Which is a physical change?", "c": ["Burning wood", "Iron rusting", "Water freezing", "Baking bread"], "a": 2, "exp": "Freezing water is reversible and doesn't change chemical composition"}, {"q": "What does the law of conservation of mass state?", "c": ["Mass can be created", "Mass can be destroyed", "Mass is neither created nor destroyed", "Mass changes during reactions"], "a": 2, "exp": "Mass is conserved in chemical reactions"}, {"q": "Which property can be used to separate a mixture of sand and iron filings?", "c": ["Color", "Density", "Magnetism", "Boiling point"], "a": 2, "exp": "Iron is magnetic; sand is not"}, {"q": "What is the smallest particle of an element?", "c": ["Molecule", "Compound", "Atom", "Cell"], "a": 2, "exp": "Atoms are the basic building blocks of elements"}, {"q": "A substance that cannot be broken down into simpler substances by chemical means is a(n):", "c": ["Mixture", "Compound", "Element", "Solution"], "a": 2, "exp": "Elements are the purest chemical substances"}], "fr": ["A student mixes baking soda and vinegar and observes bubbles forming. Classify this change as physical or chemical. Provide two pieces of evidence to support your answer.", "Explain the difference between a mixture and a compound. Give one example of each and explain how they could be separated (or why they cannot be separated by simple physical means)."]}}, "9": {"Biology — Cell Theory": {"mc": [{"q": "Which statement is part of the Cell Theory?", "c": ["Cells contain DNA only in the nucleus", "All cells come from pre-existing cells", "Only eukaryotes are made of cells", "Cells require oxygen to function"], "a": 1, "exp": "Cell Theory: all cells from pre-existing cells"}, {"q": "Which organelle produces energy (ATP) for the cell?", "c": ["Ribosome", "Nucleus", "Mitochondria", "Cell membrane"], "a": 2, "exp": "Mitochondria = powerhouse of the cell"}, {"q": "Which structure is found in plant cells but NOT animal cells?", "c": ["Mitochondria", "Cell membrane", "Chloroplast", "Nucleus"], "a": 2, "exp": "Chloroplasts are unique to plant cells"}, {"q": "The cell membrane is described as 'selectively permeable' because it:", "c": ["Is always open", "Allows all substances in", "Controls what enters and exits", "Contains no proteins"], "a": 2, "exp": "Selectively permeable = controls passage of materials"}, {"q": "Prokaryotic cells differ from eukaryotic cells because prokaryotes:", "c": ["Have mitochondria", "Lack a membrane-bound nucleus", "Have chloroplasts", "Are larger"], "a": 1, "exp": "Prokaryotes have no nucleus"}], "fr": ["Compare and contrast a plant cell and an animal cell. List at least three organelles found in both and two structural differences. Draw and label a diagram of each.", "Explain how the process of osmosis works. A cell is placed in a solution with a lower solute concentration than the cell's interior. Predict what will happen and explain why, using the concept of water potential."]}}, "10": {"Chemistry — Atomic Structure": {"mc": [{"q": "The atomic number of an element equals the number of:", "c": ["Neutrons", "Protons", "Electrons + Neutrons", "Mass units"], "a": 1, "exp": "Atomic number = proton count"}, {"q": "An isotope differs from the original element by having different numbers of:", "c": ["Protons", "Electrons", "Neutrons", "Bonds"], "a": 2, "exp": "Isotopes have same protons, different neutrons"}, {"q": "Which subatomic particle has no charge?", "c": ["Proton", "Electron", "Neutron", "Ion"], "a": 2, "exp": "Neutrons are electrically neutral"}, {"q": "Carbon-14 has 6 protons. How many neutrons does it have?", "c": ["6", "8", "14", "20"], "a": 1, "exp": "Neutrons = mass# − protons = 14−6=8"}, {"q": "Electrons are located in:", "c": ["The nucleus", "Energy levels around the nucleus", "Between protons", "The neutron cloud"], "a": 1, "exp": "Electrons orbit the nucleus in energy levels"}], "fr": ["Draw and label a Bohr model of a carbon atom (atomic number 6, mass number 12). Show the correct number of protons, neutrons, and electrons in their correct locations.", "Explain the difference between an atom, a molecule, and an ion. Give one example of each. How does forming an ion affect the atom's charge?"]}}}, "ela": {"6": {"Reading Literature": {"mc": [{"q": "The main message or lesson of a story is called the:", "c": ["Plot", "Setting", "Theme", "Conflict"], "a": 2, "exp": "Theme = the central message or universal truth"}, {"q": "Which is an example of a simile?", "c": ["The moon is a lantern", "Her voice is like music", "The wind howled angrily", "He devoured the book"], "a": 1, "exp": "Simile = comparison using like or as"}, {"q": "When the narrator of a story uses 'I' and tells events from their own perspective, the point of view is:", "c": ["Third person limited", "Third person omniscient", "First person", "Second person"], "a": 2, "exp": "I = first person narrator"}, {"q": "The part of a story where the main problem or conflict is introduced is the:", "c": ["Climax", "Resolution", "Rising action", "Exposition"], "a": 3, "exp": "Exposition = background and introduction to conflict"}, {"q": "An author uses description of a dark, stormy sky as a character walks into a spooky house. This is an example of:", "c": ["Personification", "Foreshadowing", "Alliteration", "Flashback"], "a": 1, "exp": "Foreshadowing = hints at future events"}], "fr": ["Choose a book you have read this year. Identify the theme and explain how two specific events or character actions in the story support that theme. Use evidence from the text.", "Write a paragraph analyzing how the main character changes from the beginning to the end of a story you have read. What causes the change, and what does the character learn? Support your answer with details from the text."]}}, "8": {"Argument Writing": {"mc": [{"q": "A thesis statement in an argument essay must be:", "c": ["A question", "A fact everyone agrees on", "A specific, arguable claim", "A summary of the essay"], "a": 2, "exp": "Thesis = specific, debatable position"}, {"q": "Which sentence best introduces evidence in an essay?", "c": ["Evidence is important.", "Many people think this.", "According to a 2022 CDC study,...", "The author writes something."], "a": 2, "exp": "A signal phrase with a credible source properly introduces evidence"}, {"q": "What is the purpose of a counterargument in an essay?", "c": ["To change your position", "To acknowledge and refute the opposing view", "To provide additional examples", "To conclude the essay"], "a": 1, "exp": "Counterargument strengthens your position by addressing opposition"}, {"q": "Which transition best signals a conclusion?", "c": ["However", "For example", "Furthermore", "Therefore"], "a": 3, "exp": "Therefore signals a conclusion based on prior reasoning"}, {"q": "Citing evidence from the text means:", "c": ["Making up examples", "Writing personal opinions", "Referencing specific words, lines, or data from a source", "Summarizing without specifics"], "a": 2, "exp": "Citing = using specific textual support"}], "fr": ["Should schools have a longer school day? Write a well-organized argument essay with a clear thesis, two supporting body paragraphs with evidence, a counterargument paragraph, and a conclusion. Use transitions to connect your ideas.", "Read the following claim: 'Students learn better with technology than without it.' Do you agree or disagree? Write a three-paragraph argument response: (1) your thesis and first reason with evidence, (2) a second reason with evidence, and (3) a counterargument and your rebuttal."]}}}, "history": {"8": {"American Revolution": {"mc": [{"q": "The main argument of the Declaration of Independence is that:", "c": ["Britain was too expensive to fight", "Colonists had natural rights and the right to self-govern", "The king was corrupt", "America needed a new monarch"], "a": 1, "exp": "Declaration asserts natural rights and right to overthrow unjust government"}, {"q": "Which act taxed paper goods like newspapers, legal documents, and playing cards?", "c": ["Tea Act", "Stamp Act", "Townshend Acts", "Intolerable Acts"], "a": 1, "exp": "Stamp Act (1765) taxed printed materials"}, {"q": "Who was the primary author of the Declaration of Independence?", "c": ["Benjamin Franklin", "John Adams", "George Washington", "Thomas Jefferson"], "a": 3, "exp": "Jefferson wrote the Declaration in 1776"}, {"q": "The phrase 'no taxation without representation' meant colonists objected to:", "c": ["All taxes", "Taxes set by a parliament they had no vote in", "Paying any money to Britain", "Supporting the army"], "a": 1, "exp": "Colonists had no seats in British Parliament"}, {"q": "The Battle of Saratoga was significant because it:", "c": ["Was the last battle of the war", "Led France to ally with the colonists", "Was a British victory", "Ended with a treaty"], "a": 1, "exp": "Saratoga convinced France to support the American cause"}], "fr": ["Explain two causes of the American Revolution. For each cause, describe what happened and explain why it angered the colonists. Use specific historical evidence.", "Analyze the Declaration of Independence: (a) What is the central argument? (b) What does Jefferson mean by 'self-evident truths'? (c) How does this document reflect Enlightenment ideas? Support your answer with specific references to the text."]}}}};
+
+const SUBJ_LABELS = {math:'Mathematics',science:'Science',ela:'English Language Arts',history:'History / Social Studies'};
+
+let assignType = 'quiz';
+
+function setType(btn, type) {
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  assignType = type;
+}
+
+function updateSubjects() {
+  const g = document.getElementById('gradeSelect').value;
+  const subjects = Object.keys(BANK).filter(s => BANK[s][g]);
+  const sel = document.getElementById('subjectSelect');
+  sel.innerHTML = subjects.length
+    ? subjects.map(s => `<option value="${s}">${SUBJ_LABELS[s] || s}</option>`).join('')
+    : '<option value="">No data for this grade</option>';
+  updateUnits();
+}
+
+function updateUnits() {
+  const g = document.getElementById('gradeSelect').value;
+  const s = document.getElementById('subjectSelect').value;
+  const units = s && BANK[s] && BANK[s][g] ? Object.keys(BANK[s][g]) : [];
+  document.getElementById('unitSelect').innerHTML = units.length
+    ? units.map(u => `<option value="${u}">${u}</option>`).join('')
+    : '<option value="">No units available</option>';
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function generateAssignment() {
+  const grade = document.getElementById('gradeSelect').value;
+  const subj  = document.getElementById('subjectSelect').value;
+  const unit  = document.getElementById('unitSelect').value;
+  const numQs = Math.min(10, Math.max(1, parseInt(document.getElementById('numQs').value) || 5));
+  const cls   = document.getElementById('className').value;
+
+  if (!subj || !unit || !BANK[subj] || !BANK[subj][grade] || !BANK[subj][grade][unit]) {
+    alert('No real problems available for this combination yet. Try a different grade, subject, or unit.');
+    return;
+  }
+
+  const data = BANK[subj][grade][unit];
+  const mcAll = shuffle(data.mc || []);
+  const frAll = shuffle(data.fr || []);
+
+  let mcQs = [], frQs = [];
+  if (assignType === 'quiz') {
+    mcQs = mcAll.slice(0, numQs);
+  } else if (assignType === 'worksheet') {
+    frQs = frAll.slice(0, Math.min(numQs, frAll.length));
+    if (frQs.length < numQs && mcAll.length) mcQs = mcAll.slice(0, numQs - frQs.length);
+  } else { // mixed
+    const mcCount = Math.ceil(numQs * 0.6);
+    mcQs = mcAll.slice(0, Math.min(mcCount, mcAll.length));
+    frQs = frAll.slice(0, Math.min(numQs - mcQs.length, frAll.length));
+  }
+
+  const total = mcQs.length + frQs.length;
+
+  document.getElementById('aTitle').textContent = unit;
+  document.getElementById('aMeta').textContent  = `Grade ${grade} — ${SUBJ_LABELS[subj] || subj}`;
+  document.getElementById('totalPts').textContent = total;
+  document.getElementById('classLabel').textContent = cls ? 'Class/Period: ' + cls : '';
+
+  let html = '';
+  if (mcQs.length) {
+    html += '<div class="q-section"><h3>Part A: Multiple Choice — Circle the best answer.</h3>';
+    mcQs.forEach((q, i) => {
+      html += `<div class="mc-item">
+        <div class="q-text">${i+1}. ${q.q}</div>
+        <div class="choices">${q.c.map((c,ci) => `<div class="choice">${'ABCD'[ci]}. ${c}</div>`).join('')}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  if (frQs.length) {
+    const offset = mcQs.length;
+    html += '<div class="q-section"><h3>Part B: Free Response — Answer in complete sentences. Show all work.</h3>';
+    frQs.forEach((q, i) => {
+      html += `<div class="fr-item">
+        <div class="q-text">${offset+i+1}. ${q}</div>
+        <div class="answer-lines">${'<div class="answer-line"></div>'.repeat(12)}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  document.getElementById('assignmentContent').innerHTML = html;
+
+  // Answer key
+  let keyHtml = '';
+  mcQs.forEach((q, i) => {
+    keyHtml += `<div class="ak-item">
+      <div class="ak-label">Q${i+1}</div>
+      <div class="ak-ans">${'ABCD'[q.a]}</div>
+      <div class="ak-exp">${q.exp}</div>
+    </div>`;
+  });
+  document.getElementById('answerKeyGrid').innerHTML = keyHtml;
+
+  document.getElementById('assignment').style.display = 'block';
+  document.getElementById('printActions').style.display = 'flex';
+  document.getElementById('assignment').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function printWithKey() {
+  document.getElementById('answerKey').style.display = 'block';
+  window.print();
+  document.getElementById('answerKey').style.display = 'none';
+}
+
+updateSubjects();
+</script>
+</body>
+</html>

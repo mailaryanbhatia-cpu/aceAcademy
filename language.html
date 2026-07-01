@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>aceAcademy — Languages</title>
+<style>
+:root{
+  --bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;
+  --text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--hover:#f0f0ff;
+  --green:#059669;--red:#dc2626;--amber:#d97706;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+/* NAV */
+.topnav{background:#1a2540;border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.topnav .logo{font-weight:800;font-size:1.15rem;color:var(--accent);text-decoration:none;letter-spacing:-.5px}
+.topnav .logo span{color:var(--accent2)}
+.topnav a.nav-link{font-size:.82rem;color:var(--muted);text-decoration:none;padding:4px 9px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.topnav a.nav-link:hover,.topnav a.nav-link.active{background:var(--hover);color:var(--accent)}
+.topnav .spacer{flex:1}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:32px 24px 28px;text-align:center}
+.hero h1{font-size:2rem;font-weight:900;margin-bottom:6px}
+.hero p{font-size:1rem;opacity:.85}
+
+/* LANG SELECTOR */
+.lang-bar{display:flex;justify-content:center;gap:12px;padding:20px;flex-wrap:wrap;background:#1a2540;border-bottom:1px solid var(--border)}
+.lang-btn{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;border:2px solid var(--border);background:#1a2540;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent)}
+.lang-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.lang-btn .flag{font-size:1.4rem}
+
+/* MODE TABS */
+.mode-bar{display:flex;justify-content:center;gap:8px;padding:14px;background:#1a2540;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.mode-tab{padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);background:#1a2540;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;color:var(--muted)}
+.mode-tab:hover{border-color:var(--accent);color:var(--accent)}
+.mode-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* CATEGORY FILTER */
+.cat-bar{display:flex;gap:8px;padding:14px 24px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:#1a2540}
+.cat-btn{padding:5px 14px;border-radius:16px;border:1.5px solid var(--border);background:#1a2540;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
+.cat-btn:hover,.cat-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* MAIN */
+.main{flex:1;padding:28px 24px;max-width:900px;margin:0 auto;width:100%}
+
+/* ── FLASHCARDS ── */
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.fc-wrap{perspective:800px;height:180px;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.fc-wrap.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:14px;border:1.5px solid var(--border);background:#1a2540;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;backface-visibility:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.fc-back{transform:rotateY(180deg);background:rgba(99,102,241,0.18)}
+.fc-char{font-size:2.4rem;line-height:1.2;margin-bottom:6px}
+.fc-rom{font-size:.82rem;color:var(--accent);font-weight:600;margin-bottom:3px}
+.fc-meaning{font-size:.85rem;color:var(--text);font-weight:600;text-align:center}
+.fc-cat{font-size:.68rem;color:var(--muted);position:absolute;top:8px;right:10px;text-transform:uppercase;letter-spacing:.04em}
+.fc-hint{font-size:.72rem;color:var(--muted);margin-top:6px;text-align:center}
+.fc-controls{display:flex;justify-content:center;gap:12px;margin-bottom:20px}
+.fc-ctrl-btn{padding:8px 20px;border-radius:8px;border:1.5px solid var(--border);background:#1a2540;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
+.fc-ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.fc-ctrl-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── QUIZ ── */
+.quiz-wrap{max-width:600px;margin:0 auto}
+.quiz-progress{display:flex;align-items:center;gap:12px;margin-bottom:20px;font-size:.85rem;color:var(--muted)}
+.quiz-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.quiz-bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .4s}
+.quiz-card{background:#1a2540;border-radius:16px;border:1.5px solid var(--border);padding:32px;text-align:center;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.quiz-prompt-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:12px;font-weight:700}
+.quiz-char{font-size:3.5rem;margin-bottom:8px;line-height:1.1}
+.quiz-rom{font-size:1rem;color:var(--accent);font-weight:600;margin-bottom:4px}
+.quiz-sub{font-size:.85rem;color:var(--muted)}
+.quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.quiz-choice{padding:14px;border-radius:10px;border:1.5px solid var(--border);background:#1a2540;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .15s;text-align:left}
+.quiz-choice:hover:not(:disabled){border-color:var(--accent);background:var(--hover)}
+.quiz-choice.correct{border-color:var(--green);background:#f0fdf4;color:#065f46;font-weight:700}
+.quiz-choice.wrong{border-color:var(--red);background:#fef2f2;color:#991b1b}
+.quiz-choice:disabled{cursor:not-allowed}
+.quiz-type-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;margin-bottom:10px;transition:border-color .2s}
+.quiz-type-input:focus{outline:none;border-color:var(--accent)}
+.quiz-type-input.correct{border-color:var(--green);background:#f0fdf4}
+.quiz-type-input.wrong{border-color:var(--red);background:#fef2f2}
+.quiz-feedback{padding:12px 16px;border-radius:8px;font-size:.88rem;margin-bottom:14px;display:none}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:#f0fdf4;color:#065f46;border-left:3px solid var(--green)}
+.quiz-feedback.wrong{background:#fef2f2;color:#991b1b;border-left:3px solid var(--red)}
+.quiz-next-btn{background:var(--accent);color:#fff;border:none;padding:12px 32px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;width:100%}
+.quiz-next-btn:hover{background:var(--accent2)}
+.quiz-mode-row{display:flex;gap:8px;margin-bottom:18px;justify-content:center}
+.qmode-btn{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border);background:#1a2540;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted)}
+.qmode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.quiz-score{text-align:center;padding:40px 20px}
+.quiz-score .score-big{font-size:4rem;font-weight:900;color:var(--accent)}
+.quiz-score p{color:var(--muted);margin:8px 0 20px}
+.quiz-score button{background:var(--accent);color:#fff;border:none;padding:12px 32px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer}
+
+/* ── WRITING PRACTICE ── */
+.writing-layout{display:grid;grid-template-columns:1fr 2fr;gap:20px;align-items:start}
+@media(max-width:640px){.writing-layout{grid-template-columns:1fr}}
+.writing-picker{display:flex;flex-direction:column;gap:8px;max-height:500px;overflow-y:auto;padding-right:4px}
+.writing-item{padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:#1a2540;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s}
+.writing-item:hover{border-color:var(--accent);background:var(--hover)}
+.writing-item.active{border-color:var(--accent);background:rgba(99,102,241,0.18)}
+.writing-item .wi-char{font-size:1.8rem;width:44px;text-align:center}
+.writing-item .wi-info{flex:1}
+.writing-item .wi-rom{font-size:.78rem;color:var(--accent);font-weight:600}
+.writing-item .wi-meaning{font-size:.82rem;color:var(--muted)}
+.writing-panel{background:#1a2540;border-radius:16px;border:1.5px solid var(--border);padding:24px;position:sticky;top:80px}
+.writing-char-display{font-size:7rem;text-align:center;line-height:1;margin:8px 0;background:
+  repeating-linear-gradient(0deg,transparent,transparent 49px,#e0e0e0 49px,#e0e0e0 50px),
+  repeating-linear-gradient(90deg,transparent,transparent 49px,#e0e0e0 49px,#e0e0e0 50px),
+  linear-gradient(#f8f8ff,#f8f8ff);
+  background-size:50px 50px,50px 50px,100% 100%;
+  border:1.5px solid var(--border);border-radius:12px;padding:12px;min-height:120px;display:flex;align-items:center;justify-content:center}
+.writing-rom{font-size:1.2rem;color:var(--accent);font-weight:700;text-align:center;margin-bottom:4px}
+.writing-meaning{font-size:.95rem;color:var(--muted);text-align:center;margin-bottom:16px}
+.writing-canvas-wrap{position:relative;margin:12px 0}
+canvas#traceCanvas{border:1.5px solid var(--border);border-radius:12px;cursor:crosshair;touch-action:none;display:block;width:100%;background:
+  repeating-linear-gradient(0deg,transparent,transparent 49px,#e8e8f0 49px,#e8f0e8 50px),
+  repeating-linear-gradient(90deg,transparent,transparent 49px,#e8e8f0 49px,#e8f0e8 50px),
+  #fff;
+  background-size:50px 50px,50px 50px,100% 100%}
+.canvas-btns{display:flex;gap:8px;margin-top:10px}
+.canvas-btn{flex:1;padding:9px;border-radius:8px;border:1.5px solid var(--border);background:#1a2540;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;color:var(--muted)}
+.canvas-btn:hover{border-color:var(--accent);color:var(--accent)}
+.canvas-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.stroke-info{background:#f7f7ff;border-radius:10px;padding:12px 14px;margin-top:10px;font-size:.82rem;line-height:1.7;color:var(--text)}
+.stroke-info strong{color:var(--accent)}
+
+/* ── PHRASEBOOK ── */
+.phrase-grid{display:flex;flex-direction:column;gap:12px}
+.phrase-card{background:#1a2540;border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;transition:box-shadow .15s}
+.phrase-card:hover{box-shadow:0 4px 16px rgba(79,70,229,.08)}
+.phrase-char{font-size:1.8rem;min-width:60px;text-align:center}
+.phrase-info{flex:1}
+.phrase-rom{font-size:.85rem;color:var(--accent);font-weight:600;margin-bottom:2px}
+.phrase-meaning{font-size:.95rem;font-weight:600;color:var(--text)}
+.phrase-notes{font-size:.78rem;color:var(--muted);margin-top:2px}
+.phrase-speak{background:var(--hover);border:none;border-radius:8px;padding:8px 12px;font-size:.8rem;color:var(--accent);font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s}
+.phrase-speak:hover{background:#ddd6fe}
+.section-head{font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 0 6px;margin-top:8px}
+
+/* EMPTY / UTIL */
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty .icon{font-size:3rem;margin-bottom:12px}
+</style>
+  <link rel="stylesheet" href="ace-theme.css">
+
+<style id="ace-nav-css">
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+nav.topnav{background:#080e1c!important;border-bottom:1px solid #2a3a55!important;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5)!important;padding:0 20px!important;height:60px!important;display:flex!important;align-items:center!important;gap:2px!important;position:sticky!important;top:0!important;z-index:500!important;overflow-x:auto!important;}
+nav.topnav::-webkit-scrollbar{display:none;}
+nav.topnav .logo,nav.topnav a.logo{font-size:1.1rem!important;font-weight:800!important;color:#fff!important;text-decoration:none!important;margin-right:10px!important;white-space:nowrap!important;flex-shrink:0!important;display:flex!important;align-items:center!important;gap:6px!important;}
+nav.topnav .logo span,nav.topnav a.logo span{color:#a5b4fc!important;}
+nav.topnav a.nav-link,nav.topnav a.back-link{display:inline-flex!important;align-items:center!important;gap:3px!important;text-decoration:none!important;padding:6px 9px!important;border-radius:7px!important;font-size:.76rem!important;font-weight:600!important;white-space:nowrap!important;color:#7a8fa8!important;transition:background .15s,color .15s!important;font-family:inherit!important;}
+nav.topnav a.nav-link:hover,nav.topnav a.back-link:hover{background:rgba(255,255,255,.07)!important;color:#e8edf5!important;}
+nav.topnav a.nav-link.active{background:rgba(99,102,241,.18)!important;color:#a5b4fc!important;}
+nav.topnav .spacer,nav.topnav h1.nav-title{flex:1!important;color:#7a8fa8!important;font-size:.8rem!important;font-weight:500!important;}
+nav.topnav input,nav.topnav select{background:#111827!important;border:1px solid #2a3a55!important;color:#e8edf5!important;border-radius:6px!important;padding:5px 10px!important;font-size:.78rem!important;font-family:inherit!important;outline:none!important;}
+:root{--bg:#0b1120;--surface:#1a2540;--border:#2a3a55;--text:#e8edf5;--muted:#7a8fa8;--accent:#6366f1;--accent-light:rgba(99,102,241,0.18);}
+body{background:var(--bg);color:var(--text);}
+footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid #2a3a55!important;}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#334466;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#7a8fa8}
+</style>
+<script src="auth-guard.js"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="curriculum.html" class="nav-link">📚 Curriculum</a>
+  <a href="worksheets.html" class="nav-link">📄 Worksheets</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="language.html" class="nav-link active">🌏 Languages</a>
+  <a href="flashcards.html" style="text-decoration:none;margin-right:8px;padding:7px 14px;background:#7c3aed;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;white-space:nowrap;">🃏 Flashcards</a>
+  <a href="notebook.html" style="text-decoration:none;margin-right:8px;padding:7px 14px;background:#f59e0b;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;white-space:nowrap;">📁 Notebook</a>
+  <a href="calendar.html" style="text-decoration:none;margin-right:8px;padding:7px 14px;background:#0ea5e9;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;white-space:nowrap;">📅 Calendar</a>
+  <a href="progress.html" style="text-decoration:none;margin-right:8px;padding:7px 14px;background:#059669;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;white-space:nowrap;">📊 Progress</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+    <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
+  <a href="citation.html" class="nav-link">📖 Citations</a>
+  <a href="tools.html" class="nav-link">🔬 Tools</a>
+  <a href="assign.html" class="nav-link">📋 Assignments</a>
+  <a href="parent.html" class="nav-link">👪 Parent View</a>
+  <div class="spacer"></div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>🌏 Asian Language Learner</h1>
+  <p>Flashcards · Quizzes · Writing Practice · Phrasebook</p>
+</div>
+
+<!-- LANGUAGE SELECTOR -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('mandarin',this)"><span class="flag">🇨🇳</span> Mandarin</button>
+  <button class="lang-btn" onclick="setLang('japanese',this)"><span class="flag">🇯🇵</span> Japanese</button>
+  <button class="lang-btn" onclick="setLang('hindi',this)"><span class="flag">🇮🇳</span> Hindi</button>
+</div>
+
+<!-- MODE TABS -->
+<div class="mode-bar">
+  <button class="mode-tab active" onclick="setMode('flashcards',this)">🃏 Flashcards</button>
+  <button class="mode-tab" onclick="setMode('quiz',this)">🧠 Quiz</button>
+  <button class="mode-tab" onclick="setMode('writing',this)">✍️ Writing Practice</button>
+  <button class="mode-tab" onclick="setMode('phrasebook',this)">📖 Phrasebook</button>
+</div>
+
+<!-- CATEGORY FILTER (hidden in writing/phrasebook) -->
+<div class="cat-bar" id="catBar"></div>
+
+<div class="main" id="mainArea"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
+const LANGUAGES = {
+  mandarin: {
+    name:"Mandarin Chinese", flag:"🇨🇳", script:"普通话",
+    vocab:[
+  {char:"你好",rom:"nǐ hǎo",meaning:"Hello",cat:"greetings",strokes:12,tips:"你(you)+好(good). 你 has the person radical 亻."},
+  {char:"谢谢",rom:"xiè xiè",meaning:"Thank you",cat:"greetings",strokes:17,tips:"谢 means \'to thank\'. Repeated for emphasis."},
+  {char:"再见",rom:"zài jiàn",meaning:"Goodbye",cat:"greetings",strokes:14,tips:"再=again, 见=see. Literally \'see again\'."},
+  {char:"对不起",rom:"duì bu qǐ",meaning:"Sorry",cat:"greetings",strokes:20,tips:"对=correct, 不=not, 起=rise. Formal apology."},
+  {char:"没关系",rom:"méi guān xi",meaning:"No worries",cat:"greetings",strokes:18,tips:"没=not, 关系=matter. \'It doesn\'t matter.\'"},
+  {char:"早上好",rom:"zǎo shang hǎo",meaning:"Good morning",cat:"greetings",strokes:18,tips:"早=early, 上=up, 好=good."},
+  {char:"下午好",rom:"xià wǔ hǎo",meaning:"Good afternoon",cat:"greetings",strokes:15,tips:"下午=afternoon, 好=good."},
+  {char:"晚上好",rom:"wǎn shang hǎo",meaning:"Good evening",cat:"greetings",strokes:20,tips:"晚=evening, 上=up, 好=good."},
+  {char:"请",rom:"qǐng",meaning:"Please",cat:"greetings",strokes:10,tips:"请 is also used to mean \'invite\' or \'please enter\'."},
+  {char:"不客气",rom:"bù kèqì",meaning:"You're welcome",cat:"greetings",strokes:12,tips:"客气=polite/courteous. \'Don\'t be polite\' = you\'re welcome."},
+  {char:"好的",rom:"hǎo de",meaning:"Okay / Alright",cat:"greetings",strokes:8,tips:"好=good, 的 is a particle. Casual agreement."},
+  {char:"是",rom:"shì",meaning:"Yes / Is",cat:"greetings",strokes:9,tips:"是 means \'is/are/am\'. Also used for emphatic \'yes\'."},
+  {char:"欢迎",rom:"huān yíng",meaning:"Welcome",cat:"greetings",strokes:14,tips:"欢=happy, 迎=receive/welcome."},
+  {char:"保重",rom:"bǎo zhòng",meaning:"Take care",cat:"greetings",strokes:16,tips:"保=protect, 重=important. Used when parting."},
+  {char:"久仰",rom:"jiǔ yǎng",meaning:"Honored to meet you",cat:"greetings",strokes:18,tips:"Formal: \'I\'ve long admired you.\'"},
+  {char:"初次见面",rom:"chū cì jiàn miàn",meaning:"Nice to meet you",cat:"greetings",strokes:22,tips:"初次=first time, 见面=meet."},
+  {char:"请进",rom:"qǐng jìn",meaning:"Please come in",cat:"greetings",strokes:15,tips:"请=please, 进=enter."},
+  {char:"零",rom:"líng",meaning:"Zero (0)",cat:"numbers",strokes:13,tips:"13 strokes. Used to say 0 or fill gaps: 108=一零八."},
+  {char:"一",rom:"yī",meaning:"One (1)",cat:"numbers",strokes:1,tips:"One single horizontal stroke. The simplest character."},
+  {char:"二",rom:"èr",meaning:"Two (2)",cat:"numbers",strokes:2,tips:"Two horizontal strokes, upper one shorter."},
+  {char:"三",rom:"sān",meaning:"Three (3)",cat:"numbers",strokes:3,tips:"Three horizontal strokes of increasing length."},
+  {char:"四",rom:"sì",meaning:"Four (4)",cat:"numbers",strokes:5,tips:"Five strokes. Looks like a box with two lines inside."},
+  {char:"五",rom:"wǔ",meaning:"Five (5)",cat:"numbers",strokes:4,tips:"Cross-like shape."},
+  {char:"六",rom:"liù",meaning:"Six (6)",cat:"numbers",strokes:4,tips:"Top dot and horizontal, then two curved strokes."},
+  {char:"七",rom:"qī",meaning:"Seven (7)",cat:"numbers",strokes:2,tips:"Horizontal then vertical with a curve."},
+  {char:"八",rom:"bā",meaning:"Eight (8)",cat:"numbers",strokes:2,tips:"Two diverging strokes — lucky number in China!"},
+  {char:"九",rom:"jiǔ",meaning:"Nine (9)",cat:"numbers",strokes:2,tips:"Curved horizontal then a downward hook."},
+  {char:"十",rom:"shí",meaning:"Ten (10)",cat:"numbers",strokes:2,tips:"A cross: horizontal then vertical."},
+  {char:"十一",rom:"shí yī",meaning:"Eleven (11)",cat:"numbers",strokes:3,tips:"十(10)+一(1). Chinese numbers build logically!"},
+  {char:"十二",rom:"shí èr",meaning:"Twelve (12)",cat:"numbers",strokes:4,tips:"十(10)+二(2)."},
+  {char:"二十",rom:"èr shí",meaning:"Twenty (20)",cat:"numbers",strokes:4,tips:"二(2)+十(10). \'Two tens.\'"},
+  {char:"三十",rom:"sān shí",meaning:"Thirty (30)",cat:"numbers",strokes:5,tips:"三(3)+十(10). \'Three tens.\'"},
+  {char:"五十",rom:"wǔ shí",meaning:"Fifty (50)",cat:"numbers",strokes:6,tips:"五(5)+十(10)."},
+  {char:"一百",rom:"yī bǎi",meaning:"One hundred (100)",cat:"numbers",strokes:7,tips:"百 means hundred. 白+一 at top."},
+  {char:"一千",rom:"yī qiān",meaning:"One thousand (1,000)",cat:"numbers",strokes:8,tips:"千 means thousand."},
+  {char:"一万",rom:"yī wàn",meaning:"Ten thousand (10,000)",cat:"numbers",strokes:7,tips:"万 is unique to Chinese/Japanese — a unit of 10,000."},
+  {char:"半",rom:"bàn",meaning:"Half",cat:"numbers",strokes:5,tips:"Used in 半小时 (half hour), 一半 (one half)."},
+  {char:"第一",rom:"dì yī",meaning:"First",cat:"numbers",strokes:8,tips:"第 is the ordinal prefix, like \'th/st/nd\' in English."},
+  {char:"红色",rom:"hóng sè",meaning:"Red",cat:"colors",strokes:12,tips:"红 has the silk radical 纟. Red = luck in China."},
+  {char:"蓝色",rom:"lán sè",meaning:"Blue",cat:"colors",strokes:16,tips:"蓝 has the grass radical 艹 on top."},
+  {char:"绿色",rom:"lǜ sè",meaning:"Green",cat:"colors",strokes:14,tips:"绿 also has the silk radical 纟."},
+  {char:"白色",rom:"bái sè",meaning:"White",cat:"colors",strokes:7,tips:"白 means pure/white. Used in 白饭 (plain rice)."},
+  {char:"黑色",rom:"hēi sè",meaning:"Black",cat:"colors",strokes:12,tips:"黑 — bottom part shows fire 灬 (soot)."},
+  {char:"黄色",rom:"huáng sè",meaning:"Yellow",cat:"colors",strokes:13,tips:"Yellow was the emperor\'s color in imperial China."},
+  {char:"粉色",rom:"fěn sè",meaning:"Pink",cat:"colors",strokes:12,tips:"粉=powder/pink. Also means flour."},
+  {char:"橙色",rom:"chéng sè",meaning:"Orange",cat:"colors",strokes:16,tips:"橙 is also the word for the orange fruit."},
+  {char:"紫色",rom:"zǐ sè",meaning:"Purple",cat:"colors",strokes:14,tips:"Historically a royal color in China too."},
+  {char:"棕色",rom:"zōng sè",meaning:"Brown",cat:"colors",strokes:16,tips:"棕 refers to palm tree fiber — naturally brown."},
+  {char:"灰色",rom:"huī sè",meaning:"Gray",cat:"colors",strokes:12,tips:"灰=ash, 色=color. Ash-colored."},
+  {char:"金色",rom:"jīn sè",meaning:"Gold",cat:"colors",strokes:10,tips:"金 means gold/metal. Also used in 金钱 (money)."},
+  {char:"银色",rom:"yín sè",meaning:"Silver",cat:"colors",strokes:11,tips:"银 means silver. Used in 银行 (bank)."},
+  {char:"彩色",rom:"cǎi sè",meaning:"Colorful",cat:"colors",strokes:17,tips:"彩=colorful/multicolored. 彩虹=rainbow."},
+  {char:"猫",rom:"māo",meaning:"Cat",cat:"animals",strokes:11,tips:"犭 radical. Many animal chars share this radical."},
+  {char:"狗",rom:"gǒu",meaning:"Dog",cat:"animals",strokes:8,tips:"狗 has the dog radical 犭."},
+  {char:"鱼",rom:"yú",meaning:"Fish",cat:"animals",strokes:8,tips:"Looks like a fish with a tail — pictographic!"},
+  {char:"鸟",rom:"niǎo",meaning:"Bird",cat:"animals",strokes:5,tips:"Simplified pictograph of a bird."},
+  {char:"马",rom:"mǎ",meaning:"Horse",cat:"animals",strokes:3,tips:"Simplified. Traditional 馬 shows body and legs."},
+  {char:"熊猫",rom:"xióng māo",meaning:"Panda",cat:"animals",strokes:20,tips:"熊=bear, 猫=cat. Bear-cat!"},
+  {char:"兔子",rom:"tù zi",meaning:"Rabbit",cat:"animals",strokes:13,tips:"兔 is the rabbit. One of the 12 zodiac animals."},
+  {char:"老虎",rom:"lǎo hǔ",meaning:"Tiger",cat:"animals",strokes:13,tips:"老=old/honorific, 虎=tiger. Zodiac animal."},
+  {char:"大象",rom:"dà xiàng",meaning:"Elephant",cat:"animals",strokes:15,tips:"大=big, 象=elephant/image."},
+  {char:"猴子",rom:"hóu zi",meaning:"Monkey",cat:"animals",strokes:14,tips:"猴 has the dog radical 犭. Monkey = zodiac animal."},
+  {char:"蛇",rom:"shé",meaning:"Snake",cat:"animals",strokes:11,tips:"One of the 12 zodiac animals."},
+  {char:"龙",rom:"lóng",meaning:"Dragon",cat:"animals",strokes:5,tips:"Sacred creature in Chinese culture — symbol of power."},
+  {char:"牛",rom:"niú",meaning:"Cow / Ox",cat:"animals",strokes:4,tips:"Zodiac animal. Used in 牛奶 (milk)."},
+  {char:"猪",rom:"zhū",meaning:"Pig",cat:"animals",strokes:11,tips:"Last of the 12 zodiac animals."},
+  {char:"羊",rom:"yáng",meaning:"Sheep / Goat",cat:"animals",strokes:6,tips:"Zodiac animal. 羊肉=lamb/mutton."},
+  {char:"鸡",rom:"jī",meaning:"Chicken",cat:"animals",strokes:7,tips:"Zodiac animal. 鸡蛋=egg."},
+  {char:"狼",rom:"láng",meaning:"Wolf",cat:"animals",strokes:10,tips:"犭 radical. 狼=wolf. Appears in many idioms."},
+  {char:"熊",rom:"xióng",meaning:"Bear",cat:"animals",strokes:14,tips:"熊猫(panda) uses this character for bear."},
+  {char:"鸭子",rom:"yā zi",meaning:"Duck",cat:"animals",strokes:14,tips:"鸭 has the bird radical 鸟."},
+  {char:"青蛙",rom:"qīng wā",meaning:"Frog",cat:"animals",strokes:15,tips:"青=green/blue, 蛙=frog."},
+  {char:"蝴蝶",rom:"hú dié",meaning:"Butterfly",cat:"animals",strokes:24,tips:"Two insect radical 虫 characters."},
+  {char:"蜜蜂",rom:"mì fēng",meaning:"Bee",cat:"animals",strokes:20,tips:"蜜=honey, 蜂=bee. Both have insect radical 虫."},
+  {char:"狮子",rom:"shī zi",meaning:"Lion",cat:"animals",strokes:12,tips:"犭 radical. Not native to China but in culture."},
+  {char:"乌龟",rom:"wū guī",meaning:"Turtle",cat:"animals",strokes:18,tips:"乌=black, 龟=turtle. Symbol of longevity."},
+  {char:"米饭",rom:"mǐ fàn",meaning:"Rice",cat:"food",strokes:12,tips:"米=uncooked rice, 饭=cooked rice/meal."},
+  {char:"面条",rom:"miàn tiáo",meaning:"Noodles",cat:"food",strokes:14,tips:"面=noodles/face, 条=strip."},
+  {char:"茶",rom:"chá",meaning:"Tea",cat:"food",strokes:9,tips:"艹 radical on top — tea comes from a plant!"},
+  {char:"水",rom:"shuǐ",meaning:"Water",cat:"food",strokes:4,tips:"Pictographic — looks like flowing water."},
+  {char:"苹果",rom:"píng guǒ",meaning:"Apple",cat:"food",strokes:14,tips:"苹=duckweed, 果=fruit."},
+  {char:"鸡蛋",rom:"jī dàn",meaning:"Egg",cat:"food",strokes:15,tips:"鸡=chicken, 蛋=egg."},
+  {char:"面包",rom:"miàn bāo",meaning:"Bread",cat:"food",strokes:15,tips:"面=flour/dough, 包=wrap."},
+  {char:"牛奶",rom:"niú nǎi",meaning:"Milk",cat:"food",strokes:12,tips:"牛=cow, 奶=breast/milk."},
+  {char:"肉",rom:"ròu",meaning:"Meat",cat:"food",strokes:6,tips:"Used in 猪肉(pork), 牛肉(beef), 鸡肉(chicken)."},
+  {char:"蔬菜",rom:"shū cài",meaning:"Vegetables",cat:"food",strokes:17,tips:"蔬=vegetable, 菜=dish/vegetable."},
+  {char:"水果",rom:"shuǐ guǒ",meaning:"Fruit",cat:"food",strokes:12,tips:"水=water, 果=fruit."},
+  {char:"糖",rom:"táng",meaning:"Sugar / Candy",cat:"food",strokes:16,tips:"Also means candy. 巧克力=chocolate."},
+  {char:"盐",rom:"yán",meaning:"Salt",cat:"food",strokes:13,tips:"Essential seasoning. 加盐=add salt."},
+  {char:"豆腐",rom:"dòu fu",meaning:"Tofu",cat:"food",strokes:16,tips:"豆=bean, 腐=fermented/soft. Bean curd."},
+  {char:"饺子",rom:"jiǎo zi",meaning:"Dumplings",cat:"food",strokes:16,tips:"Traditional for Chinese New Year."},
+  {char:"汤",rom:"tāng",meaning:"Soup",cat:"food",strokes:13,tips:"汤 has the water radical 氵."},
+  {char:"蛋糕",rom:"dàn gāo",meaning:"Cake",cat:"food",strokes:21,tips:"蛋=egg, 糕=cake/pastry."},
+  {char:"香蕉",rom:"xiāng jiāo",meaning:"Banana",cat:"food",strokes:24,tips:"香=fragrant, 蕉=plantain."},
+  {char:"西瓜",rom:"xī guā",meaning:"Watermelon",cat:"food",strokes:13,tips:"西=west, 瓜=melon. Beloved summer fruit!"},
+  {char:"橙子",rom:"chéng zi",meaning:"Orange (fruit)",cat:"food",strokes:20,tips:"橙=orange tree. 橙汁=orange juice."},
+  {char:"咖啡",rom:"kā fēi",meaning:"Coffee",cat:"food",strokes:14,tips:"Transliteration of \'coffee\'. 口 radical (mouth sounds)."},
+  {char:"果汁",rom:"guǒ zhī",meaning:"Juice",cat:"food",strokes:13,tips:"果=fruit, 汁=juice/liquid."},
+  {char:"冰淇淋",rom:"bīng qí lín",meaning:"Ice cream",cat:"food",strokes:24,tips:"冰=ice, 淇淋 from \'cream\'. Phonetic borrowing."},
+  {char:"包子",rom:"bāo zi",meaning:"Steamed bun",cat:"food",strokes:12,tips:"包=wrap. Filled steamed buns."},
+  {char:"饼干",rom:"bǐng gān",meaning:"Cookie / Biscuit",cat:"food",strokes:18,tips:"饼=flat bread, 干=dry."},
+  {char:"辣椒",rom:"là jiāo",meaning:"Chili pepper",cat:"food",strokes:22,tips:"辣=spicy, 椒=pepper."},
+  {char:"豆子",rom:"dòu zi",meaning:"Beans",cat:"food",strokes:14,tips:"豆=bean. 豆浆=soy milk."},
+  {char:"爸爸",rom:"bà ba",meaning:"Father",cat:"family",strokes:16,tips:"爸 has 父(father) on top. Casual: 爸."},
+  {char:"妈妈",rom:"mā ma",meaning:"Mother",cat:"family",strokes:12,tips:"妈 has 女(woman) radical. Casual: 妈."},
+  {char:"哥哥",rom:"gē ge",meaning:"Older brother",cat:"family",strokes:20,tips:"哥 repeated for affection."},
+  {char:"姐姐",rom:"jiě jie",meaning:"Older sister",cat:"family",strokes:16,tips:"姐 has 女 radical."},
+  {char:"弟弟",rom:"dì di",meaning:"Younger brother",cat:"family",strokes:14,tips:"弟 means \'younger brother\'."},
+  {char:"妹妹",rom:"mèi mei",meaning:"Younger sister",cat:"family",strokes:16,tips:"妹 has 女 radical + 未(not yet)."},
+  {char:"爷爷",rom:"yé ye",meaning:"Paternal grandfather",cat:"family",strokes:20,tips:"爷=grandfather/father. Paternal side."},
+  {char:"奶奶",rom:"nǎi nai",meaning:"Paternal grandmother",cat:"family",strokes:18,tips:"奶 has 女 radical. Dad\'s mom."},
+  {char:"外公",rom:"wài gōng",meaning:"Maternal grandfather",cat:"family",strokes:17,tips:"外=outside/maternal, 公=grandfather."},
+  {char:"外婆",rom:"wài pó",meaning:"Maternal grandmother",cat:"family",strokes:14,tips:"外=maternal side, 婆=old woman/grandmother."},
+  {char:"叔叔",rom:"shū shu",meaning:"Uncle (father's younger bro)",cat:"family",strokes:16,tips:"叔=father\'s younger brother specifically."},
+  {char:"阿姨",rom:"ā yí",meaning:"Aunt",cat:"family",strokes:12,tips:"Also used politely for any older woman."},
+  {char:"儿子",rom:"ér zi",meaning:"Son",cat:"family",strokes:7,tips:"儿=child/son. 女儿=daughter."},
+  {char:"女儿",rom:"nǚ ér",meaning:"Daughter",cat:"family",strokes:8,tips:"女=woman/female, 儿=child."},
+  {char:"丈夫",rom:"zhàng fu",meaning:"Husband",cat:"family",strokes:12,tips:"Formal word for husband."},
+  {char:"妻子",rom:"qī zi",meaning:"Wife",cat:"family",strokes:9,tips:"Formal word for wife."},
+  {char:"朋友",rom:"péng yǒu",meaning:"Friend",cat:"family",strokes:16,tips:"朋=friend group, 友=friend. 好朋友=best friend."},
+  {char:"同学",rom:"tóng xué",meaning:"Classmate",cat:"family",strokes:18,tips:"同=same, 学=study. \'Study-together person\'."},
+  {char:"老师",rom:"lǎo shī",meaning:"Teacher",cat:"family",strokes:13,tips:"老=old/honored, 师=master/teacher."},
+  {char:"孩子",rom:"hái zi",meaning:"Child",cat:"family",strokes:11,tips:"孩=child, 子=child/son. Gender-neutral."},
+  {char:"头",rom:"tóu",meaning:"Head",cat:"body",strokes:5,tips:"头 also means \'top/first\' in compounds."},
+  {char:"眼睛",rom:"yǎn jing",meaning:"Eyes",cat:"body",strokes:16,tips:"眼=eye, 睛=eyeball. Both have 目(eye) radical."},
+  {char:"耳朵",rom:"ěr duo",meaning:"Ears",cat:"body",strokes:15,tips:"耳=ear. 耳朵 adds 朵 (measure word for flowers/ears)."},
+  {char:"鼻子",rom:"bí zi",meaning:"Nose",cat:"body",strokes:13,tips:"鼻=nose. Recognizable radical on top."},
+  {char:"嘴",rom:"zuǐ",meaning:"Mouth",cat:"body",strokes:16,tips:"嘴 has 口(mouth) radical at the bottom."},
+  {char:"手",rom:"shǒu",meaning:"Hand",cat:"body",strokes:4,tips:"手 is also a radical in many characters."},
+  {char:"脚",rom:"jiǎo",meaning:"Foot",cat:"body",strokes:13,tips:"脚 has 月(flesh) radical. Also: 足(foot)."},
+  {char:"腿",rom:"tuǐ",meaning:"Leg",cat:"body",strokes:13,tips:"腿 has the flesh radical 月."},
+  {char:"心",rom:"xīn",meaning:"Heart",cat:"body",strokes:4,tips:"心 is a radical in emotion characters: 思(think),想(want)."},
+  {char:"头发",rom:"tóu fa",meaning:"Hair",cat:"body",strokes:12,tips:"头=head, 发=hair/send out."},
+  {char:"牙齿",rom:"yá chǐ",meaning:"Teeth",cat:"body",strokes:18,tips:"牙=tooth, 齿=teeth. 刷牙=brush teeth."},
+  {char:"脸",rom:"liǎn",meaning:"Face",cat:"body",strokes:10,tips:"脸 has the flesh radical 月."},
+  {char:"肚子",rom:"dù zi",meaning:"Stomach",cat:"body",strokes:14,tips:"肚 has the flesh radical 月."},
+  {char:"背",rom:"bèi",meaning:"Back",cat:"body",strokes:9,tips:"背 also means \'to memorize\' or \'to carry on back\'."},
+  {char:"胳膊",rom:"gē bo",meaning:"Arm",cat:"body",strokes:20,tips:"胳膊 has flesh radical 月 in both characters."},
+  {char:"手指",rom:"shǒu zhǐ",meaning:"Finger",cat:"body",strokes:13,tips:"手=hand, 指=point/finger."},
+  {char:"肩膀",rom:"jiān bǎng",meaning:"Shoulder",cat:"body",strokes:24,tips:"Both characters have flesh radical 月."},
+  {char:"今天",rom:"jīn tiān",meaning:"Today",cat:"time",strokes:9,tips:"今=now/this, 天=day/sky."},
+  {char:"明天",rom:"míng tiān",meaning:"Tomorrow",cat:"time",strokes:15,tips:"明=bright/next, 天=day. \'Next bright day.\'"},
+  {char:"昨天",rom:"zuó tiān",meaning:"Yesterday",cat:"time",strokes:16,tips:"昨=yesterday, 天=day."},
+  {char:"星期一",rom:"xīng qī yī",meaning:"Monday",cat:"time",strokes:19,tips:"星期=week, 一=one. Mon=day 1 of the week."},
+  {char:"星期二",rom:"xīng qī èr",meaning:"Tuesday",cat:"time",strokes:20,tips:"星期=week, 二=two."},
+  {char:"星期三",rom:"xīng qī sān",meaning:"Wednesday",cat:"time",strokes:21,tips:"星期=week, 三=three."},
+  {char:"星期四",rom:"xīng qī sì",meaning:"Thursday",cat:"time",strokes:23,tips:"星期=week, 四=four."},
+  {char:"星期五",rom:"xīng qī wǔ",meaning:"Friday",cat:"time",strokes:21,tips:"星期=week, 五=five."},
+  {char:"星期六",rom:"xīng qī liù",meaning:"Saturday",cat:"time",strokes:21,tips:"星期=week, 六=six."},
+  {char:"星期天",rom:"xīng qī tiān",meaning:"Sunday",cat:"time",strokes:21,tips:"星期=week, 天=sky/day. Sunday!"},
+  {char:"早上",rom:"zǎo shang",meaning:"Morning",cat:"time",strokes:10,tips:"早=early, 上=up."},
+  {char:"下午",rom:"xià wǔ",meaning:"Afternoon",cat:"time",strokes:10,tips:"下=down/under, 午=noon."},
+  {char:"晚上",rom:"wǎn shang",meaning:"Evening / Night",cat:"time",strokes:12,tips:"晚=late, 上=up."},
+  {char:"年",rom:"nián",meaning:"Year",cat:"time",strokes:6,tips:"新年快乐=Happy New Year!"},
+  {char:"月",rom:"yuè",meaning:"Month / Moon",cat:"time",strokes:4,tips:"Same character for month and moon."},
+  {char:"周",rom:"zhōu",meaning:"Week",cat:"time",strokes:8,tips:"Also: 星期(xīng qī)."},
+  {char:"小时",rom:"xiǎo shí",meaning:"Hour",cat:"time",strokes:11,tips:"小=small, 时=time."},
+  {char:"分钟",rom:"fēn zhōng",meaning:"Minute",cat:"time",strokes:14,tips:"分=divide/minute, 钟=clock."},
+  {char:"春天",rom:"chūn tiān",meaning:"Spring",cat:"time",strokes:12,tips:"春=spring. 春节=Spring Festival (Chinese New Year)."},
+  {char:"夏天",rom:"xià tiān",meaning:"Summer",cat:"time",strokes:11,tips:"夏=summer. China\'s hottest season."},
+  {char:"秋天",rom:"qiū tiān",meaning:"Autumn / Fall",cat:"time",strokes:13,tips:"秋=autumn. 秋天 is harvest season."},
+  {char:"冬天",rom:"dōng tiān",meaning:"Winter",cat:"time",strokes:10,tips:"冬=winter. 冬至=Winter Solstice festival."},
+  {char:"吃",rom:"chī",meaning:"Eat",cat:"verbs",strokes:6,tips:"吃 has the mouth radical 口. 吃饭=eat a meal."},
+  {char:"喝",rom:"hē",meaning:"Drink",cat:"verbs",strokes:12,tips:"喝 has the mouth radical 口. 喝水=drink water."},
+  {char:"说",rom:"shuō",meaning:"Speak / Say",cat:"verbs",strokes:14,tips:"说 has the speech radical 讠. 说话=speak."},
+  {char:"听",rom:"tīng",meaning:"Listen",cat:"verbs",strokes:7,tips:"听 has the ear radical 耳. 听音乐=listen to music."},
+  {char:"看",rom:"kàn",meaning:"Look / Watch",cat:"verbs",strokes:9,tips:"看 = watch/read/look. 看书=read a book."},
+  {char:"走",rom:"zǒu",meaning:"Walk / Go",cat:"verbs",strokes:7,tips:"走=walk/go away. 走吧=let\'s go!"},
+  {char:"来",rom:"lái",meaning:"Come",cat:"verbs",strokes:8,tips:"来=come. 来了=here/coming!"},
+  {char:"去",rom:"qù",meaning:"Go",cat:"verbs",strokes:5,tips:"去=go. 去哪里=where are you going?"},
+  {char:"要",rom:"yào",meaning:"Want",cat:"verbs",strokes:9,tips:"要=want/need. 我要=I want."},
+  {char:"喜欢",rom:"xǐ huān",meaning:"Like",cat:"verbs",strokes:18,tips:"喜=happy, 欢=joyful. 我喜欢=I like."},
+  {char:"爱",rom:"ài",meaning:"Love",cat:"verbs",strokes:10,tips:"爱 has 心(heart) inside. 我爱你=I love you."},
+  {char:"学习",rom:"xué xí",meaning:"Study",cat:"verbs",strokes:19,tips:"学=learn, 习=practice. 学习中文=study Chinese."},
+  {char:"工作",rom:"gōng zuò",meaning:"Work",cat:"verbs",strokes:11,tips:"工=work/craft, 作=make/do."},
+  {char:"睡觉",rom:"shuì jiào",meaning:"Sleep",cat:"verbs",strokes:17,tips:"睡=sleep, 觉=feel/sense."},
+  {char:"买",rom:"mǎi",meaning:"Buy",cat:"verbs",strokes:6,tips:"买 has 贝(shell/money) radical at the bottom."},
+  {char:"写",rom:"xiě",meaning:"Write",cat:"verbs",strokes:5,tips:"写=write. 写字=write characters."},
+  {char:"读",rom:"dú",meaning:"Read",cat:"verbs",strokes:22,tips:"读 has the speech radical 讠. 读书=read/study."},
+  {char:"跑",rom:"pǎo",meaning:"Run",cat:"verbs",strokes:12,tips:"跑 has the foot radical 足."},
+  {char:"笑",rom:"xiào",meaning:"Laugh / Smile",cat:"verbs",strokes:10,tips:"笑 has bamboo radical 竹 on top."},
+  {char:"哭",rom:"kū",meaning:"Cry",cat:"verbs",strokes:10,tips:"哭 has 口(mouth) repeated at the bottom."},
+  {char:"唱歌",rom:"chàng gē",meaning:"Sing",cat:"verbs",strokes:20,tips:"唱=sing, 歌=song."},
+  {char:"跳舞",rom:"tiào wǔ",meaning:"Dance",cat:"verbs",strokes:22,tips:"跳=jump/dance, 舞=dance."},
+  {char:"游泳",rom:"yóu yǒng",meaning:"Swim",cat:"verbs",strokes:20,tips:"游=swim/travel, 泳=swim. Both have water radical."}
+    ,
+  {char:"好久不见",rom:"hǎo jiǔ bù jiàn",meaning:"Long time no see",cat:"greetings",strokes:null,tips:"好=good, 久=long time, 不=not, 见=see."},
+  {char:"最近怎么样",rom:"zuì jìn zěn me yàng",meaning:"How have you been?",cat:"greetings",strokes:null,tips:"最近=recently, 怎么样=how is it?"},
+  {char:"生日快乐",rom:"shēng rì kuài lè",meaning:"Happy Birthday",cat:"greetings",strokes:null,tips:"生日=birthday, 快乐=happy."},
+  {char:"新年快乐",rom:"xīn nián kuài lè",meaning:"Happy New Year",cat:"greetings",strokes:null,tips:"新=new, 年=year, 快乐=happy."},
+  {char:"恭喜恭喜",rom:"gōng xǐ gōng xǐ",meaning:"Congratulations",cat:"greetings",strokes:null,tips:"恭喜 repeated for emphasis. Common at Chinese New Year."},
+  {char:"加油",rom:"jiā yóu",meaning:"Go for it! / You can do it!",cat:"greetings",strokes:null,tips:"加=add, 油=oil/fuel. 'Add fuel!' — cheer someone on."},
+  {char:"祝你好运",rom:"zhù nǐ hǎo yùn",meaning:"Good luck",cat:"greetings",strokes:null,tips:"祝=wish, 你=you, 好运=good luck."},
+  {char:"慢走",rom:"màn zǒu",meaning:"Goodbye / Take care (to departing guest)",cat:"greetings",strokes:null,tips:"慢=slow, 走=go. Said when someone leaves your home."},
+  {char:"不好意思",rom:"bù hǎo yì si",meaning:"Excuse me / I'm embarrassed",cat:"greetings",strokes:null,tips:"Used for minor social embarrassment or to get attention."},
+  {char:"随便",rom:"suí biàn",meaning:"Whatever you like / As you wish",cat:"greetings",strokes:null,tips:"随=follow, 便=convenience. Very common casual phrase."},
+  {char:"两",rom:"liǎng",meaning:"Two (pair/of something)",cat:"numbers",strokes:7,tips:"Used before measure words: 两个人=two people. Not 二!"},
+  {char:"百分之",rom:"bǎi fēn zhī",meaning:"Percent (%)",cat:"numbers",strokes:null,tips:"百分之五十=50%. Literally 'out of a hundred parts.'"},
+  {char:"倍",rom:"bèi",meaning:"Times / Fold",cat:"numbers",strokes:10,tips:"两倍=double, 三倍=triple."},
+  {char:"二十一",rom:"èr shí yī",meaning:"Twenty-one (21)",cat:"numbers",strokes:null,tips:"十一=11, 十二=12… pattern continues to 十九=19."},
+  {char:"五十五",rom:"wǔ shí wǔ",meaning:"Fifty-five (55)",cat:"numbers",strokes:null,tips:"Two-digit numbers: tens digit + 十 + ones digit."},
+  {char:"一亿",rom:"yī yì",meaning:"One hundred million",cat:"numbers",strokes:null,tips:"亿(yì)=100 million. Key unit in Chinese large numbers."},
+  {char:"第三",rom:"dì sān",meaning:"Third",cat:"numbers",strokes:null,tips:"第+number=ordinal. 第一=1st, 第二=2nd, 第三=3rd."},
+  {char:"深红",rom:"shēn hóng",meaning:"Dark red / Crimson",cat:"colors",strokes:null,tips:"深=deep/dark. 深+color = dark shade of that color."},
+  {char:"浅蓝",rom:"qiǎn lán",meaning:"Light blue",cat:"colors",strokes:null,tips:"浅=shallow/light. 浅+color = light shade."},
+  {char:"深蓝",rom:"shēn lán",meaning:"Dark blue / Navy",cat:"colors",strokes:null,tips:"深蓝色. Navy blue."},
+  {char:"青色",rom:"qīng sè",meaning:"Cyan / Teal",cat:"colors",strokes:null,tips:"青 = blue-green. Appears in 青蛙(frog) and 青春(youth)."},
+  {char:"米色",rom:"mǐ sè",meaning:"Beige / Cream",cat:"colors",strokes:null,tips:"米=rice. Rice-colored = beige!"},
+  {char:"透明",rom:"tòu míng",meaning:"Transparent / Clear",cat:"colors",strokes:null,tips:"透=penetrate, 明=bright. See-through."},
+  {char:"靛蓝",rom:"diàn lán",meaning:"Indigo",cat:"colors",strokes:null,tips:"One of the 7 rainbow colors. 红橙黄绿蓝靛紫."},
+  {char:"玫瑰红",rom:"méi guī hóng",meaning:"Rose / Magenta",cat:"colors",strokes:null,tips:"玫瑰=rose flower. Rose-red color."},
+  {char:"橄榄绿",rom:"gǎn lǎn lǜ",meaning:"Olive green",cat:"colors",strokes:null,tips:"橄榄=olive. Military/earthy green."},
+  {char:"天蓝",rom:"tiān lán",meaning:"Sky blue",cat:"colors",strokes:null,tips:"天=sky. Sky-blue, a light brilliant blue."},
+  {char:"海豚",rom:"hǎi tún",meaning:"Dolphin",cat:"animals",strokes:null,tips:"海=sea, 豚=pig (old word). Sea-pig!"},
+  {char:"鲨鱼",rom:"shā yú",meaning:"Shark",cat:"animals",strokes:null,tips:"鲨 has the fish radical 鱼."},
+  {char:"鲸鱼",rom:"jīng yú",meaning:"Whale",cat:"animals",strokes:null,tips:"鲸 has the fish radical. World's largest animal."},
+  {char:"螃蟹",rom:"páng xiè",meaning:"Crab",cat:"animals",strokes:null,tips:"螃蟹 has the insect radical 虫. Popular seafood."},
+  {char:"虾",rom:"xiā",meaning:"Shrimp / Prawn",cat:"animals",strokes:null,tips:"虾 has the insect radical 虫."},
+  {char:"章鱼",rom:"zhāng yú",meaning:"Octopus",cat:"animals",strokes:null,tips:"章=chapter, 鱼=fish. Eight-armed 'chapter-fish'!"},
+  {char:"海星",rom:"hǎi xīng",meaning:"Starfish",cat:"animals",strokes:null,tips:"海=sea, 星=star. Sea-star!"},
+  {char:"水母",rom:"shuǐ mǔ",meaning:"Jellyfish",cat:"animals",strokes:null,tips:"水=water, 母=mother. Water-mother!"},
+  {char:"老鹰",rom:"lǎo yīng",meaning:"Eagle",cat:"animals",strokes:null,tips:"老=old/honored, 鹰=hawk/eagle. Majestic bird."},
+  {char:"猫头鹰",rom:"māo tóu yīng",meaning:"Owl",cat:"animals",strokes:null,tips:"猫头=cat-head, 鹰=eagle. Cat-headed eagle!"},
+  {char:"企鹅",rom:"qǐ é",meaning:"Penguin",cat:"animals",strokes:null,tips:"企=stand on tiptoe, 鹅=goose. Tiptoe-goose!"},
+  {char:"鸽子",rom:"gē zi",meaning:"Pigeon / Dove",cat:"animals",strokes:null,tips:"鸽 has the bird radical. Symbol of peace."},
+  {char:"乌鸦",rom:"wū yā",meaning:"Crow",cat:"animals",strokes:null,tips:"乌=black, 鸦=crow. Black crow."},
+  {char:"天鹅",rom:"tiān é",meaning:"Swan",cat:"animals",strokes:null,tips:"天=sky, 鹅=goose. Sky-goose!"},
+  {char:"孔雀",rom:"kǒng què",meaning:"Peacock",cat:"animals",strokes:null,tips:"孔雀 — national bird of India. Stunning plumage."},
+  {char:"燕子",rom:"yàn zi",meaning:"Swallow (bird)",cat:"animals",strokes:null,tips:"燕 is a pictograph of a swallow in flight."},
+  {char:"蚂蚁",rom:"mǎ yǐ",meaning:"Ant",cat:"animals",strokes:null,tips:"蚂蚁 has the insect radical 虫 in both characters."},
+  {char:"蚊子",rom:"wén zi",meaning:"Mosquito",cat:"animals",strokes:null,tips:"蚊 has the insect radical 虫."},
+  {char:"蜘蛛",rom:"zhī zhū",meaning:"Spider",cat:"animals",strokes:null,tips:"Both characters have the insect radical 虫."},
+  {char:"蜻蜓",rom:"qīng tíng",meaning:"Dragonfly",cat:"animals",strokes:null,tips:"蜻蜓 has insect radical 虫. Graceful fliers."},
+  {char:"萤火虫",rom:"yíng huǒ chóng",meaning:"Firefly",cat:"animals",strokes:null,tips:"萤=glowing, 火=fire, 虫=insect. Fire-insect!"},
+  {char:"鳄鱼",rom:"è yú",meaning:"Crocodile",cat:"animals",strokes:null,tips:"鳄 has the fish radical 鱼."},
+  {char:"蜥蜴",rom:"xī yì",meaning:"Lizard",cat:"animals",strokes:null,tips:"蜥蜴 both have insect radical 虫."},
+  {char:"蟑螂",rom:"zhāng láng",meaning:"Cockroach",cat:"animals",strokes:null,tips:"Both characters have insect radical 虫."},
+  {char:"胡萝卜",rom:"hú luó bo",meaning:"Carrot",cat:"food",strokes:null,tips:"胡=foreign, 萝卜=radish. 'Foreign radish'!"},
+  {char:"黄瓜",rom:"huáng guā",meaning:"Cucumber",cat:"food",strokes:null,tips:"黄=yellow, 瓜=gourd. Yellow gourd? Now mostly green!"},
+  {char:"白菜",rom:"bái cài",meaning:"Napa cabbage",cat:"food",strokes:null,tips:"白=white, 菜=vegetable. A staple of Chinese cooking."},
+  {char:"菠菜",rom:"bō cài",meaning:"Spinach",cat:"food",strokes:null,tips:"菠 came from 波斯(Persia) — originally a Persian vegetable!"},
+  {char:"蘑菇",rom:"mó gu",meaning:"Mushroom",cat:"food",strokes:null,tips:"蘑菇 — China is the world's largest mushroom producer."},
+  {char:"大蒜",rom:"dà suàn",meaning:"Garlic",cat:"food",strokes:null,tips:"大=big, 蒜=garlic. Essential in Chinese cooking."},
+  {char:"生姜",rom:"shēng jiāng",meaning:"Ginger",cat:"food",strokes:null,tips:"生=raw, 姜=ginger. Used fresh or dried."},
+  {char:"玉米",rom:"yù mǐ",meaning:"Corn",cat:"food",strokes:null,tips:"玉=jade, 米=rice. Jade-rice — corn looks like jade kernels!"},
+  {char:"西红柿",rom:"xī hóng shì",meaning:"Tomato",cat:"food",strokes:null,tips:"西=west, 红=red, 柿=persimmon. Western red persimmon!"},
+  {char:"洋葱",rom:"yáng cōng",meaning:"Onion",cat:"food",strokes:null,tips:"洋=foreign/ocean, 葱=scallion. Foreign scallion!"},
+  {char:"土豆",rom:"tǔ dòu",meaning:"Potato",cat:"food",strokes:null,tips:"土=earth, 豆=bean. Earth-bean!"},
+  {char:"南瓜",rom:"nán guā",meaning:"Pumpkin / Squash",cat:"food",strokes:null,tips:"南=south, 瓜=gourd. Southern gourd."},
+  {char:"西兰花",rom:"xī lán huā",meaning:"Broccoli",cat:"food",strokes:null,tips:"西=west, 兰=orchid, 花=flower. Western orchid-flower!"},
+  {char:"茄子",rom:"qié zi",meaning:"Eggplant",cat:"food",strokes:null,tips:"茄子 has the grass radical 艹. Purple beauty."},
+  {char:"草莓",rom:"cǎo méi",meaning:"Strawberry",cat:"food",strokes:null,tips:"草=grass, 莓=berry. Grass-berry!"},
+  {char:"葡萄",rom:"pú tao",meaning:"Grape",cat:"food",strokes:null,tips:"葡萄 — both have grass radical. From Central Asia."},
+  {char:"梨",rom:"lí",meaning:"Pear",cat:"food",strokes:null,tips:"梨 has the tree radical 木 at the bottom."},
+  {char:"菠萝",rom:"bō luó",meaning:"Pineapple",cat:"food",strokes:null,tips:"Also: 凤梨(fèng lí)=phoenix pear. Taiwan prefers 凤梨."},
+  {char:"樱桃",rom:"yīng táo",meaning:"Cherry",cat:"food",strokes:null,tips:"樱=cherry tree, 桃=peach. Cherry-peach!"},
+  {char:"桃子",rom:"táo zi",meaning:"Peach",cat:"food",strokes:null,tips:"桃 has the tree radical 木. Symbol of longevity."},
+  {char:"李子",rom:"lǐ zi",meaning:"Plum",cat:"food",strokes:null,tips:"李 also means 'plum tree' and is a common surname!"},
+  {char:"蓝莓",rom:"lán méi",meaning:"Blueberry",cat:"food",strokes:null,tips:"蓝=blue, 莓=berry."},
+  {char:"芒果",rom:"máng guǒ",meaning:"Mango",cat:"food",strokes:null,tips:"Loanword phonetically from 'mango'."},
+  {char:"酱油",rom:"jiàng yóu",meaning:"Soy sauce",cat:"food",strokes:null,tips:"酱=sauce, 油=oil. Essential Chinese condiment."},
+  {char:"醋",rom:"cù",meaning:"Vinegar",cat:"food",strokes:null,tips:"醋 has the alcohol radical 酉."},
+  {char:"蜂蜜",rom:"fēng mì",meaning:"Honey",cat:"food",strokes:null,tips:"蜂=bee, 蜜=honey. Bee-honey!"},
+  {char:"黄油",rom:"huáng yóu",meaning:"Butter",cat:"food",strokes:null,tips:"黄=yellow, 油=oil. Yellow oil."},
+  {char:"奶酪",rom:"nǎi lào",meaning:"Cheese",cat:"food",strokes:null,tips:"奶=milk, 酪=dairy product."},
+  {char:"酸奶",rom:"suān nǎi",meaning:"Yogurt",cat:"food",strokes:null,tips:"酸=sour, 奶=milk. Sour milk."},
+  {char:"火锅",rom:"huǒ guō",meaning:"Hot pot",cat:"food",strokes:null,tips:"火=fire, 锅=pot. Beloved communal dining experience!"},
+  {char:"北京烤鸭",rom:"běi jīng kǎo yā",meaning:"Peking Duck",cat:"food",strokes:null,tips:"北京=Beijing, 烤=roast, 鸭=duck. Famous dish!"},
+  {char:"小笼包",rom:"xiǎo lóng bāo",meaning:"Soup dumplings",cat:"food",strokes:null,tips:"小=small, 笼=steamer basket, 包=bun. Shanghai specialty."},
+  {char:"炒饭",rom:"chǎo fàn",meaning:"Fried rice",cat:"food",strokes:null,tips:"炒=stir-fry, 饭=rice. Quick and delicious."},
+  {char:"春卷",rom:"chūn juǎn",meaning:"Spring roll",cat:"food",strokes:null,tips:"春=spring, 卷=roll. Traditionally eaten at Spring Festival."},
+  {char:"父母",rom:"fù mǔ",meaning:"Parents",cat:"family",strokes:null,tips:"父=father, 母=mother. Combined = parents."},
+  {char:"兄弟姐妹",rom:"xiōng dì jiě mèi",meaning:"Siblings",cat:"family",strokes:null,tips:"兄弟=brothers, 姐妹=sisters. All siblings together."},
+  {char:"亲戚",rom:"qīn qi",meaning:"Relatives",cat:"family",strokes:null,tips:"亲=close/relative, 戚=relative. Extended family."},
+  {char:"堂兄弟",rom:"táng xiōng dì",meaning:"Paternal cousins (m.)",cat:"family",strokes:null,tips:"堂=hall/paternal side. Father's brother's children."},
+  {char:"表姐妹",rom:"biǎo jiě mèi",meaning:"Maternal cousins (f.)",cat:"family",strokes:null,tips:"表=surface/maternal side. Mother's sibling's children."},
+  {char:"同事",rom:"tóng shì",meaning:"Colleague",cat:"family",strokes:null,tips:"同=same, 事=work/matter. Work-together person."},
+  {char:"邻居",rom:"lín jū",meaning:"Neighbor",cat:"family",strokes:null,tips:"邻=adjacent, 居=reside."},
+  {char:"祖先",rom:"zǔ xiān",meaning:"Ancestors",cat:"family",strokes:null,tips:"祖=ancestor, 先=before/first."},
+  {char:"后代",rom:"hòu dài",meaning:"Descendants",cat:"family",strokes:null,tips:"后=after, 代=generation."},
+  {char:"丈母娘",rom:"zhàng mǔ niáng",meaning:"Mother-in-law (wife's mom)",cat:"family",strokes:null,tips:"Refers specifically to the wife's mother."},
+  {char:"公公",rom:"gōng gong",meaning:"Father-in-law (husband's dad)",cat:"family",strokes:null,tips:"Wife refers to husband's father as 公公."},
+  {char:"婆婆",rom:"pó po",meaning:"Mother-in-law (husband's mom)",cat:"family",strokes:null,tips:"Wife refers to husband's mother as 婆婆."},
+  {char:"脖子",rom:"bó zi",meaning:"Neck",cat:"body",strokes:null,tips:"脖 has the flesh radical 月."},
+  {char:"胸",rom:"xiōng",meaning:"Chest",cat:"body",strokes:null,tips:"胸 has the flesh radical 月."},
+  {char:"膝盖",rom:"xī gài",meaning:"Knee",cat:"body",strokes:null,tips:"膝 has the flesh radical 月. 跪下=kneel."},
+  {char:"脚踝",rom:"jiǎo huái",meaning:"Ankle",cat:"body",strokes:null,tips:"脚=foot, 踝=ankle."},
+  {char:"手腕",rom:"shǒu wàn",meaning:"Wrist",cat:"body",strokes:null,tips:"手=hand, 腕=wrist."},
+  {char:"手肘",rom:"shǒu zhǒu",meaning:"Elbow",cat:"body",strokes:null,tips:"手=hand, 肘=elbow."},
+  {char:"眉毛",rom:"méi máo",meaning:"Eyebrow",cat:"body",strokes:null,tips:"眉=eyebrow, 毛=hair/fur."},
+  {char:"睫毛",rom:"jié máo",meaning:"Eyelash",cat:"body",strokes:null,tips:"睫=eyelash, 毛=hair. 睫毛膏=mascara."},
+  {char:"嘴唇",rom:"zuǐ chún",meaning:"Lips",cat:"body",strokes:null,tips:"嘴=mouth, 唇=lip. 嘴唇=lips (both)."},
+  {char:"下巴",rom:"xià bā",meaning:"Chin",cat:"body",strokes:null,tips:"下=below, 巴=appendage/chin."},
+  {char:"额头",rom:"é tóu",meaning:"Forehead",cat:"body",strokes:null,tips:"额=forehead, 头=head."},
+  {char:"皮肤",rom:"pí fū",meaning:"Skin",cat:"body",strokes:null,tips:"皮=skin/leather, 肤=skin."},
+  {char:"骨头",rom:"gǔ tou",meaning:"Bone",cat:"body",strokes:null,tips:"骨 is also a radical. 骨气=backbone (spirit)."},
+  {char:"大脑",rom:"dà nǎo",meaning:"Brain",cat:"body",strokes:null,tips:"大=big, 脑=brain."},
+  {char:"肺",rom:"fèi",meaning:"Lungs",cat:"body",strokes:null,tips:"肺 has the flesh radical 月."},
+  {char:"肝",rom:"gān",meaning:"Liver",cat:"body",strokes:null,tips:"肝 has the flesh radical 月. 肝脏=liver organ."},
+  {char:"肾",rom:"shèn",meaning:"Kidney",cat:"body",strokes:null,tips:"肾 has the flesh radical 月."},
+  {char:"血",rom:"xuè",meaning:"Blood",cat:"body",strokes:null,tips:"血 looks like a vessel with liquid inside."},
+  {char:"秒",rom:"miǎo",meaning:"Second (time)",cat:"time",strokes:null,tips:"秒 has the grain radical 禾. 一秒钟=one second."},
+  {char:"现在",rom:"xiàn zài",meaning:"Now / Present",cat:"time",strokes:null,tips:"现=appear/present, 在=at/exist."},
+  {char:"过去",rom:"guò qù",meaning:"Past",cat:"time",strokes:null,tips:"过=pass, 去=go. 'Gone past.'"},
+  {char:"未来",rom:"wèi lái",meaning:"Future",cat:"time",strokes:null,tips:"未=not yet, 来=come. 'Not yet come.'"},
+  {char:"上个月",rom:"shàng gè yuè",meaning:"Last month",cat:"time",strokes:null,tips:"上=above/previous, 个=measure word, 月=month."},
+  {char:"下个月",rom:"xià gè yuè",meaning:"Next month",cat:"time",strokes:null,tips:"下=below/next, 个=measure word, 月=month."},
+  {char:"节日",rom:"jié rì",meaning:"Holiday / Festival",cat:"time",strokes:null,tips:"节=festival/section, 日=day."},
+  {char:"生日",rom:"shēng rì",meaning:"Birthday",cat:"time",strokes:null,tips:"生=born, 日=day. 生日快乐=Happy Birthday!"},
+  {char:"春节",rom:"chūn jié",meaning:"Chinese New Year / Spring Festival",cat:"time",strokes:null,tips:"China's biggest holiday. 阖家团圆=family reunion."},
+  {char:"中秋节",rom:"zhōng qiū jié",meaning:"Mid-Autumn Festival",cat:"time",strokes:null,tips:"中=middle, 秋=autumn, 节=festival. Moon cake festival!"},
+  {char:"世纪",rom:"shì jì",meaning:"Century",cat:"time",strokes:null,tips:"世纪. 二十一世纪=21st century."},
+  {char:"千年",rom:"qiān nián",meaning:"Millennium",cat:"time",strokes:null,tips:"千=thousand, 年=year."},
+  {char:"同时",rom:"tóng shí",meaning:"At the same time",cat:"time",strokes:null,tips:"同=same, 时=time. Simultaneously."},
+  {char:"想",rom:"xiǎng",meaning:"Think / Want to",cat:"verbs",strokes:null,tips:"想 has the heart radical 心. 我想去=I want to go."},
+  {char:"知道",rom:"zhī dào",meaning:"Know",cat:"verbs",strokes:null,tips:"知=know, 道=way/path. 你知道吗=Do you know?"},
+  {char:"有",rom:"yǒu",meaning:"Have",cat:"verbs",strokes:null,tips:"有 is one of the most used verbs. 我有=I have."},
+  {char:"做",rom:"zuò",meaning:"Do / Make",cat:"verbs",strokes:null,tips:"做 vs 作: 做 is more concrete, 作 more abstract."},
+  {char:"帮助",rom:"bāng zhù",meaning:"Help",cat:"verbs",strokes:null,tips:"帮=help, 助=assist. 需要帮助吗=Need help?"},
+  {char:"找",rom:"zhǎo",meaning:"Find / Look for",cat:"verbs",strokes:null,tips:"找 has the hand radical 扌. 我在找=I'm looking for."},
+  {char:"给",rom:"gěi",meaning:"Give / For",cat:"verbs",strokes:null,tips:"给 has the silk radical 纟. 给我=give me."},
+  {char:"拿",rom:"ná",meaning:"Take / Hold",cat:"verbs",strokes:null,tips:"拿=take with hands. 拿走=take away."},
+  {char:"开",rom:"kāi",meaning:"Open / Start",cat:"verbs",strokes:null,tips:"开门=open door, 开始=start, 开车=drive."},
+  {char:"关",rom:"guān",meaning:"Close / Turn off",cat:"verbs",strokes:null,tips:"关门=close door, 关灯=turn off light."},
+  {char:"用",rom:"yòng",meaning:"Use",cat:"verbs",strokes:null,tips:"用=use. 有用=useful. 没用=useless."},
+  {char:"需要",rom:"xū yào",meaning:"Need",cat:"verbs",strokes:null,tips:"需=require, 要=want/need. 我需要=I need."},
+  {char:"住",rom:"zhù",meaning:"Live / Stay",cat:"verbs",strokes:null,tips:"住 has the person radical 亻. 你住哪里=where do you live?"},
+  {char:"等",rom:"děng",meaning:"Wait",cat:"verbs",strokes:null,tips:"等 has the bamboo radical 竹. 等一下=wait a moment."},
+  {char:"问",rom:"wèn",meaning:"Ask",cat:"verbs",strokes:null,tips:"问 has the mouth radical 口. 问题=question."},
+  {char:"回答",rom:"huí dá",meaning:"Answer",cat:"verbs",strokes:null,tips:"回=return, 答=answer. Reply to a question."},
+  {char:"记住",rom:"jì zhù",meaning:"Remember",cat:"verbs",strokes:null,tips:"记=record, 住=stay/fix. Fix in memory."},
+  {char:"忘记",rom:"wàng jì",meaning:"Forget",cat:"verbs",strokes:null,tips:"忘 has heart radical 心. 忘记了=forgot it."},
+  {char:"开始",rom:"kāi shǐ",meaning:"Start / Begin",cat:"verbs",strokes:null,tips:"开=open, 始=start/begin."},
+  {char:"结束",rom:"jié shù",meaning:"End / Finish",cat:"verbs",strokes:null,tips:"结=tie up, 束=bind. Wrap up and finish."},
+  {char:"同意",rom:"tóng yì",meaning:"Agree",cat:"verbs",strokes:null,tips:"同=same, 意=meaning. Share the same meaning."},
+  {char:"理解",rom:"lǐ jiě",meaning:"Understand",cat:"verbs",strokes:null,tips:"理=reason, 解=untangle. More nuanced than 知道."},
+  {char:"改变",rom:"gǎi biàn",meaning:"Change",cat:"verbs",strokes:null,tips:"改=change/correct, 变=transform."},
+  {char:"解释",rom:"jiě shì",meaning:"Explain",cat:"verbs",strokes:null,tips:"解=untangle, 释=release. Untangle and explain."}
+    ],
+    phrases:[
+      {cat:"Greetings",char:"你叫什么名字？",rom:"Nǐ jiào shénme míngzì?",meaning:"What is your name?",note:"Literally: You called what name?"},
+      {cat:"Greetings",char:"我叫___。",rom:"Wǒ jiào ___.",meaning:"My name is ___.",note:"Literally: I am called ___." },
+      {cat:"Greetings",char:"你好吗？",rom:"Nǐ hǎo ma?",meaning:"How are you?",note:"Adding 吗 (ma) turns a statement into a yes/no question."},
+      {cat:"Greetings",char:"我很好，谢谢。",rom:"Wǒ hěn hǎo, xiè xiè.",meaning:"I'm fine, thank you.",note:"很 (hěn) means 'very' — used before adjectives."},
+      {cat:"Greetings",char:"请问…",rom:"Qǐng wèn…",meaning:"Excuse me / May I ask…",note:"Polite opener for questions to strangers."},
+      {cat:"Directions",char:"在哪里？",rom:"Zài nǎlǐ?",meaning:"Where is it?",note:"Zài = at/in, nǎlǐ = where."},
+      {cat:"Directions",char:"左边 / 右边",rom:"Zuǒ biān / Yòu biān",meaning:"Left side / Right side",note:"边 (biān) means 'side'. 左=left, 右=right."},
+      {cat:"Directions",char:"直走",rom:"Zhí zǒu",meaning:"Go straight",note:"直=straight, 走=walk/go."},
+      {cat:"Food",char:"我要这个。",rom:"Wǒ yào zhè gè.",meaning:"I want this one.",note:"Point at the item! 要=want, 这个=this one."},
+      {cat:"Food",char:"好吃！",rom:"Hǎo chī!",meaning:"Delicious!",note:"好=good, 吃=eat. Literally 'good to eat'."},
+      {cat:"Food",char:"多少钱？",rom:"Duōshǎo qián?",meaning:"How much does it cost?",note:"多少=how much, 钱=money."},
+      {cat:"Shopping",char:"太贵了！",rom:"Tài guì le!",meaning:"Too expensive!",note:"太=too, 贵=expensive. Add 了 for emphasis."},
+      {cat:"Shopping",char:"便宜一点。",rom:"Piányí yīdiǎn.",meaning:"A little cheaper, please.",note:"便宜=cheap, 一点=a little."},
+      {cat:"Numbers",char:"一、二、三、四、五",rom:"yī, èr, sān, sì, wǔ",meaning:"1, 2, 3, 4, 5",note:"Practice these — they're the foundation of Chinese counting."},
+      {cat:"Numbers",char:"六、七、八、九、十",rom:"liù, qī, bā, jiǔ, shí",meaning:"6, 7, 8, 9, 10",note:"11=十一, 12=十二, 20=二十, 21=二十一."},
+      {cat:"Emergency",char:"帮帮我！",rom:"Bāng bāng wǒ!",meaning:"Help me!",note:"帮=help. Repeated for urgency."},
+      {cat:"Emergency",char:"我不舒服。",rom:"Wǒ bù shūfú.",meaning:"I don't feel well.",note:"不舒服=uncomfortable/unwell. Useful at a doctor's."},
+    ],
+  },
+
+  japanese: {
+    name:"Japanese", flag:"🇯🇵", script:"日本語",
+    vocab:[
+  {char:"こんにちは",rom:"Konnichiwa",meaning:"Hello (daytime)",cat:"greetings",strokes:null,tips:"Used late morning to evening. は is read \'wa\' here."},
+  {char:"おはようございます",rom:"Ohayō gozaimasu",meaning:"Good morning (formal)",cat:"greetings",strokes:null,tips:"Casual: おはよう. One of the most common greetings."},
+  {char:"こんばんは",rom:"Konbanwa",meaning:"Good evening",cat:"greetings",strokes:null,tips:"Used after sunset. 今晩(konban)=this evening."},
+  {char:"おやすみなさい",rom:"Oyasuminasai",meaning:"Good night",cat:"greetings",strokes:null,tips:"Said before sleeping. Casual: おやすみ."},
+  {char:"ありがとうございます",rom:"Arigatō gozaimasu",meaning:"Thank you (formal)",cat:"greetings",strokes:null,tips:"Casual: ありがとう. Very important!"},
+  {char:"どういたしまして",rom:"Dōitashimashite",meaning:"You're welcome",cat:"greetings",strokes:null,tips:"The standard reply to ありがとう."},
+  {char:"すみません",rom:"Sumimasen",meaning:"Excuse me / Sorry",cat:"greetings",strokes:null,tips:"Used to get attention OR apologize. Very versatile!"},
+  {char:"ごめんなさい",rom:"Gomennasai",meaning:"I'm sorry",cat:"greetings",strokes:null,tips:"Deeper apology than すみません."},
+  {char:"はい",rom:"Hai",meaning:"Yes",cat:"greetings",strokes:null,tips:"Polite yes. Can also mean \'I understand\' or \'here I am\'."},
+  {char:"いいえ",rom:"Iie",meaning:"No",cat:"greetings",strokes:null,tips:"Polite no. Often softened: いいえ、けっこうです."},
+  {char:"さようなら",rom:"Sayōnara",meaning:"Goodbye (formal)",cat:"greetings",strokes:null,tips:"Formal/final goodbye. Casual: じゃあね or またね."},
+  {char:"またね",rom:"Mata ne",meaning:"See you later",cat:"greetings",strokes:null,tips:"Casual farewell. また=again, ね=right?/okay?"},
+  {char:"初めまして",rom:"Hajimemashite",meaning:"Nice to meet you",cat:"greetings",strokes:null,tips:"Always said when meeting someone for the first time."},
+  {char:"よろしくお願いします",rom:"Yoroshiku onegaishimasu",meaning:"Please treat me well",cat:"greetings",strokes:null,tips:"Said after introducing yourself. Crucial phrase!"},
+  {char:"お元気ですか",rom:"Ogenki desu ka",meaning:"How are you?",cat:"greetings",strokes:null,tips:"元気(genki)=energetic/healthy. お is polite prefix."},
+  {char:"元気です",rom:"Genki desu",meaning:"I'm fine",cat:"greetings",strokes:null,tips:"Direct reply to お元気ですか."},
+  {char:"わかりました",rom:"Wakarimashita",meaning:"I understand",cat:"greetings",strokes:null,tips:"Past tense of わかる (to understand)."},
+  {char:"お大事に",rom:"Odaijini",meaning:"Take care (when ill)",cat:"greetings",strokes:null,tips:"Said to someone who is sick. 大事=important/precious."},
+  {char:"零・〇",rom:"rei / zero",meaning:"Zero (0)",cat:"numbers",strokes:null,tips:"Zero in Japanese can be れい(rei) or ゼロ(zero)."},
+  {char:"一",rom:"ichi",meaning:"One (1)",cat:"numbers",strokes:1,tips:"Kanji 一 is one horizontal stroke."},
+  {char:"二",rom:"ni",meaning:"Two (2)",cat:"numbers",strokes:2,tips:"Kanji 二 is two horizontal strokes."},
+  {char:"三",rom:"san",meaning:"Three (3)",cat:"numbers",strokes:3,tips:"Kanji 三 is three horizontal strokes."},
+  {char:"四",rom:"shi / yon",meaning:"Four (4)",cat:"numbers",strokes:5,tips:"よん(yon) preferred — し sounds like 死(death)."},
+  {char:"五",rom:"go",meaning:"Five (5)",cat:"numbers",strokes:4,tips:"Kanji 五. ご(go)."},
+  {char:"六",rom:"roku",meaning:"Six (6)",cat:"numbers",strokes:4,tips:"Kanji 六. ろく(roku)."},
+  {char:"七",rom:"nana / shichi",meaning:"Seven (7)",cat:"numbers",strokes:2,tips:"なな(nana) is safer than しち."},
+  {char:"八",rom:"hachi",meaning:"Eight (8)",cat:"numbers",strokes:2,tips:"Lucky number — 八 widens at bottom, symbolizing prosperity."},
+  {char:"九",rom:"kyū",meaning:"Nine (9)",cat:"numbers",strokes:2,tips:"きゅう(kyū). く sounds like 苦(suffering) so きゅう preferred."},
+  {char:"十",rom:"jū",meaning:"Ten (10)",cat:"numbers",strokes:2,tips:"Kanji 十 is a cross. じゅう(jū)."},
+  {char:"十一",rom:"jūichi",meaning:"Eleven (11)",cat:"numbers",strokes:3,tips:"十(10)+一(1). Japanese numbers build logically."},
+  {char:"十二",rom:"jūni",meaning:"Twelve (12)",cat:"numbers",strokes:4,tips:"十(10)+二(2)."},
+  {char:"二十",rom:"nijū",meaning:"Twenty (20)",cat:"numbers",strokes:4,tips:"二(2)+十(10). \'Two tens.\'"},
+  {char:"三十",rom:"sanjū",meaning:"Thirty (30)",cat:"numbers",strokes:5,tips:"三(3)+十(10)."},
+  {char:"百",rom:"hyaku",meaning:"One hundred (100)",cat:"numbers",strokes:6,tips:"百(hyaku). 二百=nihyaku, 三百=sanbyaku."},
+  {char:"千",rom:"sen",meaning:"One thousand (1,000)",cat:"numbers",strokes:3,tips:"千(sen). 二千=nisen."},
+  {char:"万",rom:"man",meaning:"Ten thousand (10,000)",cat:"numbers",strokes:3,tips:"万(man) is a key Japanese counting unit."},
+  {char:"半分",rom:"hanbun",meaning:"Half",cat:"numbers",strokes:null,tips:"半(han)=half, 分(bun)=part."},
+  {char:"赤",rom:"aka",meaning:"Red",cat:"colors",strokes:7,tips:"赤(aka). Also: レッド(reddo) from English."},
+  {char:"青",rom:"ao",meaning:"Blue / Green",cat:"colors",strokes:8,tips:"青(ao) covers both! Context matters."},
+  {char:"白",rom:"shiro",meaning:"White",cat:"colors",strokes:5,tips:"白(shiro). 白ご飯(shirogohan)=plain white rice."},
+  {char:"黒",rom:"kuro",meaning:"Black",cat:"colors",strokes:11,tips:"黒(kuro). Used in 黒板(kokuban)=blackboard."},
+  {char:"黄色",rom:"kiiro",meaning:"Yellow",cat:"colors",strokes:14,tips:"黄(ki)+色(iro)=yellow color."},
+  {char:"ピンク",rom:"pinku",meaning:"Pink",cat:"colors",strokes:null,tips:"From English \'pink\'. Katakana for foreign words."},
+  {char:"オレンジ",rom:"orenji",meaning:"Orange",cat:"colors",strokes:null,tips:"From English \'orange\'. Also: だいだい色(daidaiiro)."},
+  {char:"紫",rom:"murasaki",meaning:"Purple",cat:"colors",strokes:12,tips:"紫(murasaki). Traditional Japanese color."},
+  {char:"茶色",rom:"chairo",meaning:"Brown",cat:"colors",strokes:12,tips:"茶(cha)=tea, 色(iro)=color. Tea-colored!"},
+  {char:"灰色",rom:"haiiro",meaning:"Gray",cat:"colors",strokes:10,tips:"灰(hai)=ash, 色(iro)=color."},
+  {char:"金色",rom:"kiniro",meaning:"Gold",cat:"colors",strokes:9,tips:"金(kin)=gold/metal, 色(iro)=color."},
+  {char:"銀色",rom:"giniro",meaning:"Silver",cat:"colors",strokes:14,tips:"銀(gin)=silver, 色(iro)=color."},
+  {char:"緑",rom:"midori",meaning:"Green",cat:"colors",strokes:14,tips:"緑(midori) = specifically green (not 青)."},
+  {char:"犬",rom:"inu",meaning:"Dog",cat:"animals",strokes:4,tips:"犬(inu). The kanji looks like a person with a dot — the dog\'s tail!"},
+  {char:"猫",rom:"neko",meaning:"Cat",cat:"animals",strokes:11,tips:"猫(neko). The 犭 radical appears like in Chinese."},
+  {char:"魚",rom:"sakana",meaning:"Fish",cat:"animals",strokes:11,tips:"魚(sakana). Also read うお(uo) in some compounds."},
+  {char:"鳥",rom:"tori",meaning:"Bird",cat:"animals",strokes:11,tips:"鳥(tori). Also means chicken in food contexts."},
+  {char:"馬",rom:"uma",meaning:"Horse",cat:"animals",strokes:10,tips:"馬(uma). One of the 12 zodiac animals."},
+  {char:"うさぎ",rom:"usagi",meaning:"Rabbit",cat:"animals",strokes:null,tips:"うさぎ. Written in hiragana. Kanji: 兎."},
+  {char:"とら",rom:"tora",meaning:"Tiger",cat:"animals",strokes:null,tips:"とら. Kanji: 虎. One of the zodiac animals."},
+  {char:"ぞう",rom:"zou",meaning:"Elephant",cat:"animals",strokes:null,tips:"ぞう. Kanji: 象. 象 also means \'symbol/image\'."},
+  {char:"さる",rom:"saru",meaning:"Monkey",cat:"animals",strokes:null,tips:"さる. Kanji: 猿. Zodiac animal."},
+  {char:"へび",rom:"hebi",meaning:"Snake",cat:"animals",strokes:null,tips:"へび. Kanji: 蛇. Zodiac animal."},
+  {char:"うし",rom:"ushi",meaning:"Cow",cat:"animals",strokes:null,tips:"うし. Kanji: 牛. Zodiac animal."},
+  {char:"ぶた",rom:"buta",meaning:"Pig",cat:"animals",strokes:null,tips:"ぶた. Kanji: 豚. Last zodiac animal."},
+  {char:"ひつじ",rom:"hitsuji",meaning:"Sheep",cat:"animals",strokes:null,tips:"ひつじ. Kanji: 羊. Zodiac animal."},
+  {char:"にわとり",rom:"niwatori",meaning:"Chicken",cat:"animals",strokes:null,tips:"にわとり. Kanji: 鶏. Zodiac animal."},
+  {char:"おおかみ",rom:"ōkami",meaning:"Wolf",cat:"animals",strokes:null,tips:"おおかみ. Kanji: 狼. Features in Japanese folklore."},
+  {char:"くま",rom:"kuma",meaning:"Bear",cat:"animals",strokes:null,tips:"くま. Kanji: 熊. くまのプーさん=Winnie the Pooh!"},
+  {char:"かえる",rom:"kaeru",meaning:"Frog",cat:"animals",strokes:null,tips:"かえる. Kanji: 蛙. Also means \'to return home\'!"},
+  {char:"ちょう",rom:"chō",meaning:"Butterfly",cat:"animals",strokes:null,tips:"ちょう. Kanji: 蝶. Symbol of transformation."},
+  {char:"はち",rom:"hachi",meaning:"Bee",cat:"animals",strokes:null,tips:"はち. Kanji: 蜂. はちみつ=honey."},
+  {char:"しか",rom:"shika",meaning:"Deer",cat:"animals",strokes:null,tips:"しか. Kanji: 鹿. Sacred at Nara shrine."},
+  {char:"きつね",rom:"kitsune",meaning:"Fox",cat:"animals",strokes:null,tips:"きつね. Kanji: 狐. Sacred messenger in Shinto."},
+  {char:"たぬき",rom:"tanuki",meaning:"Raccoon dog",cat:"animals",strokes:null,tips:"たぬき. Kanji: 狸. Magical trickster in folklore."},
+  {char:"ご飯",rom:"gohan",meaning:"Rice / Meal",cat:"food",strokes:null,tips:"ご飯. 朝ご飯=breakfast, 昼ご飯=lunch, 夕ご飯=dinner."},
+  {char:"お水",rom:"omizu",meaning:"Water",cat:"food",strokes:null,tips:"水(mizu)=water. お is polite prefix. お水ください=water please."},
+  {char:"お茶",rom:"ocha",meaning:"Tea",cat:"food",strokes:null,tips:"茶(cha)=tea. 緑茶=green tea, 麦茶=barley tea."},
+  {char:"寿司",rom:"sushi",meaning:"Sushi",cat:"food",strokes:13,tips:"One of Japan\'s most famous dishes worldwide."},
+  {char:"ラーメン",rom:"rāmen",meaning:"Ramen",cat:"food",strokes:null,tips:"Katakana — foreign-origin word. Hot noodle soup."},
+  {char:"パン",rom:"pan",meaning:"Bread",cat:"food",strokes:null,tips:"From Portuguese \'pão\'. Katakana loanword."},
+  {char:"牛乳",rom:"gyūnyū",meaning:"Milk",cat:"food",strokes:null,tips:"牛(gyū)=cow, 乳(nyū)=milk. More formal than ミルク."},
+  {char:"肉",rom:"niku",meaning:"Meat",cat:"food",strokes:null,tips:"牛肉(gyūniku)=beef, 豚肉(butaniku)=pork, 鶏肉(toriniku)=chicken."},
+  {char:"野菜",rom:"yasai",meaning:"Vegetables",cat:"food",strokes:null,tips:"野(ya)=field, 菜(sai)=greens/vegetable."},
+  {char:"果物",rom:"kudamono",meaning:"Fruit",cat:"food",strokes:null,tips:"果(ka)=fruit, 物(mono)=thing."},
+  {char:"卵",rom:"tamago",meaning:"Egg",cat:"food",strokes:null,tips:"卵(tamago). 目玉焼き(medamayaki)=fried egg."},
+  {char:"砂糖",rom:"satō",meaning:"Sugar",cat:"food",strokes:null,tips:"砂(sa)=sand, 糖(tō)=sugar. Sand-like sugar!"},
+  {char:"塩",rom:"shio",meaning:"Salt",cat:"food",strokes:null,tips:"塩(shio). お塩ください=please pass the salt."},
+  {char:"みそ汁",rom:"misoshiru",meaning:"Miso soup",cat:"food",strokes:null,tips:"Traditional Japanese soup served with most meals."},
+  {char:"てんぷら",rom:"tenpura",meaning:"Tempura",cat:"food",strokes:null,tips:"Battered and fried vegetables or seafood."},
+  {char:"おにぎり",rom:"onigiri",meaning:"Rice ball",cat:"food",strokes:null,tips:"Portable rice triangles with filling. Popular snack."},
+  {char:"うどん",rom:"udon",meaning:"Udon noodles",cat:"food",strokes:null,tips:"Thick white wheat noodles. Comfort food."},
+  {char:"そば",rom:"soba",meaning:"Soba noodles",cat:"food",strokes:null,tips:"Thin buckwheat noodles. Eaten hot or cold."},
+  {char:"アイスクリーム",rom:"aisukurīmu",meaning:"Ice cream",cat:"food",strokes:null,tips:"English loanword in katakana. アイス for short."},
+  {char:"ケーキ",rom:"kēki",meaning:"Cake",cat:"food",strokes:null,tips:"From English \'cake\'. Very popular in Japan."},
+  {char:"バナナ",rom:"banana",meaning:"Banana",cat:"food",strokes:null,tips:"Loanword. Japan\'s most popular fruit by volume."},
+  {char:"りんご",rom:"ringo",meaning:"Apple",cat:"food",strokes:null,tips:"りんご. Kanji: 林檎. 青森(Aomori) is famous for apples."},
+  {char:"コーヒー",rom:"kōhī",meaning:"Coffee",cat:"food",strokes:null,tips:"From Dutch \'koffie\'. Japan has a strong coffee culture."},
+  {char:"ジュース",rom:"jūsu",meaning:"Juice",cat:"food",strokes:null,tips:"From English \'juice\'. Also used for soft drinks."},
+  {char:"おかし",rom:"okashi",meaning:"Sweets / Snacks",cat:"food",strokes:null,tips:"おかし. Kanji: お菓子. Japanese sweets are famous!"},
+  {char:"お父さん",rom:"otōsan",meaning:"Father",cat:"family",strokes:null,tips:"お父さん for others\' fathers. Own father: 父(chichi)."},
+  {char:"お母さん",rom:"okāsan",meaning:"Mother",cat:"family",strokes:null,tips:"お母さん for others\' mothers. Own mother: 母(haha)."},
+  {char:"お兄さん",rom:"onīsan",meaning:"Older brother",cat:"family",strokes:null,tips:"お兄さん for others\'. Own: 兄(ani)."},
+  {char:"お姉さん",rom:"onēsan",meaning:"Older sister",cat:"family",strokes:null,tips:"お姉さん for others\'. Own: 姉(ane)."},
+  {char:"弟",rom:"otōto",meaning:"Younger brother",cat:"family",strokes:8,tips:"弟(otōto). Own younger brother."},
+  {char:"妹",rom:"imōto",meaning:"Younger sister",cat:"family",strokes:8,tips:"妹(imōto). 女 radical. Own younger sister."},
+  {char:"おじいさん",rom:"ojiisan",meaning:"Grandfather",cat:"family",strokes:null,tips:"おじいさん. Own grandfather: 祖父(sofu)."},
+  {char:"おばあさん",rom:"obāsan",meaning:"Grandmother",cat:"family",strokes:null,tips:"おばあさん. Own grandmother: 祖母(sobo)."},
+  {char:"おじさん",rom:"ojisan",meaning:"Uncle",cat:"family",strokes:null,tips:"おじさん. Also used for middle-aged men generally."},
+  {char:"おばさん",rom:"obasan",meaning:"Aunt",cat:"family",strokes:null,tips:"おばさん. Also used for middle-aged women."},
+  {char:"息子",rom:"musuko",meaning:"Son",cat:"family",strokes:null,tips:"息子(musuko). 息=breath, 子=child."},
+  {char:"娘",rom:"musume",meaning:"Daughter",cat:"family",strokes:null,tips:"娘(musume). Also means \'young woman/girl\'."},
+  {char:"夫",rom:"otto",meaning:"Husband",cat:"family",strokes:null,tips:"夫(otto). Formal. Casual: 旦那(danna)."},
+  {char:"妻",rom:"tsuma",meaning:"Wife",cat:"family",strokes:null,tips:"妻(tsuma). Formal. Casual: 奥さん(okusan)."},
+  {char:"友達",rom:"tomodachi",meaning:"Friend",cat:"family",strokes:null,tips:"友(tomo)=friend, 達=plural suffix."},
+  {char:"先生",rom:"sensei",meaning:"Teacher",cat:"family",strokes:null,tips:"先生(sensei). Also used for doctors and experts."},
+  {char:"学生",rom:"gakusei",meaning:"Student",cat:"family",strokes:null,tips:"学(gaku)=study, 生(sei)=life/person."},
+  {char:"隣人",rom:"rinjin",meaning:"Neighbor",cat:"family",strokes:null,tips:"隣(rin)=next to, 人(jin)=person."},
+  {char:"頭",rom:"atama",meaning:"Head",cat:"body",strokes:null,tips:"頭(atama). 頭が痛い=I have a headache."},
+  {char:"目",rom:"me",meaning:"Eyes",cat:"body",strokes:null,tips:"目(me). 目が大きい=big eyes. 目 is the eye radical."},
+  {char:"耳",rom:"mimi",meaning:"Ears",cat:"body",strokes:null,tips:"耳(mimi). 耳が聞こえない=can\'t hear."},
+  {char:"鼻",rom:"hana",meaning:"Nose",cat:"body",strokes:null,tips:"鼻(hana). Also means flower! Same pronunciation, different kanji."},
+  {char:"口",rom:"kuchi",meaning:"Mouth",cat:"body",strokes:null,tips:"口(kuchi). 口 is also a radical in many characters."},
+  {char:"手",rom:"te",meaning:"Hand",cat:"body",strokes:null,tips:"手(te). 手伝う(tetsudau)=help. 握手(akushu)=handshake."},
+  {char:"足",rom:"ashi",meaning:"Foot / Leg",cat:"body",strokes:null,tips:"足(ashi). 足りない=not enough. Foot AND leg."},
+  {char:"心",rom:"kokoro",meaning:"Heart",cat:"body",strokes:null,tips:"心(kokoro). Emotional heart. 心配=worry(heartcare)."},
+  {char:"髪",rom:"kami",meaning:"Hair",cat:"body",strokes:null,tips:"髪(kami). 髪の毛(kaminoke)=hair. Also: 神(kami)=god!"},
+  {char:"歯",rom:"ha",meaning:"Tooth / Teeth",cat:"body",strokes:null,tips:"歯(ha). 歯ブラシ=toothbrush. 歯磨き=brushing teeth."},
+  {char:"顔",rom:"kao",meaning:"Face",cat:"body",strokes:null,tips:"顔(kao). 顔が広い=know many people (wide face)."},
+  {char:"お腹",rom:"onaka",meaning:"Stomach",cat:"body",strokes:null,tips:"お腹(onaka). お腹が空いた=I\'m hungry (stomach is empty)."},
+  {char:"背中",rom:"senaka",meaning:"Back",cat:"body",strokes:null,tips:"背(se)=back/height, 中(naka)=middle."},
+  {char:"肩",rom:"kata",meaning:"Shoulder",cat:"body",strokes:null,tips:"肩(kata). 肩こり=shoulder stiffness (common in Japan)."},
+  {char:"指",rom:"yubi",meaning:"Finger",cat:"body",strokes:null,tips:"指(yubi). 親指=thumb, 人差し指=index finger."},
+  {char:"体",rom:"karada",meaning:"Body",cat:"body",strokes:null,tips:"体(karada). 体に気をつけて=take care of your body."},
+  {char:"今日",rom:"kyō",meaning:"Today",cat:"time",strokes:null,tips:"今日(kyō). Also read こんにち in こんにちは."},
+  {char:"明日",rom:"ashita",meaning:"Tomorrow",cat:"time",strokes:null,tips:"明日(ashita or asu). 明=bright/next."},
+  {char:"昨日",rom:"kinō",meaning:"Yesterday",cat:"time",strokes:null,tips:"昨日(kinō). 昨=past."},
+  {char:"月曜日",rom:"getsuyōbi",meaning:"Monday",cat:"time",strokes:null,tips:"月(getsu)=moon/Monday. 曜日=day of week."},
+  {char:"火曜日",rom:"kayōbi",meaning:"Tuesday",cat:"time",strokes:null,tips:"火(ka)=fire. Days named after 5 elements + sun + moon."},
+  {char:"水曜日",rom:"suiyōbi",meaning:"Wednesday",cat:"time",strokes:null,tips:"水(sui)=water."},
+  {char:"木曜日",rom:"mokuyōbi",meaning:"Thursday",cat:"time",strokes:null,tips:"木(moku)=wood/tree."},
+  {char:"金曜日",rom:"kin'yōbi",meaning:"Friday",cat:"time",strokes:null,tips:"金(kin)=gold/metal. 花金(hanakin)=fun Friday!"},
+  {char:"土曜日",rom:"doyōbi",meaning:"Saturday",cat:"time",strokes:null,tips:"土(do)=earth/soil."},
+  {char:"日曜日",rom:"nichiyōbi",meaning:"Sunday",cat:"time",strokes:null,tips:"日(nichi)=sun. Rest day."},
+  {char:"朝",rom:"asa",meaning:"Morning",cat:"time",strokes:null,tips:"朝(asa). 朝ご飯=breakfast. 朝早く=early morning."},
+  {char:"昼",rom:"hiru",meaning:"Noon / Daytime",cat:"time",strokes:null,tips:"昼(hiru). 昼ご飯=lunch. 昼寝=nap."},
+  {char:"夜",rom:"yoru",meaning:"Night / Evening",cat:"time",strokes:null,tips:"夜(yoru). 夜ふかし=staying up late."},
+  {char:"今年",rom:"kotoshi",meaning:"This year",cat:"time",strokes:null,tips:"今(ko)=now, 年(toshi)=year."},
+  {char:"来年",rom:"rainen",meaning:"Next year",cat:"time",strokes:null,tips:"来(rai)=come/next, 年(nen)=year."},
+  {char:"去年",rom:"kyonen",meaning:"Last year",cat:"time",strokes:null,tips:"去(kyo)=past/go away, 年(nen)=year."},
+  {char:"週",rom:"shū",meaning:"Week",cat:"time",strokes:null,tips:"週(shū). 先週=last week, 来週=next week."},
+  {char:"時間",rom:"jikan",meaning:"Hour / Time",cat:"time",strokes:null,tips:"時(ji)=time/hour, 間(kan)=interval."},
+  {char:"春",rom:"haru",meaning:"Spring",cat:"time",strokes:null,tips:"春(haru). 桜(sakura)=cherry blossom blooms in spring."},
+  {char:"夏",rom:"natsu",meaning:"Summer",cat:"time",strokes:null,tips:"夏(natsu). お盆(obon)=summer ancestor festival."},
+  {char:"秋",rom:"aki",meaning:"Autumn",cat:"time",strokes:null,tips:"秋(aki). 紅葉(kōyō)=autumn leaves."},
+  {char:"冬",rom:"fuyu",meaning:"Winter",cat:"time",strokes:null,tips:"冬(fuyu). お正月(oshōgatsu)=New Year in winter."},
+  {char:"食べる",rom:"taberu",meaning:"Eat",cat:"verbs",strokes:null,tips:"食べる(taberu). 何を食べる=what to eat?"},
+  {char:"飲む",rom:"nomu",meaning:"Drink",cat:"verbs",strokes:null,tips:"飲む(nomu). 飲み物(nomimono)=beverage."},
+  {char:"話す",rom:"hanasu",meaning:"Speak / Talk",cat:"verbs",strokes:null,tips:"話す(hanasu). 日本語を話す=speak Japanese."},
+  {char:"聞く",rom:"kiku",meaning:"Listen / Hear",cat:"verbs",strokes:null,tips:"聞く(kiku). Also means \'to ask\'!"},
+  {char:"見る",rom:"miru",meaning:"See / Watch",cat:"verbs",strokes:null,tips:"見る(miru). テレビを見る=watch TV."},
+  {char:"歩く",rom:"aruku",meaning:"Walk",cat:"verbs",strokes:null,tips:"歩く(aruku). 散歩(sanpo)=walk/stroll."},
+  {char:"来る",rom:"kuru",meaning:"Come",cat:"verbs",strokes:null,tips:"来る(kuru). Irregular verb! て-form: きて."},
+  {char:"行く",rom:"iku",meaning:"Go",cat:"verbs",strokes:null,tips:"行く(iku). どこへ行く=where are you going?"},
+  {char:"欲しい",rom:"hoshii",meaning:"Want (thing)",cat:"verbs",strokes:null,tips:"欲しい(hoshii). For wanting objects."},
+  {char:"好き",rom:"suki",meaning:"Like",cat:"verbs",strokes:null,tips:"好き(suki). 大好き(daisuki)=love/really like."},
+  {char:"愛する",rom:"aisuru",meaning:"Love",cat:"verbs",strokes:null,tips:"愛する(aisuru). 愛(ai)=love. 愛してる=I love you."},
+  {char:"勉強する",rom:"benkyōsuru",meaning:"Study",cat:"verbs",strokes:null,tips:"勉強(benkyō)=study. する makes it a verb."},
+  {char:"働く",rom:"hataraku",meaning:"Work",cat:"verbs",strokes:null,tips:"働く(hataraku). 仕事(shigoto)=job/work."},
+  {char:"寝る",rom:"neru",meaning:"Sleep",cat:"verbs",strokes:null,tips:"寝る(neru). もう寝る=going to sleep now."},
+  {char:"買う",rom:"kau",meaning:"Buy",cat:"verbs",strokes:null,tips:"買う(kau). 買い物(kaimono)=shopping."},
+  {char:"書く",rom:"kaku",meaning:"Write",cat:"verbs",strokes:null,tips:"書く(kaku). 漢字を書く=write kanji."},
+  {char:"読む",rom:"yomu",meaning:"Read",cat:"verbs",strokes:null,tips:"読む(yomu). 本を読む=read a book."},
+  {char:"走る",rom:"hashiru",meaning:"Run",cat:"verbs",strokes:null,tips:"走る(hashiru). マラソンを走る=run a marathon."},
+  {char:"笑う",rom:"warau",meaning:"Laugh",cat:"verbs",strokes:null,tips:"笑う(warau). 笑顔(egao)=smiling face."},
+  {char:"泣く",rom:"naku",meaning:"Cry",cat:"verbs",strokes:null,tips:"泣く(naku). 泣き声=sound of crying."},
+  {char:"歌う",rom:"utau",meaning:"Sing",cat:"verbs",strokes:null,tips:"歌う(utau). カラオケで歌う=sing at karaoke!"},
+  {char:"踊る",rom:"odoru",meaning:"Dance",cat:"verbs",strokes:null,tips:"踊る(odoru). 踊り(odori)=dance/dancing."},
+  {char:"泳ぐ",rom:"oyogu",meaning:"Swim",cat:"verbs",strokes:null,tips:"泳ぐ(oyogu). 水泳(suiei)=swimming."},
+  {char:"遊ぶ",rom:"asobu",meaning:"Play",cat:"verbs",strokes:null,tips:"遊ぶ(asobu). 友達と遊ぶ=play with friends."},
+  {char:"あいうえお",rom:"a i u e o",meaning:"Vowels: a, i, u, e, o",cat:"writing",strokes:null,tips:"The 5 Japanese vowels. Every syllable ends with one of these!"},
+  {char:"か き く け こ",rom:"ka ki ku ke ko",meaning:"K-row",cat:"writing",strokes:null,tips:"Add ゛to get が ぎ ぐ げ ご (ga gi gu ge go)."},
+  {char:"さ し す せ そ",rom:"sa shi su se so",meaning:"S-row",cat:"writing",strokes:null,tips:"し is \'shi\' not \'si\'. Common exception!"},
+  {char:"た ち つ て と",rom:"ta chi tsu te to",meaning:"T-row",cat:"writing",strokes:null,tips:"ち=\'chi\', つ=\'tsu\' — two exceptions to the pattern."},
+  {char:"な に ぬ ね の",rom:"na ni nu ne no",meaning:"N-row",cat:"writing",strokes:null,tips:"の(no) is also a possessive particle."},
+  {char:"は ひ ふ へ ほ",rom:"ha hi fu he ho",meaning:"H-row",cat:"writing",strokes:null,tips:"は is \'wa\' as topic marker. ふ is \'fu\' not \'hu\'."},
+  {char:"ま み む め も",rom:"ma mi mu me mo",meaning:"M-row",cat:"writing",strokes:null,tips:"Regular row — no exceptions!"},
+  {char:"や ゆ よ",rom:"ya yu yo",meaning:"Y-row",cat:"writing",strokes:null,tips:"Only 3 sounds. Used in compound sounds: きゃ(kya), みょ(myo)."},
+  {char:"ら り る れ ろ",rom:"ra ri ru re ro",meaning:"R-row",cat:"writing",strokes:null,tips:"Japanese R is between English R and L. Flap sound!"},
+  {char:"わ を ん",rom:"wa wo n",meaning:"W-row + N",cat:"writing",strokes:null,tips:"を(wo) only used as object particle. ん is the only standalone consonant."},
+  {char:"ア イ ウ エ オ",rom:"A I U E O",meaning:"Katakana vowels",cat:"writing",strokes:null,tips:"Katakana is used for foreign words and loanwords."},
+  {char:"カ キ ク ケ コ",rom:"KA KI KU KE KO",meaning:"Katakana K-row",cat:"writing",strokes:null,tips:"Compare: か(hiragana) → カ(katakana). Angular style!"}
+    ,
+  {char:"お久しぶりです",rom:"Ohisashiburi desu",meaning:"Long time no see (formal)",cat:"greetings",strokes:null,tips:"久しぶり=long interval. Casual: 久しぶり!"},
+  {char:"お誕生日おめでとう",rom:"Otanjōbi omedetō",meaning:"Happy Birthday",cat:"greetings",strokes:null,tips:"誕生日=birthday, おめでとう=congratulations."},
+  {char:"明けましておめでとう",rom:"Akemashite omedetō",meaning:"Happy New Year",cat:"greetings",strokes:null,tips:"明ける=dawn/new year begins. Said in January."},
+  {char:"ご苦労様",rom:"Gokurōsama",meaning:"Thank you for your hard work",cat:"greetings",strokes:null,tips:"Said to someone who finished a task. Superior to subordinate."},
+  {char:"頑張って",rom:"Ganbatte",meaning:"Good luck / Do your best",cat:"greetings",strokes:null,tips:"頑張る=to do one's best. Powerful Japanese encouragement."},
+  {char:"大丈夫ですか",rom:"Daijōbu desu ka",meaning:"Are you okay?",cat:"greetings",strokes:null,tips:"大丈夫=okay/fine. 大丈夫！=I'm fine! Very versatile."},
+  {char:"よかった",rom:"Yokatta",meaning:"I'm glad / That's good",cat:"greetings",strokes:null,tips:"Past tense of 良い(good). 'That was good.'"},
+  {char:"なるほど",rom:"Naruhodo",meaning:"I see / I understand",cat:"greetings",strokes:null,tips:"Used to show understanding. Very common in conversation."},
+  {char:"そうですか",rom:"Sō desu ka",meaning:"Is that so? / Really?",cat:"greetings",strokes:null,tips:"そう=so, です=is, か=question. Shows active listening."},
+  {char:"お疲れ様でした",rom:"Otsukaresama deshita",meaning:"Good work (formal)",cat:"greetings",strokes:null,tips:"Said at end of work. Crucial workplace phrase."},
+  {char:"二十一",rom:"nijūichi",meaning:"Twenty-one (21)",cat:"numbers",strokes:null,tips:"二十(nijū)=20+一(ichi)=1. Simple pattern!"},
+  {char:"五十",rom:"gojū",meaning:"Fifty (50)",cat:"numbers",strokes:null,tips:"五(go)=5+十(jū)=10."},
+  {char:"二百",rom:"nihyaku",meaning:"Two hundred (200)",cat:"numbers",strokes:null,tips:"二(ni)=2+百(hyaku)=100. Note: 三百=sanbyaku (irregular)."},
+  {char:"一万",rom:"ichiman",meaning:"Ten thousand (10,000)",cat:"numbers",strokes:null,tips:"万(man) is key unit. 一億(ichioku)=100 million."},
+  {char:"半分",rom:"hanbun",meaning:"Half",cat:"numbers",strokes:null,tips:"半(han)=half, 分(bun)=part/portion."},
+  {char:"何番",rom:"nanban",meaning:"What number?",cat:"numbers",strokes:null,tips:"何=what, 番=number/turn. 何番ですか=What number?"},
+  {char:"濃い青",rom:"koi ao",meaning:"Dark blue",cat:"colors",strokes:null,tips:"濃い(koi)=thick/dark + 青(ao)=blue."},
+  {char:"薄い青",rom:"usui ao",meaning:"Light blue",cat:"colors",strokes:null,tips:"薄い(usui)=thin/light + 青(ao)=blue."},
+  {char:"水色",rom:"mizuiro",meaning:"Sky blue / Aqua",cat:"colors",strokes:null,tips:"水(mizu)=water + 色(iro)=color. Water-color!"},
+  {char:"肌色",rom:"hadairo",meaning:"Skin color / Peach",cat:"colors",strokes:null,tips:"肌(hada)=skin + 色(iro)=color."},
+  {char:"透明",rom:"tōmei",meaning:"Transparent / Clear",cat:"colors",strokes:null,tips:"透(tō)=penetrate, 明(mei)=bright. See-through."},
+  {char:"虹色",rom:"nijiiro",meaning:"Rainbow-colored",cat:"colors",strokes:null,tips:"虹(niji)=rainbow + 色(iro)=color. Seven-colored!"},
+  {char:"藍色",rom:"aiiro",meaning:"Indigo",cat:"colors",strokes:null,tips:"藍(ai)=indigo plant. Traditional Japanese indigo dyeing is an art."},
+  {char:"エメラルド",rom:"emerarudo",meaning:"Emerald green",cat:"colors",strokes:null,tips:"From English 'emerald'. Katakana loanword."},
+  {char:"イルカ",rom:"iruka",meaning:"Dolphin",cat:"animals",strokes:null,tips:"イルカ. Kanji: 海豚(iruka)=sea-pig. Smart and playful."},
+  {char:"サメ",rom:"same",meaning:"Shark",cat:"animals",strokes:null,tips:"サメ. Kanji: 鮫. Found in Japanese coastal waters."},
+  {char:"クジラ",rom:"kujira",meaning:"Whale",cat:"animals",strokes:null,tips:"クジラ. Kanji: 鯨. Japan has a complex history with whaling."},
+  {char:"カニ",rom:"kani",meaning:"Crab",cat:"animals",strokes:null,tips:"カニ. Kanji: 蟹. かに=crab. タラバガニ=king crab!"},
+  {char:"エビ",rom:"ebi",meaning:"Shrimp / Prawn",cat:"animals",strokes:null,tips:"エビ. Kanji: 海老(ebi)=sea-elder! Used in tempura."},
+  {char:"タコ",rom:"tako",meaning:"Octopus",cat:"animals",strokes:null,tips:"タコ. Kanji: 蛸. たこ焼き(takoyaki)=octopus balls!"},
+  {char:"ヒトデ",rom:"hitode",meaning:"Starfish",cat:"animals",strokes:null,tips:"ヒトデ. Kanji: 海星 or 人手=human hand!"},
+  {char:"クラゲ",rom:"kurage",meaning:"Jellyfish",cat:"animals",strokes:null,tips:"クラゲ. Kanji: 水母(kurage)=water-mother."},
+  {char:"ワシ",rom:"washi",meaning:"Eagle",cat:"animals",strokes:null,tips:"ワシ. Kanji: 鷲. Symbol of power. Also means 'I' in some dialects!"},
+  {char:"フクロウ",rom:"fukurō",meaning:"Owl",cat:"animals",strokes:null,tips:"フクロウ. Kanji: 梟. Popular in Japanese cafes."},
+  {char:"ペンギン",rom:"pengin",meaning:"Penguin",cat:"animals",strokes:null,tips:"ペンギン. Loanword. Popular zoo animal in Japan."},
+  {char:"ハト",rom:"hato",meaning:"Pigeon / Dove",cat:"animals",strokes:null,tips:"ハト. Kanji: 鳩. Symbol of peace at Hiroshima."},
+  {char:"カラス",rom:"karasu",meaning:"Crow",cat:"animals",strokes:null,tips:"カラス. Kanji: 烏. Intelligent birds. Common in Tokyo!"},
+  {char:"ハクチョウ",rom:"hakuchō",meaning:"Swan",cat:"animals",strokes:null,tips:"ハクチョウ. Kanji: 白鳥(hakuchō)=white bird."},
+  {char:"アリ",rom:"ari",meaning:"Ant",cat:"animals",strokes:null,tips:"アリ. Kanji: 蟻. アリさん(ant-san) in children's songs."},
+  {char:"カ",rom:"ka",meaning:"Mosquito",cat:"animals",strokes:null,tips:"カ. Kanji: 蚊. Hot summer pest in Japan."},
+  {char:"クモ",rom:"kumo",meaning:"Spider",cat:"animals",strokes:null,tips:"クモ. Kanji: 蜘蛛. Also: 雲(kumo)=cloud! Same sound."},
+  {char:"トンボ",rom:"tonbo",meaning:"Dragonfly",cat:"animals",strokes:null,tips:"トンボ. Kanji: 蜻蛉. Symbol of Japan — called 秋津島(Akitsushima)."},
+  {char:"ホタル",rom:"hotaru",meaning:"Firefly",cat:"animals",strokes:null,tips:"ホタル. Kanji: 蛍. Beloved symbol of summer evenings."},
+  {char:"にんじん",rom:"ninjin",meaning:"Carrot",cat:"food",strokes:null,tips:"にんじん. Kanji: 人参. 人参(ninjin) also means ginseng!"},
+  {char:"きゅうり",rom:"kyūri",meaning:"Cucumber",cat:"food",strokes:null,tips:"きゅうり. Kanji: 胡瓜. Kappa (mythical creature) loves it!"},
+  {char:"キャベツ",rom:"kyabetsu",meaning:"Cabbage",cat:"food",strokes:null,tips:"キャベツ. From English 'cabbage'. Used in okonomiyaki."},
+  {char:"ほうれん草",rom:"hōrensō",meaning:"Spinach",cat:"food",strokes:null,tips:"ほうれん草. Rich in iron. お浸し(ohitashi)=spinach dish."},
+  {char:"きのこ",rom:"kinoko",meaning:"Mushroom",cat:"food",strokes:null,tips:"きのこ. Kanji: 茸. Japan loves mushrooms — shiitake, matsutake!"},
+  {char:"にんにく",rom:"ninniku",meaning:"Garlic",cat:"food",strokes:null,tips:"にんにく. Kanji: 大蒜. Essential in Japanese cooking."},
+  {char:"しょうが",rom:"shōga",meaning:"Ginger",cat:"food",strokes:null,tips:"しょうが. Kanji: 生姜. Used fresh in Japanese dishes."},
+  {char:"とうもろこし",rom:"tōmorokoshi",meaning:"Corn",cat:"food",strokes:null,tips:"とうもろこし. Popular in Hokkaido."},
+  {char:"トマト",rom:"tomato",meaning:"Tomato",cat:"food",strokes:null,tips:"トマト. Katakana loanword from English/Spanish."},
+  {char:"たまねぎ",rom:"tamanegi",meaning:"Onion",cat:"food",strokes:null,tips:"たまねぎ. Kanji: 玉葱=ball-green-onion."},
+  {char:"じゃがいも",rom:"jagaimo",meaning:"Potato",cat:"food",strokes:null,tips:"じゃがいも. From Jaga(rta). 肉じゃが=meat-potato stew."},
+  {char:"かぼちゃ",rom:"kabocha",meaning:"Pumpkin",cat:"food",strokes:null,tips:"かぼちゃ. From 'Cambodia'! Beloved autumn vegetable."},
+  {char:"いちご",rom:"ichigo",meaning:"Strawberry",cat:"food",strokes:null,tips:"いちご. Kanji: 苺. Japan produces premium strawberries!"},
+  {char:"ぶどう",rom:"budō",meaning:"Grape",cat:"food",strokes:null,tips:"ぶどう. Kanji: 葡萄. 山梨(Yamanashi) is famous for grapes."},
+  {char:"なし",rom:"nashi",meaning:"Asian pear",cat:"food",strokes:null,tips:"なし. Kanji: 梨. Crispy, sweet Japanese pears."},
+  {char:"もも",rom:"momo",meaning:"Peach",cat:"food",strokes:null,tips:"もも. Kanji: 桃. 桃太郎(Momotaro)=Peach Boy fairy tale!"},
+  {char:"しょうゆ",rom:"shōyu",meaning:"Soy sauce",cat:"food",strokes:null,tips:"しょうゆ. Kanji: 醤油. Essential Japanese condiment."},
+  {char:"みりん",rom:"mirin",meaning:"Sweet rice wine (cooking)",cat:"food",strokes:null,tips:"みりん. Kanji: 味醂. Adds sweetness and gloss to dishes."},
+  {char:"だし",rom:"dashi",meaning:"Broth / Stock",cat:"food",strokes:null,tips:"だし. The foundation of Japanese cooking — kombu + bonito."},
+  {char:"わさび",rom:"wasabi",meaning:"Wasabi",cat:"food",strokes:null,tips:"わさび. Kanji: 山葵(wasabi)=mountain hollyhock. Real wasabi is rare!"},
+  {char:"しょうが",rom:"shōga",meaning:"Pickled ginger",cat:"food",strokes:null,tips:"しょうが. Eaten with sushi to cleanse the palate."},
+  {char:"のり",rom:"nori",meaning:"Seaweed / Nori",cat:"food",strokes:null,tips:"のり. Kanji: 海苔. Used in sushi, onigiri, ramen."},
+  {char:"豆腐",rom:"tōfu",meaning:"Tofu",cat:"food",strokes:null,tips:"豆腐(tōfu). 豆(tō)=bean, 腐(fu)=fermented. Miso soup staple."},
+  {char:"枝豆",rom:"edamame",meaning:"Edamame",cat:"food",strokes:null,tips:"枝豆(edamame). 枝=branch, 豆=bean. Branch-bean!"},
+  {char:"焼き鳥",rom:"yakitori",meaning:"Grilled chicken skewer",cat:"food",strokes:null,tips:"焼き=grilled, 鳥=bird. Popular izakaya food."},
+  {char:"たこ焼き",rom:"takoyaki",meaning:"Octopus balls",cat:"food",strokes:null,tips:"タコ=octopus, 焼き=grilled. Osaka's famous street food."},
+  {char:"お好み焼き",rom:"okonomiyaki",meaning:"Savory pancake",cat:"food",strokes:null,tips:"お好み=as you like, 焼き=grilled. 'Grill what you like'!"},
+  {char:"天丼",rom:"tendon",meaning:"Tempura rice bowl",cat:"food",strokes:null,tips:"天ぷら(tenpura)+丼(don/bowl). Crispy tempura over rice."},
+  {char:"カレーライス",rom:"karē raisu",meaning:"Curry rice",cat:"food",strokes:null,tips:"From English. Japan's most popular home-cooked dish!"},
+  {char:"両親",rom:"ryōshin",meaning:"Parents",cat:"family",strokes:null,tips:"両=both, 親=parent. Both parents together."},
+  {char:"兄弟",rom:"kyōdai",meaning:"Siblings / Brothers",cat:"family",strokes:null,tips:"兄弟(kyōdai). 兄=older brother, 弟=younger brother."},
+  {char:"親戚",rom:"shinseki",meaning:"Relatives",cat:"family",strokes:null,tips:"親=related, 戚=relatives. Extended family."},
+  {char:"いとこ",rom:"itoko",meaning:"Cousin",cat:"family",strokes:null,tips:"いとこ. Kanji: 従兄弟 or 従姉妹."},
+  {char:"同僚",rom:"dōryō",meaning:"Colleague",cat:"family",strokes:null,tips:"同=same, 僚=colleague. Workplace companions."},
+  {char:"ご近所",rom:"gokinjo",meaning:"Neighbor",cat:"family",strokes:null,tips:"近所(kinjo)=neighborhood. ご is polite prefix."},
+  {char:"ご先祖",rom:"gosenzo",meaning:"Ancestors",cat:"family",strokes:null,tips:"先祖=ancestors. 先=before, 祖=ancestor."},
+  {char:"首",rom:"kubi",meaning:"Neck",cat:"body",strokes:null,tips:"首(kubi). Also means 'head' in old Japanese. 首相=prime minister."},
+  {char:"胸",rom:"mune",meaning:"Chest",cat:"body",strokes:null,tips:"胸(mune). 胸が痛い=my chest hurts."},
+  {char:"ひざ",rom:"hiza",meaning:"Knee",cat:"body",strokes:null,tips:"ひざ. Kanji: 膝. ひざまずく=kneel."},
+  {char:"くるぶし",rom:"kurubushi",meaning:"Ankle",cat:"body",strokes:null,tips:"くるぶし. Kanji: 踝."},
+  {char:"手首",rom:"tekubi",meaning:"Wrist",cat:"body",strokes:null,tips:"手(te)=hand, 首(kubi)=neck. Hand-neck!"},
+  {char:"ひじ",rom:"hiji",meaning:"Elbow",cat:"body",strokes:null,tips:"ひじ. Kanji: 肘."},
+  {char:"まゆ毛",rom:"mayuge",meaning:"Eyebrow",cat:"body",strokes:null,tips:"まゆ=eyebrow, 毛=hair."},
+  {char:"まつ毛",rom:"matsuge",meaning:"Eyelash",cat:"body",strokes:null,tips:"まつ=eyelash, 毛=hair."},
+  {char:"くちびる",rom:"kuchibiru",meaning:"Lips",cat:"body",strokes:null,tips:"くちびる. Kanji: 唇. 口(kuchi)=mouth related."},
+  {char:"あご",rom:"ago",meaning:"Chin / Jaw",cat:"body",strokes:null,tips:"あご. Kanji: 顎."},
+  {char:"ひたい",rom:"hitai",meaning:"Forehead",cat:"body",strokes:null,tips:"ひたい. Kanji: 額. Also means 'amount/sum'."},
+  {char:"皮膚",rom:"hifu",meaning:"Skin",cat:"body",strokes:null,tips:"皮膚(hifu). 皮=skin/leather, 膚=skin."},
+  {char:"骨",rom:"hone",meaning:"Bone",cat:"body",strokes:null,tips:"骨(hone). 骨が折れる=break a bone."},
+  {char:"血",rom:"chi",meaning:"Blood",cat:"body",strokes:null,tips:"血(chi). 血液型=blood type. Very important in Japan!"},
+  {char:"脳",rom:"nō",meaning:"Brain",cat:"body",strokes:null,tips:"脳(nō). 脳みそ=brain. 脳科学=neuroscience."},
+  {char:"肺",rom:"hai",meaning:"Lungs",cat:"body",strokes:null,tips:"肺(hai). 肺炎=pneumonia."},
+  {char:"秒",rom:"byō",meaning:"Second (time)",cat:"time",strokes:null,tips:"秒(byō). 三十秒=thirty seconds."},
+  {char:"今",rom:"ima",meaning:"Now / Right now",cat:"time",strokes:null,tips:"今(ima). 今すぐ=right now. 今日(kyō)=today."},
+  {char:"過去",rom:"kako",meaning:"Past",cat:"time",strokes:null,tips:"過去(kako). 過=pass, 去=go."},
+  {char:"未来",rom:"mirai",meaning:"Future",cat:"time",strokes:null,tips:"未来(mirai). 未=not yet, 来=come."},
+  {char:"先月",rom:"sengetsu",meaning:"Last month",cat:"time",strokes:null,tips:"先(sen)=before/previous, 月(getsu)=month."},
+  {char:"来月",rom:"raigetsu",meaning:"Next month",cat:"time",strokes:null,tips:"来(rai)=coming/next, 月(getsu)=month."},
+  {char:"祝日",rom:"shukujitsu",meaning:"Public holiday",cat:"time",strokes:null,tips:"祝=celebrate, 日=day. Japan has 16 public holidays!"},
+  {char:"誕生日",rom:"tanjōbi",meaning:"Birthday",cat:"time",strokes:null,tips:"誕生=birth, 日=day. お誕生日おめでとう!"},
+  {char:"お正月",rom:"oshōgatsu",meaning:"New Year / New Year holiday",cat:"time",strokes:null,tips:"Most important Japanese holiday. Jan 1-3."},
+  {char:"お盆",rom:"obon",meaning:"Obon festival",cat:"time",strokes:null,tips:"Buddhist ancestor festival in August. Families reunite."},
+  {char:"世紀",rom:"seiki",meaning:"Century",cat:"time",strokes:null,tips:"世紀(seiki). 二十一世紀=21st century."},
+  {char:"同時に",rom:"dōji ni",meaning:"At the same time",cat:"time",strokes:null,tips:"同時(dōji)=same time + に=at."},
+  {char:"思う",rom:"omou",meaning:"Think / Feel",cat:"verbs",strokes:null,tips:"思う(omou). 私は思う=I think. More intuitive than 考える."},
+  {char:"知る",rom:"shiru",meaning:"Know / Come to know",cat:"verbs",strokes:null,tips:"知る(shiru). 知ってる=I know. 知らない=I don't know."},
+  {char:"持つ",rom:"motsu",meaning:"Have / Hold",cat:"verbs",strokes:null,tips:"持つ(motsu). 持っている=to have/own."},
+  {char:"する",rom:"suru",meaning:"Do / Make",cat:"verbs",strokes:null,tips:"する(suru). Most versatile verb! 勉強する=study."},
+  {char:"手伝う",rom:"tetsudau",meaning:"Help",cat:"verbs",strokes:null,tips:"手伝う(tetsudau). 手(te)=hand, 伝=transmit. Lend a hand."},
+  {char:"探す",rom:"sagasu",meaning:"Look for / Search",cat:"verbs",strokes:null,tips:"探す(sagasu). 仕事を探す=look for a job."},
+  {char:"あげる",rom:"ageru",meaning:"Give (to someone)",cat:"verbs",strokes:null,tips:"あげる vs くれる: あげる=you give out, くれる=someone gives to you."},
+  {char:"もらう",rom:"morau",meaning:"Receive",cat:"verbs",strokes:null,tips:"もらう(morau). プレゼントをもらう=receive a gift."},
+  {char:"開ける",rom:"akeru",meaning:"Open",cat:"verbs",strokes:null,tips:"開ける(akeru). ドアを開ける=open the door."},
+  {char:"閉める",rom:"shimeru",meaning:"Close",cat:"verbs",strokes:null,tips:"閉める(shimeru). 窓を閉めて=close the window."},
+  {char:"使う",rom:"tsukau",meaning:"Use",cat:"verbs",strokes:null,tips:"使う(tsukau). スマホを使う=use a smartphone."},
+  {char:"必要とする",rom:"hitsuyō to suru",meaning:"Need",cat:"verbs",strokes:null,tips:"必要(hitsuyō)=necessary + とする. Also: 〜が要る(iru)."},
+  {char:"住む",rom:"sumu",meaning:"Live / Reside",cat:"verbs",strokes:null,tips:"住む(sumu). 東京に住む=live in Tokyo."},
+  {char:"待つ",rom:"matsu",meaning:"Wait",cat:"verbs",strokes:null,tips:"待つ(matsu). ちょっと待って=wait a moment."},
+  {char:"聞く",rom:"kiku",meaning:"Ask / Listen",cat:"verbs",strokes:null,tips:"聞く(kiku) = both listen AND ask. Context matters!"},
+  {char:"答える",rom:"kotaeru",meaning:"Answer",cat:"verbs",strokes:null,tips:"答える(kotaeru). 質問に答える=answer a question."},
+  {char:"覚える",rom:"oboeru",meaning:"Remember / Memorize",cat:"verbs",strokes:null,tips:"覚える(oboeru). 単語を覚える=memorize vocabulary."},
+  {char:"忘れる",rom:"wasureru",meaning:"Forget",cat:"verbs",strokes:null,tips:"忘れる(wasureru). 忘れないで=don't forget."},
+  {char:"始める",rom:"hajimeru",meaning:"Start / Begin",cat:"verbs",strokes:null,tips:"始める(hajimeru). さあ始めよう=let's begin!"},
+  {char:"終わる",rom:"owaru",meaning:"End / Finish",cat:"verbs",strokes:null,tips:"終わる(owaru). 授業が終わる=class ends."},
+  {char:"同意する",rom:"dōi suru",meaning:"Agree",cat:"verbs",strokes:null,tips:"同意(dōi)=agreement + する=do."},
+  {char:"変える",rom:"kaeru",meaning:"Change",cat:"verbs",strokes:null,tips:"変える(kaeru). Also: 帰る(kaeru)=return home. Same sound!"},
+  {char:"説明する",rom:"setsumei suru",meaning:"Explain",cat:"verbs",strokes:null,tips:"説明(setsumei)=explanation + する=do."},
+  {char:"遊ぶ",rom:"asobu",meaning:"Play / Have fun",cat:"verbs",strokes:null,tips:"遊ぶ(asobu). 友達と遊ぶ=hang out with friends."}
+    ],
+    phrases:[
+      {cat:"Greetings",char:"お名前は何ですか？",rom:"Onamae wa nan desu ka?",meaning:"What is your name?",note:"Polite form. は (wa) is the topic marker particle."},
+      {cat:"Greetings",char:"私の名前は___です。",rom:"Watashi no namae wa ___ desu.",meaning:"My name is ___.",note:"私=I/me, の=possessive, 名前=name."},
+      {cat:"Greetings",char:"お元気ですか？",rom:"Ogenki desu ka?",meaning:"How are you?",note:"元気 (genki) = healthy/energetic. お is a polite prefix."},
+      {cat:"Greetings",char:"元気です、ありがとう。",rom:"Genki desu, arigatō.",meaning:"I'm fine, thank you.",note:"Direct reply to お元気ですか."},
+      {cat:"Greetings",char:"初めまして。",rom:"Hajimemashite.",meaning:"Nice to meet you.",note:"Said when meeting someone for the first time. Always!"},
+      {cat:"Greetings",char:"よろしくお願いします。",rom:"Yoroshiku onegaishimasu.",meaning:"Please treat me well.",note:"Used after introducing yourself. One of the most important phrases."},
+      {cat:"Directions",char:"___はどこですか？",rom:"___ wa doko desu ka?",meaning:"Where is ___?",note:"Replace ___ with the place you're looking for."},
+      {cat:"Directions",char:"右 / 左 / まっすぐ",rom:"Migi / Hidari / Massugu",meaning:"Right / Left / Straight",note:"Essential for giving and receiving directions."},
+      {cat:"Food",char:"これをください。",rom:"Kore o kudasai.",meaning:"This one, please.",note:"Point at the item! これ=this, ください=please give."},
+      {cat:"Food",char:"おいしい！",rom:"Oishii!",meaning:"Delicious!",note:"One of the most useful compliments for food in Japan."},
+      {cat:"Food",char:"いただきます。",rom:"Itadakimasu.",meaning:"Let's eat! (before meals)",note:"Said before eating. Shows gratitude for the food and those who made it."},
+      {cat:"Food",char:"ごちそうさまでした。",rom:"Gochisōsamadeshita.",meaning:"Thank you for the meal.",note:"Said after finishing a meal. Essential Japanese food etiquette."},
+      {cat:"Shopping",char:"いくらですか？",rom:"Ikura desu ka?",meaning:"How much is it?",note:"いくら=how much. Very useful for shopping!"},
+      {cat:"Shopping",char:"高いですね。",rom:"Takai desu ne.",meaning:"It's expensive, isn't it.",note:"高い=expensive/tall. ね seeks agreement from listener."},
+      {cat:"Numbers",char:"一、二、三、四、五",rom:"ichi, ni, san, shi/yon, go",meaning:"1, 2, 3, 4, 5",note:"Japanese has different counters for different objects. 一つ、二つ also works."},
+      {cat:"Emergency",char:"助けてください！",rom:"Tasukete kudasai!",meaning:"Please help me!",note:"助ける=to help. ください=please."},
+      {cat:"Emergency",char:"病院はどこですか？",rom:"Byōin wa doko desu ka?",meaning:"Where is the hospital?",note:"病院 (byōin) = hospital."},
+    ],
+  },
+
+  hindi: {
+    name:"Hindi", flag:"🇮🇳", script:"हिन्दी",
+    vocab:[
+  {char:"नमस्ते",rom:"Namaste",meaning:"Hello / Greetings",cat:"greetings",strokes:null,tips:"Universal greeting. Hands together, slight bow. Works morning to night."},
+  {char:"धन्यवाद",rom:"Dhanyavaad",meaning:"Thank you (formal)",cat:"greetings",strokes:null,tips:"Formal. Casual: शुक्रिया (Shukriya) from Urdu."},
+  {char:"माफ़ करना",rom:"Maaf karna",meaning:"Sorry / Excuse me",cat:"greetings",strokes:null,tips:"माफ़=forgive, करना=to do. \'Please forgive me.\'"},
+  {char:"हाँ",rom:"Haan",meaning:"Yes",cat:"greetings",strokes:null,tips:"Informal. Formal: जी हाँ (jī hān)."},
+  {char:"नहीं",rom:"Nahīn",meaning:"No",cat:"greetings",strokes:null,tips:"Formal: जी नहीं. Very common word!"},
+  {char:"जी हाँ",rom:"Jī hān",meaning:"Yes (polite)",cat:"greetings",strokes:null,tips:"जी is a polite particle. Used with elders."},
+  {char:"जी नहीं",rom:"Jī nahīn",meaning:"No (polite)",cat:"greetings",strokes:null,tips:"Polite no. Add जी to soften any response."},
+  {char:"शुभ प्रभात",rom:"Shubh prabhat",meaning:"Good morning",cat:"greetings",strokes:null,tips:"Formal. Casual: सुप्रभात(Suprabhat). शुभ=auspicious."},
+  {char:"शुभ दोपहर",rom:"Shubh dopahar",meaning:"Good afternoon",cat:"greetings",strokes:null,tips:"शुभ=good, दोपहर=afternoon/noon."},
+  {char:"शुभ रात्रि",rom:"Shubh raatri",meaning:"Good night",cat:"greetings",strokes:null,tips:"Formal good night. Casual: शुभ रात (Shubh raat)."},
+  {char:"ठीक है",rom:"Theek hai",meaning:"Okay / Alright",cat:"greetings",strokes:null,tips:"Very common expression. ठीक=okay/correct, है=is."},
+  {char:"बहुत अच्छा",rom:"Bahut achcha",meaning:"Very good",cat:"greetings",strokes:null,tips:"बहुत=very, अच्छा=good. Great for complimenting!"},
+  {char:"आपका स्वागत है",rom:"Aapka swaagat hai",meaning:"You're welcome",cat:"greetings",strokes:null,tips:"आपका=your, स्वागत=welcome, है=is."},
+  {char:"कृपया",rom:"Kripaya",meaning:"Please",cat:"greetings",strokes:null,tips:"Add to any request for politeness. Like \'please\' in English."},
+  {char:"फिर मिलेंगे",rom:"Phir milenge",meaning:"See you again",cat:"greetings",strokes:null,tips:"फिर=again, मिलेंगे=we will meet."},
+  {char:"ध्यान रखना",rom:"Dhyaan rakhna",meaning:"Take care",cat:"greetings",strokes:null,tips:"ध्यान=attention/care, रखना=to keep."},
+  {char:"समझ गया",rom:"Samajh gaya",meaning:"I understand (m.)",cat:"greetings",strokes:null,tips:"समझ=understand, गया=went/did. Female: समझ गई."},
+  {char:"खुश रहो",rom:"Khush raho",meaning:"Stay happy",cat:"greetings",strokes:null,tips:"खुश=happy, रहो=stay/remain. Warm farewell."},
+  {char:"शून्य",rom:"shunya",meaning:"Zero (0)",cat:"numbers",strokes:null,tips:"शून्य(shunya). Sanskrit origin — India invented zero!"},
+  {char:"एक",rom:"ek",meaning:"One (1)",cat:"numbers",strokes:null,tips:"एक. Related to English \'one\' — same Indo-European root!"},
+  {char:"दो",rom:"do",meaning:"Two (2)",cat:"numbers",strokes:null,tips:"दो. Related to English \'two\', Latin \'duo\'."},
+  {char:"तीन",rom:"teen",meaning:"Three (3)",cat:"numbers",strokes:null,tips:"तीन. Related to English \'three\', Latin \'tres\'."},
+  {char:"चार",rom:"chaar",meaning:"Four (4)",cat:"numbers",strokes:null,tips:"चार. Related to Latin \'quattuor\', Spanish \'cuatro\'."},
+  {char:"पाँच",rom:"paanch",meaning:"Five (5)",cat:"numbers",strokes:null,tips:"पाँच. ँ shows nasal sound. Related to \'pentagon\'."},
+  {char:"छह",rom:"chhah",meaning:"Six (6)",cat:"numbers",strokes:null,tips:"छह. छ is an aspirated \'ch\' sound."},
+  {char:"सात",rom:"saat",meaning:"Seven (7)",cat:"numbers",strokes:null,tips:"सात. Related to Latin \'septem\', English \'seven\'."},
+  {char:"आठ",rom:"aath",meaning:"Eight (8)",cat:"numbers",strokes:null,tips:"आठ. आ is a long \'aa\' vowel."},
+  {char:"नौ",rom:"nau",meaning:"Nine (9)",cat:"numbers",strokes:null,tips:"नौ. Related to Latin \'novem\', English \'nine\'."},
+  {char:"दस",rom:"das",meaning:"Ten (10)",cat:"numbers",strokes:null,tips:"दस. Related to Greek \'deka\', English \'decimal\'."},
+  {char:"ग्यारह",rom:"gyaarah",meaning:"Eleven (11)",cat:"numbers",strokes:null,tips:"Hindi numbers 11+ are unique — not built like English."},
+  {char:"बारह",rom:"baarah",meaning:"Twelve (12)",cat:"numbers",strokes:null,tips:"बारह — a dozen."},
+  {char:"पंद्रह",rom:"pandrah",meaning:"Fifteen (15)",cat:"numbers",strokes:null,tips:"पंद्रह — 15."},
+  {char:"बीस",rom:"bees",meaning:"Twenty (20)",cat:"numbers",strokes:null,tips:"बीस — 20."},
+  {char:"तीस",rom:"tees",meaning:"Thirty (30)",cat:"numbers",strokes:null,tips:"तीस — 30."},
+  {char:"पचास",rom:"pachaas",meaning:"Fifty (50)",cat:"numbers",strokes:null,tips:"पचास — 50."},
+  {char:"सौ",rom:"sau",meaning:"One hundred (100)",cat:"numbers",strokes:null,tips:"सौ — 100. एक सौ = one hundred."},
+  {char:"हज़ार",rom:"hazaar",meaning:"One thousand (1,000)",cat:"numbers",strokes:null,tips:"हज़ार — 1,000. From Persian."},
+  {char:"लाख",rom:"laakh",meaning:"One hundred thousand",cat:"numbers",strokes:null,tips:"लाख (100,000) — a key Indian number unit!"},
+  {char:"आधा",rom:"aadha",meaning:"Half",cat:"numbers",strokes:null,tips:"आधा=half. आधा घंटा=half an hour."},
+  {char:"पहला",rom:"pahla",meaning:"First",cat:"numbers",strokes:null,tips:"पहला(m)/पहली(f)=first. Ordinal number."},
+  {char:"दूसरा",rom:"doosra",meaning:"Second",cat:"numbers",strokes:null,tips:"दूसरा(m)/दूसरी(f)=second."},
+  {char:"लाल",rom:"laal",meaning:"Red",cat:"colors",strokes:null,tips:"लाल. Red = auspicious; used in weddings, celebrations."},
+  {char:"नीला",rom:"neela",meaning:"Blue",cat:"colors",strokes:null,tips:"नीला(m)/नीली(f). Adjectives change for gender in Hindi!"},
+  {char:"हरा",rom:"hara",meaning:"Green",cat:"colors",strokes:null,tips:"हरा(m)/हरी(f). हरियाली=lush greenery."},
+  {char:"पीला",rom:"peela",meaning:"Yellow",cat:"colors",strokes:null,tips:"पीला(m)/पीली(f). Haldi(turmeric) is beloved yellow spice."},
+  {char:"सफ़ेद",rom:"safed",meaning:"White",cat:"colors",strokes:null,tips:"सफ़ेद. From Arabic/Persian influence on Hindi."},
+  {char:"काला",rom:"kaala",meaning:"Black",cat:"colors",strokes:null,tips:"काला(m)/काली(f). काली माता=the dark goddess."},
+  {char:"गुलाबी",rom:"gulaabi",meaning:"Pink",cat:"colors",strokes:null,tips:"गुलाब=rose. गुलाबी=rose-colored/pink!"},
+  {char:"नारंगी",rom:"naarangi",meaning:"Orange",cat:"colors",strokes:null,tips:"नारंग=orange fruit. Saffron-orange is sacred in Hinduism."},
+  {char:"बैंगनी",rom:"baingani",meaning:"Purple",cat:"colors",strokes:null,tips:"बैंगन=eggplant. Purple like an eggplant!"},
+  {char:"भूरा",rom:"bhoora",meaning:"Brown",cat:"colors",strokes:null,tips:"भूरा(m)/भूरी(f). Earth/soil colored."},
+  {char:"धूसर",rom:"dhoosar",meaning:"Gray",cat:"colors",strokes:null,tips:"धूसर or स्लेटी(slate-colored). Gray."},
+  {char:"सुनहरा",rom:"sunahara",meaning:"Gold",cat:"colors",strokes:null,tips:"सुनहरा. From सोना(gold). Golden/golden-colored."},
+  {char:"चाँदी",rom:"chaandi",meaning:"Silver",cat:"colors",strokes:null,tips:"चाँदी=silver (metal). Used for color and the metal."},
+  {char:"इंद्रधनुष",rom:"indradhanush",meaning:"Rainbow",cat:"colors",strokes:null,tips:"इंद्र=Indra(rain god), धनुष=bow. God\'s bow!"},
+  {char:"कुत्ता",rom:"kutta",meaning:"Dog",cat:"animals",strokes:null,tips:"कुत्ता(m)/कुत्ती(f). Very common pet."},
+  {char:"बिल्ली",rom:"billi",meaning:"Cat",cat:"animals",strokes:null,tips:"बिल्ली(f)/बिल्ला(m)."},
+  {char:"हाथी",rom:"haathi",meaning:"Elephant",cat:"animals",strokes:null,tips:"Sacred in Hinduism. Associated with Lord Ganesha."},
+  {char:"शेर",rom:"sher",meaning:"Lion / Tiger",cat:"animals",strokes:null,tips:"शेर can mean lion or tiger. National animal: बाघ(tiger)."},
+  {char:"मोर",rom:"mor",meaning:"Peacock",cat:"animals",strokes:null,tips:"India\'s national bird. Associated with Lord Krishna."},
+  {char:"खरगोश",rom:"khargosh",meaning:"Rabbit",cat:"animals",strokes:null,tips:"खरगोश — soft fluffy ears!"},
+  {char:"बाघ",rom:"baagh",meaning:"Tiger",cat:"animals",strokes:null,tips:"बाघ — India\'s national animal. Bengal tiger."},
+  {char:"बंदर",rom:"bandar",meaning:"Monkey",cat:"animals",strokes:null,tips:"बंदर. Hanuman(monkey god) is beloved in Hinduism."},
+  {char:"साँप",rom:"saanp",meaning:"Snake",cat:"animals",strokes:null,tips:"साँप. Cobras are associated with Lord Shiva."},
+  {char:"गाय",rom:"gaay",meaning:"Cow",cat:"animals",strokes:null,tips:"गाय — sacred in Hinduism. Revered, not eaten by Hindus."},
+  {char:"सूअर",rom:"soor",meaning:"Pig",cat:"animals",strokes:null,tips:"सूअर. Varaha(boar) is an avatar of Vishnu."},
+  {char:"भेड़",rom:"bhed",meaning:"Sheep",cat:"animals",strokes:null,tips:"भेड़. भेड़ की ऊन=sheep\'s wool."},
+  {char:"मुर्गा",rom:"murga",meaning:"Rooster / Chicken",cat:"animals",strokes:null,tips:"मुर्गा(m)/मुर्गी(f). मुर्गी के अंडे=chicken eggs."},
+  {char:"भेड़िया",rom:"bhediya",meaning:"Wolf",cat:"animals",strokes:null,tips:"भेड़िया. Features in Indian fables."},
+  {char:"भालू",rom:"bhaalu",meaning:"Bear",cat:"animals",strokes:null,tips:"भालू. Sloth bear is native to India."},
+  {char:"मेंढक",rom:"mendak",meaning:"Frog",cat:"animals",strokes:null,tips:"मेंढक. Associated with monsoon rains."},
+  {char:"तितली",rom:"titali",meaning:"Butterfly",cat:"animals",strokes:null,tips:"तितली. Symbol of transformation and beauty."},
+  {char:"मधुमक्खी",rom:"madhumakkhi",meaning:"Bee",cat:"animals",strokes:null,tips:"मधु=honey, मक्खी=fly. Honey-fly!"},
+  {char:"हिरण",rom:"hiran",meaning:"Deer",cat:"animals",strokes:null,tips:"हिरण. The golden deer appears in the Ramayana."},
+  {char:"कबूतर",rom:"kabootar",meaning:"Pigeon",cat:"animals",strokes:null,tips:"कबूतर. Common in Indian cities; symbol of peace."},
+  {char:"तोता",rom:"tota",meaning:"Parrot",cat:"animals",strokes:null,tips:"तोता. Sacred to Kamadeva, god of love."},
+  {char:"ऊँट",rom:"oont",meaning:"Camel",cat:"animals",strokes:null,tips:"ऊँट. The ship of the Thar Desert in Rajasthan."},
+  {char:"मछली",rom:"machhli",meaning:"Fish",cat:"animals",strokes:null,tips:"मछली. \'मछली जल की रानी है\' = famous children\'s rhyme."},
+  {char:"गधा",rom:"gadha",meaning:"Donkey",cat:"animals",strokes:null,tips:"गधा. Also informally means \'dumb/stubborn person\'."},
+  {char:"रोटी",rom:"roti",meaning:"Flatbread",cat:"food",strokes:null,tips:"Staple bread. Also called चपाती(chapati)."},
+  {char:"चावल",rom:"chaawal",meaning:"Rice",cat:"food",strokes:null,tips:"चावल=uncooked rice. पका हुआ चावल=cooked rice."},
+  {char:"पानी",rom:"paani",meaning:"Water",cat:"food",strokes:null,tips:"पानी लाइए=please bring water."},
+  {char:"चाय",rom:"chai",meaning:"Tea",cat:"food",strokes:null,tips:"India\'s beloved spiced milk tea! From Chinese 茶(chá)."},
+  {char:"दाल",rom:"daal",meaning:"Lentils",cat:"food",strokes:null,tips:"Daily staple. दाल-चावल=comfort food."},
+  {char:"ब्रेड",rom:"bred",meaning:"Bread",cat:"food",strokes:null,tips:"From English \'bread\'. Western-style bread."},
+  {char:"दूध",rom:"doodh",meaning:"Milk",cat:"food",strokes:null,tips:"दूध. Sacred offering to gods. दूध पीना=drink milk."},
+  {char:"मांस",rom:"maas",meaning:"Meat",cat:"food",strokes:null,tips:"मांस. Not eaten by vegetarians (many Hindus are vegetarian)."},
+  {char:"सब्ज़ी",rom:"sabzi",meaning:"Vegetables",cat:"food",strokes:null,tips:"सब्ज़ी. India has a huge vegetarian food culture!"},
+  {char:"फल",rom:"phal",meaning:"Fruit",cat:"food",strokes:null,tips:"फल. फलों की दुकान=fruit shop."},
+  {char:"अंडा",rom:"anda",meaning:"Egg",cat:"food",strokes:null,tips:"अंडा. अंडा भुर्जी=scrambled eggs."},
+  {char:"चीनी",rom:"cheeni",meaning:"Sugar",cat:"food",strokes:null,tips:"चीनी=sugar. Also means \'Chinese person/thing\'!"},
+  {char:"नमक",rom:"namak",meaning:"Salt",cat:"food",strokes:null,tips:"नमक. नमक डालना=add salt. नमक-मिर्च=salt-pepper."},
+  {char:"आम",rom:"aam",meaning:"Mango",cat:"food",strokes:null,tips:"आम=mango AND common/ordinary! India=mango capital."},
+  {char:"केला",rom:"kela",meaning:"Banana",cat:"food",strokes:null,tips:"केला. Offered to Lord Hanuman. Nutritious snack."},
+  {char:"सेब",rom:"seb",meaning:"Apple",cat:"food",strokes:null,tips:"सेब. Himachal Pradesh is famous for apples."},
+  {char:"आलू",rom:"aloo",meaning:"Potato",cat:"food",strokes:null,tips:"आलू. आलू पराठा=potato stuffed bread. Beloved!"},
+  {char:"प्याज़",rom:"pyaaz",meaning:"Onion",cat:"food",strokes:null,tips:"प्याज़. India is the world\'s 2nd largest onion producer."},
+  {char:"टमाटर",rom:"tamaatar",meaning:"Tomato",cat:"food",strokes:null,tips:"टमाटर. From English/Portuguese. \'Tomato\' is a loanword."},
+  {char:"मिर्च",rom:"mirch",meaning:"Chili pepper",cat:"food",strokes:null,tips:"मिर्च. India loves spicy food! लाल मिर्च=red chili."},
+  {char:"हल्दी",rom:"haldi",meaning:"Turmeric",cat:"food",strokes:null,tips:"हल्दी. Sacred yellow spice. Used in cooking and ceremonies."},
+  {char:"समोसा",rom:"samosa",meaning:"Samosa",cat:"food",strokes:null,tips:"समोसा. Fried pastry with potato filling. Very popular!"},
+  {char:"बिरयानी",rom:"biryaani",meaning:"Biryani",cat:"food",strokes:null,tips:"बिरयानी. Spiced rice dish — India\'s favorite!"},
+  {char:"लड्डू",rom:"laddoo",meaning:"Laddoo",cat:"food",strokes:null,tips:"लड्डू. Round sweet ball. Offered to Lord Ganesha."},
+  {char:"नान",rom:"naan",meaning:"Naan bread",cat:"food",strokes:null,tips:"नान. Leavened flatbread baked in a tandoor oven."},
+  {char:"घी",rom:"ghee",meaning:"Clarified butter",cat:"food",strokes:null,tips:"घी. Sacred in Hindu rituals. Used in cooking."},
+  {char:"कॉफ़ी",rom:"coffee",meaning:"Coffee",cat:"food",strokes:null,tips:"कॉफ़ी. From English/Arabic. South India loves filter coffee!"},
+  {char:"जूस",rom:"juice",meaning:"Juice",cat:"food",strokes:null,tips:"जूस. From English. गन्ने का जूस=sugarcane juice."},
+  {char:"पिताजी",rom:"pitaaji",meaning:"Father",cat:"family",strokes:null,tips:"Respectful. Casual: पापा(papa) or बाबा. जी adds respect."},
+  {char:"माँ",rom:"maa",meaning:"Mother",cat:"family",strokes:null,tips:"माँ. Formal: माता जी. ँ = nasal sound."},
+  {char:"भाई",rom:"bhai",meaning:"Brother",cat:"family",strokes:null,tips:"भाई. Casual friendly term too: भाई साहब=respected sir."},
+  {char:"बहन",rom:"behen",meaning:"Sister",cat:"family",strokes:null,tips:"बहन. Respectful: बहन जी. दीदी(didi)=older sister."},
+  {char:"दादा",rom:"daada",meaning:"Paternal grandfather",cat:"family",strokes:null,tips:"दादा. Dad\'s father. दादाजी for respect."},
+  {char:"दादी",rom:"daadi",meaning:"Paternal grandmother",cat:"family",strokes:null,tips:"दादी. Dad\'s mother. दादीजी for respect."},
+  {char:"नाना",rom:"naana",meaning:"Maternal grandfather",cat:"family",strokes:null,tips:"नाना. Mom\'s father. नानाजी for respect."},
+  {char:"नानी",rom:"naani",meaning:"Maternal grandmother",cat:"family",strokes:null,tips:"नानी. Mom\'s mother. नानीजी for respect."},
+  {char:"चाचा",rom:"chacha",meaning:"Uncle (dad's younger bro)",cat:"family",strokes:null,tips:"चाचा. Specific to father\'s younger brother."},
+  {char:"चाची",rom:"chaachi",meaning:"Aunt (chaacha's wife)",cat:"family",strokes:null,tips:"चाची. Wife of चाचा."},
+  {char:"मामा",rom:"mama",meaning:"Maternal uncle",cat:"family",strokes:null,tips:"मामा. Mom\'s brother. Different from Western \'mama\'!"},
+  {char:"मामी",rom:"maami",meaning:"Maternal aunt",cat:"family",strokes:null,tips:"मामी. Wife of मामा."},
+  {char:"बेटा",rom:"beta",meaning:"Son",cat:"family",strokes:null,tips:"बेटा. Also used affectionately for any young boy."},
+  {char:"बेटी",rom:"beti",meaning:"Daughter",cat:"family",strokes:null,tips:"बेटी. बेटी बचाओ=save the daughter (social campaign)."},
+  {char:"पति",rom:"pati",meaning:"Husband",cat:"family",strokes:null,tips:"पति. Formal word. Casual: शौहर(shauhar) in Urdu."},
+  {char:"पत्नी",rom:"patni",meaning:"Wife",cat:"family",strokes:null,tips:"पत्नी. Formal word. Casual: बीवी(biwi) in Urdu."},
+  {char:"दोस्त",rom:"dost",meaning:"Friend",cat:"family",strokes:null,tips:"दोस्त. From Persian. यार(yaar) is also casual for friend."},
+  {char:"शिक्षक",rom:"shikshak",meaning:"Teacher (m.)",cat:"family",strokes:null,tips:"शिक्षक(m)/शिक्षिका(f). गुरु(guru)=spiritual teacher."},
+  {char:"छात्र",rom:"chhaatra",meaning:"Student (m.)",cat:"family",strokes:null,tips:"छात्र(m)/छात्रा(f)."},
+  {char:"पड़ोसी",rom:"padosi",meaning:"Neighbor",cat:"family",strokes:null,tips:"पड़ोसी. पड़ोस=neighborhood."},
+  {char:"सिर",rom:"sir",meaning:"Head",cat:"body",strokes:null,tips:"सिर. सिर दर्द=headache. सिर हिलाना=nod."},
+  {char:"आँख",rom:"aankh",meaning:"Eye",cat:"body",strokes:null,tips:"आँख. आँखें(plural). आँखें बंद करो=close your eyes."},
+  {char:"कान",rom:"kaan",meaning:"Ear",cat:"body",strokes:null,tips:"कान. कान से सुनना=hear with ears."},
+  {char:"नाक",rom:"naak",meaning:"Nose",cat:"body",strokes:null,tips:"नाक. नाक बंद होना=stuffy nose."},
+  {char:"मुँह",rom:"munh",meaning:"Mouth",cat:"body",strokes:null,tips:"मुँह. मुँह खोलो=open your mouth."},
+  {char:"हाथ",rom:"haath",meaning:"Hand",cat:"body",strokes:null,tips:"हाथ. हाथ मिलाना=shake hands."},
+  {char:"पाँव",rom:"paanv",meaning:"Foot",cat:"body",strokes:null,tips:"पाँव or पैर. पैर छूना=touch feet (sign of respect)."},
+  {char:"दिल",rom:"dil",meaning:"Heart",cat:"body",strokes:null,tips:"दिल. From Persian. दिल से=from the heart."},
+  {char:"बाल",rom:"baal",meaning:"Hair",cat:"body",strokes:null,tips:"बाल. बाल कटवाना=get a haircut."},
+  {char:"दाँत",rom:"daant",meaning:"Tooth / Teeth",cat:"body",strokes:null,tips:"दाँत. दाँत साफ़ करना=brush teeth."},
+  {char:"चेहरा",rom:"chehra",meaning:"Face",cat:"body",strokes:null,tips:"चेहरा. चेहरा धोना=wash face."},
+  {char:"पेट",rom:"pet",meaning:"Stomach",cat:"body",strokes:null,tips:"पेट. पेट भरा है=stomach is full."},
+  {char:"पीठ",rom:"peeth",meaning:"Back",cat:"body",strokes:null,tips:"पीठ. पीठ दर्द=back pain. Very common complaint!"},
+  {char:"कंधा",rom:"kandha",meaning:"Shoulder",cat:"body",strokes:null,tips:"कंधा. कंधे से कंधा मिलाना=stand shoulder to shoulder."},
+  {char:"उँगली",rom:"ungali",meaning:"Finger",cat:"body",strokes:null,tips:"उँगली. उँगली उठाना=point a finger."},
+  {char:"घुटना",rom:"ghutna",meaning:"Knee",cat:"body",strokes:null,tips:"घुटना. घुटने टेकना=kneel down."},
+  {char:"पेट की नाभि",rom:"naabhi",meaning:"Navel",cat:"body",strokes:null,tips:"नाभि. Sacred in yoga — center of the body."},
+  {char:"आज",rom:"aaj",meaning:"Today",cat:"time",strokes:null,tips:"आज. आज का दिन=today\'s day."},
+  {char:"कल",rom:"kal",meaning:"Tomorrow / Yesterday",cat:"time",strokes:null,tips:"कल means BOTH! Context tells you which."},
+  {char:"परसों",rom:"parson",meaning:"Day after tomorrow / before yesterday",cat:"time",strokes:null,tips:"परसों = 2 days away (past or future)."},
+  {char:"सोमवार",rom:"somvaar",meaning:"Monday",cat:"time",strokes:null,tips:"सोम=moon (Soma). Moon\'s day."},
+  {char:"मंगलवार",rom:"mangalvaar",meaning:"Tuesday",cat:"time",strokes:null,tips:"मंगल=Mars. Mars\'s day — like Tuesday!"},
+  {char:"बुधवार",rom:"budhvaar",meaning:"Wednesday",cat:"time",strokes:null,tips:"बुध=Mercury. Mercury\'s day."},
+  {char:"गुरुवार",rom:"guruvaar",meaning:"Thursday",cat:"time",strokes:null,tips:"गुरु=Jupiter/teacher. Jupiter\'s day."},
+  {char:"शुक्रवार",rom:"shukravaar",meaning:"Friday",cat:"time",strokes:null,tips:"शुक्र=Venus. Venus\'s day — like Friday!"},
+  {char:"शनिवार",rom:"shanivaar",meaning:"Saturday",cat:"time",strokes:null,tips:"शनि=Saturn. Saturn\'s day — like Saturday!"},
+  {char:"रविवार",rom:"ravivaar",meaning:"Sunday",cat:"time",strokes:null,tips:"रवि=sun. Sun\'s day — like Sunday!"},
+  {char:"सुबह",rom:"subah",meaning:"Morning",cat:"time",strokes:null,tips:"सुबह. सुबह उठना=wake up in the morning."},
+  {char:"दोपहर",rom:"dopahar",meaning:"Afternoon / Noon",cat:"time",strokes:null,tips:"दो=two, पहर=time period. \'Second time period.\'"},
+  {char:"शाम",rom:"shaam",meaning:"Evening",cat:"time",strokes:null,tips:"शाम. शाम की चाय=evening tea ritual."},
+  {char:"रात",rom:"raat",meaning:"Night",cat:"time",strokes:null,tips:"रात. रात को=at night. रातों रात=overnight."},
+  {char:"साल",rom:"saal",meaning:"Year",cat:"time",strokes:null,tips:"साल. नया साल=New Year."},
+  {char:"महीना",rom:"mahina",meaning:"Month",cat:"time",strokes:null,tips:"महीना. बारह महीने=twelve months."},
+  {char:"हफ़्ता",rom:"hafta",meaning:"Week",cat:"time",strokes:null,tips:"हफ़्ता. From Arabic. सात दिन का हफ़्ता=7-day week."},
+  {char:"घंटा",rom:"ghanta",meaning:"Hour",cat:"time",strokes:null,tips:"घंटा. एक घंटा=one hour."},
+  {char:"मिनट",rom:"minat",meaning:"Minute",cat:"time",strokes:null,tips:"मिनट. From English \'minute\'."},
+  {char:"वसंत",rom:"vasant",meaning:"Spring",cat:"time",strokes:null,tips:"वसंत. वसंत पंचमी=spring festival of Saraswati."},
+  {char:"गर्मी",rom:"garmi",meaning:"Summer",cat:"time",strokes:null,tips:"गर्मी. Hot season. मई-जून are hottest months."},
+  {char:"बरसात",rom:"barsaat",meaning:"Monsoon / Rainy season",cat:"time",strokes:null,tips:"बरसात. July-Sept monsoon is vital for Indian agriculture."},
+  {char:"सर्दी",rom:"sardi",meaning:"Winter",cat:"time",strokes:null,tips:"सर्दी. सर्दी लगना=feel cold. Mild in most of India."},
+  {char:"खाना",rom:"khaana",meaning:"Eat",cat:"verbs",strokes:null,tips:"खाना=eat AND food! खाना खाना=eat food."},
+  {char:"पीना",rom:"peena",meaning:"Drink",cat:"verbs",strokes:null,tips:"पीना. पानी पीना=drink water."},
+  {char:"बोलना",rom:"bolna",meaning:"Speak / Say",cat:"verbs",strokes:null,tips:"बोलना. हिंदी बोलना=speak Hindi."},
+  {char:"सुनना",rom:"sunna",meaning:"Listen",cat:"verbs",strokes:null,tips:"सुनना. ध्यान से सुनना=listen carefully."},
+  {char:"देखना",rom:"dekhna",meaning:"See / Watch",cat:"verbs",strokes:null,tips:"देखना. टीवी देखना=watch TV."},
+  {char:"चलना",rom:"chalna",meaning:"Walk / Move",cat:"verbs",strokes:null,tips:"चलना. चलो=let\'s go (casual command)."},
+  {char:"आना",rom:"aana",meaning:"Come",cat:"verbs",strokes:null,tips:"आना. आओ=come (casual). आइए=come (polite)."},
+  {char:"जाना",rom:"jaana",meaning:"Go",cat:"verbs",strokes:null,tips:"जाना. जाओ=go (casual). जाइए=go (polite)."},
+  {char:"चाहना",rom:"chahna",meaning:"Want / Love",cat:"verbs",strokes:null,tips:"चाहना. मैं चाहता/चाहती हूँ=I want."},
+  {char:"पसंद करना",rom:"pasand karna",meaning:"Like",cat:"verbs",strokes:null,tips:"पसंद=liking. मुझे पसंद है=I like it."},
+  {char:"प्यार करना",rom:"pyaar karna",meaning:"Love",cat:"verbs",strokes:null,tips:"प्यार=love. मैं तुमसे प्यार करता/करती हूँ=I love you."},
+  {char:"पढ़ना",rom:"padhna",meaning:"Read / Study",cat:"verbs",strokes:null,tips:"पढ़ना=read AND study. किताब पढ़ना=read a book."},
+  {char:"काम करना",rom:"kaam karna",meaning:"Work",cat:"verbs",strokes:null,tips:"काम=work/task. काम करना=to work."},
+  {char:"सोना",rom:"sona",meaning:"Sleep",cat:"verbs",strokes:null,tips:"सोना=sleep AND gold! Context tells you which."},
+  {char:"खरीदना",rom:"kharidna",meaning:"Buy",cat:"verbs",strokes:null,tips:"खरीदना. बाज़ार से खरीदना=buy from the market."},
+  {char:"लिखना",rom:"likhna",meaning:"Write",cat:"verbs",strokes:null,tips:"लिखना. पत्र लिखना=write a letter."},
+  {char:"दौड़ना",rom:"daudna",meaning:"Run",cat:"verbs",strokes:null,tips:"दौड़ना. तेज़ दौड़ना=run fast."},
+  {char:"हँसना",rom:"hansna",meaning:"Laugh",cat:"verbs",strokes:null,tips:"हँसना. हँसी=laughter. खिलखिलाना=giggle."},
+  {char:"रोना",rom:"rona",meaning:"Cry",cat:"verbs",strokes:null,tips:"रोना. रोना मत=don\'t cry."},
+  {char:"खेलना",rom:"khelna",meaning:"Play",cat:"verbs",strokes:null,tips:"खेलना. क्रिकेट खेलना=play cricket (India\'s passion!)."},
+  {char:"गाना",rom:"gaana",meaning:"Sing",cat:"verbs",strokes:null,tips:"गाना=sing AND song. गाना गाना=sing a song."},
+  {char:"नाचना",rom:"naachna",meaning:"Dance",cat:"verbs",strokes:null,tips:"नाचना. नृत्य(nritya)=classical dance."},
+  {char:"सीखना",rom:"seekhna",meaning:"Learn",cat:"verbs",strokes:null,tips:"सीखना. हिंदी सीखना=learn Hindi!"},
+  {char:"समझना",rom:"samajhna",meaning:"Understand",cat:"verbs",strokes:null,tips:"समझना. क्या समझे?=Do you understand?"}
+    ,
+  {char:"बहुत दिनों बाद",rom:"Bahut dinon baad",meaning:"Long time no see",cat:"greetings",strokes:null,tips:"बहुत=many, दिनों=days, बाद=after. 'After many days.'"},
+  {char:"जन्मदिन मुबारक",rom:"Janmadin mubaarak",meaning:"Happy Birthday",cat:"greetings",strokes:null,tips:"जन्मदिन=birthday, मुबारक=blessed/congratulations (from Arabic)."},
+  {char:"नया साल मुबारक",rom:"Naya saal mubaarak",meaning:"Happy New Year",cat:"greetings",strokes:null,tips:"नया=new, साल=year, मुबारक=blessed."},
+  {char:"बधाई हो",rom:"Badhaai ho",meaning:"Congratulations",cat:"greetings",strokes:null,tips:"बधाई=congratulations, हो=be. Said for achievements."},
+  {char:"हिम्मत रखो",rom:"Himmat rakho",meaning:"Be brave / Keep courage",cat:"greetings",strokes:null,tips:"हिम्मत=courage, रखो=keep. Encouraging phrase."},
+  {char:"शुभकामनाएँ",rom:"Shubhkaamnayen",meaning:"Best wishes",cat:"greetings",strokes:null,tips:"शुभ=auspicious, कामना=wish. Plural wishes."},
+  {char:"अरे वाह",rom:"Are vaah",meaning:"Wow! / Amazing!",cat:"greetings",strokes:null,tips:"अरे=hey/oh, वाह=wow. Exclamation of delight."},
+  {char:"क्या बात है",rom:"Kya baat hai",meaning:"What a thing! / Excellent!",cat:"greetings",strokes:null,tips:"क्या=what, बात=thing/matter, है=is. Expression of admiration."},
+  {char:"चलो ठीक है",rom:"Chalo theek hai",meaning:"Okay, that's fine",cat:"greetings",strokes:null,tips:"चलो=okay/let's go, ठीक=fine, है=is."},
+  {char:"मैं समझ गया",rom:"Main samajh gaya",meaning:"I understand (m.)",cat:"greetings",strokes:null,tips:"मैं=I, समझ=understand, गया=went/did. Feminine: गई."},
+  {char:"तेईस",rom:"teis",meaning:"Twenty-three (23)",cat:"numbers",strokes:null,tips:"Hindi numbers 13-19 and beyond have unique names."},
+  {char:"पचहत्तर",rom:"pachattar",meaning:"Seventy-five (75)",cat:"numbers",strokes:null,tips:"Hindi large numbers have their own names — not built like English."},
+  {char:"करोड़",rom:"karod",meaning:"Ten million (1 crore)",cat:"numbers",strokes:null,tips:"करोड़ = 10 million. The crore is India's big number unit!"},
+  {char:"प्रतिशत",rom:"pratishat",meaning:"Percent (%)",cat:"numbers",strokes:null,tips:"प्रति=per, शत=hundred. 'Per hundred.'"},
+  {char:"गुना",rom:"guna",meaning:"Times / Fold",cat:"numbers",strokes:null,tips:"दो गुना=double. तीन गुना=triple."},
+  {char:"तीसरा",rom:"teesra",meaning:"Third",cat:"numbers",strokes:null,tips:"तीसरा(m)/तीसरी(f). Ordinal numbers change for gender."},
+  {char:"चौथा",rom:"chautha",meaning:"Fourth",cat:"numbers",strokes:null,tips:"चौथा(m)/चौथी(f)=fourth."},
+  {char:"गहरा लाल",rom:"gahra laal",meaning:"Dark red / Crimson",cat:"colors",strokes:null,tips:"गहरा=deep/dark. गहरा+color=dark shade."},
+  {char:"हल्का नीला",rom:"halka neela",meaning:"Light blue",cat:"colors",strokes:null,tips:"हल्का=light/pale. हल्का+color=light shade."},
+  {char:"आसमानी",rom:"aasmani",meaning:"Sky blue",cat:"colors",strokes:null,tips:"आसमान=sky. Sky-colored! Beautiful word."},
+  {char:"मेहंदी",rom:"mehandi",meaning:"Henna green",cat:"colors",strokes:null,tips:"मेहंदी=henna plant. Dark green-brown color of henna."},
+  {char:"पारदर्शी",rom:"paaradarshai",meaning:"Transparent / Clear",cat:"colors",strokes:null,tips:"पार=through, दर्शी=seeing. See-through."},
+  {char:"सतरंगी",rom:"satrangi",meaning:"Seven-colored / Rainbow",cat:"colors",strokes:null,tips:"सात=seven, रंग=color. 'Seven-colored' = rainbow."},
+  {char:"नीलम",rom:"neelam",meaning:"Sapphire blue",cat:"colors",strokes:null,tips:"नीलम=sapphire gem. Rich deep blue."},
+  {char:"मैरून",rom:"mairon",meaning:"Maroon",cat:"colors",strokes:null,tips:"From English 'maroon'. Dark brownish-red."},
+  {char:"डॉल्फिन",rom:"dolphin",meaning:"Dolphin",cat:"animals",strokes:null,tips:"डॉल्फिन. From English. 'सुसु' is Ganges river dolphin!"},
+  {char:"शार्क",rom:"shaark",meaning:"Shark",cat:"animals",strokes:null,tips:"शार्क. From English. हिंदी महासागर में पाई जाती है."},
+  {char:"व्हेल",rom:"whale",meaning:"Whale",cat:"animals",strokes:null,tips:"व्हेल. From English. World's largest animal."},
+  {char:"केकड़ा",rom:"kekda",meaning:"Crab",cat:"animals",strokes:null,tips:"केकड़ा. Found in India's coastal waters."},
+  {char:"झींगा",rom:"jheengha",meaning:"Shrimp / Prawn",cat:"animals",strokes:null,tips:"झींगा. Popular seafood in coastal India."},
+  {char:"ऑक्टोपस",rom:"octopus",meaning:"Octopus",cat:"animals",strokes:null,tips:"ऑक्टोपस. From English. Eight-armed creature."},
+  {char:"जेलीफ़िश",rom:"jellyfish",meaning:"Jellyfish",cat:"animals",strokes:null,tips:"जेलीफ़िश. From English."},
+  {char:"चील",rom:"cheel",meaning:"Eagle / Kite",cat:"animals",strokes:null,tips:"चील. Common bird of prey in Indian cities."},
+  {char:"उल्लू",rom:"ullu",meaning:"Owl",cat:"animals",strokes:null,tips:"उल्लू. Sacred to goddess Lakshmi. Also slang for 'fool'!"},
+  {char:"पेंगुइन",rom:"penguin",meaning:"Penguin",cat:"animals",strokes:null,tips:"पेंगुइन. From English. Lives in Antarctica."},
+  {char:"कौआ",rom:"kauwa",meaning:"Crow",cat:"animals",strokes:null,tips:"कौआ. Very intelligent bird. Common across India."},
+  {char:"हंस",rom:"hans",meaning:"Swan / Goose",cat:"animals",strokes:null,tips:"हंस. Sacred to goddess Saraswati. Symbol of grace."},
+  {char:"गिद्ध",rom:"giddh",meaning:"Vulture",cat:"animals",strokes:null,tips:"गिद्ध. Important scavenger bird in Indian ecosystems."},
+  {char:"तीतर",rom:"teetar",meaning:"Partridge",cat:"animals",strokes:null,tips:"तीतर. Game bird. Famous in folk songs."},
+  {char:"चींटी",rom:"cheenti",meaning:"Ant",cat:"animals",strokes:null,tips:"चींटी. Very common insect. मेहनती=hardworking (like an ant)."},
+  {char:"मच्छर",rom:"machchhar",meaning:"Mosquito",cat:"animals",strokes:null,tips:"मच्छर. Major health concern in India — carries malaria."},
+  {char:"मकड़ी",rom:"makdi",meaning:"Spider",cat:"animals",strokes:null,tips:"मकड़ी. मकड़ी का जाल=spider web."},
+  {char:"ड्रैगनफ्लाई",rom:"dragonfly",meaning:"Dragonfly",cat:"animals",strokes:null,tips:"ड्रैगनफ्लाई or व्याध पतंग. Graceful flier."},
+  {char:"जुगनू",rom:"jugnu",meaning:"Firefly",cat:"animals",strokes:null,tips:"जुगनू. Magical summer evenings in rural India."},
+  {char:"मगरमच्छ",rom:"magarmachchh",meaning:"Crocodile",cat:"animals",strokes:null,tips:"मगरमच्छ. Found in India's rivers — mugger crocodile!"},
+  {char:"छिपकली",rom:"chhipkali",meaning:"Lizard",cat:"animals",strokes:null,tips:"छिपकली. Common house lizard in India."},
+  {char:"बिच्छू",rom:"bichhoo",meaning:"Scorpion",cat:"animals",strokes:null,tips:"बिच्छू. Found in dry regions of India."},
+  {char:"गाजर",rom:"gajar",meaning:"Carrot",cat:"food",strokes:null,tips:"गाजर. गाजर का हलवा=carrot pudding (famous dessert!)."},
+  {char:"खीरा",rom:"kheera",meaning:"Cucumber",cat:"food",strokes:null,tips:"खीरा. खीरे का रायता=cucumber yogurt dish."},
+  {char:"पत्तागोभी",rom:"pattagobhi",meaning:"Cabbage",cat:"food",strokes:null,tips:"पत्ता=leaf, गोभी=cauliflower/brassica."},
+  {char:"पालक",rom:"palak",meaning:"Spinach",cat:"food",strokes:null,tips:"पालक. पालक पनीर=spinach with cottage cheese. Famous dish!"},
+  {char:"मशरूम",rom:"mushroom",meaning:"Mushroom",cat:"food",strokes:null,tips:"मशरूम. From English. मशरूम मसाला=mushroom curry."},
+  {char:"लहसुन",rom:"lahsun",meaning:"Garlic",cat:"food",strokes:null,tips:"लहसुन. Essential in Indian cooking. 'Never enough garlic.'"},
+  {char:"अदरक",rom:"adrak",meaning:"Ginger",cat:"food",strokes:null,tips:"अदरक. अदरक की चाय=ginger tea. Beloved remedy!"},
+  {char:"मकई",rom:"makai",meaning:"Corn",cat:"food",strokes:null,tips:"मकई. भुट्टा=roasted corn on the cob. Street food!"},
+  {char:"बैंगन",rom:"baingan",meaning:"Eggplant / Brinjal",cat:"food",strokes:null,tips:"बैंगन. बैंगन का भरता=roasted eggplant mash."},
+  {char:"भिंडी",rom:"bhindi",meaning:"Okra / Lady finger",cat:"food",strokes:null,tips:"भिंडी. भिंडी फ्राई=fried okra. Popular vegetable."},
+  {char:"मूली",rom:"mooli",meaning:"Radish",cat:"food",strokes:null,tips:"मूली. मूली पराठा=radish stuffed flatbread."},
+  {char:"शिमला मिर्च",rom:"shimla mirch",meaning:"Bell pepper",cat:"food",strokes:null,tips:"शिमला=a hill city, मिर्च=pepper. From Shimla!"},
+  {char:"मटर",rom:"matar",meaning:"Peas",cat:"food",strokes:null,tips:"मटर. मटर पनीर=peas with cottage cheese."},
+  {char:"स्ट्रॉबेरी",rom:"strawberry",meaning:"Strawberry",cat:"food",strokes:null,tips:"स्ट्रॉबेरी. From English. Grown in Himachal Pradesh."},
+  {char:"अंगूर",rom:"angoor",meaning:"Grape",cat:"food",strokes:null,tips:"अंगूर. नासिक(Nashik) is India's wine region."},
+  {char:"नाशपाती",rom:"naashpaati",meaning:"Pear",cat:"food",strokes:null,tips:"नाशपाती. Popular fruit, especially in North India."},
+  {char:"अनानास",rom:"ananaas",meaning:"Pineapple",cat:"food",strokes:null,tips:"अनानास. From Portuguese. Grown in Northeast India."},
+  {char:"चेरी",rom:"cherry",meaning:"Cherry",cat:"food",strokes:null,tips:"चेरी. From English. Grown in Kashmir."},
+  {char:"आड़ू",rom:"aadu",meaning:"Peach",cat:"food",strokes:null,tips:"आड़ू. Grown in Himachal Pradesh. Summer fruit."},
+  {char:"आलूबुखारा",rom:"aaloobukhara",meaning:"Plum",cat:"food",strokes:null,tips:"आलू=potato-like, बुखारा=from Bukhara (Central Asia)."},
+  {char:"तरबूज",rom:"tarbooj",meaning:"Watermelon",cat:"food",strokes:null,tips:"तरबूज. From Persian. Loved in Indian summers!"},
+  {char:"पपीता",rom:"papita",meaning:"Papaya",cat:"food",strokes:null,tips:"पपीता. From Portuguese. Grown throughout India."},
+  {char:"नारियल",rom:"nariyal",meaning:"Coconut",cat:"food",strokes:null,tips:"नारियल. Sacred in Hindu rituals. Kerala is coconut capital!"},
+  {char:"इमली",rom:"imli",meaning:"Tamarind",cat:"food",strokes:null,tips:"इमली. Sweet-sour flavor. Base of many chutneys."},
+  {char:"मेथी",rom:"methi",meaning:"Fenugreek",cat:"food",strokes:null,tips:"मेथी. Bitter herb used in Indian cooking."},
+  {char:"जीरा",rom:"jeera",meaning:"Cumin",cat:"food",strokes:null,tips:"जीरा. जीरा पानी=cumin water. Digestive drink."},
+  {char:"धनिया",rom:"dhania",meaning:"Coriander",cat:"food",strokes:null,tips:"धनिया. Fresh leaves AND seeds used differently."},
+  {char:"शहद",rom:"shahad",meaning:"Honey",cat:"food",strokes:null,tips:"शहद. From Arabic. Natural sweetener."},
+  {char:"मक्खन",rom:"makkhan",meaning:"Butter",cat:"food",strokes:null,tips:"मक्खन. मक्खन मलाई=fresh butter and cream."},
+  {char:"पनीर",rom:"paneer",meaning:"Cottage cheese",cat:"food",strokes:null,tips:"पनीर. Staple protein for vegetarians. Used in 50+ dishes!"},
+  {char:"दही",rom:"dahi",meaning:"Yogurt / Curd",cat:"food",strokes:null,tips:"दही. Eaten daily in India. दही-चावल=curd rice (South India)."},
+  {char:"राजमा",rom:"rajma",meaning:"Kidney beans",cat:"food",strokes:null,tips:"राजमा. राजमा-चावल=beans and rice. North Indian comfort food!"},
+  {char:"छोले",rom:"chhole",meaning:"Chickpeas",cat:"food",strokes:null,tips:"छोले. छोले-भटूरे=chickpeas with fried bread. Delhi specialty!"},
+  {char:"खिचड़ी",rom:"khichdi",meaning:"Rice and lentil porridge",cat:"food",strokes:null,tips:"खिचड़ी. Comfort food. Simple and nutritious."},
+  {char:"पकौड़ा",rom:"pakoda",meaning:"Fritter",cat:"food",strokes:null,tips:"पकौड़ा. Battered and fried vegetables. Monsoon snack!"},
+  {char:"मिठाई",rom:"mithai",meaning:"Sweets / Confectionery",cat:"food",strokes:null,tips:"मिठाई. India has hundreds of types! Given at celebrations."},
+  {char:"माता-पिता",rom:"maata-pita",meaning:"Parents",cat:"family",strokes:null,tips:"माता=mother, पिता=father. Combined = parents."},
+  {char:"भाई-बहन",rom:"bhai-behen",meaning:"Siblings",cat:"family",strokes:null,tips:"भाई=brother, बहन=sister. Brothers and sisters."},
+  {char:"रिश्तेदार",rom:"rishtedaar",meaning:"Relatives",cat:"family",strokes:null,tips:"रिश्ता=relationship. All extended family."},
+  {char:"चचेरा भाई",rom:"chachera bhai",meaning:"Paternal cousin (m.)",cat:"family",strokes:null,tips:"चाचा(uncle) का बेटा=uncle's son = paternal cousin."},
+  {char:"ममेरा भाई",rom:"mamera bhai",meaning:"Maternal cousin (m.)",cat:"family",strokes:null,tips:"मामा(maternal uncle) का बेटा=maternal uncle's son."},
+  {char:"साले",rom:"saale",meaning:"Brother-in-law (wife's bro)",cat:"family",strokes:null,tips:"साले. Wife's brother. साली=wife's sister."},
+  {char:"जीजा",rom:"jeeja",meaning:"Brother-in-law (sister's husband)",cat:"family",strokes:null,tips:"जीजा. Husband of your sister."},
+  {char:"सहेली",rom:"saheli",meaning:"Female friend",cat:"family",strokes:null,tips:"सहेली. Specifically female-to-female friendship."},
+  {char:"यार",rom:"yaar",meaning:"Best friend / Buddy",cat:"family",strokes:null,tips:"यार. From Persian. Very affectionate term."},
+  {char:"गुरु",rom:"guru",meaning:"Teacher / Spiritual guide",cat:"family",strokes:null,tips:"गुरु. The word 'guru' was adopted into English!"},
+  {char:"गर्दन",rom:"gardan",meaning:"Neck",cat:"body",strokes:null,tips:"गर्दन. गर्दन दर्द=neck pain. From Persian."},
+  {char:"छाती",rom:"chhaati",meaning:"Chest",cat:"body",strokes:null,tips:"छाती. छाती ठोकना=beat chest (show confidence)."},
+  {char:"घुटना",rom:"ghutna",meaning:"Knee",cat:"body",strokes:null,tips:"घुटना. घुटने टेकना=kneel down."},
+  {char:"टखना",rom:"takhna",meaning:"Ankle",cat:"body",strokes:null,tips:"टखना. पैर मुड़ना=twist ankle."},
+  {char:"कलाई",rom:"kalaai",meaning:"Wrist",cat:"body",strokes:null,tips:"कलाई. कलाई पर घड़ी=watch on wrist."},
+  {char:"कोहनी",rom:"kohni",meaning:"Elbow",cat:"body",strokes:null,tips:"कोहनी. कोहनी मारना=elbow (poke)."},
+  {char:"भौंह",rom:"bhaunh",meaning:"Eyebrow",cat:"body",strokes:null,tips:"भौंह. भौंह उठाना=raise an eyebrow (surprise/doubt)."},
+  {char:"पलक",rom:"palak",meaning:"Eyelid / Eyelash",cat:"body",strokes:null,tips:"पलक. पलक झपकाना=blink. पलक पर=on the eyelid."},
+  {char:"होंठ",rom:"honth",meaning:"Lips",cat:"body",strokes:null,tips:"होंठ. होंठ हिलाना=move lips."},
+  {char:"ठोड़ी",rom:"thodi",meaning:"Chin",cat:"body",strokes:null,tips:"ठोड़ी. ठोड़ी पर हाथ=hand on chin (thinking)."},
+  {char:"माथा",rom:"maatha",meaning:"Forehead",cat:"body",strokes:null,tips:"माथा. माथे पर बिंदी=dot on forehead. Cultural/religious."},
+  {char:"चमड़ी",rom:"chamdi",meaning:"Skin",cat:"body",strokes:null,tips:"चमड़ी or त्वचा(tvach). त्वचा is more formal."},
+  {char:"हड्डी",rom:"haddi",meaning:"Bone",cat:"body",strokes:null,tips:"हड्डी. हड्डी टूटना=break a bone."},
+  {char:"खून",rom:"khoon",meaning:"Blood",cat:"body",strokes:null,tips:"खून. From Persian. खून बहाना=shed blood."},
+  {char:"दिमाग़",rom:"dimaag",meaning:"Brain / Mind",cat:"body",strokes:null,tips:"दिमाग़. दिमाग़ लगाओ=use your brain!"},
+  {char:"फेफड़े",rom:"phephde",meaning:"Lungs",cat:"body",strokes:null,tips:"फेफड़े (plural). फेफड़ों में दर्द=lung pain."},
+  {char:"सेकंड",rom:"second",meaning:"Second (time)",cat:"time",strokes:null,tips:"सेकंड. From English. एक सेकंड=one second."},
+  {char:"अभी",rom:"abhi",meaning:"Right now / Just now",cat:"time",strokes:null,tips:"अभी. अभी आता हूँ=I'm coming right now."},
+  {char:"अतीत",rom:"ateet",meaning:"Past",cat:"time",strokes:null,tips:"अतीत. अतीत में=in the past. Sanskrit-derived."},
+  {char:"भविष्य",rom:"bhavishy",meaning:"Future",cat:"time",strokes:null,tips:"भविष्य. भविष्य में=in the future."},
+  {char:"पिछले महीने",rom:"pichle mahine",meaning:"Last month",cat:"time",strokes:null,tips:"पिछला=previous, महीना=month."},
+  {char:"अगले महीने",rom:"agle mahine",meaning:"Next month",cat:"time",strokes:null,tips:"अगला=next, महीना=month."},
+  {char:"त्योहार",rom:"tyohaar",meaning:"Festival / Holiday",cat:"time",strokes:null,tips:"त्योहार. India has hundreds of festivals!"},
+  {char:"दिवाली",rom:"diwali",meaning:"Diwali",cat:"time",strokes:null,tips:"दिवाली. Festival of Lights. Biggest Hindu celebration!"},
+  {char:"होली",rom:"holi",meaning:"Holi",cat:"time",strokes:null,tips:"होली. Festival of Colors. Spring celebration."},
+  {char:"ईद",rom:"eid",meaning:"Eid",cat:"time",strokes:null,tips:"ईद. Important Islamic festival celebrated in India."},
+  {char:"क्रिसमस",rom:"christmas",meaning:"Christmas",cat:"time",strokes:null,tips:"क्रिसमस. Celebrated by millions of Indian Christians."},
+  {char:"शताब्दी",rom:"shataabdi",meaning:"Century",cat:"time",strokes:null,tips:"शताब्दी. शत=hundred, अब्दी=year/period."},
+  {char:"दशक",rom:"dashak",meaning:"Decade",cat:"time",strokes:null,tips:"दशक. दस=ten + अक(time period). Ten years."},
+  {char:"सोचना",rom:"sochna",meaning:"Think",cat:"verbs",strokes:null,tips:"सोचना. सोचो!=think! ज़रा सोचो=think for a moment."},
+  {char:"जानना",rom:"jaanana",meaning:"Know",cat:"verbs",strokes:null,tips:"जानना. मैं जानता/जानती हूँ=I know."},
+  {char:"रखना",rom:"rakhna",meaning:"Keep / Place / Put",cat:"verbs",strokes:null,tips:"रखना. यहाँ रखो=put it here."},
+  {char:"मिलना",rom:"milna",meaning:"Meet / Get",cat:"verbs",strokes:null,tips:"मिलना. कल मिलते हैं=see you tomorrow (we'll meet)."},
+  {char:"मदद करना",rom:"madad karna",meaning:"Help",cat:"verbs",strokes:null,tips:"मदद=help (from Arabic), करना=to do."},
+  {char:"ढूँढना",rom:"dhundna",meaning:"Search / Look for",cat:"verbs",strokes:null,tips:"ढूँढना. मैं ढूँढ रहा/रही हूँ=I am searching."},
+  {char:"देना",rom:"dena",meaning:"Give",cat:"verbs",strokes:null,tips:"देना. मुझे दो=give it to me."},
+  {char:"लेना",rom:"lena",meaning:"Take / Receive",cat:"verbs",strokes:null,tips:"लेना. ले लो=take it. देना/लेना=give/take."},
+  {char:"खोलना",rom:"kholna",meaning:"Open",cat:"verbs",strokes:null,tips:"खोलना. दरवाज़ा खोलो=open the door."},
+  {char:"बंद करना",rom:"band karna",meaning:"Close / Shut",cat:"verbs",strokes:null,tips:"बंद=closed + करना=do. 'Make closed.'"},
+  {char:"इस्तेमाल करना",rom:"istemal karna",meaning:"Use",cat:"verbs",strokes:null,tips:"इस्तेमाल=use (from Arabic) + करना=do."},
+  {char:"चाहिए",rom:"chahiye",meaning:"Need / Should",cat:"verbs",strokes:null,tips:"चाहिए. मुझे पानी चाहिए=I need water. Very useful!"},
+  {char:"रहना",rom:"rehna",meaning:"Live / Stay",cat:"verbs",strokes:null,tips:"रहना. आप कहाँ रहते हैं=where do you live?"},
+  {char:"इंतज़ार करना",rom:"intezaar karna",meaning:"Wait",cat:"verbs",strokes:null,tips:"इंतज़ार=waiting (from Arabic) + करना=do."},
+  {char:"पूछना",rom:"poochhna",meaning:"Ask",cat:"verbs",strokes:null,tips:"पूछना. कुछ पूछना है=I want to ask something."},
+  {char:"जवाब देना",rom:"jawaab dena",meaning:"Answer",cat:"verbs",strokes:null,tips:"जवाब=answer (from Arabic) + देना=give."},
+  {char:"याद करना",rom:"yaad karna",meaning:"Remember",cat:"verbs",strokes:null,tips:"याद=memory (from Arabic) + करना=do."},
+  {char:"भूलना",rom:"bhoolna",meaning:"Forget",cat:"verbs",strokes:null,tips:"भूलना. मत भूलो=don't forget."},
+  {char:"शुरू करना",rom:"shuru karna",meaning:"Start / Begin",cat:"verbs",strokes:null,tips:"शुरू=beginning (from Arabic) + करना=do."},
+  {char:"ख़त्म करना",rom:"khatam karna",meaning:"Finish / End",cat:"verbs",strokes:null,tips:"ख़त्म=finished (from Arabic) + करना=do."},
+  {char:"मानना",rom:"maanana",meaning:"Agree / Accept / Believe",cat:"verbs",strokes:null,tips:"मानना. मैं मानता/मानती हूँ=I agree/believe."},
+  {char:"समझाना",rom:"samjhaana",meaning:"Explain",cat:"verbs",strokes:null,tips:"समझाना. Causative of समझना=understand. Make understand."},
+  {char:"बदलना",rom:"badalna",meaning:"Change",cat:"verbs",strokes:null,tips:"बदलना. सब बदल गया=everything changed."}
+    ],
+    phrases:[
+      {cat:"Greetings",char:"आपका नाम क्या है?",rom:"Aapka naam kya hai?",meaning:"What is your name?",note:"आपका=your (formal), नाम=name, क्या=what, है=is."},
+      {cat:"Greetings",char:"मेरा नाम ___ है।",rom:"Mera naam ___ hai.",meaning:"My name is ___.",note:"मेरा=my, नाम=name, है=is."},
+      {cat:"Greetings",char:"आप कैसे हैं?",rom:"Aap kaise hain?",meaning:"How are you? (formal)",note:"आप=you (formal/polite), कैसे=how, हैं=are."},
+      {cat:"Greetings",char:"मैं ठीक हूँ, धन्यवाद।",rom:"Main theek hoon, dhanyavaad.",meaning:"I'm fine, thank you.",note:"मैं=I, ठीक=okay/fine, हूँ=am."},
+      {cat:"Greetings",char:"कृपया",rom:"Kripaya",meaning:"Please",note:"कृपया (kripaya). Add to any request for politeness."},
+      {cat:"Directions",char:"___ कहाँ है?",rom:"___ kahaan hai?",meaning:"Where is ___?",note:"कहाँ=where, है=is. Very useful for navigation!"},
+      {cat:"Directions",char:"दाईं तरफ / बाईं तरफ",rom:"Daayin taraf / Baayin taraf",meaning:"Right side / Left side",note:"दाईं=right, बाईं=left, तरफ=side/direction."},
+      {cat:"Directions",char:"सीधे जाइए",rom:"Seedhe jaiye",meaning:"Go straight",note:"सीधे=straight, जाइए=please go (polite imperative)."},
+      {cat:"Food",char:"यह क्या है?",rom:"Yeh kya hai?",meaning:"What is this?",note:"यह=this, क्या=what, है=is. Great for menus!"},
+      {cat:"Food",char:"बहुत स्वादिष्ट!",rom:"Bahut swaadisht!",meaning:"Very delicious!",note:"बहुत=very, स्वादिष्ट=tasty/delicious."},
+      {cat:"Food",char:"पानी चाहिए।",rom:"Paani chahiye.",meaning:"I need water.",note:"पानी=water, चाहिए=need/want. Short and useful."},
+      {cat:"Shopping",char:"इसकी कीमत क्या है?",rom:"Iski keemat kya hai?",meaning:"What is the price of this?",note:"इसकी=of this, कीमत=price."},
+      {cat:"Shopping",char:"यह बहुत महँगा है।",rom:"Yeh bahut mahanga hai.",meaning:"This is very expensive.",note:"महँगा=expensive (masculine). महँगी for feminine nouns."},
+      {cat:"Numbers",char:"एक, दो, तीन, चार, पाँच",rom:"ek, do, teen, chaar, paanch",meaning:"1, 2, 3, 4, 5",note:"Hindi numbers 1-5. Notice similarities to English and European languages!"},
+      {cat:"Numbers",char:"छह, सात, आठ, नौ, दस",rom:"chhah, saat, aath, nau, das",meaning:"6, 7, 8, 9, 10",note:"Complete the set! 11=ग्यारह (gyaarah), 12=बारह (baarah)."},
+      {cat:"Emergency",char:"मदद करो!",rom:"Madad karo!",meaning:"Help!",note:"मदद=help, करो=do (urgent form). Or: बचाओ (bachaao) = Save me!"},
+      {cat:"Emergency",char:"अस्पताल कहाँ है?",rom:"Aspatal kahaan hai?",meaning:"Where is the hospital?",note:"अस्पताल (aspatal) = hospital. From English 'hospital'!"},
+    ],
+  },
+};
+
+// Fix a JSON issue with the phrases (the closing brace was misplaced)
+// Repair: mandarin phrase index 1
+LANGUAGES.mandarin.phrases[1] = {cat:"Greetings",char:"我叫___。",rom:"Wǒ jiào ___.",meaning:"My name is ___.",note:"Literally: I am called ___."};
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let lang = 'mandarin';
+let mode = 'flashcards';
+let activeCat = 'all';
+let quizQueue = [], quizIdx = 0, quizScore = 0, quizMode = 'mc';
+let writingSelected = null;
+let drawingCtx = null, isDrawing = false, lastX = 0, lastY = 0;
+
+const CATS = {
+  flashcards:  ['all','greetings','numbers','colors','animals','food','family','body','time','verbs','writing'],
+  quiz:        ['all','greetings','numbers','colors','animals','food','family','body','time','verbs'],
+  writing:     ['all','greetings','numbers','colors','animals','food','family','body','time','verbs','writing'],
+  phrasebook:  [],
+};
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function setLang(l, btn){
+  lang = l; activeCat = 'all';
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function setMode(m, btn){
+  mode = m; activeCat = 'all';
+  document.querySelectorAll('.mode-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function setCat(c, btn){
+  activeCat = c;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderContent();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER ROUTER
+// ═══════════════════════════════════════════════════════════════
+function render(){
+  const cats = CATS[mode] || [];
+  const catBar = document.getElementById('catBar');
+
+  if(cats.length === 0){
+    catBar.style.display = 'none';
+  } else {
+    catBar.style.display = '';
+    catBar.innerHTML = cats.map(c=>`<button class="cat-btn${activeCat===c?' active':''}" onclick="setCat('${c}',this)">${c==='all'?'All Categories':cap(c)}</button>`).join('');
+  }
+  renderContent();
+}
+
+function renderContent(){
+  if(mode==='flashcards') renderFlashcards();
+  else if(mode==='quiz') initQuiz();
+  else if(mode==='writing') renderWriting();
+  else renderPhrasebook();
+}
+
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+function filteredVocab(){
+  const v = LANGUAGES[lang].vocab;
+  return activeCat==='all' ? v : v.filter(w=>w.cat===activeCat);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FLASHCARDS
+// ═══════════════════════════════════════════════════════════════
+function renderFlashcards(){
+  const words = filteredVocab();
+  const main = document.getElementById('mainArea');
+  if(!words.length){ main.innerHTML='<div class="empty"><div class="icon">📭</div><p>No cards in this category.</p></div>'; return; }
+
+  let html = `<div class="fc-controls">
+    <button class="fc-ctrl-btn active" id="fcAll" onclick="flipAll(false,this)">Show All</button>
+    <button class="fc-ctrl-btn" id="fcFlip" onclick="flipAll(true,this)">Flip All</button>
+    <button class="fc-ctrl-btn" onclick="shuffleFC()">🔀 Shuffle</button>
+  </div>
+  <div class="fc-grid" id="fcGrid">`;
+
+  words.forEach((w,i)=>{
+    html += `<div class="fc-wrap" id="fc${i}" onclick="flipCard(${i})">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <span class="fc-cat">${w.cat}</span>
+          <div class="fc-char">${w.char}</div>
+          <div class="fc-rom">${w.rom}</div>
+          <div class="fc-hint" style="opacity:.5;font-size:.65rem">tap to reveal</div>
+        </div>
+        <div class="fc-back">
+          <span class="fc-cat">${w.cat}</span>
+          <div class="fc-char" style="font-size:1.6rem">${w.char}</div>
+          <div class="fc-rom">${w.rom}</div>
+          <div class="fc-meaning">${w.meaning}</div>
+          ${w.tips?`<div class="fc-hint">${w.tips}</div>`:''}
+        </div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  main.innerHTML = html;
+}
+
+function flipCard(i){
+  document.getElementById('fc'+i)?.classList.toggle('flipped');
+}
+function flipAll(state, btn){
+  document.querySelectorAll('.fc-wrap').forEach(c=>{ if(state) c.classList.add('flipped'); else c.classList.remove('flipped'); });
+  document.querySelectorAll('.fc-ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function shuffleFC(){ renderFlashcards(); }
+
+// ═══════════════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════════════
+function initQuiz(){
+  let pool = filteredVocab();
+  if(pool.length < 4){
+    document.getElementById('mainArea').innerHTML='<div class="empty"><div class="icon">🃏</div><p>Need at least 4 words in this category to quiz.<br>Select "All Categories" or a larger category.</p></div>';
+    return;
+  }
+  // Shuffle
+  quizQueue = [...pool].sort(()=>Math.random()-.5).slice(0, Math.min(pool.length, 15));
+  quizIdx = 0; quizScore = 0;
+  renderQuizCard();
+}
+
+function renderQuizCard(){
+  const main = document.getElementById('mainArea');
+  if(quizIdx >= quizQueue.length){ renderQuizScore(); return; }
+
+  const word = quizQueue[quizIdx];
+  const pct = Math.round(quizIdx/quizQueue.length*100);
+  const allVocab = LANGUAGES[lang].vocab;
+
+  // Build wrong choices from full vocab pool
+  let wrongs = allVocab.filter(w=>w.meaning!==word.meaning).sort(()=>Math.random()-.5).slice(0,3);
+  let choices = [word, ...wrongs].sort(()=>Math.random()-.5);
+  const correctIdx = choices.indexOf(word);
+
+  let html = `<div class="quiz-wrap">
+    <div class="quiz-progress">
+      <span>${quizIdx+1} / ${quizQueue.length}</span>
+      <div class="quiz-bar"><div class="quiz-bar-fill" style="width:${pct}%"></div></div>
+      <span>⭐ ${quizScore}</span>
+    </div>
+    <div class="quiz-mode-row">
+      <button class="qmode-btn${quizMode==='mc'?' active':''}" onclick="setQuizMode('mc')">Multiple Choice</button>
+      <button class="qmode-btn${quizMode==='type'?' active':''}" onclick="setQuizMode('type')">Type Answer</button>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-prompt-label">What does this mean?</div>
+      <div class="quiz-char">${word.char}</div>
+      <div class="quiz-rom">${word.rom}</div>
+      <div class="quiz-sub">${LANGUAGES[lang].name}</div>
+    </div>`;
+
+  if(quizMode==='mc'){
+    html += `<div class="quiz-choices">`;
+    choices.forEach((c,i)=>{
+      html += `<button class="quiz-choice" id="qc${i}" onclick="answerMC(${i},${correctIdx})">${c.meaning}</button>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `<input class="quiz-type-input" id="typeInput" placeholder="Type the meaning in English…" onkeydown="if(event.key==='Enter')checkType('${word.meaning.replace(/'/g,"\\'")}')"/>
+    <button class="quiz-next-btn" onclick="checkType('${word.meaning.replace(/'/g,"\\'")}')">Check →</button>`;
+  }
+
+  html += `<div class="quiz-feedback" id="quizFB"></div>`;
+  if(quizMode==='mc') html += `<button class="quiz-next-btn" id="nextBtn" style="display:none" onclick="nextQuiz()">Next →</button>`;
+  html += `</div>`;
+
+  main.innerHTML = html;
+  if(quizMode==='type') document.getElementById('typeInput')?.focus();
+}
+
+function setQuizMode(m){ quizMode = m; renderQuizCard(); }
+
+function answerMC(chosen, correct){
+  document.querySelectorAll('.quiz-choice').forEach(b=>b.disabled=true);
+  document.getElementById(`qc${correct}`)?.classList.add('correct');
+  const fb = document.getElementById('quizFB');
+  if(chosen===correct){
+    quizScore++;
+    fb.className='quiz-feedback show correct';
+    fb.innerHTML=`✅ Correct! <strong>${quizQueue[quizIdx].rom}</strong> = ${quizQueue[quizIdx].meaning}`;
+  } else {
+    document.getElementById(`qc${chosen}`)?.classList.add('wrong');
+    fb.className='quiz-feedback show wrong';
+    fb.innerHTML=`❌ The answer is <strong>${quizQueue[quizIdx].meaning}</strong> (${quizQueue[quizIdx].rom})`;
+  }
+  const nb = document.getElementById('nextBtn');
+  if(nb) nb.style.display='block';
+}
+
+function checkType(correct){
+  const inp = document.getElementById('typeInput');
+  if(!inp) return;
+  const val = inp.value.trim().toLowerCase();
+  const correctLow = correct.toLowerCase();
+  const ok = val===correctLow || correctLow.includes(val) || val.includes(correctLow.split(/[/,]/)[0].trim());
+  inp.disabled = true;
+  inp.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('quizFB');
+  fb.className='quiz-feedback show '+(ok?'correct':'wrong');
+  if(ok){ quizScore++; fb.innerHTML=`✅ Correct! ${quizQueue[quizIdx].rom} = ${quizQueue[quizIdx].meaning}`; }
+  else { fb.innerHTML=`❌ Correct answer: <strong>${correct}</strong>`; }
+  // Replace Check button with Next
+  setTimeout(()=>nextQuiz(), ok?800:1500);
+}
+
+function nextQuiz(){ quizIdx++; renderQuizCard(); }
+
+function renderQuizScore(){
+  const pct = Math.round(quizScore/quizQueue.length*100);
+  const emoji = pct>=90?'🏆':pct>=70?'⭐':pct>=50?'👍':'📖';
+  const msg = pct>=90?'Excellent! You really know your '+LANGUAGES[lang].name+'!':pct>=70?'Great work! Keep practicing!':pct>=50?'Good effort — review the ones you missed.':'Keep studying — you\'ll get there!';
+  document.getElementById('mainArea').innerHTML=`<div class="quiz-score">
+    <div class="score-big">${emoji} ${pct}%</div>
+    <p>${quizScore} / ${quizQueue.length} correct — ${msg}</p>
+    <button onclick="initQuiz()">🔄 Try Again</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// WRITING PRACTICE
+// ═══════════════════════════════════════════════════════════════
+function renderWriting(){
+  const words = filteredVocab();
+  const main = document.getElementById('mainArea');
+  if(!words.length){ main.innerHTML='<div class="empty"><div class="icon">✍️</div><p>No characters in this category.</p></div>'; return; }
+
+  if(!writingSelected || !words.find(w=>w.char===writingSelected.char)) writingSelected = words[0];
+  const sel = writingSelected;
+
+  let listHTML = words.map((w,i)=>`<div class="writing-item${w.char===sel.char?' active':''}" onclick="selectWriting(${i})">
+    <div class="wi-char" style="font-size:${w.char.length>3?'1rem':'1.8rem'}">${w.char}</div>
+    <div class="wi-info"><div class="wi-rom">${w.rom}</div><div class="wi-meaning">${w.meaning}</div></div>
+  </div>`).join('');
+
+  const strokeNote = sel.strokes ? `<div><strong>Strokes:</strong> ${sel.strokes} total</div>` : '';
+  const tipsNote = sel.tips ? `<div style="margin-top:6px"><strong>Tips:</strong> ${sel.tips}</div>` : '';
+
+  main.innerHTML = `<div class="writing-layout">
+    <div class="writing-picker" id="writingList">${listHTML}</div>
+    <div class="writing-panel">
+      <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px">Reference Character</div>
+      <div class="writing-char-display" id="refChar">${sel.char}</div>
+      <div class="writing-rom" id="refRom">${sel.rom}</div>
+      <div class="writing-meaning" id="refMeaning">${sel.meaning}</div>
+      <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px">Trace Here</div>
+      <div class="writing-canvas-wrap">
+        <canvas id="traceCanvas" width="500" height="500"></canvas>
+      </div>
+      <div class="canvas-btns">
+        <button class="canvas-btn" onclick="clearCanvas()">🗑️ Clear</button>
+        <button class="canvas-btn" onclick="showGuide()">👁️ Guide</button>
+      </div>
+      <div class="stroke-info" id="strokeInfo">${strokeNote}${tipsNote}</div>
+    </div>
+  </div>`;
+
+  initCanvas();
+}
+
+let writingWords = [];
+function selectWriting(i){
+  writingWords = filteredVocab();
+  writingSelected = writingWords[i];
+  renderWriting();
+}
+
+function initCanvas(){
+  const canvas = document.getElementById('traceCanvas');
+  if(!canvas) return;
+  // Make it square and responsive
+  const w = canvas.parentElement.offsetWidth || 280;
+  canvas.width = w; canvas.height = w;
+  drawingCtx = canvas.getContext('2d');
+  drawingCtx.strokeStyle = '#4f46e5';
+  drawingCtx.lineWidth = 4;
+  drawingCtx.lineCap = 'round';
+  drawingCtx.lineJoin = 'round';
+
+  // Draw grid
+  drawGrid(drawingCtx, w, w);
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDraw);
+  canvas.addEventListener('mouseleave', stopDraw);
+  canvas.addEventListener('touchstart', e=>{e.preventDefault(); const t=e.touches[0]; const r=canvas.getBoundingClientRect(); startDraw({offsetX:t.clientX-r.left,offsetY:t.clientY-r.top});}, {passive:false});
+  canvas.addEventListener('touchmove', e=>{e.preventDefault(); const t=e.touches[0]; const r=canvas.getBoundingClientRect(); draw({offsetX:t.clientX-r.left,offsetY:t.clientY-r.top});}, {passive:false});
+  canvas.addEventListener('touchend', stopDraw);
+}
+
+function drawGrid(ctx, w, h){
+  ctx.save();
+  ctx.strokeStyle='#e0e0f0';
+  ctx.lineWidth=1;
+  // Main crosshairs
+  ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(w/2,0); ctx.lineTo(w/2,h); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.stroke();
+  // Diagonals
+  ctx.strokeStyle='#ebebf8';
+  ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(w,h); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w,0); ctx.lineTo(0,h); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function startDraw(e){ isDrawing=true; [lastX,lastY]=[e.offsetX,e.offsetY]; }
+function draw(e){
+  if(!isDrawing||!drawingCtx) return;
+  drawingCtx.beginPath();
+  drawingCtx.moveTo(lastX,lastY);
+  drawingCtx.lineTo(e.offsetX,e.offsetY);
+  drawingCtx.stroke();
+  [lastX,lastY]=[e.offsetX,e.offsetY];
+}
+function stopDraw(){ isDrawing=false; }
+function clearCanvas(){
+  if(!drawingCtx) return;
+  const canvas = document.getElementById('traceCanvas');
+  drawingCtx.clearRect(0,0,canvas.width,canvas.height);
+  drawGrid(drawingCtx, canvas.width, canvas.height);
+}
+function showGuide(){
+  const canvas = document.getElementById('traceCanvas');
+  if(!canvas||!drawingCtx||!writingSelected) return;
+  clearCanvas();
+  const text = writingSelected.char;
+  // Scale font so longer words still fit: base 70% width per char, capped
+  const maxFontPx = canvas.width * 0.7;
+  const scaledFontPx = Math.min(maxFontPx, canvas.width * 0.85 / Math.max(text.length, 1));
+  drawingCtx.save();
+  drawingCtx.font = `${scaledFontPx}px serif`;
+  drawingCtx.fillStyle = 'rgba(79,70,229,0.18)';
+  drawingCtx.textAlign='center';
+  drawingCtx.textBaseline='middle';
+  drawingCtx.fillText(text, canvas.width/2, canvas.height/2);
+  drawingCtx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PHRASEBOOK
+// ═══════════════════════════════════════════════════════════════
+function renderPhrasebook(){
+  const phrases = LANGUAGES[lang].phrases;
+  const main = document.getElementById('mainArea');
+
+  // Group by category
+  const grouped = {};
+  phrases.forEach(p=>{ if(!grouped[p.cat]) grouped[p.cat]=[]; grouped[p.cat].push(p); });
+
+  let html = '<div class="phrase-grid">';
+  for(const [cat, ps] of Object.entries(grouped)){
+    html += `<div class="section-head">📂 ${cat}</div>`;
+    ps.forEach((p,i)=>{
+      const spk = encodeURIComponent(p.char);
+      html += `<div class="phrase-card">
+        <div class="phrase-char">${p.char.length>4?p.char.slice(0,3)+'…':p.char}</div>
+        <div class="phrase-info">
+          <div class="phrase-rom">${p.rom}</div>
+          <div class="phrase-meaning">${p.meaning}</div>
+          ${p.note?`<div class="phrase-notes">💡 ${p.note}</div>`:''}
+        </div>
+        <button class="phrase-speak" onclick="speak('${p.char.replace(/'/g,"\\'")}','${lang}')">🔊 Hear</button>
+      </div>`;
+    });
+  }
+  html += '</div>';
+  main.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TEXT-TO-SPEECH
+// ═══════════════════════════════════════════════════════════════
+function speak(text, language){
+  if(!window.speechSynthesis) return;
+  const langMap = {mandarin:'zh-CN', japanese:'ja-JP', hindi:'hi-IN'};
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = langMap[language] || 'zh-CN';
+  utt.rate = 0.85;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utt);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+render();
+</script>
+
+<!-- ══ FLOATING NOTES WIDGET ══════════════════════════════════════════ -->
+<style>
+#notesBtn{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#6c63ff);color:#fff;border:none;font-size:1.4rem;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,0,0,.25);z-index:9998;display:flex;align-items:center;
+  justify-content:center;transition:transform .15s,box-shadow .15s;}
+#notesBtn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.35);}
+#notesBtn .badge{position:absolute;top:-4px;right:-4px;background:#f06;color:#fff;
+  font-size:.6rem;font-weight:700;padding:2px 5px;border-radius:10px;display:none;}
+#notesPanel{position:fixed;bottom:88px;right:24px;width:360px;max-height:520px;
+  background:#1a2540;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.22);
+  z-index:9999;display:flex;flex-direction:column;opacity:0;pointer-events:none;
+  transform:translateY(16px);transition:opacity .2s,transform .2s;overflow:hidden;}
+#notesPanel.open{opacity:1;pointer-events:auto;transform:translateY(0);}
+.np-head{background:var(--accent,#6c63ff);color:#fff;padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.np-head h3{margin:0;font-size:1rem;font-weight:700;letter-spacing:.02em;}
+.np-head-btns{display:flex;gap:8px;align-items:center;}
+.np-icon-btn{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;
+  padding:4px 8px;font-size:.8rem;cursor:pointer;transition:background .15s;}
+.np-icon-btn:hover{background:rgba(255,255,255,.35);}
+.np-tabs{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #eee;flex-shrink:0;
+  scrollbar-width:none;}
+.np-tabs::-webkit-scrollbar{display:none;}
+.np-tab{padding:8px 14px;font-size:.75rem;font-weight:600;border:none;background:none;
+  cursor:pointer;color:#888;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s;}
+.np-tab.active{color:var(--accent,#6c63ff);border-bottom-color:var(--accent,#6c63ff);}
+.np-body{flex:1;display:flex;flex-direction:column;min-height:0;}
+.np-textarea{flex:1;width:100%;border:none;outline:none;resize:none;
+  padding:14px 16px;font-size:.88rem;font-family:inherit;line-height:1.6;
+  color:#333;background:#fafafa;min-height:240px;}
+.np-footer{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;border-top:1px solid #eee;background:#1a2540;flex-shrink:0;}
+.np-wordcount{font-size:.72rem;color:#aaa;}
+.np-foot-btns{display:flex;gap:6px;}
+.np-foot-btn{font-size:.72rem;padding:4px 10px;border:1px solid #ddd;border-radius:8px;
+  background:#1a2540;cursor:pointer;color:#555;transition:all .15s;}
+.np-foot-btn:hover{background:#f5f5ff;border-color:var(--accent,#6c63ff);color:var(--accent,#6c63ff);}
+.np-foot-btn.danger:hover{background:#fff0f0;border-color:#f06;color:#f06;}
+@media(max-width:420px){
+  #notesPanel{width:calc(100vw - 32px);right:16px;}
+  #notesBtn{bottom:16px;right:16px;}
+}
+</style>
+
+<button id="notesBtn" onclick="toggleNotes()" title="Notes">
+  📝<span class="badge" id="notesBadge">!</span>
+</button>
+
+<div id="notesPanel">
+  <div class="np-head">
+    <h3>📝 My Notes</h3>
+    <div class="np-head-btns">
+      <button class="np-icon-btn" onclick="downloadNotes()" title="Download all notes">⬇ Save</button>
+      <button class="np-icon-btn" onclick="toggleNotes()" title="Close">✕</button>
+    </div>
+  </div>
+  <div class="np-tabs" id="notesTabs"></div>
+  <div class="np-body">
+    <textarea class="np-textarea" id="notesTA"
+      placeholder="Start typing your notes here…&#10;&#10;💡 Tips:&#10;• Use *asterisks* for key terms&#10;• Jot formulas, vocab, or reminders&#10;• Notes are saved automatically"
+      oninput="saveNote();updateWordCount();updateBadge()"></textarea>
+  </div>
+  <div class="np-footer">
+    <span class="np-wordcount" id="npWordCount">0 words</span>
+    <div class="np-foot-btns">
+      <button class="np-foot-btn" onclick="copyNotes()">📋 Copy</button>
+      <button class="np-foot-btn danger" onclick="clearNote()">🗑 Clear</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const NOTE_TABS = [
+    {key:'general',   label:'📓 General'},
+    {key:'math',      label:'➕ Math'},
+    {key:'science',   label:'🔬 Science'},
+    {key:'ela',       label:'📖 ELA'},
+    {key:'history',   label:'🌍 History'},
+    {key:'cs',        label:'💻 CS'},
+    {key:'health',    label:'❤️ Health'},
+    {key:'languages', label:'🌏 Languages'},
+  ];
+  let activeTab = 'general';
+
+  function noteKey(k){ return 'aceNotes_' + k; }
+
+  function loadNote(k){
+    try{ return localStorage.getItem(noteKey(k)) || ''; }catch(e){ return ''; }
+  }
+  function saveNote(){
+    try{ localStorage.setItem(noteKey(activeTab), document.getElementById('notesTA').value); }catch(e){}
+  }
+  window.saveNote = saveNote;
+
+  function buildTabs(){
+    const container = document.getElementById('notesTabs');
+    container.innerHTML = NOTE_TABS.map(t=>
+      `<button class="np-tab${t.key===activeTab?' active':''}" onclick="switchTab('${t.key}')">${t.label}</button>`
+    ).join('');
+  }
+
+  window.switchTab = function(k){
+    saveNote();
+    activeTab = k;
+    buildTabs();
+    const ta = document.getElementById('notesTA');
+    ta.value = loadNote(k);
+    ta.focus();
+    updateWordCount();
+    updateBadge();
+  };
+
+  window.toggleNotes = function(){
+    const p = document.getElementById('notesPanel');
+    p.classList.toggle('open');
+    if(p.classList.contains('open')){
+      document.getElementById('notesTA').value = loadNote(activeTab);
+      updateWordCount();
+      updateBadge();
+      document.getElementById('notesTA').focus();
+    }
+  };
+
+  window.updateWordCount = function(){
+    const v = (document.getElementById('notesTA')?.value||'').trim();
+    const words = v ? v.split(/\s+/).length : 0;
+    const el = document.getElementById('npWordCount');
+    if(el) el.textContent = words + (words===1?' word':' words');
+  };
+
+  window.updateBadge = function(){
+    // Show badge if any tab has content
+    const hasNotes = NOTE_TABS.some(t=> loadNote(t.key).trim().length > 0);
+    const b = document.getElementById('notesBadge');
+    if(b) b.style.display = hasNotes ? 'block' : 'none';
+  };
+
+  window.clearNote = function(){
+    if(!confirm('Clear notes for this tab?')) return;
+    try{ localStorage.removeItem(noteKey(activeTab)); }catch(e){}
+    document.getElementById('notesTA').value = '';
+    updateWordCount();
+    updateBadge();
+  };
+
+  window.copyNotes = function(){
+    const ta = document.getElementById('notesTA');
+    if(!ta || !ta.value.trim()){ alert('No notes to copy!'); return; }
+    navigator.clipboard.writeText(ta.value).then(()=>{
+      const btn = event.target;
+      const orig = btn.textContent;
+      btn.textContent = '✅ Copied!';
+      setTimeout(()=>{ btn.textContent = orig; }, 1500);
+    }).catch(()=>{
+      ta.select();
+      document.execCommand('copy');
+    });
+  };
+
+  window.downloadNotes = function(){
+    const allNotes = NOTE_TABS
+      .map(t=>{ const c=loadNote(t.key).trim(); return c ? `=== ${t.label} ===\n${c}` : ''; })
+      .filter(Boolean).join('\n\n');
+    if(!allNotes){ alert('No notes to save!'); return; }
+    const blob = new Blob([allNotes], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'aceAcademy-notes.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  // Init
+  buildTabs();
+  updateBadge();
+
+  // Close panel when clicking outside
+  document.addEventListener('click', function(e){
+    const p = document.getElementById('notesPanel');
+    const b = document.getElementById('notesBtn');
+    if(p && p.classList.contains('open') && !p.contains(e.target) && !b.contains(e.target)){
+      p.classList.remove('open');
+    }
+  });
+})();
+</script>
+<!-- ══ END NOTES WIDGET ════════════════════════════════════════════════ -->
+
+
+<!-- ══ STUDY TIMER WIDGET ══════════════════════════════════════════════ -->
+<style>
+#timerBtn{position:fixed;bottom:84px;right:24px;width:52px;height:52px;border-radius:50%;
+  background:#059669;color:#fff;border:none;font-size:1.3rem;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,0,0,.22);z-index:9997;display:flex;align-items:center;
+  justify-content:center;transition:transform .15s,box-shadow .15s;}
+#timerBtn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.3);}
+#timerBtn.running{animation:timerPulse 2s ease-in-out infinite;}
+@keyframes timerPulse{0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,.5);}50%{box-shadow:0 0 0 10px rgba(5,150,105,0);}}
+#timerPanel{position:fixed;bottom:148px;right:24px;width:300px;background:#1a2540;
+  border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.22);z-index:9998;
+  display:flex;flex-direction:column;opacity:0;pointer-events:none;
+  transform:translateY(14px);transition:opacity .2s,transform .2s;overflow:hidden;}
+#timerPanel.open{opacity:1;pointer-events:auto;transform:translateY(0);}
+.tp-head{background:#059669;color:#fff;padding:13px 16px;
+  display:flex;align-items:center;justify-content:space-between;}
+.tp-head h3{margin:0;font-size:.95rem;font-weight:700;}
+.tp-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;
+  padding:3px 9px;cursor:pointer;font-size:.85rem;}
+.tp-close:hover{background:rgba(255,255,255,.35);}
+.tp-mode-row{display:flex;border-bottom:1px solid #e2e8f0;background:#1e2d45;}
+.tp-mode-btn{flex:1;padding:8px;border:none;background:none;cursor:pointer;font-size:.72rem;
+  font-weight:700;color:#94a3b8;letter-spacing:.04em;transition:all .15s;}
+.tp-mode-btn.active{color:#059669;border-bottom:2px solid #059669;background:#1a2540;}
+.tp-circle-wrap{display:flex;justify-content:center;align-items:center;padding:22px 0 14px;}
+.tp-svg{transform:rotate(-90deg);}
+.tp-circle-bg{fill:none;stroke:#e2e8f0;stroke-width:8;}
+.tp-circle-fg{fill:none;stroke:#059669;stroke-width:8;stroke-linecap:round;
+  stroke-dasharray:283;stroke-dashoffset:0;transition:stroke-dashoffset .5s linear,stroke .3s;}
+.tp-time-text{position:absolute;font-size:1.8rem;font-weight:800;color:#ffffff;letter-spacing:-.02em;}
+.tp-session-label{position:absolute;top:68px;font-size:.65rem;font-weight:700;
+  color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;}
+.tp-circle-center{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.tp-controls{display:flex;justify-content:center;gap:10px;padding:0 16px 16px;}
+.tp-ctrl-btn{padding:9px 22px;border-radius:10px;border:none;font-weight:700;
+  font-size:.85rem;cursor:pointer;transition:all .15s;}
+.tp-start{background:#059669;color:#fff;}
+.tp-start:hover{background:#047857;}
+.tp-reset{background:#0b1120;color:#7a8fa8;}
+.tp-reset:hover{background:#e2e8f0;}
+.tp-footer{background:#1e2d45;border-top:1px solid #e2e8f0;padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:#7a8fa8;}
+.tp-sessions{font-weight:700;color:#059669;}
+.tp-settings-row{display:flex;gap:8px;padding:0 16px 12px;align-items:center;}
+.tp-settings-row label{font-size:.72rem;color:#7a8fa8;font-weight:600;}
+.tp-num{width:52px;padding:5px 6px;border:1px solid #2a3a55;border-radius:7px;
+  font-size:.82rem;font-weight:700;text-align:center;outline:none;}
+.tp-num:focus{border-color:#059669;}
+</style>
+
+<button id="timerBtn" onclick="toggleTimer()" title="Study Timer">⏱</button>
+
+<div id="timerPanel">
+  <div class="tp-head">
+    <h3>⏱ Study Timer</h3>
+    <button class="tp-close" onclick="toggleTimer()">✕</button>
+  </div>
+  <div class="tp-mode-row">
+    <button class="tp-mode-btn active" id="tmWork"  onclick="setTimerMode('work')">FOCUS</button>
+    <button class="tp-mode-btn"        id="tmShort" onclick="setTimerMode('short')">SHORT BREAK</button>
+    <button class="tp-mode-btn"        id="tmLong"  onclick="setTimerMode('long')">LONG BREAK</button>
+  </div>
+  <div class="tp-circle-wrap">
+    <svg class="tp-svg" width="120" height="120" viewBox="0 0 100 100">
+      <circle class="tp-circle-bg" cx="50" cy="50" r="45"/>
+      <circle class="tp-circle-fg" id="timerArc" cx="50" cy="50" r="45"/>
+    </svg>
+    <div class="tp-circle-center" style="position:absolute;">
+      <div class="tp-time-text" id="timerDisplay">25:00</div>
+      <div class="tp-session-label" id="timerModeLabel">Focus Time</div>
+    </div>
+  </div>
+  <div class="tp-settings-row">
+    <label>Focus</label>
+    <input class="tp-num" id="tpFocusMin" type="number" min="1" max="99" value="25" onchange="updateTimerSettings()"/>
+    <label>min &nbsp; Short</label>
+    <input class="tp-num" id="tpShortMin" type="number" min="1" max="30" value="5" onchange="updateTimerSettings()"/>
+    <label>min</label>
+  </div>
+  <div class="tp-controls">
+    <button class="tp-ctrl-btn tp-start" id="timerStartBtn" onclick="toggleTimerRun()">▶ Start</button>
+    <button class="tp-ctrl-btn tp-reset" onclick="resetTimer()">↺ Reset</button>
+  </div>
+  <div class="tp-footer">
+    <span>Sessions today: <span class="tp-sessions" id="tpSessionCount">0</span></span>
+    <span id="tpStatusText" style="color:#94a3b8;">Ready</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  const MODES = {
+    work:  {label:'Focus Time',  color:'#059669'},
+    short: {label:'Short Break', color:'#0891b2'},
+    long:  {label:'Long Break',  color:'#7c3aed'},
+  };
+  let mode='work', running=false, remaining=25*60, total=25*60;
+  let intervalId=null, sessions=0, longBreakMin=15;
+
+  function getFocusMin(){ return Math.max(1,parseInt(document.getElementById('tpFocusMin')?.value||25)); }
+  function getShortMin(){ return Math.max(1,parseInt(document.getElementById('tpShortMin')?.value||5)); }
+
+  function modeSeconds(m){
+    if(m==='work')  return getFocusMin()*60;
+    if(m==='short') return getShortMin()*60;
+    return longBreakMin*60;
+  }
+
+  window.updateTimerSettings = function(){
+    if(!running){ total=modeSeconds(mode); remaining=total; updateDisplay(); }
+  };
+
+  window.setTimerMode = function(m){
+    if(running) stopTimer();
+    mode=m;
+    total=modeSeconds(m);
+    remaining=total;
+    document.querySelectorAll('.tp-mode-btn').forEach(b=>b.classList.remove('active'));
+    const ids={work:'tmWork',short:'tmShort',long:'tmLong'};
+    document.getElementById(ids[m])?.classList.add('active');
+    document.getElementById('timerArc').style.stroke=MODES[m].color;
+    document.getElementById('timerBtn').style.background=MODES[m].color;
+    document.getElementById('timerModeLabel').textContent=MODES[m].label;
+    updateDisplay();
+    document.getElementById('tpStatusText').textContent='Ready';
+  };
+
+  window.toggleTimer = function(){
+    const p=document.getElementById('timerPanel');
+    p.classList.toggle('open');
+  };
+
+  window.toggleTimerRun = function(){
+    running ? stopTimer() : startTimer();
+  };
+
+  function startTimer(){
+    if(remaining<=0) resetTimer();
+    running=true;
+    intervalId=setInterval(tick,1000);
+    document.getElementById('timerStartBtn').textContent='⏸ Pause';
+    document.getElementById('timerBtn').classList.add('running');
+    document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
+  }
+
+  function stopTimer(){
+    running=false;
+    clearInterval(intervalId);
+    document.getElementById('timerStartBtn').textContent='▶ Start';
+    document.getElementById('timerBtn').classList.remove('running');
+    document.getElementById('tpStatusText').textContent='Paused';
+  }
+
+  window.resetTimer = function(){
+    stopTimer();
+    remaining=total=modeSeconds(mode);
+    updateDisplay();
+    document.getElementById('tpStatusText').textContent='Ready';
+  };
+
+  function tick(){
+    remaining--;
+    if(remaining<=0){
+      remaining=0;
+      updateDisplay();
+      stopTimer();
+      playBell();
+      if(mode==='work'){
+        sessions++;
+        document.getElementById('tpSessionCount').textContent=sessions;
+        // auto-switch to break
+        const nextMode = sessions%4===0?'long':'short';
+        setTimeout(()=>{ setTimerMode(nextMode); playBell(); },500);
+        document.getElementById('tpStatusText').textContent='Session done! 🎉';
+      } else {
+        setTimeout(()=>{ setTimerMode('work'); },500);
+        document.getElementById('tpStatusText').textContent='Break over!';
+      }
+      // open panel so user sees the notification
+      document.getElementById('timerPanel').classList.add('open');
+      return;
+    }
+    updateDisplay();
+  }
+
+  function updateDisplay(){
+    const m=Math.floor(remaining/60), s=remaining%60;
+    document.getElementById('timerDisplay').textContent =
+      String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    const arc=document.getElementById('timerArc');
+    if(arc){
+      const pct = total>0 ? remaining/total : 1;
+      arc.style.strokeDashoffset = String(Math.round(283*(1-pct)));
+    }
+    // Update page title while running
+    if(running){
+      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — aceAcademy';
+    } else {
+      document.title = document.title.replace(/^⏱.*?—\s*/,'');
+    }
+  }
+
+  function playBell(){
+    try{
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      [0,0.15,0.3].forEach((delay,i)=>{
+        const osc=ctx.createOscillator(), gain=ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value=i===0?880:i===1?1046:1318;
+        gain.gain.setValueAtTime(0.3,ctx.currentTime+delay);
+        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+0.6);
+        osc.start(ctx.currentTime+delay);
+        osc.stop(ctx.currentTime+delay+0.7);
+      });
+    }catch(e){}
+  }
+
+  // Close on outside click (avoid conflicting with notes panel)
+  document.addEventListener('click',function(e){
+    const p=document.getElementById('timerPanel');
+    const b=document.getElementById('timerBtn');
+    if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!b.contains(e.target)){
+      p.classList.remove('open');
+    }
+  });
+
+  // Shift notes button up so they don't overlap
+  const nb=document.getElementById('notesBtn');
+  if(nb) nb.style.bottom='84px';
+  const tp=document.getElementById('timerBtn');
+  if(tp) tp.style.bottom='24px';
+})();
+</script>
+<!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
+
+</body>
+</html>

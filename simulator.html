@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exam Simulator — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:background .15s,color .15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+/* Setup screen */
+#setupScreen{max-width:680px;margin:48px auto;padding:0 20px}
+.setup-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:20px;padding:36px}
+.setup-title{font-size:1.6rem;font-weight:900;margin-bottom:6px}
+.setup-title span{color:#a5b4fc}
+.setup-sub{color:#7a8fa8;font-size:.88rem;margin-bottom:28px;line-height:1.55}
+.field-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:8px}
+.field-label span{color:#fcd34d;font-weight:600;text-transform:none;font-size:.75rem;letter-spacing:0;margin-left:4px}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:600px){.setup-grid{grid-template-columns:1fr}}
+select,input[type=number]{width:100%;padding:10px 14px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.88rem;font-family:inherit;outline:none;transition:border-color .15s;appearance:none;-webkit-appearance:none}
+select:focus,input[type=number]:focus{border-color:#6366f1}
+.start-btn{width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:12px;color:#fff;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:.15s;margin-top:8px}
+.start-btn:hover{opacity:.92;transform:translateY(-1px)}
+
+/* Exam screen */
+#examScreen{display:none}
+.exam-header{background:#080e1c;border-bottom:1px solid #2a3a55;padding:12px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:60px;z-index:100;flex-wrap:wrap}
+.exam-title{font-size:.9rem;font-weight:800;flex:1}
+.timer-wrap{display:flex;align-items:center;gap:8px}
+.timer{font-size:1.1rem;font-weight:900;color:#a5b4fc;font-variant-numeric:tabular-nums;min-width:70px}
+.timer.warning{color:#fcd34d}
+.timer.danger{color:#f87171;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.q-counter{font-size:.8rem;color:#7a8fa8;font-weight:600}
+.submit-btn{padding:8px 18px;background:#6366f1;border:none;border-radius:8px;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* Question area */
+.exam-body{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 120px)}
+@media(max-width:768px){.exam-body{grid-template-columns:1fr}}
+.q-nav{background:#080e1c;border-right:1px solid #2a3a55;padding:16px;overflow-y:auto}
+@media(max-width:768px){.q-nav{display:flex;flex-wrap:wrap;gap:6px;border-right:none;border-bottom:1px solid #2a3a55;padding:12px}}
+.q-nav-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:10px}
+@media(max-width:768px){.q-nav-label{display:none}}
+.q-dot{width:36px;height:36px;border-radius:8px;border:none;background:#1a2540;color:#7a8fa8;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-bottom:6px;display:block}
+@media(max-width:768px){.q-dot{margin-bottom:0}}
+.q-dot:hover{background:#2a3a55;color:#e8edf5}
+.q-dot.answered{background:rgba(99,102,241,.2);color:#a5b4fc}
+.q-dot.current{background:#6366f1;color:#fff}
+.q-dot.flagged{background:rgba(245,158,11,.2);color:#fcd34d}
+
+.q-area{padding:32px;overflow-y:auto}
+.q-num{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.flag-btn{padding:3px 10px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.flag-btn.flagged{border-color:#fcd34d;color:#fcd34d}
+.q-text{font-size:1rem;font-weight:600;line-height:1.65;color:#e8edf5;margin-bottom:20px}
+.choices{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.choice{padding:13px 16px;border-radius:10px;border:1.5px solid #2a3a55;background:#111c32;cursor:pointer;display:flex;gap:12px;align-items:flex-start;transition:.15s;user-select:none}
+.choice:hover{border-color:#6366f1;background:rgba(99,102,241,.06)}
+.choice.selected{border-color:#6366f1;background:rgba(99,102,241,.15);color:#a5b4fc}
+.choice-letter{width:22px;height:22px;border-radius:6px;background:#1a2540;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;margin-top:1px}
+.choice.selected .choice-letter{background:#6366f1;color:#fff}
+.choice-text{font-size:.88rem;line-height:1.5}
+.q-nav-btns{display:flex;gap:10px}
+.nav-btn{padding:9px 18px;border-radius:9px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.nav-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.nav-btn.primary{background:#6366f1;border-color:#6366f1;color:#fff}
+.nav-btn.primary:hover{background:#5254d8}
+
+/* Results screen */
+#resultsScreen{display:none;max-width:760px;margin:40px auto;padding:0 20px 60px}
+.results-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:20px;padding:32px;margin-bottom:20px}
+.results-title{font-size:1.5rem;font-weight:900;margin-bottom:4px}
+.score-big{font-size:3.5rem;font-weight:900;color:#a5b4fc;margin:16px 0 4px}
+.score-pct{font-size:1rem;color:#7a8fa8;font-weight:600;margin-bottom:20px}
+.grade-badge{display:inline-block;padding:6px 18px;border-radius:20px;font-size:.88rem;font-weight:800;margin-bottom:20px}
+.grade-A{background:rgba(16,185,129,.2);color:#6ee7b7}
+.grade-B{background:rgba(99,102,241,.2);color:#a5b4fc}
+.grade-C{background:rgba(245,158,11,.2);color:#fcd34d}
+.grade-D,.grade-F{background:rgba(239,68,68,.2);color:#fca5a5}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-box{background:#0d1628;border-radius:12px;padding:14px;text-align:center}
+.stat-val{font-size:1.4rem;font-weight:900;color:#e8edf5}
+.stat-label{font-size:.72rem;color:#7a8fa8;font-weight:600;margin-top:2px}
+.review-list{display:flex;flex-direction:column;gap:10px}
+.review-item{background:#0d1628;border-radius:10px;padding:14px 16px;border-left:3px solid #2a3a55}
+.review-item.correct{border-left-color:#10b981}
+.review-item.wrong{border-left-color:#ef4444}
+.review-q{font-size:.85rem;font-weight:600;margin-bottom:6px}
+.review-ans{font-size:.78rem;color:#7a8fa8}
+.review-ans span{font-weight:700}
+.review-ans .correct-ans{color:#6ee7b7}
+.review-ans .wrong-ans{color:#fca5a5}
+.retry-btn{width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:12px;color:#fff;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:16px;transition:.15s}
+.retry-btn:hover{opacity:.9}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="simulator.html" class="nav-link active">🎯 Exam Simulator</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="frq.html" class="nav-link">📝 FRQ</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+
+<!-- SETUP -->
+<div id="setupScreen">
+  <div class="setup-card">
+    <div class="setup-title">🎯 Exam <span>Simulator</span></div>
+    <div class="setup-sub">Take a full-length timed mock exam under real test conditions. Questions are drawn from your chosen grade and subject.</div>
+    <div class="setup-grid">
+      <div>
+        <div class="field-label">Grade</div>
+        <select id="gradeSelect">
+          <option value="6">Grade 6</option>
+          <option value="7">Grade 7</option>
+          <option value="8">Grade 8</option>
+          <option value="9">Grade 9</option>
+          <option value="10" selected>Grade 10</option>
+          <option value="11">Grade 11</option>
+          <option value="12">Grade 12</option>
+          <option value="AP">AP</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Subject</div>
+        <select id="subjectSelect">
+          <option value="Math">Math</option>
+          <option value="Science">Science</option>
+          <option value="English">English</option>
+          <option value="History">History / Social Studies</option>
+          <option value="Mixed">Mixed (All Subjects)</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Questions <span>10–45</span></div>
+        <select id="qCount">
+          <option value="10">10 questions — ~10 min</option>
+          <option value="20">20 questions — ~20 min</option>
+          <option value="30" selected>30 questions — ~30 min</option>
+          <option value="45">45 questions — ~45 min</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Timer</div>
+        <select id="timerMode">
+          <option value="1">1 min per question (standard)</option>
+          <option value="1.5">1.5 min per question (relaxed)</option>
+          <option value="0.75">45 sec per question (challenge)</option>
+          <option value="0">No timer (untimed)</option>
+        </select>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startExam()">Start Exam →</button>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div id="examScreen">
+  <div class="exam-header">
+    <div class="exam-title" id="examTitle">Exam</div>
+    <div class="q-counter" id="qCounter"></div>
+    <div class="timer-wrap">
+      <span>⏱</span>
+      <div class="timer" id="timerDisplay">--:--</div>
+    </div>
+    <button class="submit-btn" onclick="confirmSubmit()">Submit Exam</button>
+  </div>
+  <div class="exam-body">
+    <div class="q-nav">
+      <div class="q-nav-label">Questions</div>
+      <div id="dotNav"></div>
+    </div>
+    <div class="q-area" id="qArea"></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="resultsScreen">
+  <div class="results-card">
+    <div class="results-title">📊 Exam Complete!</div>
+    <div class="score-big" id="scoreBig"></div>
+    <div class="score-pct" id="scorePct"></div>
+    <div id="gradeBadge"></div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-val" id="statCorrect"></div><div class="stat-label">Correct</div></div>
+      <div class="stat-box"><div class="stat-val" id="statWrong"></div><div class="stat-label">Wrong</div></div>
+      <div class="stat-box"><div class="stat-val" id="statTime"></div><div class="stat-label">Time Used</div></div>
+    </div>
+    <button class="retry-btn" onclick="resetExam()">🔄 Take Another Exam</button>
+  </div>
+  <div class="results-card">
+    <div style="font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:14px">Review</div>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const QUESTION_BANK = {
+  Math:[
+    {q:'What is the slope of the line passing through (2, 3) and (6, 11)?',choices:['1','2','3','4'],correct:1},
+    {q:'Solve for x: 3x + 7 = 22',choices:['3','4','5','6'],correct:2},
+    {q:'What is the area of a circle with radius 5?',choices:['10π','25π','50π','100π'],correct:1},
+    {q:'What is log₂(64)?',choices:['4','5','6','8'],correct:2},
+    {q:'If f(x) = x² − 4x + 3, what are the roots?',choices:['x = 1, 3','x = −1, −3','x = 2, −2','x = 0, 4'],correct:0},
+    {q:'What is the derivative of f(x) = 3x⁴ − 2x² + 5?',choices:['12x³ − 4x','12x³ + 4x','3x³ − 2x','6x³ − 4x'],correct:0},
+    {q:'Which is equivalent to sin²(x) + cos²(x)?',choices:['0','1','2','sin(2x)'],correct:1},
+    {q:'What is ∫(2x + 3)dx?',choices:['x² + 3x + C','2x² + 3x + C','x² + 3 + C','2x + C'],correct:0},
+    {q:'What is the value of lim(x→0) sin(x)/x?',choices:['0','1','∞','undefined'],correct:1},
+    {q:'A triangle has sides 3, 4, and 5. What type of triangle is it?',choices:['Acute','Obtuse','Right','Equilateral'],correct:2},
+    {q:'What is 7! (7 factorial)?',choices:['49','720','2520','5040'],correct:3},
+    {q:'Simplify: (x² − 9)/(x − 3)',choices:['x − 3','x + 3','x² + 3','x'],correct:1},
+    {q:'What is the sum of the interior angles of a hexagon?',choices:['540°','600°','720°','900°'],correct:2},
+    {q:'If P(A) = 0.4 and P(B) = 0.3 and they are independent, what is P(A and B)?',choices:['0.7','0.12','0.1','0.3'],correct:1},
+    {q:'What is 2⁻³?',choices:['−8','1/8','−1/8','8'],correct:1},
+  ],
+  Science:[
+    {q:'What is the chemical formula for water?',choices:['HO','H₂O','H₂O₂','HO₂'],correct:1},
+    {q:'Which organelle is responsible for producing ATP?',choices:['Nucleus','Ribosome','Mitochondria','Golgi apparatus'],correct:2},
+    {q:'What is Newton\'s Second Law?',choices:['F = ma','F = mv','E = mc²','p = mv'],correct:0},
+    {q:'What is the atomic number of Carbon?',choices:['6','12','14','8'],correct:0},
+    {q:'Which type of bond involves the sharing of electrons?',choices:['Ionic','Metallic','Covalent','Hydrogen'],correct:2},
+    {q:'What is the speed of light in a vacuum?',choices:['3×10⁸ m/s','3×10⁶ m/s','3×10¹⁰ m/s','3×10⁴ m/s'],correct:0},
+    {q:'DNA is made up of which sugar?',choices:['Ribose','Fructose','Deoxyribose','Glucose'],correct:2},
+    {q:'What is the process by which plants make food using sunlight?',choices:['Respiration','Fermentation','Photosynthesis','Digestion'],correct:2},
+    {q:'Which gas makes up approximately 78% of Earth\'s atmosphere?',choices:['Oxygen','Carbon dioxide','Nitrogen','Argon'],correct:2},
+    {q:'What is the unit of electric resistance?',choices:['Volt','Ampere','Watt','Ohm'],correct:3},
+    {q:'Which type of rock is formed from cooled magma?',choices:['Sedimentary','Metamorphic','Igneous','Composite'],correct:2},
+    {q:'What is the powerhouse of the cell?',choices:['Nucleus','Mitochondria','Ribosome','Chloroplast'],correct:1},
+    {q:'What is the pH of a neutral solution?',choices:['0','7','14','1'],correct:1},
+    {q:'What force keeps planets in orbit around the sun?',choices:['Magnetism','Nuclear force','Gravity','Friction'],correct:2},
+    {q:'What is the half-life of Carbon-14?',choices:['1,000 years','5,730 years','10,000 years','25,000 years'],correct:1},
+  ],
+  English:[
+    {q:'What literary device is used in: "The wind whispered through the trees"?',choices:['Metaphor','Simile','Personification','Alliteration'],correct:2},
+    {q:'A Bildungsroman is a novel that focuses on:',choices:['War and conflict','A character\'s moral growth','Political satire','Supernatural events'],correct:1},
+    {q:'What is the term for the main conflict of a story?',choices:['Climax','Resolution','Central conflict','Denouement'],correct:2},
+    {q:'Which sentence uses a semicolon correctly?',choices:['I love cats; but not dogs.','She ran fast; she won.','He; went home.','The cat; sat.'],correct:1},
+    {q:'"The pen is mightier than the sword" is an example of:',choices:['Alliteration','Metaphor','Hyperbole','Onomatopoeia'],correct:1},
+    {q:'In rhetoric, what is "ethos"?',choices:['Emotional appeal','Logical appeal','Ethical/credibility appeal','Fear appeal'],correct:2},
+    {q:'What is the term for a word that imitates the sound it describes?',choices:['Alliteration','Onomatopoeia','Assonance','Consonance'],correct:1},
+    {q:'What point of view uses "I" and "we"?',choices:['Second person','Third person limited','First person','Third person omniscient'],correct:2},
+    {q:'A "red herring" in writing is:',choices:['A vivid description','A misleading clue','A flashback','A metaphor'],correct:1},
+    {q:'Which is NOT a type of essay?',choices:['Expository','Narrative','Inductive','Argumentative'],correct:2},
+    {q:'What is "dramatic irony"?',choices:['When the reader knows something the character doesn\'t','When a situation is the opposite of what\'s expected','When a character says the opposite of what they mean','When fate plays a cruel trick'],correct:0},
+    {q:'Which sentence is grammatically correct?',choices:['Between you and I','Between you and me','Between you and myself','Between I and you'],correct:1},
+    {q:'What is the term for the resolution of a story?',choices:['Climax','Denouement','Rising action','Exposition'],correct:1},
+    {q:'An "allegory" is:',choices:['A list of symbols','A story with a hidden meaning','A type of meter in poetry','A narrative about real events'],correct:1},
+    {q:'"She sells seashells by the seashore" is an example of:',choices:['Assonance','Alliteration','Consonance','Rhyme'],correct:1},
+  ],
+  History:[
+    {q:'The Magna Carta was signed in which year?',choices:['1066','1215','1492','1776'],correct:1},
+    {q:'Which amendment abolished slavery in the United States?',choices:['13th','14th','15th','16th'],correct:0},
+    {q:'The Berlin Wall fell in which year?',choices:['1985','1987','1989','1991'],correct:2},
+    {q:'Who was the first President of the United States?',choices:['John Adams','Thomas Jefferson','Benjamin Franklin','George Washington'],correct:3},
+    {q:'The Treaty of Versailles (1919) officially ended which war?',choices:['Civil War','World War I','World War II','Korean War'],correct:1},
+    {q:'What was the primary cause of World War I?',choices:['German invasion of Poland','Assassination of Archduke Franz Ferdinand','Japanese attack on Pearl Harbor','Russian Revolution'],correct:1},
+    {q:'Which empire was known as the "Middle Kingdom"?',choices:['Ottoman','Mongol','Chinese','Egyptian'],correct:2},
+    {q:'The Civil Rights Act was passed in which year?',choices:['1954','1960','1964','1968'],correct:2},
+    {q:'Which document begins with "We the People"?',choices:['Declaration of Independence','Articles of Confederation','Gettysburg Address','US Constitution'],correct:3},
+    {q:'What was the name of the economic policy that led to the Great Leap Forward in China?',choices:['Maoism','Communism','Five-Year Plan','Cultural Revolution'],correct:2},
+    {q:'The Renaissance began in which country?',choices:['France','Germany','Italy','England'],correct:2},
+    {q:'What year did the United States enter World War II?',choices:['1939','1940','1941','1942'],correct:2},
+    {q:'The Columbian Exchange primarily refers to:',choices:['Trade between European powers','Transfer of goods between Old and New Worlds','Columbus\'s trade routes in Asia','Spanish silver trade'],correct:1},
+    {q:'Which event triggered the Great Depression?',choices:['World War I','Stock market crash of 1929','Dust Bowl','Prohibition'],correct:1},
+    {q:'Who wrote the Communist Manifesto?',choices:['Lenin and Stalin','Trotsky and Lenin','Marx and Engels','Engels and Stalin'],correct:2},
+  ],
+  Mixed:[]
+};
+// Build Mixed from all
+QUESTION_BANK.Mixed = [
+  ...QUESTION_BANK.Math.slice(0,5),
+  ...QUESTION_BANK.Science.slice(0,5),
+  ...QUESTION_BANK.English.slice(0,5),
+  ...QUESTION_BANK.History.slice(0,5)
+];
+
+// Add AP-flavored questions
+const AP_EXTRA = [
+  {q:'In AP Calculus, what does the Fundamental Theorem of Calculus connect?',choices:['Limits and derivatives','Derivatives and integrals','Integrals and series','Limits and integrals'],correct:1},
+  {q:'Which statistical test compares means from two independent groups?',choices:['Chi-square test','Two-sample t-test','ANOVA','Paired t-test'],correct:1},
+  {q:'In AP Chemistry, what is Hess\'s Law?',choices:['Enthalpy of reaction depends on path','Enthalpy of reaction is path-independent','Entropy always increases','Energy is conserved in nuclear reactions'],correct:1},
+  {q:'In AP US History, what was the main purpose of the Marshall Plan?',choices:['Contain communism in Asia','Rebuild Western Europe after WWII','Fund the Korean War','Establish NATO'],correct:1},
+  {q:'Which rhetorical appeal uses logic and evidence?',choices:['Ethos','Pathos','Logos','Kairos'],correct:2},
+];
+QUESTION_BANK['AP'] = [...QUESTION_BANK.Mixed.slice(0,10), ...AP_EXTRA];
+
+let questions = [], answers = [], flagged = [], currentQ = 0;
+let timerInterval = null, secondsLeft = 0, secondsUsed = 0, timerMins = 1;
+
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+
+function startExam(){
+  const grade = document.getElementById('gradeSelect').value;
+  const subj = document.getElementById('subjectSelect').value;
+  const count = parseInt(document.getElementById('qCount').value);
+  timerMins = parseFloat(document.getElementById('timerMode').value);
+
+  const bank = QUESTION_BANK[subj] || QUESTION_BANK.Mixed;
+  questions = shuffle(bank).slice(0, count);
+  answers = new Array(count).fill(null);
+  flagged = new Array(count).fill(false);
+  currentQ = 0;
+
+  const totalSecs = timerMins > 0 ? Math.round(timerMins * count * 60) : 0;
+  secondsLeft = totalSecs;
+  secondsUsed = 0;
+
+  document.getElementById('examTitle').textContent = `${grade === 'AP' ? 'AP' : 'Grade ' + grade} ${subj} Exam — ${count} Questions`;
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  renderDots();
+  renderQuestion();
+
+  if(timerMins > 0){
+    updateTimerDisplay();
+    timerInterval = setInterval(()=>{
+      secondsLeft--;
+      secondsUsed++;
+      updateTimerDisplay();
+      if(secondsLeft <= 0){ clearInterval(timerInterval); showResults(); }
+    }, 1000);
+  } else {
+    document.getElementById('timerDisplay').textContent = '∞';
+  }
+}
+
+function updateTimerDisplay(){
+  const m = Math.floor(secondsLeft/60);
+  const s = secondsLeft % 60;
+  const el = document.getElementById('timerDisplay');
+  el.textContent = `${m}:${s<10?'0':''}${s}`;
+  el.className = 'timer' + (secondsLeft < 60 ? ' danger' : secondsLeft < 180 ? ' warning' : '');
+}
+
+function renderDots(){
+  const nav = document.getElementById('dotNav');
+  nav.innerHTML = questions.map((_,i)=>{
+    let cls = 'q-dot';
+    if(i === currentQ) cls += ' current';
+    else if(answers[i] !== null) cls += ' answered';
+    if(flagged[i]) cls += ' flagged';
+    return `<button class="${cls}" onclick="goTo(${i})">${i+1}</button>`;
+  }).join('');
+  document.getElementById('qCounter').textContent = `${currentQ+1} / ${questions.length}`;
+}
+
+function renderQuestion(){
+  const q = questions[currentQ];
+  const letters = ['A','B','C','D'];
+  const choicesHTML = q.choices.map((c,ci)=>`
+    <div class="choice${answers[currentQ]===ci?' selected':''}" onclick="selectAnswer(${ci})">
+      <div class="choice-letter">${letters[ci]}</div>
+      <div class="choice-text">${c}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('qArea').innerHTML = `
+    <div class="q-num">
+      Question ${currentQ+1} of ${questions.length}
+      <button class="flag-btn${flagged[currentQ]?' flagged':''}" onclick="toggleFlag()">🚩 ${flagged[currentQ]?'Flagged':'Flag'}</button>
+    </div>
+    <div class="q-text">${q.q}</div>
+    <div class="choices">${choicesHTML}</div>
+    <div class="q-nav-btns">
+      ${currentQ > 0 ? `<button class="nav-btn" onclick="prev()">← Prev</button>` : ''}
+      ${currentQ < questions.length-1 ? `<button class="nav-btn primary" onclick="next()">Next →</button>` : `<button class="nav-btn primary" onclick="confirmSubmit()">Submit →</button>`}
+    </div>
+  `;
+}
+
+function selectAnswer(ci){
+  answers[currentQ] = ci;
+  renderDots();
+  renderQuestion();
+}
+
+function toggleFlag(){
+  flagged[currentQ] = !flagged[currentQ];
+  renderDots();
+  renderQuestion();
+}
+
+function goTo(i){ currentQ = i; renderDots(); renderQuestion(); }
+function prev(){ if(currentQ>0){ currentQ--; renderDots(); renderQuestion(); } }
+function next(){ if(currentQ<questions.length-1){ currentQ++; renderDots(); renderQuestion(); } }
+
+function confirmSubmit(){
+  const unanswered = answers.filter(a=>a===null).length;
+  if(unanswered > 0){
+    if(!confirm(`You have ${unanswered} unanswered question${unanswered>1?'s':''}. Submit anyway?`)) return;
+  }
+  clearInterval(timerInterval);
+  showResults();
+}
+
+function showResults(){
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+
+  let correct = 0;
+  questions.forEach((q,i)=>{ if(answers[i]===q.correct) correct++; });
+  const pct = Math.round(correct/questions.length*100);
+  const grade = pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F';
+
+  const m = Math.floor(secondsUsed/60), s = secondsUsed%60;
+  document.getElementById('scoreBig').textContent = `${correct}/${questions.length}`;
+  document.getElementById('scorePct').textContent = `${pct}% correct`;
+  document.getElementById('gradeBadge').innerHTML = `<span class="grade-badge grade-${grade}">Grade: ${grade}</span>`;
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statWrong').textContent = questions.length - correct;
+  document.getElementById('statTime').textContent = timerMins > 0 ? `${m}:${s<10?'0':''}${s}` : '—';
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('reviewList').innerHTML = questions.map((q,i)=>{
+    const isCorrect = answers[i] === q.correct;
+    return `<div class="review-item ${isCorrect?'correct':'wrong'}">
+      <div class="review-q">${i+1}. ${q.q}</div>
+      <div class="review-ans">
+        Your answer: <span class="${isCorrect?'correct-ans':'wrong-ans'}">${answers[i]!==null?letters[answers[i]]+'  '+q.choices[answers[i]]:'No answer'}</span>
+        ${!isCorrect?` · Correct: <span class="correct-ans">${letters[q.correct]}  ${q.choices[q.correct]}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Save to progress
+  try {
+    const hist = JSON.parse(localStorage.getItem('sim-history')||'[]');
+    hist.unshift({date:new Date().toLocaleDateString(),score:correct,total:questions.length,pct,grade});
+    localStorage.setItem('sim-history', JSON.stringify(hist.slice(0,20)));
+  } catch(e){}
+}
+
+function resetExam(){
+  clearInterval(timerInterval);
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('setupScreen').style.display = 'block';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transition Word Bank — aceAcademy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55}
+.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+.search-bar{padding:14px 24px;background:#080e1c;border-bottom:1px solid #2a3a55;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;padding:9px 14px;background:#111c32;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.9rem;font-family:inherit;outline:none;transition:.15s}
+.search-input:focus{border-color:#6366f1}
+.search-input::placeholder{color:#4a5568}
+.cats-bar{padding:10px 20px;background:#080e1c;border-bottom:1px solid #2a3a55;display:flex;gap:6px;flex-wrap:wrap}
+.cat-chip{padding:5px 13px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.cat-chip.active{border-color:var(--cc);color:var(--cc);background:rgba(var(--cr),0.15)}
+.container{max-width:1000px;margin:0 auto;padding:24px 20px 60px}
+.section{margin-bottom:32px}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid}
+.section-title{font-size:1rem;font-weight:800}
+.section-sub{font-size:.75rem;color:#7a8fa8;font-weight:500}
+.words-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.word-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:11px;padding:12px 14px;cursor:pointer;transition:.15s;position:relative}
+.word-card:hover{border-color:#6366f1;transform:translateY(-1px)}
+.word-card:active{transform:translateY(0)}
+.word-name{font-size:.88rem;font-weight:700;margin-bottom:4px}
+.word-example{font-size:.74rem;color:#7a8fa8;line-height:1.5;font-style:italic}
+.copied-badge{position:absolute;top:6px;right:8px;font-size:.65rem;font-weight:800;background:#10b981;color:#fff;padding:2px 6px;border-radius:6px;opacity:0;transition:.3s;pointer-events:none}
+.word-card.copied .copied-badge{opacity:1}
+.no-results{text-align:center;padding:60px 20px;color:#7a8fa8}
+.no-results-icon{font-size:2rem;margin-bottom:10px}
+.tip-bar{background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;padding:14px 18px;margin-bottom:24px;font-size:.82rem;color:#b8c4d8;line-height:1.6}
+.tip-bar strong{color:#a5b4fc}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="transitions.html" class="nav-link active">🔗 Transitions</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
+</nav>
+<div class="hero">
+  <h1>🔗 Transition <span>Word Bank</span></h1>
+  <p>Click any word or phrase to copy it. Search by purpose or browse by category.</p>
+</div>
+<div class="search-bar">
+  <input class="search-input" id="searchInput" placeholder='Search transitions… e.g. "contrast", "furthermore", "however"' oninput="render()">
+</div>
+<div class="cats-bar" id="catBar"></div>
+<div class="container">
+  <div class="tip-bar"><strong>How to use:</strong> Click any transition to copy it to your clipboard. Use transitions to connect ideas clearly — but don't overuse them. Aim for one strong transition per paragraph, not one per sentence.</div>
+  <div id="output"></div>
+</div>
+<script>
+const CATS = [
+  {
+    id:'contrast', label:'Contrast & Concession', color:'#f472b6', rgb:'244,114,182',
+    desc:'Show that two ideas differ, or admit a point before countering it.',
+    words:[
+      {w:'However,', ex:'The experiment showed promising results. However, the sample size was too small to draw conclusions.'},
+      {w:'Nevertheless,', ex:'The task was difficult. Nevertheless, the team completed it ahead of schedule.'},
+      {w:'On the other hand,', ex:'Exercise is beneficial for physical health. On the other hand, rest is equally important for recovery.'},
+      {w:'In contrast,', ex:'Urban areas are densely populated. In contrast, rural regions are sparsely settled.'},
+      {w:'Despite this,', ex:'The economy showed signs of recovery. Despite this, unemployment remained high.'},
+      {w:'Although', ex:'Although the plan had flaws, it was ultimately successful.'},
+      {w:'Even though', ex:'Even though she studied, she still struggled with the exam.'},
+      {w:'While', ex:'While some argue for stricter laws, others believe education is more effective.'},
+      {w:'Yet', ex:'The author uses vivid imagery, yet the theme remains abstract.'},
+      {w:'Nonetheless,', ex:'Critics disagreed with the decision. Nonetheless, the policy moved forward.'},
+      {w:'Conversely,', ex:'Early humans relied on hunting for survival. Conversely, modern societies depend on agriculture.'},
+      {w:'On the contrary,', ex:'The results were not negative. On the contrary, they exceeded expectations.'},
+      {w:'Whereas', ex:'Whereas the North favored industrialization, the South relied on agriculture.'},
+      {w:'That said,', ex:'The argument has merit. That said, there are notable counterexamples.'},
+      {w:'Admittedly,', ex:'Admittedly, the solution is imperfect, but it is the best available option.'},
+    ]
+  },
+  {
+    id:'addition', label:'Addition & Elaboration', color:'#60a5fa', rgb:'96,165,250',
+    desc:'Add more information or build on a previous point.',
+    words:[
+      {w:'Furthermore,', ex:'The policy reduced costs. Furthermore, it improved employee satisfaction.'},
+      {w:'Moreover,', ex:'The character is complex. Moreover, her motivations are ambiguous throughout the novel.'},
+      {w:'In addition,', ex:'The plan saves money. In addition, it reduces environmental impact.'},
+      {w:'Additionally,', ex:'The study covered urban populations. Additionally, it examined rural communities.'},
+      {w:'Not only… but also', ex:'Not only did the reform reduce inequality, but it also stimulated economic growth.'},
+      {w:'Beyond that,', ex:'The law protects consumers. Beyond that, it holds corporations accountable.'},
+      {w:'What is more,', ex:'The treatment is effective. What is more, it has minimal side effects.'},
+      {w:'To add to this,', ex:'The author uses foreshadowing. To add to this, the imagery reinforces the central theme.'},
+      {w:'Along with this,', ex:'Trade expanded rapidly. Along with this, cultural exchange flourished.'},
+      {w:'Equally important,', ex:'Nutrition is key to health. Equally important, regular exercise prevents chronic disease.'},
+    ]
+  },
+  {
+    id:'cause', label:'Cause & Effect', color:'#fcd34d', rgb:'252,211,77',
+    desc:'Show why something happened or what resulted from it.',
+    words:[
+      {w:'Therefore,', ex:'The experiment failed to account for variables. Therefore, the results are inconclusive.'},
+      {w:'As a result,', ex:'Industrial pollution increased significantly. As a result, air quality deteriorated.'},
+      {w:'Consequently,', ex:'The government failed to act. Consequently, the crisis worsened.'},
+      {w:'Thus,', ex:'The evidence is overwhelming. Thus, the hypothesis must be rejected.'},
+      {w:'Hence,', ex:'The demand exceeded supply. Hence, prices rose sharply.'},
+      {w:'Because of this,', ex:'The climate changed dramatically. Because of this, many species faced extinction.'},
+      {w:'For this reason,', ex:'The economy was unstable. For this reason, citizens lost confidence in the government.'},
+      {w:'This led to', ex:'The assassination of Archduke Franz Ferdinand. This led to the outbreak of World War I.'},
+      {w:'Due to', ex:'Due to rising temperatures, glaciers are melting at an unprecedented rate.'},
+      {w:'This resulted in', ex:'The reform passed in 1965. This resulted in sweeping changes to voting rights.'},
+      {w:'Owing to', ex:'Owing to her determination, she overcame every obstacle in her path.'},
+    ]
+  },
+  {
+    id:'sequence', label:'Sequence & Order', color:'#6ee7b7', rgb:'110,231,183',
+    desc:'Signal order, steps, or the passage of time.',
+    words:[
+      {w:'First,', ex:'First, gather all necessary materials before beginning the experiment.'},
+      {w:'Second,', ex:'Second, carefully measure each ingredient to ensure accuracy.'},
+      {w:'Next,', ex:'Next, the solution must be heated to exactly 100°C.'},
+      {w:'Then,', ex:'Then, allow the mixture to cool before adding the catalyst.'},
+      {w:'Subsequently,', ex:'The bill was passed by Congress. Subsequently, it was signed into law by the president.'},
+      {w:'Finally,', ex:'Finally, record your observations and compare them to the hypothesis.'},
+      {w:'Initially,', ex:'Initially, the colonists sought compromise. Only later did they pursue independence.'},
+      {w:'Eventually,', ex:'Tensions mounted for years. Eventually, the conflict erupted into open warfare.'},
+      {w:'Prior to', ex:'Prior to the Industrial Revolution, most goods were produced by hand.'},
+      {w:'Following this,', ex:'The treaty was signed in 1918. Following this, reconstruction efforts began immediately.'},
+      {w:'In the meantime,', ex:'The trial would take months. In the meantime, the suspect remained in custody.'},
+      {w:'At the same time,', ex:'The economy was struggling. At the same time, political unrest was growing.'},
+      {w:'Simultaneously,', ex:'Both countries were developing nuclear weapons simultaneously.'},
+    ]
+  },
+  {
+    id:'emphasis', label:'Emphasis & Importance', color:'#f87171', rgb:'248,113,113',
+    desc:'Draw attention to a key point or reinforce an idea.',
+    words:[
+      {w:'Above all,', ex:'Above all, the author emphasizes the importance of individual freedom.'},
+      {w:'Crucially,', ex:'Crucially, the study found no causal link between the two variables.'},
+      {w:'Most importantly,', ex:'Most importantly, students must learn to think critically, not just memorize facts.'},
+      {w:'Indeed,', ex:'The character undergoes significant change. Indeed, by the final chapter, she is unrecognizable.'},
+      {w:'Significantly,', ex:'Significantly, women gained the right to vote only in the 20th century.'},
+      {w:'Notably,', ex:'Notably, the author never resolves the central conflict, leaving readers to draw their own conclusions.'},
+      {w:'It is worth noting that', ex:'It is worth noting that the original manuscript differed significantly from the published version.'},
+      {w:'Of particular importance is', ex:'Of particular importance is the role of propaganda in shaping public opinion during wartime.'},
+      {w:'Undeniably,', ex:'Undeniably, climate change is one of the most pressing issues of the 21st century.'},
+      {w:'Without question,', ex:'Without question, the French Revolution transformed the political landscape of Europe.'},
+    ]
+  },
+  {
+    id:'example', label:'Examples & Illustration', color:'#a78bfa', rgb:'167,139,250',
+    desc:'Introduce evidence, examples, or illustrations.',
+    words:[
+      {w:'For example,', ex:'Many factors contribute to climate change. For example, deforestation removes carbon-absorbing trees.'},
+      {w:'For instance,', ex:'Shakespeare often used dramatic irony. For instance, in Othello, the audience knows Iago is villainous.'},
+      {w:'To illustrate,', ex:'Propaganda was widely used in World War II. To illustrate, posters portrayed enemies as subhuman.'},
+      {w:'Specifically,', ex:'The policy had unintended consequences. Specifically, it raised costs for small businesses.'},
+      {w:'In particular,', ex:'The Harlem Renaissance influenced many artists. In particular, Langston Hughes redefined American poetry.'},
+      {w:'Such as', ex:'Many literary devices, such as metaphor, simile, and personification, are used throughout the poem.'},
+      {w:'As evidence of this,', ex:'The author values freedom above all. As evidence of this, every major character sacrifices security for liberty.'},
+      {w:'This is exemplified by', ex:'Orwell\'s critique of totalitarianism is exemplified by the Party\'s manipulation of language in 1984.'},
+      {w:'To demonstrate,', ex:'The law had broad support. To demonstrate, it passed with a two-thirds majority in both chambers.'},
+    ]
+  },
+  {
+    id:'compare', label:'Comparison & Similarity', color:'#34d399', rgb:'52,211,153',
+    desc:'Show how two ideas are alike.',
+    words:[
+      {w:'Similarly,', ex:'The Roman Empire collapsed due to internal instability. Similarly, many modern democracies face political polarization.'},
+      {w:'Likewise,', ex:'The protagonist struggles with identity. Likewise, many secondary characters grapple with who they truly are.'},
+      {w:'In the same way,', ex:'Propaganda shaped public opinion in the 1940s. In the same way, social media influences beliefs today.'},
+      {w:'Just as', ex:'Just as the industrial revolution transformed work, artificial intelligence is reshaping the economy.'},
+      {w:'Comparably,', ex:'The first wave of immigration was driven by economic hardship. Comparably, recent arrivals often flee conflict.'},
+      {w:'Both… and', ex:'Both the characters and the setting reflect the theme of isolation in the novel.'},
+      {w:'By the same token,', ex:'Exercise strengthens the body. By the same token, reading strengthens the mind.'},
+      {w:'Parallel to this,', ex:'The government increased spending. Parallel to this, private investment also surged.'},
+    ]
+  },
+  {
+    id:'concl', label:'Conclusion & Summary', color:'#fb923c', rgb:'251,146,60',
+    desc:'Wrap up an argument, summarize, or signal a final point.',
+    words:[
+      {w:'In conclusion,', ex:'In conclusion, the evidence overwhelmingly supports the need for comprehensive climate policy.'},
+      {w:'In summary,', ex:'In summary, the three main causes of the Civil War were economic tension, slavery, and political conflict.'},
+      {w:'To conclude,', ex:'To conclude, Fitzgerald uses Gatsby as a symbol of the American Dream\'s ultimate corruption.'},
+      {w:'Ultimately,', ex:'Ultimately, the novel argues that power corrupts even the most idealistic leaders.'},
+      {w:'In short,', ex:'In short, the experiment failed to support the original hypothesis.'},
+      {w:'To sum up,', ex:'To sum up, the policy had both significant benefits and notable drawbacks.'},
+      {w:'All in all,', ex:'All in all, the reforms of the Progressive Era laid the groundwork for modern American government.'},
+      {w:'On the whole,', ex:'On the whole, the author presents a nuanced critique of colonialism through the protagonist\'s journey.'},
+      {w:'As a final point,', ex:'As a final point, it is essential to recognize the long-term implications of this decision.'},
+    ]
+  },
+  {
+    id:'clarify', label:'Clarification & Qualification', color:'#67e8f9', rgb:'103,232,249',
+    desc:'Refine, qualify, or clarify a statement.',
+    words:[
+      {w:'In other words,', ex:'The treaty failed. In other words, both nations remained in a state of conflict.'},
+      {w:'That is,', ex:'The experiment controlled for confounding variables. That is, only one factor changed at a time.'},
+      {w:'To put it another way,', ex:'The character is morally complex. To put it another way, she is neither a hero nor a villain.'},
+      {w:'More specifically,', ex:'The law had unintended effects. More specifically, it penalized small businesses unfairly.'},
+      {w:'To clarify,', ex:'The study does not claim causation. To clarify, it only identifies a correlation between the two variables.'},
+      {w:'In this sense,', ex:'Freedom is not unlimited. In this sense, all societies impose some constraints on individual behavior.'},
+      {w:'To be more precise,', ex:'The policy was ineffective. To be more precise, it reduced costs but failed to improve outcomes.'},
+    ]
+  },
+];
+
+let activeCat = 'all';
+
+function init() {
+  const bar = document.getElementById('catBar');
+  bar.innerHTML = `<button class="cat-chip active" style="--cc:#a5b4fc;--cr:165,180,252" onclick="setCat('all',this)">All</button>` +
+    CATS.map(c =>
+      `<button class="cat-chip" style="--cc:${c.color};--cr:${c.rgb}" onclick="setCat('${c.id}',this)">${c.label}</button>`
+    ).join('');
+  render();
+}
+
+function setCat(id, el) {
+  activeCat = id;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('searchInput').value = '';
+  render();
+}
+
+function render() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const out = document.getElementById('output');
+  let html = '';
+  let total = 0;
+
+  CATS.forEach(cat => {
+    if (activeCat !== 'all' && cat.id !== activeCat) return;
+    const filtered = cat.words.filter(w =>
+      !q || w.w.toLowerCase().includes(q) || w.ex.toLowerCase().includes(q) || cat.label.toLowerCase().includes(q)
+    );
+    if (!filtered.length) return;
+    total += filtered.length;
+    html += `
+      <div class="section">
+        <div class="section-header" style="border-color:${cat.color}">
+          <span class="section-title" style="color:${cat.color}">${cat.label}</span>
+          <span class="section-sub">${cat.desc}</span>
+        </div>
+        <div class="words-grid">
+          ${filtered.map((w, i) => `
+            <div class="word-card" onclick="copyWord(this,'${w.w.replace(/'/g,"\\'")}')">
+              <div class="word-name">${w.w}</div>
+              <div class="word-example">${highlight(w.ex, q)}</div>
+              <span class="copied-badge">Copied!</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  out.innerHTML = total ? html : '<div class="no-results"><div class="no-results-icon">🔍</div>No transitions found.</div>';
+}
+
+function highlight(text, q) {
+  if (!q) return text;
+  return text.replace(new RegExp(`(${q})`, 'gi'), '<mark style="background:rgba(99,102,241,.3);border-radius:3px;padding:0 2px">$1</mark>');
+}
+
+function copyWord(card, word) {
+  navigator.clipboard.writeText(word).then(() => {
+    card.classList.add('copied');
+    setTimeout(() => card.classList.remove('copied'), 1400);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = word;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    card.classList.add('copied');
+    setTimeout(() => card.classList.remove('copied'), 1400);
+  });
+}
+
+init();
+</script>
+</body>
+</html>

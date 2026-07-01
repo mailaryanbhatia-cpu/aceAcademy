@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Free Response Practice — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:background .15s,color .15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:36px 40px 28px;border-bottom:1px solid #2a3a55}
+.hero h1{font-size:1.8rem;font-weight:900;margin-bottom:6px}
+.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.9rem;max-width:520px;line-height:1.6}
+
+.layout{display:grid;grid-template-columns:280px 1fr;gap:0;min-height:calc(100vh - 160px)}
+.sidebar{background:#080e1c;border-right:1px solid #2a3a55;padding:20px 16px;overflow-y:auto}
+.main{padding:28px 32px;overflow-y:auto}
+@media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid #2a3a55}.hero{padding:24px 20px 20px}.main{padding:20px 16px}}
+
+/* Sidebar */
+.sb-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8;margin:16px 0 8px}
+.sb-label:first-child{margin-top:0}
+.sb-btn{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;border:none;background:transparent;color:#7a8fa8;font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
+.sb-btn:hover{background:rgba(255,255,255,.06);color:#e8edf5}
+.sb-btn.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.sb-score{display:inline-block;margin-left:auto;float:right;font-size:.7rem;padding:1px 7px;border-radius:20px;background:rgba(99,102,241,.2);color:#a5b4fc}
+
+/* Prompt card */
+.prompt-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:24px;margin-bottom:20px}
+.prompt-meta{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.prompt-subject{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;padding:3px 10px;border-radius:20px;background:rgba(99,102,241,.2);color:#a5b4fc}
+.prompt-type{font-size:.72rem;font-weight:700;color:#7a8fa8}
+.prompt-points{font-size:.72rem;font-weight:700;color:#fcd34d;background:rgba(245,158,11,.15);padding:3px 9px;border-radius:20px}
+.prompt-q{font-size:.97rem;font-weight:600;line-height:1.65;color:#e8edf5;margin-bottom:18px}
+.prompt-parts{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.prompt-part{background:#0d1628;border-radius:10px;padding:14px 16px}
+.prompt-part-label{font-size:.72rem;font-weight:800;color:#a5b4fc;margin-bottom:4px}
+.prompt-part-text{font-size:.85rem;color:#b8c4d8;line-height:1.55}
+
+/* Response area */
+.response-area{margin-top:18px}
+.response-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:8px}
+.response-ta{width:100%;min-height:180px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.88rem;font-family:inherit;padding:14px;resize:vertical;outline:none;line-height:1.6;transition:border-color .15s}
+.response-ta:focus{border-color:#6366f1}
+.response-ta::placeholder{color:#3d4f6e}
+
+/* Rubric */
+.rubric-section{margin-top:20px;background:#0d1628;border-radius:12px;padding:18px}
+.rubric-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:12px}
+.rubric-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #1a2540;cursor:pointer;user-select:none}
+.rubric-item:last-child{border-bottom:none}
+.rubric-check{width:20px;height:20px;border-radius:6px;border:2px solid #2a3a55;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:.15s;margin-top:1px}
+.rubric-item.checked .rubric-check{background:#6366f1;border-color:#6366f1;color:#fff}
+.rubric-text{font-size:.83rem;color:#b8c4d8;line-height:1.5}
+.rubric-pts{font-size:.7rem;font-weight:700;color:#fcd34d;white-space:nowrap;margin-top:2px}
+
+/* Score bar */
+.score-bar-wrap{margin-top:16px;background:#111c32;border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.score-display{font-size:1.4rem;font-weight:900;color:#a5b4fc;min-width:60px}
+.score-bar{flex:1;height:8px;background:#1a2540;border-radius:4px;overflow:hidden}
+.score-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;transition:width .4s}
+.score-label{font-size:.78rem;color:#7a8fa8;font-weight:600;white-space:nowrap}
+
+/* Buttons */
+.btn-row{display:flex;gap:10px;margin-top:18px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.btn{padding:9px 20px;border-radius:9px;border:none;font-size:.83rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}
+.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}
+.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-success{background:rgba(16,185,129,.2);color:#6ee7b7;border:1.5px solid rgba(16,185,129,.3)}
+.btn-success:hover{background:rgba(16,185,129,.3)}
+
+/* Empty state */
+.empty{text-align:center;padding:60px 20px;color:#7a8fa8}
+.empty-icon{font-size:2.5rem;margin-bottom:12px}
+.empty-text{font-size:.9rem;line-height:1.6}
+
+/* Tip box */
+.tip-box{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:.8rem;color:#a5b4fc;line-height:1.55}
+.tip-box strong{font-weight:700}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="frq.html" class="nav-link active">📝 FRQ Practice</a>
+  <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+</nav>
+
+<div class="hero">
+  <h1>📝 AP Free Response <span>Practice</span></h1>
+  <p>Write real FRQ responses and self-score with official rubric criteria. Covers 10 AP subjects.</p>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-label">Subject</div>
+    <button class="sb-btn active" onclick="setSubject('calc',this)">📐 AP Calculus AB/BC</button>
+    <button class="sb-btn" onclick="setSubject('stats',this)">📊 AP Statistics</button>
+    <button class="sb-btn" onclick="setSubject('phys',this)">⚛️ AP Physics</button>
+    <button class="sb-btn" onclick="setSubject('chem',this)">🧪 AP Chemistry</button>
+    <button class="sb-btn" onclick="setSubject('bio',this)">🧬 AP Biology</button>
+    <button class="sb-btn" onclick="setSubject('ush',this)">🗽 AP US History</button>
+    <button class="sb-btn" onclick="setSubject('whap',this)">🌍 AP World History</button>
+    <button class="sb-btn" onclick="setSubject('gov',this)">🏛️ AP Gov & Politics</button>
+    <button class="sb-btn" onclick="setSubject('lang',this)">✍️ AP Language</button>
+    <button class="sb-btn" onclick="setSubject('lit',this)">📚 AP Literature</button>
+
+    <div class="sb-label" style="margin-top:20px">Prompt</div>
+    <div id="promptList"></div>
+
+    <div class="sb-label" style="margin-top:20px">Session Score</div>
+    <div style="font-size:1.5rem;font-weight:900;color:#a5b4fc;padding:8px 12px" id="sessionScore">0 / 0 pts</div>
+  </div>
+
+  <div class="main" id="mainArea">
+    <div class="empty">
+      <div class="empty-icon">📝</div>
+      <div class="empty-text">Select a subject and prompt to begin.<br>Write your response, then self-score with the rubric.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROMPTS = {
+  calc: [
+    {
+      title:'Related Rates — Ladder Problem',
+      type:'Free Response',points:9,
+      q:'A 10-foot ladder is leaning against a vertical wall. The bottom of the ladder slides away from the wall at 2 ft/sec.',
+      parts:[
+        {label:'Part (a)',text:'Find the rate at which the top of the ladder slides down the wall when the bottom is 6 feet from the wall.',pts:3},
+        {label:'Part (b)',text:'Find the rate at which the area of the triangle formed by the ladder, wall, and ground is changing at the same instant.',pts:3},
+        {label:'Part (c)',text:'Find the rate at which the angle between the ladder and the ground is changing when the bottom is 6 feet from the wall.',pts:3}
+      ],
+      rubric:[
+        {text:'Correctly sets up the Pythagorean relationship x² + y² = 100',pts:1},
+        {text:'Differentiates implicitly with respect to time',pts:1},
+        {text:'Correctly solves for dy/dt = −3/2 ft/sec in part (a)',pts:1},
+        {text:'Sets up area A = ½xy and differentiates correctly',pts:1},
+        {text:'Substitutes values correctly for part (b)',pts:1},
+        {text:'Correct answer for dA/dt in part (b)',pts:1},
+        {text:'Sets up trigonometric relationship for angle θ',pts:1},
+        {text:'Differentiates correctly using chain rule',pts:1},
+        {text:'Correct numerical answer for dθ/dt in part (c)',pts:1}
+      ]
+    },
+    {
+      title:'Definite Integral — Area Between Curves',
+      type:'Free Response',points:9,
+      q:'Let R be the region enclosed by f(x) = x² and g(x) = 2x for 0 ≤ x ≤ 2.',
+      parts:[
+        {label:'Part (a)',text:'Find the area of region R.',pts:3},
+        {label:'Part (b)',text:'Find the volume of the solid generated when R is revolved around the x-axis.',pts:3},
+        {label:'Part (c)',text:'Find the volume of the solid generated when R is revolved around the line y = −1.',pts:3}
+      ],
+      rubric:[
+        {text:'Correctly identifies g(x) − f(x) = 2x − x² as the integrand',pts:1},
+        {text:'Evaluates ∫₀² (2x − x²) dx correctly',pts:1},
+        {text:'Correct area = 4/3 square units',pts:1},
+        {text:'Sets up washer method: π∫[(g(x))² − (f(x))²]dx',pts:1},
+        {text:'Evaluates the integral for x-axis revolution correctly',pts:1},
+        {text:'Correct volume for part (b)',pts:1},
+        {text:'Adjusts radii for y = −1: outer = g(x)+1, inner = f(x)+1',pts:1},
+        {text:'Sets up and evaluates washer integral correctly',pts:1},
+        {text:'Correct volume for part (c)',pts:1}
+      ]
+    },
+    {
+      title:'Differential Equations',
+      type:'Free Response',points:9,
+      q:'Consider the differential equation dy/dx = (x − 1)(y − 2).',
+      parts:[
+        {label:'Part (a)',text:'On the axes provided (mentally sketch), describe the slope field at the points (0,0), (1,2), and (2,3).',pts:3},
+        {label:'Part (b)',text:'Find the particular solution y = f(x) satisfying f(0) = 0.',pts:4},
+        {label:'Part (c)',text:'For the particular solution found in (b), find lim(x→∞) f(x) if it exists.',pts:2}
+      ],
+      rubric:[
+        {text:'Correct slope at (0,0): dy/dx = (−1)(−2) = 2',pts:1},
+        {text:'Correct slope at (1,2): dy/dx = 0',pts:1},
+        {text:'Correct slope at (2,3): dy/dx = (1)(1) = 1',pts:1},
+        {text:'Separates variables correctly: dy/(y−2) = (x−1)dx',pts:1},
+        {text:'Integrates both sides correctly',pts:1},
+        {text:'Applies initial condition f(0) = 0 correctly',pts:1},
+        {text:'Writes correct particular solution',pts:1},
+        {text:'Correct analysis of limit behavior',pts:1},
+        {text:'Correct limit value or statement that limit DNE with justification',pts:1}
+      ]
+    }
+  ],
+  stats: [
+    {
+      title:'Inference for Proportions',
+      type:'Free Response',points:9,
+      q:'A survey of 200 randomly selected high school students found that 124 reported spending more than 3 hours per day on social media.',
+      parts:[
+        {label:'Part (a)',text:'Construct and interpret a 95% confidence interval for the true proportion of high school students who spend more than 3 hours per day on social media.',pts:4},
+        {label:'Part (b)',text:'A researcher claims that a majority (more than 50%) of students spend that much time on social media. Do the data support this claim at the α = 0.05 level? Carry out an appropriate test.',pts:5}
+      ],
+      rubric:[
+        {text:'Identifies correct formula: p̂ ± z* √(p̂(1−p̂)/n)',pts:1},
+        {text:'Computes p̂ = 124/200 = 0.62 correctly',pts:1},
+        {text:'Uses z* = 1.96 and calculates margin of error correctly',pts:1},
+        {text:'States and interprets interval in context',pts:1},
+        {text:'States correct hypotheses H₀: p = 0.5, Hₐ: p > 0.5',pts:1},
+        {text:'Checks conditions (large sample, random)',pts:1},
+        {text:'Calculates z test statistic correctly',pts:1},
+        {text:'Finds correct p-value and compares to α',pts:1},
+        {text:'States correct conclusion in context with linkage to p-value',pts:1}
+      ]
+    },
+    {
+      title:'Experimental Design',
+      type:'Free Response',points:9,
+      q:'Researchers want to study whether a new study app improves test scores compared to traditional studying. They have 60 student volunteers.',
+      parts:[
+        {label:'Part (a)',text:'Design a completely randomized experiment using the 60 students. Describe how you would implement randomization.',pts:4},
+        {label:'Part (b)',text:'Explain one potential source of confounding in this study and how the design addresses or fails to address it.',pts:3},
+        {label:'Part (c)',text:'If the results are statistically significant, what conclusions can be drawn? What cannot be concluded?',pts:2}
+      ],
+      rubric:[
+        {text:'Describes two treatment groups (app vs. traditional)',pts:1},
+        {text:'Describes a valid randomization method (e.g., random number table)',pts:1},
+        {text:'Identifies response variable (test score) and how it is measured',pts:1},
+        {text:'Mentions control of extraneous variables',pts:1},
+        {text:'Identifies a plausible confounding variable',pts:1},
+        {text:'Explains how confounding works in this context',pts:1},
+        {text:'Addresses whether design mitigates the confound',pts:1},
+        {text:'States causation can be inferred due to random assignment',pts:1},
+        {text:'States results cannot be generalized beyond the volunteers (no random sampling)',pts:1}
+      ]
+    }
+  ],
+  phys: [
+    {
+      title:'Newton\'s Laws & Kinematics',
+      type:'Free Response',points:12,
+      q:'A 5 kg block rests on a frictionless inclined plane at 30° to the horizontal. It is connected via a massless string over a frictionless pulley to a 3 kg hanging block.',
+      parts:[
+        {label:'Part (a)',text:'Draw a free-body diagram for each block. Label all forces.',pts:4},
+        {label:'Part (b)',text:'Calculate the acceleration of the system.',pts:4},
+        {label:'Part (c)',text:'Find the tension in the string.',pts:2},
+        {label:'Part (d)',text:'If the coefficient of kinetic friction on the incline is 0.2, recalculate the acceleration.',pts:2}
+      ],
+      rubric:[
+        {text:'FBD for incline block: weight, normal force, tension labeled correctly',pts:2},
+        {text:'FBD for hanging block: weight and tension labeled correctly',pts:2},
+        {text:'Correct net force equation for incline block: T − mg sin30° = ma',pts:1},
+        {text:'Correct net force equation for hanging block: Mg − T = Ma',pts:1},
+        {text:'Solves system of equations for a correctly',pts:1},
+        {text:'Correct acceleration value: a ≈ 2.45 m/s²',pts:1},
+        {text:'Substitutes back correctly to find T',pts:1},
+        {text:'Correct tension value',pts:1},
+        {text:'Correctly adds friction force f = μmg cos30° to incline equation',pts:1},
+        {text:'Correct new acceleration with friction',pts:1}
+      ]
+    }
+  ],
+  chem: [
+    {
+      title:'Equilibrium & Le Chatelier\'s Principle',
+      type:'Free Response',points:10,
+      q:'Consider the equilibrium: N₂(g) + 3H₂(g) ⇌ 2NH₃(g), ΔH° = −92 kJ/mol',
+      parts:[
+        {label:'Part (a)',text:'Write the equilibrium expression Kc for this reaction.',pts:2},
+        {label:'Part (b)',text:'Predict and explain the effect on the position of equilibrium when: (i) pressure is increased at constant temperature, (ii) temperature is increased.',pts:4},
+        {label:'Part (c)',text:'At 500°C, Kp = 6.0 × 10⁻². If initial partial pressures are P(N₂) = 1.0, P(H₂) = 3.0, P(NH₃) = 0 atm, determine the direction the reaction will proceed.',pts:4}
+      ],
+      rubric:[
+        {text:'Correct Kc = [NH₃]² / ([N₂][H₂]³)',pts:2},
+        {text:'Pressure increase: shifts right (fewer moles of gas on product side)',pts:1},
+        {text:'Clear explanation citing mole ratio',pts:1},
+        {text:'Temperature increase: shifts left (exothermic reaction)',pts:1},
+        {text:'Explains using ΔH sign and Le Chatelier',pts:1},
+        {text:'Calculates Qp correctly = 0 (no products initially)',pts:1},
+        {text:'Compares Q to Kp correctly',pts:1},
+        {text:'States reaction proceeds to the right',pts:1},
+        {text:'Justification is clear and correct',pts:1}
+      ]
+    }
+  ],
+  bio: [
+    {
+      title:'Cell Respiration & Photosynthesis',
+      type:'Free Response',points:10,
+      q:'An experiment measures oxygen consumption in germinating seeds at 10°C and 25°C using a respirometer.',
+      parts:[
+        {label:'Part (a)',text:'Predict how oxygen consumption will differ at 25°C vs. 10°C. Justify your prediction using enzyme kinetics.',pts:3},
+        {label:'Part (b)',text:'Describe the role of the electron transport chain in aerobic respiration and where it is located.',pts:4},
+        {label:'Part (c)',text:'Explain how the data from this experiment could be used to calculate the rate of aerobic cellular respiration.',pts:3}
+      ],
+      rubric:[
+        {text:'Predicts higher O₂ consumption at 25°C',pts:1},
+        {text:'References Q₁₀ or enzyme activity increasing with temperature',pts:1},
+        {text:'Stays within optimal range (not denatured)',pts:1},
+        {text:'Located in inner mitochondrial membrane',pts:1},
+        {text:'Describes electron carriers (NADH, FADH₂) donating electrons',pts:1},
+        {text:'Links to ATP synthase / chemiosmosis',pts:1},
+        {text:'States O₂ is final electron acceptor → water',pts:1},
+        {text:'Explains measuring volume decrease in respirometer',pts:1},
+        {text:'Accounts for CO₂ absorption (KOH) so only O₂ change measured',pts:1},
+        {text:'Converts volume change to moles or rate correctly',pts:1}
+      ]
+    }
+  ],
+  ush: [
+    {
+      title:'Document-Based Question — Reconstruction Era',
+      type:'DBQ',points:7,
+      q:'Evaluate the extent to which Reconstruction (1865–1877) successfully addressed the political and social inequalities created by slavery.',
+      parts:[
+        {label:'Thesis',text:'Write a historically defensible thesis that responds to the prompt and establishes a line of reasoning. (Do not restate the prompt.)',pts:1},
+        {label:'Contextualization',text:'Describe a broader historical context relevant to the prompt by relating it to events, developments, or processes before, during, or continuing after the prompt's time period.',pts:1},
+        {label:'Evidence',text:'Use at least three documents to address the topic. For at least two documents, explain how the document's point of view, purpose, historical situation, or audience is relevant.',pts:3},
+        {label:'Analysis & Reasoning',text:'Demonstrate complex understanding of Reconstruction through corroboration, qualification, or by explaining both similarity AND difference.',pts:2}
+      ],
+      rubric:[
+        {text:'Thesis makes a historically defensible claim with clear line of reasoning (not just a restatement)',pts:1},
+        {text:'Accurately describes a context relevant to the period (e.g., antebellum conditions, Civil War)',pts:1},
+        {text:'Uses content from at least 3 documents to address the topic',pts:1},
+        {text:'Explains sourcing (POV, purpose, audience, situation) for at least 2 documents',pts:1},
+        {text:'Uses relevant evidence beyond the documents (outside knowledge)',pts:1},
+        {text:'Demonstrates complex understanding (e.g., corroboration, continuity vs. change, qualification)',pts:1},
+        {text:'Essay is clearly organized with a coherent argument throughout',pts:1}
+      ]
+    },
+    {
+      title:'Long Essay Question — Progressive Era',
+      type:'LEQ',points:6,
+      q:'Evaluate the extent to which the Progressive Era (1890–1920) brought meaningful reform to American political institutions.',
+      parts:[
+        {label:'Thesis',text:'Write a historically defensible thesis establishing a line of reasoning.',pts:1},
+        {label:'Contextualization',text:'Describe a broader historical context relevant to the prompt.',pts:1},
+        {label:'Evidence',text:'Provide specific examples that support your argument. Explain how they support your line of reasoning.',pts:2},
+        {label:'Analysis & Reasoning',text:'Use a historical reasoning skill (comparison, causation, or continuity/change) and demonstrate complex understanding.',pts:2}
+      ],
+      rubric:[
+        {text:'Thesis is historically defensible and establishes a clear line of reasoning',pts:1},
+        {text:'Accurately describes broader historical context (e.g., Gilded Age, industrialization)',pts:1},
+        {text:'Uses at least two specific pieces of relevant evidence',pts:1},
+        {text:'Explains how evidence supports the argument (not just lists it)',pts:1},
+        {text:'Demonstrates a historical reasoning skill explicitly',pts:1},
+        {text:'Shows complex understanding through nuance, qualification, or multiple perspectives',pts:1}
+      ]
+    }
+  ],
+  whap: [
+    {
+      title:'Long Essay Question — Trade Networks',
+      type:'LEQ',points:6,
+      q:'Evaluate the extent to which trade networks between 1200–1450 CE fostered cultural exchange across Afro-Eurasia.',
+      parts:[
+        {label:'Thesis',text:'Write a historically defensible thesis that establishes a line of reasoning.',pts:1},
+        {label:'Contextualization',text:'Describe a broader historical context beyond the immediate period or region of the prompt.',pts:1},
+        {label:'Evidence',text:'Provide at least two specific historical examples. Explain how each supports your argument.',pts:2},
+        {label:'Analysis & Reasoning',text:'Apply a historical reasoning skill and demonstrate complexity through corroboration or qualification.',pts:2}
+      ],
+      rubric:[
+        {text:'Thesis is historically defensible, not a restatement, has a line of reasoning',pts:1},
+        {text:'Accurately contextualizes (e.g., earlier Silk Roads, Tang Dynasty, Roman trade)',pts:1},
+        {text:'At least two specific pieces of evidence (e.g., Ibn Battuta, Mali gold, Black Death spread)',pts:1},
+        {text:'Explains how evidence connects to the argument',pts:1},
+        {text:'Uses causation, comparison, or CCOT explicitly',pts:1},
+        {text:'Demonstrates complex understanding (e.g., not all regions benefited equally)',pts:1}
+      ]
+    }
+  ],
+  gov: [
+    {
+      title:'Argument Essay — Federalism',
+      type:'Argument Essay',points:6,
+      q:'Develop an argument about whether federalism as practiced in the United States adequately protects individual rights.',
+      parts:[
+        {label:'Thesis',text:'Write a thesis that makes a defensible claim about the role of federalism in protecting individual rights.',pts:1},
+        {label:'Evidence',text:'Use at least one piece of specific and relevant evidence from one of the following: required foundational documents, Supreme Court cases, or other credible political examples.',pts:2},
+        {label:'Reasoning',text:'Explain how your evidence supports your argument using one of: comparison, causation, or CCOT reasoning.',pts:1},
+        {label:'Complexity',text:'Demonstrate complex understanding through corroboration, qualification, or by explaining a counterargument.',pts:2}
+      ],
+      rubric:[
+        {text:'Thesis makes a specific, defensible claim (not both sides equally)',pts:1},
+        {text:'Uses at least one foundational document or landmark case correctly',pts:1},
+        {text:'Connects evidence to the argument (not just quoted/named)',pts:1},
+        {text:'Applies a reasoning skill explicitly',pts:1},
+        {text:'Acknowledges a counterargument or limitation',pts:1},
+        {text:'Responds to the counterargument or qualifies the thesis',pts:1}
+      ]
+    }
+  ],
+  lang: [
+    {
+      title:'Argument Essay — Technology & Society',
+      type:'Argument Essay',points:6,
+      q:'Many argue that social media has fundamentally changed how people form and maintain relationships. Write an essay that argues your own position on the extent to which social media has changed human relationships.',
+      parts:[
+        {label:'Thesis / Claim',text:'Write a precise, defensible thesis that establishes your position and line of reasoning.',pts:1},
+        {label:'Evidence & Commentary',text:'Select evidence from your own knowledge, experience, or reading. Explain how the evidence supports the claim.',pts:3},
+        {label:'Sophistication',text:'Demonstrate sophistication through a nuanced argument, compelling style, or by addressing complexity.',pts:1},
+        {label:'Organization',text:'Maintain a clear line of reasoning throughout the essay.',pts:1}
+      ],
+      rubric:[
+        {text:'Thesis establishes a clear, defensible position (not just "there are pros and cons")',pts:1},
+        {text:'At least two pieces of relevant evidence provided',pts:1},
+        {text:'Evidence is specific, not vague generalizations',pts:1},
+        {text:'Commentary explains how evidence supports the thesis',pts:1},
+        {text:'Addresses complexity, tension, or alternative viewpoints',pts:1},
+        {text:'Prose is clear, varied in syntax, and rhetorically effective',pts:1}
+      ]
+    }
+  ],
+  lit: [
+    {
+      title:'Poetry Analysis Essay',
+      type:'Free Response Q1',points:6,
+      q:'Read the following poem carefully. Then write a well-organized essay in which you analyze how the poet uses literary devices to convey the speaker\'s complex attitude toward memory.\n\n[Imagine: "Those Winter Sundays" by Robert Hayden — the speaker reflects on a father\'s unnoticed sacrifices]',
+      parts:[
+        {label:'Thesis',text:'Write a defensible thesis that interprets the poem\'s overall meaning and establishes how literary elements contribute to that meaning.',pts:1},
+        {label:'Evidence & Analysis',text:'Use specific details from the poem to support your interpretation. Explain how those details connect to your claim.',pts:3},
+        {label:'Sophistication',text:'Demonstrate sophistication by considering multiple interpretations, the effect of structure, or the poem\'s complexity.',pts:2}
+      ],
+      rubric:[
+        {text:'Thesis makes a claim about the poem\'s meaning beyond plot summary',pts:1},
+        {text:'Thesis specifies how literary elements contribute to meaning',pts:1},
+        {text:'Uses at least three specific textual details (quotes or paraphrase)',pts:1},
+        {text:'Analyzes how each detail supports the thesis (not just identifies)',pts:1},
+        {text:'Discusses tone, diction, imagery, or structure effectively',pts:1},
+        {text:'Demonstrates complexity — tension, irony, or multiple layers of meaning',pts:1}
+      ]
+    }
+  ]
+};
+
+let currentSubject = 'calc';
+let currentPromptIdx = 0;
+let sessionPts = 0, sessionTotal = 0;
+
+function setSubject(subj, el) {
+  currentSubject = subj;
+  currentPromptIdx = 0;
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderPromptList();
+  renderPrompt();
+}
+
+function renderPromptList() {
+  const list = document.getElementById('promptList');
+  const prompts = PROMPTS[currentSubject] || [];
+  list.innerHTML = prompts.map((p, i) =>
+    `<button class="sb-btn${i===currentPromptIdx?' active':''}" onclick="selectPrompt(${i},this)">${p.title}<span class="sb-score">${p.points}pt</span></button>`
+  ).join('');
+}
+
+function selectPrompt(idx, el) {
+  currentPromptIdx = idx;
+  document.querySelectorAll('#promptList .sb-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderPrompt();
+}
+
+function renderPrompt() {
+  const prompts = PROMPTS[currentSubject] || [];
+  const p = prompts[currentPromptIdx];
+  if (!p) { document.getElementById('mainArea').innerHTML = '<div class="empty"><div class="empty-icon">📝</div><div class="empty-text">Select a prompt to begin.</div></div>'; return; }
+
+  const storageKey = `frq-${currentSubject}-${currentPromptIdx}`;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch(e) {}
+
+  const partsHTML = p.parts.map((pt, pi) => `
+    <div class="prompt-part">
+      <div class="prompt-part-label">${pt.label} <span style="color:#fcd34d;font-size:.68rem">(${pt.pts} pts)</span></div>
+      <div class="prompt-part-text">${pt.text}</div>
+    </div>
+  `).join('');
+
+  const rubricHTML = p.rubric.map((r, ri) => {
+    const checked = saved.rubric && saved.rubric[ri];
+    return `<div class="rubric-item${checked?' checked':''}" onclick="toggleRubric(${ri})" data-idx="${ri}">
+      <div class="rubric-check">${checked?'✓':''}</div>
+      <div style="flex:1"><div class="rubric-text">${r.text}</div><div class="rubric-pts">+${r.pts} pt</div></div>
+    </div>`;
+  }).join('');
+
+  const earned = saved.rubric ? saved.rubric.filter(Boolean).length : 0;
+  const pct = Math.round(earned / p.rubric.length * 100);
+
+  document.getElementById('mainArea').innerHTML = `
+    <div class="prompt-card">
+      <div class="prompt-meta">
+        <span class="prompt-subject">${currentSubject.toUpperCase()}</span>
+        <span class="prompt-type">${p.type}</span>
+        <span class="prompt-points">${p.points} pts total</span>
+      </div>
+      <div class="prompt-q">${p.q}</div>
+      <div class="prompt-parts">${partsHTML}</div>
+    </div>
+
+    <div class="tip-box">
+      <strong>📌 Tip:</strong> Write your full response first, then use the rubric below to self-score. Be honest — this is practice!
+    </div>
+
+    <div class="response-area">
+      <div class="response-label">Your Response</div>
+      <textarea class="response-ta" id="responseTA" placeholder="Write your full FRQ response here…" oninput="autoSave()">${saved.response||''}</textarea>
+    </div>
+
+    <div class="rubric-section">
+      <div class="rubric-title">Self-Score Rubric</div>
+      <div id="rubricItems">${rubricHTML}</div>
+      <div class="score-bar-wrap">
+        <div class="score-display" id="scoreDisplay">${earned}/${p.rubric.length}</div>
+        <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:${pct}%"></div></div>
+        <div class="score-label" id="scoreLabel">${pct}%</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="clearResponse()">🗑 Clear</button>
+      ${currentPromptIdx < (PROMPTS[currentSubject]||[]).length-1 ? `<button class="btn btn-primary" onclick="nextPrompt()">Next Prompt →</button>` : ''}
+    </div>
+  `;
+}
+
+function autoSave() {
+  const storageKey = `frq-${currentSubject}-${currentPromptIdx}`;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch(e) {}
+  saved.response = document.getElementById('responseTA').value;
+  try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch(e) {}
+}
+
+function toggleRubric(ri) {
+  const storageKey = `frq-${currentSubject}-${currentPromptIdx}`;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch(e) {}
+  if (!saved.rubric) saved.rubric = new Array(PROMPTS[currentSubject][currentPromptIdx].rubric.length).fill(false);
+  saved.rubric[ri] = !saved.rubric[ri];
+  try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch(e) {}
+
+  const item = document.querySelector(`.rubric-item[data-idx="${ri}"]`);
+  item.classList.toggle('checked', saved.rubric[ri]);
+  item.querySelector('.rubric-check').textContent = saved.rubric[ri] ? '✓' : '';
+
+  updateScore(saved.rubric);
+}
+
+function updateScore(rubric) {
+  const p = PROMPTS[currentSubject][currentPromptIdx];
+  const earned = rubric.filter(Boolean).length;
+  const pct = Math.round(earned / p.rubric.length * 100);
+  document.getElementById('scoreDisplay').textContent = `${earned}/${p.rubric.length}`;
+  document.getElementById('scoreFill').style.width = pct + '%';
+  document.getElementById('scoreLabel').textContent = pct + '%';
+}
+
+function clearResponse() {
+  if (!confirm('Clear your response and rubric for this prompt?')) return;
+  const storageKey = `frq-${currentSubject}-${currentPromptIdx}`;
+  try { localStorage.removeItem(storageKey); } catch(e) {}
+  renderPrompt();
+}
+
+function nextPrompt() {
+  currentPromptIdx++;
+  renderPromptList();
+  renderPrompt();
+}
+
+// Init
+renderPromptList();
+renderPrompt();
+</script>
+</body>
+</html>

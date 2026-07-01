@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Math Practice Generator — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#0c4a6e,#0369a1);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.container{max-width:860px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+select,input{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
+select:focus,input:focus{border-color:var(--accent)}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-right:6px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
+.controls .field{display:flex;flex-direction:column;gap:5px}
+.controls label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.controls select{min-width:160px}
+
+.score-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px;margin-bottom:14px;font-size:.85rem}
+.score-bar .s-correct{font-weight:800;color:var(--green)}
+.score-bar .s-wrong{font-weight:800;color:var(--red)}
+.score-bar .s-total{color:var(--muted)}
+.streak{font-weight:800;color:var(--amber)}
+
+.q-card{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;transition:.2s}
+.q-card.correct-card{border-color:#6ee7b7;background:#f0fdf4}
+.q-card.wrong-card{border-color:#fca5a5;background:#fff1f2}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.q-tag{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:20px;background:#dbeafe;color:#1e40af}
+.q-diff{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px}
+.easy{background:#d1fae5;color:#065f46}.medium{background:#fef3c7;color:#78350f}.hard{background:#fee2e2;color:#7f1d1d}
+.q-text{font-size:1rem;font-weight:600;line-height:1.6;margin-bottom:12px}
+.answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.answer-row input{width:120px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;text-align:center;font-weight:700}
+.answer-row input:focus{border-color:var(--accent)}
+.check-btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:.88rem;background:var(--accent);color:#fff}
+.check-btn:hover{background:#3730a3}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:9px;font-size:.85rem;font-weight:600;display:none;line-height:1.5}
+.feedback.ok{background:#d1fae5;color:#065f46;display:block}
+.feedback.err{background:#fee2e2;color:#7f1d1d;display:block}
+@media print{.topnav,.hero,.controls,.btn,.score-bar{display:none!important}.q-card{border:1.5px solid #ccc;break-inside:avoid}}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  select,input{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}.q-card{background:#12121f}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link active">🔢 Math Practice</a>
+  <a href="tools.html" class="nav-link">🧮 Calculator</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
+  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
+  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
+  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
+</nav>
+<div class="hero">
+  <h1>🔢 Math Problem Generator</h1>
+  <p>Unlimited practice problems — from basic arithmetic to calculus. Type your answer and check instantly.</p>
+</div>
+<div class="container">
+  <div class="card">
+    <div class="controls">
+      <div class="field"><label>Topic</label>
+        <select id="g-topic">
+          <option value="arithmetic">Arithmetic</option>
+          <option value="fractions">Fractions & Decimals</option>
+          <option value="algebra1">Algebra I</option>
+          <option value="algebra2">Algebra II</option>
+          <option value="geometry">Geometry</option>
+          <option value="stats">Statistics & Probability</option>
+          <option value="precalc">Precalculus</option>
+          <option value="calculus">Calculus</option>
+          <option value="mixed">Mixed (Random)</option>
+        </select>
+      </div>
+      <div class="field"><label>Difficulty</label>
+        <select id="g-diff">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard</option>
+          <option value="mixed">Mixed</option>
+        </select>
+      </div>
+      <div class="field"><label>Problems</label>
+        <select id="g-count">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <button class="btn btn-primary" onclick="generate()">⚡ Generate</button>
+        <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="scoreBar" style="display:none" class="score-bar">
+    <span>Answered: <b id="s-answered">0</b></span>
+    <span class="s-correct">✓ <span id="s-correct">0</span></span>
+    <span class="s-wrong">✗ <span id="s-wrong">0</span></span>
+    <span class="s-total"><span id="s-pct">0</span>%</span>
+    <span class="streak">🔥 Streak: <span id="s-streak">0</span></span>
+  </div>
+
+  <div id="problemsArea"></div>
+</div>
+
+<script>
+// Random helpers
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const rndNZ=(a,b)=>{let v=rnd(a,b);return v===0?1:v;};
+const choice=arr=>arr[Math.floor(Math.random()*arr.length)];
+
+// Problem generators per topic + difficulty
+const GENERATORS = {
+  arithmetic:{
+    easy:()=>{const a=rnd(2,20),b=rnd(2,20),op=choice(['+','-','×']);const ans=op==='+'?a+b:op==='-'?a-b:a*b;return{q:`${a} ${op} ${b}`,a:ans};},
+    medium:()=>{const a=rnd(10,200),b=rnd(10,200),op=choice(['+','-','×']);const ans=op==='+'?a+b:op==='-'?a-b:a*b;return{q:`${a} ${op} ${b}`,a:ans};},
+    hard:()=>{const a=rnd(100,999),b=rnd(2,99),op=choice(['×','÷']);if(op==='÷'){const c=rnd(2,12);return{q:`${a*c} ÷ ${a}`,a:c};}return{q:`${a} × ${b}`,a:a*b};}
+  },
+  fractions:{
+    easy:()=>{const d=rnd(2,8);const n1=rnd(1,d-1);const n2=rnd(1,d-1);const sum=n1+n2;return{q:`${n1}/${d} + ${n2}/${d}`,a:`${sum}/${d} (simplify if needed)`,exact:sum/d};},
+    medium:()=>{const d1=rnd(2,6);const d2=rnd(2,6);const n1=rnd(1,d1);const n2=rnd(1,d2);const lcd=d1*d2;const num=n1*d2+n2*d1;return{q:`${n1}/${d1} + ${n2}/${d2}`,a:`${num}/${lcd}`,exact:num/lcd};},
+    hard:()=>{const d1=rnd(3,8);const d2=rnd(3,8);const n1=rnd(1,d1-1);const n2=rnd(1,d2-1);const lcd=d1*d2;const num=n1*d2-n2*d1;return{q:`${n1}/${d1} − ${n2}/${d2}`,a:`${num}/${lcd}`,exact:num/lcd};}
+  },
+  algebra1:{
+    easy:()=>{const a=rndNZ(2,10);const b=rnd(-20,20);const x=rnd(-10,10);const c=a*x+b;return{q:`If ${a}x + ${b} = ${c}, what is x?`,a:x};},
+    medium:()=>{const a=rndNZ(2,8);const b=rnd(-15,15);const c=rndNZ(2,8);const d=rnd(-15,15);const x=rnd(-5,5);const rhs=a*x+b;const lhs=c*x+d;return{q:`Solve for x: ${a}x + ${b} = ${c}x + ${d}`,a:(d-b)/(a-c)};},
+    hard:()=>{const a=rndNZ(1,5);const b=rnd(-6,6);const c=rnd(-8,8);const d=a*b;const e=-(a+b);const r=rnd(-3,3);const s=rnd(-3,3);return{q:`Factor: x² + ${e>=0?'+':''} ${e}x + ${d} = 0. What are the values of x?`,a:`x=${-a} and x=${-b}`};}
+  },
+  algebra2:{
+    easy:()=>{const a=rndNZ(1,5);const h=rnd(-4,4);const k=rnd(-8,8);return{q:`What are the vertex coordinates of y = ${a}(x − ${h})² + ${k}?`,a:`(${h}, ${k})`};},
+    medium:()=>{const a=rndNZ(2,6);const x=rnd(1,4);const ans=Math.pow(a,x);return{q:`Solve: ${a}^x = ${ans}`,a:x};},
+    hard:()=>{const a=rndNZ(2,5);const b=rnd(-5,5);const ans=rnd(1,4);const c=Math.pow(a,ans)-b;return{q:`Solve: log base ${a} of (x + ${b}) = ${ans}`,a:Math.pow(a,ans)-b};}
+  },
+  geometry:{
+    easy:()=>{const r=rnd(2,15);return{q:`What is the area of a circle with radius ${r}? (Leave in terms of π)`,a:`${r*r}π`};},
+    medium:()=>{const b=rnd(3,20);const h=rnd(3,20);const type=choice(['triangle','parallelogram']);const a=type==='triangle'?(b*h/2):(b*h);return{q:`Find the area of a ${type} with base ${b} and height ${h}.`,a:a};},
+    hard:()=>{const a=rnd(3,12);const b=rnd(3,12);return{q:`A right triangle has legs ${a} and ${b}. What is the hypotenuse? (Round to 2 decimal places)`,a:Math.round(Math.sqrt(a*a+b*b)*100)/100};}
+  },
+  stats:{
+    easy:()=>{const nums=[rnd(1,20),rnd(1,20),rnd(1,20),rnd(1,20),rnd(1,20)];const s=nums.reduce((a,b)=>a+b,0);return{q:`Find the mean of: ${nums.join(', ')}`,a:Math.round(s/nums.length*100)/100};},
+    medium:()=>{const nums=[rnd(1,30),rnd(1,30),rnd(1,30),rnd(1,30),rnd(1,30)].sort((a,b)=>a-b);return{q:`Find the median of: ${nums.join(', ')}`,a:nums[2]};},
+    hard:()=>{const p=rnd(1,9);const n=rnd(5,20);const r=rnd(1,Math.min(p,n-p));const top=fact(n)/(fact(r)*fact(n-r));return{q:`How many ways can you choose ${r} items from ${n} items? (Combination)`,a:top};}
+  },
+  precalc:{
+    easy:()=>{const angles={0:0,30:0.5,45:0.707,60:0.866,90:1};const keys=Object.keys(angles);const deg=choice(keys);return{q:`What is sin(${deg}°)?`,a:angles[deg]};},
+    medium:()=>{const deg=choice([0,30,45,60,90,120,180,270]);const rad=deg*Math.PI/180;const v=Math.round(Math.cos(rad)*1000)/1000;return{q:`What is cos(${deg}°)?`,a:v};},
+    hard:()=>{const a=rndNZ(2,5);const b=rndNZ(1,4);return{q:`What is the period of y = ${a}sin(${b}x)?`,a:`${Math.round(2*Math.PI/b*100)/100} (2π/${b})`};}
+  },
+  calculus:{
+    easy:()=>{const n=rnd(2,6);return{q:`Find the derivative: d/dx [x^${n}]`,a:`${n}x^${n-1}`};},
+    medium:()=>{const a=rndNZ(2,8);const n=rnd(2,5);return{q:`Find the derivative: d/dx [${a}x^${n}]`,a:`${a*n}x^${n-1}`};},
+    hard:()=>{const a=rndNZ(1,5);const n=rnd(2,4);return{q:`Integrate: ∫ ${a}x^${n} dx`,a:`${a}x^${n+1}/${n+1} + C`};}
+  },
+};
+
+function fact(n){if(n<=1)return 1;let r=1;for(let i=2;i<=n;i++)r*=i;return r;}
+
+let session = [];
+let answered = {}, streak = 0;
+
+function getDiff(topicDiff, globalDiff){
+  if(globalDiff==='mixed') return choice(['easy','medium','hard']);
+  return globalDiff;
+}
+
+function generate(){
+  const topic = document.getElementById('g-topic').value;
+  const diff = document.getElementById('g-diff').value;
+  const count = parseInt(document.getElementById('g-count').value);
+  answered = {}; streak = 0;
+
+  const topics = topic==='mixed'?Object.keys(GENERATORS):[topic];
+  session = [];
+  for(let i=0;i<count;i++){
+    const t = choice(topics);
+    const d = getDiff(null, diff);
+    try{
+      const gen = GENERATORS[t]?.[d]||GENERATORS[t]?.medium;
+      if(gen){ const p=gen(); session.push({...p,topic:t,diff:d,id:i}); }
+    }catch(e){ session.push({q:'2 + 2',a:4,topic:'arithmetic',diff:'easy',id:i}); }
+  }
+
+  renderProblems();
+  updateScore();
+  document.getElementById('scoreBar').style.display='flex';
+}
+
+function renderProblems(){
+  document.getElementById('problemsArea').innerHTML = session.map((p,i)=>`
+    <div class="q-card" id="qcard${i}">
+      <div class="q-header">
+        <span class="q-tag">${p.topic.charAt(0).toUpperCase()+p.topic.slice(1)}</span>
+        <span class="q-diff ${p.diff}">${p.diff}</span>
+      </div>
+      <div class="q-text">${i+1}. ${p.q}</div>
+      <div class="answer-row">
+        <input type="text" id="ans${i}" placeholder="Your answer" onkeydown="if(event.key==='Enter')checkAnswer(${i})">
+        <button class="check-btn" onclick="checkAnswer(${i})">Check ✓</button>
+      </div>
+      <div class="feedback" id="fb${i}"></div>
+    </div>`).join('');
+}
+
+function normalizeAnswer(s){
+  return String(s).toLowerCase().replace(/\s+/g,'').replace(/×/g,'*').replace(/÷/g,'/');
+}
+
+function checkAnswer(i){
+  if(answered[i]!==undefined) return;
+  const p = session[i];
+  const userRaw = document.getElementById(`ans${i}`).value.trim();
+  if(!userRaw) return;
+
+  const user = normalizeAnswer(userRaw);
+  const correct = normalizeAnswer(p.a);
+
+  let isCorrect = user===correct;
+  // Try numeric comparison
+  if(!isCorrect){
+    const nu=parseFloat(user), nc=parseFloat(correct);
+    if(!isNaN(nu)&&!isNaN(nc)) isCorrect=Math.abs(nu-nc)<0.01;
+  }
+  // Check if exact decimal matches
+  if(!isCorrect && p.exact!==undefined){
+    const nu=parseFloat(user);
+    if(!isNaN(nu)) isCorrect=Math.abs(nu-p.exact)<0.01;
+  }
+
+  answered[i] = isCorrect;
+  const card = document.getElementById(`qcard${i}`);
+  const fb = document.getElementById(`fb${i}`);
+  if(isCorrect){
+    card.classList.add('correct-card');
+    fb.className='feedback ok';
+    fb.innerHTML=`✅ Correct!${p.hint?'<br>'+p.hint:''}`;
+    streak++;
+  } else {
+    card.classList.add('wrong-card');
+    fb.className='feedback err';
+    fb.innerHTML=`✗ Not quite. The answer is <strong>${p.a}</strong>${p.exp?'<br>'+p.exp:''}`;
+    streak=0;
+  }
+  document.getElementById(`ans${i}`).disabled=true;
+  updateScore();
+}
+
+function updateScore(){
+  const an=Object.keys(answered).length;
+  const co=Object.values(answered).filter(Boolean).length;
+  const wr=an-co;
+  document.getElementById('s-answered').textContent=an;
+  document.getElementById('s-correct').textContent=co;
+  document.getElementById('s-wrong').textContent=wr;
+  document.getElementById('s-pct').textContent=an>0?Math.round(co/an*100):0;
+  document.getElementById('s-streak').textContent=streak;
+}
+</script>
+</body>
+</html>

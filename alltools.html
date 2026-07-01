@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>All Tools — aceAcademy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* Nav */
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5);padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:background .15s,color .15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:40px 40px 32px;border-bottom:1px solid #2a3a55;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:rgba(99,102,241,.06);border-radius:50%}
+.hero h1{font-size:2rem;font-weight:900;letter-spacing:-.5px;margin-bottom:8px}
+.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.93rem;max-width:480px;line-height:1.6;margin-bottom:20px}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap}
+.hero-stat{font-size:.82rem;color:#a5b4fc;font-weight:600}
+.hero-stat span{color:#e8edf5;font-size:1.1rem;font-weight:900;margin-right:5px}
+
+/* Search */
+.search-bar{display:flex;align-items:center;gap:10px;padding:20px 40px;background:#0d1628;border-bottom:1px solid #2a3a55;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;max-width:400px}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;background:#1a2540;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.88rem;outline:none;transition:border-color .15s;font-family:inherit}
+.search-wrap input:focus{border-color:#6366f1}
+.search-wrap input::placeholder{color:#7a8fa8}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#7a8fa8;font-size:.9rem}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:6px 14px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.78rem;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.chip:hover{border-color:#6366f1;color:#a5b4fc}
+.chip.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
+
+/* Main */
+.container{max-width:1100px;margin:0 auto;padding:32px 40px}
+@media(max-width:700px){.hero{padding:28px 20px 24px}.container{padding:20px 16px}.search-bar{padding:14px 16px}}
+
+/* Category label */
+.cat-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.cat-label::after{content:'';flex:1;height:1px;background:#2a3a55}
+.cat-section{margin-bottom:36px}
+
+/* Tool grid */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tool-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:18px;text-decoration:none;color:#e8edf5;transition:border-color .15s,box-shadow .15s,transform .1s;display:flex;flex-direction:column;gap:8px;position:relative}
+.tool-card:hover{border-color:#6366f1;box-shadow:0 0 0 1px #6366f1,0 6px 20px rgba(0,0,0,.5);transform:translateY(-2px)}
+.tool-card.hidden{display:none}
+.tool-icon{font-size:1.6rem;line-height:1}
+.tool-name{font-size:.92rem;font-weight:700;color:#e8edf5}
+.tool-desc{font-size:.78rem;color:#7a8fa8;line-height:1.5;flex:1}
+.tool-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.tool-tag{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:20px}
+.tag-new{background:rgba(99,102,241,.25);color:#a5b4fc}
+.tag-ai{background:rgba(16,185,129,.2);color:#6ee7b7}
+.tag-practice{background:rgba(245,158,11,.15);color:#fcd34d}
+.tag-ap{background:rgba(139,92,246,.2);color:#c4b5fd}
+
+.no-results{text-align:center;padding:60px 20px;color:#7a8fa8;font-size:.9rem;display:none}
+.no-results.show{display:block}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link active">🛠 All Tools</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+
+<div class="hero">
+  <h1>🛠 All <span>Tools</span></h1>
+  <p>Every tool on aceAcademy in one place — click anything to jump straight in.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span>52</span>tools</div>
+    <div class="hero-stat"><span>10</span>categories</div>
+    <div class="hero-stat"><span>6–12</span>grade levels + AP</div>
+  </div>
+</div>
+
+<div class="search-bar">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search tools..." oninput="filterTools()">
+  </div>
+  <div class="filter-chips">
+    <button class="chip active" onclick="filterCat('all',this)">All</button>
+    <button class="chip" onclick="filterCat('practice',this)">Practice</button>
+    <button class="chip" onclick="filterCat('writing',this)">Writing</button>
+    <button class="chip" onclick="filterCat('study',this)">Study Skills</button>
+    <button class="chip" onclick="filterCat('ap',this)">AP</button>
+    <button class="chip" onclick="filterCat('tools',this)">Calculators</button>
+    <button class="chip" onclick="filterCat('curriculum',this)">Curriculum Tools</button>
+    <button class="chip" onclick="filterCat('new',this)">🆕 New</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PRACTICE & CONTENT -->
+  <div class="cat-section" id="cat-practice">
+    <div class="cat-label">📝 Practice &amp; Content</div>
+    <div class="tool-grid">
+
+      <a href="tests.html" class="tool-card" data-cats="practice" data-name="unit tests quizzes">
+        <div class="tool-icon">✏️</div>
+        <div class="tool-name">Unit Tests</div>
+        <div class="tool-desc">Auto-graded multiple-choice quizzes for every unit, grades 6–12 and AP.</div>
+        <div class="tool-tags"><span class="tool-tag tag-practice">practice</span></div>
+      </a>
+
+      <a href="worksheets.html" class="tool-card" data-cats="practice" data-name="worksheets problems hints answers">
+        <div class="tool-icon">📄</div>
+        <div class="tool-name">Worksheets</div>
+        <div class="tool-desc">Practice problems with hints and step-by-step answer reveals.</div>
+        <div class="tool-tags"><span class="tool-tag tag-practice">practice</span></div>
+      </a>
+
+      <a href="flashcards.html" class="tool-card" data-cats="practice" data-name="flashcards spaced repetition sm2 vocabulary">
+        <div class="tool-icon">🃏</div>
+        <div class="tool-name">Flashcards</div>
+        <div class="tool-desc">800+ vocab cards with SM-2 spaced repetition — Again / Hard / Good / Easy.</div>
+        <div class="tool-tags"><span class="tool-tag tag-practice">practice</span></div>
+      </a>
+
+      <a href="reading.html" class="tool-card" data-cats="practice" data-name="reading comprehension passages questions">
+        <div class="tool-icon">📄</div>
+        <div class="tool-name">Reading Passages</div>
+        <div class="tool-desc">Grade-leveled comprehension passages with multiple-choice questions and explanations.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="mathgen.html" class="tool-card" data-cats="practice tools" data-name="math problem generator arithmetic algebra calculus">
+        <div class="tool-icon">🔢</div>
+        <div class="tool-name">Math Problem Generator</div>
+        <div class="tool-desc">Unlimited generated problems from arithmetic to calculus — type your answer and check instantly.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-practice">practice</span></div>
+      </a>
+
+      <a href="satact.html" class="tool-card" data-cats="practice ap" data-name="sat act prep test score strategies">
+        <div class="tool-icon">📝</div>
+        <div class="tool-name">SAT / ACT Prep</div>
+        <div class="tool-desc">Practice questions, score tracker, strategies, and pacing guide for SAT and ACT.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="language.html" class="tool-card" data-cats="practice" data-name="languages mandarin japanese hindi vocabulary">
+        <div class="tool-icon">🌏</div>
+        <div class="tool-name">Languages</div>
+        <div class="tool-desc">Vocabulary, phrases, and practice for Mandarin, Japanese, and Hindi.</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- WRITING -->
+  <div class="cat-section" id="cat-writing">
+    <div class="cat-label">✍️ Writing Center</div>
+    <div class="tool-grid">
+
+      <a href="essay.html" class="tool-card" data-cats="writing" data-name="essay grader rubric feedback thesis evidence">
+        <div class="tool-icon">📝</div>
+        <div class="tool-name">Essay Grader</div>
+        <div class="tool-desc">Paste your essay and get instant rubric feedback on thesis, evidence, structure, and style.</div>
+        <div class="tool-tags"><span class="tool-tag tag-ai">AI</span></div>
+      </a>
+
+      <a href="outline.html" class="tool-card" data-cats="writing" data-name="outline builder essay structure argumentative analytical">
+        <div class="tool-icon">🗂</div>
+        <div class="tool-name">Outline Builder</div>
+        <div class="tool-desc">Build a structured essay outline — intro, body paragraphs, conclusion — with sub-points.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="thesis.html" class="tool-card" data-cats="writing" data-name="thesis generator statement argumentative analytical">
+        <div class="tool-icon">✍️</div>
+        <div class="tool-name">Thesis Generator</div>
+        <div class="tool-desc">Generate strong thesis statements using academic formulas, with instant quality feedback.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="citation.html" class="tool-card" data-cats="writing" data-name="citation mla apa chicago generator works cited">
+        <div class="tool-icon">📎</div>
+        <div class="tool-name">Citation Generator</div>
+        <div class="tool-desc">Generate MLA, APA, and Chicago citations for books, articles, websites, and newspapers.</div>
+      </a>
+
+      <a href="assign.html" class="tool-card" data-cats="writing" data-name="assignment builder teacher worksheet quiz answer key">
+        <div class="tool-icon">📋</div>
+        <div class="tool-name">Assignment Builder</div>
+        <div class="tool-desc">Build printable MC quizzes, FR worksheets, and mixed assignments with answer keys.</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- READING -->
+  <div class="cat-section" id="cat-reading">
+    <div class="cat-label">📚 Reading &amp; Vocabulary</div>
+    <div class="tool-grid">
+
+      <a href="wordwall.html" class="tool-card" data-cats="study" data-name="vocabulary word wall definitions quiz flashcards sat">
+        <div class="tool-icon">📖</div>
+        <div class="tool-name">Vocabulary Word Wall</div>
+        <div class="tool-desc">Build your vocab — add words, study definitions, and quiz yourself. 15 SAT words pre-loaded.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="readinglog.html" class="tool-card" data-cats="study" data-name="reading log books articles star ratings notes">
+        <div class="tool-icon">📗</div>
+        <div class="tool-name">Reading Log</div>
+        <div class="tool-desc">Track every book and article — add ratings, genre tags, and notes to build your literary portfolio.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- STUDY SKILLS -->
+  <div class="cat-section" id="cat-study">
+    <div class="cat-label">📅 Study Skills &amp; Planning</div>
+    <div class="tool-grid">
+
+      <a href="schedule-gen.html" class="tool-card" data-cats="study" data-name="study schedule generator exam date plan day by day">
+        <div class="tool-icon">📅</div>
+        <div class="tool-name">Study Schedule Generator</div>
+        <div class="tool-desc">Enter your exam date and subjects — get an auto day-by-day study plan with rest days.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="goals.html" class="tool-card" data-cats="study" data-name="goal tracker milestones progress deadline">
+        <div class="tool-icon">🎯</div>
+        <div class="tool-name">Goal Tracker</div>
+        <div class="tool-desc">Set academic goals with milestones, deadlines, and progress bars. Mark steps as done.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="errorlog.html" class="tool-card" data-cats="study" data-name="error log wrong answers mistakes review weak spots">
+        <div class="tool-icon">❌</div>
+        <div class="tool-name">Error Log</div>
+        <div class="tool-desc">Log every question you got wrong — type, subject, correct answer — and mark items mastered.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="progress.html" class="tool-card" data-cats="study ap" data-name="progress streaks test scores dashboard ap predictor">
+        <div class="tool-icon">📊</div>
+        <div class="tool-name">Progress &amp; Streaks</div>
+        <div class="tool-desc">Track all your test scores, study streaks, and get AP score predictions (1–5 scale).</div>
+      </a>
+
+      <a href="notebook.html" class="tool-card" data-cats="study" data-name="notebook notes subject folders editor">
+        <div class="tool-icon">📁</div>
+        <div class="tool-name">Notebook</div>
+        <div class="tool-desc">Subject-organised note folders with a built-in editor for all your class notes.</div>
+      </a>
+
+      <a href="calendar.html" class="tool-card" data-cats="study" data-name="planner calendar deadlines tasks goals">
+        <div class="tool-icon">🗓</div>
+        <div class="tool-name">Planner / Calendar</div>
+        <div class="tool-desc">Set assignment deadlines, study goals, and manage your week with a visual calendar.</div>
+      </a>
+
+      <a href="tutor.html" class="tool-card" data-cats="study" data-name="ai tutor socratic guided learning questions">
+        <div class="tool-icon">🤖</div>
+        <div class="tool-name">AI Tutor</div>
+        <div class="tool-desc">Socratic-style guided learning — asks questions rather than giving answers directly.</div>
+        <div class="tool-tags"><span class="tool-tag tag-ai">AI</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- AP -->
+  <div class="cat-section" id="cat-ap">
+    <div class="cat-label">🎓 AP</div>
+    <div class="tool-grid">
+
+      <a href="apcountdown.html" class="tool-card" data-cats="ap study" data-name="ap exam countdown days left date tracker">
+        <div class="tool-icon">⏳</div>
+        <div class="tool-name">AP Exam Countdown</div>
+        <div class="tool-desc">Add your AP exams and watch live countdowns — color coded by urgency with study phase guide.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-ap">AP</span></div>
+      </a>
+
+      <a href="parent.html" class="tool-card" data-cats="ap study" data-name="parent dashboard progress report pdf print">
+        <div class="tool-icon">👪</div>
+        <div class="tool-name">Parent Dashboard</div>
+        <div class="tool-desc">Printable progress report for parents — subject bars, AP predictions, recent history.</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CALCULATORS & TOOLS -->
+  <div class="cat-section" id="cat-tools">
+    <div class="cat-label">🧮 Calculators &amp; Reference</div>
+    <div class="tool-grid">
+
+      <a href="tools.html" class="tool-card" data-cats="tools" data-name="graphing calculator desmos unit converter periodic table elements chemistry">
+        <div class="tool-icon">🧮</div>
+        <div class="tool-name">Calculators &amp; Tools</div>
+        <div class="tool-desc">Graphing calculator (Desmos), unit converter, and interactive periodic table — all in one place.</div>
+      </a>
+
+      <a href="formulas.html" class="tool-card" data-cats="tools" data-name="formula sheet math science physics chemistry printable">
+        <div class="tool-icon">📋</div>
+        <div class="tool-name">Formula Sheet Builder</div>
+        <div class="tool-desc">Generate and print formula sheets for any grade and subject — math, science, physics, chemistry.</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- NEW TOOLS -->
+  <div class="cat-section" id="cat-new-tools">
+    <div class="cat-label">🆕 Recently Added</div>
+    <div class="tool-grid">
+
+      <a href="frq.html" class="tool-card" data-cats="new ap practice" data-name="ap free response frq rubric self score">
+        <div class="tool-icon">📝</div>
+        <div class="tool-name">AP Free Response Practice</div>
+        <div class="tool-desc">Write FRQ responses for 10 AP subjects and self-score against official rubric criteria.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-ap">AP</span></div>
+      </a>
+
+      <a href="simulator.html" class="tool-card" data-cats="new practice" data-name="exam simulator timed mock test full length">
+        <div class="tool-icon">🎯</div>
+        <div class="tool-name">Exam Simulator</div>
+        <div class="tool-desc">Full-length timed mock exams with 45+ questions per subject, instant review, and score history.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-practice">practice</span></div>
+      </a>
+
+      <a href="gradebook.html" class="tool-card" data-cats="new study" data-name="grade book gpa tracker assignments tests classes">
+        <div class="tool-icon">📒</div>
+        <div class="tool-name">Grade Book</div>
+        <div class="tool-desc">Track every assignment and test across all your classes. Running GPA updates automatically.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="labreport.html" class="tool-card" data-cats="new writing" data-name="lab report builder science template hypothesis conclusion">
+        <div class="tool-icon">🧪</div>
+        <div class="tool-name">Lab Report Builder</div>
+        <div class="tool-desc">Fill in every section of a science lab report — hypothesis, data table, analysis — then print.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="timeline.html" class="tool-card" data-cats="new study" data-name="history timeline builder events drag visual export">
+        <div class="tool-icon">🗓</div>
+        <div class="tool-name">History Timeline Builder</div>
+        <div class="tool-desc">Add events, color-code by category, and export a visual timeline. Includes 4 built-in templates.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="collegeprep.html" class="tool-card" data-cats="new study ap" data-name="college prep checklist application essays fafsa deadlines">
+        <div class="tool-icon">🎓</div>
+        <div class="tool-name">College Prep Checklist</div>
+        <div class="tool-desc">Grade-by-grade college application checklist — academics, testing, essays, FAFSA, and more.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="conceptmap.html" class="tool-card" data-cats="new study" data-name="concept map visual web topics connections drag drop">
+        <div class="tool-icon">🗺</div>
+        <div class="tool-name">Concept Map Builder</div>
+        <div class="tool-desc">Build visual webs showing how ideas connect. Drag nodes, draw connections, export as image.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+
+      <a href="cornellnotes.html" class="tool-card" data-cats="new study writing" data-name="cornell notes cue column summary note taking">
+        <div class="tool-icon">🗒</div>
+        <div class="tool-name">Cornell Notes</div>
+        <div class="tool-desc">Classic Cornell layout with cue column, notes area, and summary section. Auto-saves all notes.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-study">study</span></div>
+      </a>
+
+      <a href="research.html" class="tool-card" data-cats="new writing study" data-name="research organizer sources quotes outline bibliography">
+        <div class="tool-icon">🔬</div>
+        <div class="tool-name">Research Organizer</div>
+        <div class="tool-desc">Manage projects, sources, quotes, and outlines in one place. Auto-generates MLA citations.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-writing">writing</span></div>
+      </a>
+
+      <a href="venn.html" class="tool-card" data-cats="new study" data-name="venn diagram compare contrast 2 3 circles svg export">
+        <div class="tool-icon">⭕</div>
+        <div class="tool-name">Venn Diagram Builder</div>
+        <div class="tool-desc">2- or 3-circle Venn diagrams for compare &amp; contrast. Save, export as SVG, and print.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="annotatedbib.html" class="tool-card" data-cats="new writing" data-name="annotated bibliography citation annotation mla apa chicago">
+        <div class="tool-icon">📚</div>
+        <div class="tool-name">Annotated Bibliography</div>
+        <div class="tool-desc">Add sources with 2–4 sentence annotations. Formats citations in MLA, APA, or Chicago — export or print.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-writing">writing</span></div>
+      </a>
+
+      <a href="grammar.html" class="tool-card" data-cats="new writing study" data-name="grammar reference rules commas semicolons apostrophes confused words">
+        <div class="tool-icon">📖</div>
+        <div class="tool-name">Grammar Reference</div>
+        <div class="tool-desc">Searchable grammar rules — commas, semicolons, apostrophes, parallel structure, commonly confused words, and more.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-writing">writing</span></div>
+      </a>
+
+
+      <a href="transitions.html" class="tool-card" data-cats="new writing" data-name="transition word bank sentence starters contrast addition cause effect">
+        <div class="tool-icon">🔗</div>
+        <div class="tool-name">Transition Word Bank</div>
+        <div class="tool-desc">90+ transition phrases organized by purpose — contrast, sequence, cause & effect, emphasis. Click to copy.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-writing">writing</span></div>
+      </a>
+
+      <a href="statscalc.html" class="tool-card" data-cats="new tools" data-name="statistics calculator mean median mode standard deviation iqr box plot">
+        <div class="tool-icon">📊</div>
+        <div class="tool-name">Statistics Calculator</div>
+        <div class="tool-desc">Enter a dataset and instantly get mean, median, mode, IQR, standard deviation, box plot, and frequency table.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="equationsolver.html" class="tool-card" data-cats="new tools" data-name="equation solver step by step linear quadratic systems algebra">
+        <div class="tool-icon">🔢</div>
+        <div class="tool-name">Step-by-Step Equation Solver</div>
+        <div class="tool-desc">Solve linear, quadratic, systems, and proportions with every step shown. Great for checking algebra work.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="paraphrase.html" class="tool-card" data-cats="new writing" data-name="paraphrase style rewriter formal concise active voice synonyms academic">
+        <div class="tool-icon">✏️</div>
+        <div class="tool-name">Paraphrase & Style Rewriter</div>
+        <div class="tool-desc">Rewrite sentences as formal, concise, or active voice. Includes an academic synonym lookup and style guide.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span><span class="tool-tag tag-writing">writing</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CURRICULUM TOOLS (built into index.html) -->
+  <div class="cat-section" id="cat-curriculum">
+    <div class="cat-label">📚 Curriculum Tools</div>
+    <div class="tool-grid">
+
+      <a href="index.html" class="tool-card" data-cats="curriculum study" data-name="daily goal tracker topics mastered streak">
+        <div class="tool-icon">🎯</div>
+        <div class="tool-name">Daily Goal Tracker</div>
+        <div class="tool-desc">Set a daily topic mastery target and watch your progress bar fill as you mark topics learned.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum practice" data-name="spaced repetition review due topics sm2 queue">
+        <div class="tool-icon">🔁</div>
+        <div class="tool-name">Spaced Repetition</div>
+        <div class="tool-desc">Automatically surfaces topics due for review based on when you last practiced them.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum study" data-name="mistake journal log wrong answers review errors">
+        <div class="tool-icon">📓</div>
+        <div class="tool-name">Mistake Journal</div>
+        <div class="tool-desc">Log problems you got wrong directly from practice sheets — review and mark them resolved.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum practice" data-name="timed practice timer countdown speed drill">
+        <div class="tool-icon">⏱️</div>
+        <div class="tool-name">Timed Practice</div>
+        <div class="tool-desc">Countdown timer inside every practice section — train under test conditions with a single click.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum tools" data-name="formula reference sheet quick look math science">
+        <div class="tool-icon">📐</div>
+        <div class="tool-name">Formula Reference</div>
+        <div class="tool-desc">Instant formula lookups per practice unit — no tab switching, always at hand while you work.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="conceptexplainer.html" class="tool-card" data-cats="curriculum study" data-name="concept explainer explain this topic summary definition">
+        <div class="tool-icon">💡</div>
+        <div class="tool-name">Concept Explainer</div>
+        <div class="tool-desc">One-tap plain-English explanation of any topic — great for when you're stuck mid-practice.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum study" data-name="progress snapshot export pdf mastery report">
+        <div class="tool-icon">📤</div>
+        <div class="tool-name">Progress Snapshot Export</div>
+        <div class="tool-desc">Export a full HTML snapshot of your mastery across all grades and subjects to save or share.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum practice" data-name="quiz mode random questions review unit test">
+        <div class="tool-icon">✏️</div>
+        <div class="tool-name">Quiz Mode</div>
+        <div class="tool-desc">Randomly pull practice questions from any unit for a quick on-demand quiz — track your score.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum study" data-name="weak spot detector low mastery struggling topics alert">
+        <div class="tool-icon">🔍</div>
+        <div class="tool-name">Weak Spot Detector</div>
+        <div class="tool-desc">Scans your mastery data and surfaces the topics with the lowest scores so you know what to fix first.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum study" data-name="topic notes sticky per topic annotation notes editor">
+        <div class="tool-icon">📝</div>
+        <div class="tool-name">Topic Notes</div>
+        <div class="tool-desc">Attach personal notes to any topic in the curriculum — saved locally and visible at a glance.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum" data-name="unit completion rings progress circle donut visual">
+        <div class="tool-icon">⭕</div>
+        <div class="tool-name">Unit Completion Rings</div>
+        <div class="tool-desc">Visual progress rings on every unit header showing how many topics you've mastered at a glance.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum" data-name="unit summary preview topics overview at a glance">
+        <div class="tool-icon">📋</div>
+        <div class="tool-name">Unit Summaries</div>
+        <div class="tool-desc">See the first few topics of each unit at a glance before expanding — helps plan what to study next.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+      <a href="index.html" class="tool-card" data-cats="curriculum" data-name="dark mode light mode theme toggle dark light">
+        <div class="tool-icon">🌙</div>
+        <div class="tool-name">Dark / Light Mode</div>
+        <div class="tool-desc">Toggle between dark and light themes on the main curriculum page — preference saved automatically.</div>
+        <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="no-results" id="noResults">No tools match your search.</div>
+
+</div>
+
+<script>
+let activeCat = 'all';
+
+function filterCat(cat, el){
+  activeCat = cat;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  filterTools();
+}
+
+function filterTools(){
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.tool-card');
+  let visible = 0;
+
+  cards.forEach(card=>{
+    const name = (card.dataset.name||'') + ' ' + card.querySelector('.tool-name').textContent;
+    const cats = card.dataset.cats||'';
+    const matchesSearch = !q || name.toLowerCase().includes(q);
+    const matchesCat = activeCat==='all' || cats.includes(activeCat) || (activeCat==='new' && card.querySelector('.tag-new'));
+    const show = matchesSearch && matchesCat;
+    card.classList.toggle('hidden', !show);
+    if(show) visible++;
+  });
+
+  // Hide/show category sections
+  document.querySelectorAll('.cat-section').forEach(sec=>{
+    const hasVisible = [...sec.querySelectorAll('.tool-card')].some(c=>!c.classList.contains('hidden'));
+    sec.style.display = hasVisible ? '' : 'none';
+  });
+
+  document.getElementById('noResults').classList.toggle('show', visible===0);
+}
+</script>
+</body>
+</html>

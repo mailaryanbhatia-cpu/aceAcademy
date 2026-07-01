@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>aceAcademy — Progress</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f4f6fb;--surface:#fff;--border:#e2e8f0;--text:#1a1a2e;--muted:#64748b;
+  --accent:#2563eb;--accent-light:#eff6ff;--green:#059669;--red:#ef4444;
+  --yellow:#f59e0b;--purple:#7c3aed;--radius:12px;--font:'Segoe UI',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.logo{font-size:1.15rem;font-weight:800;color:var(--accent);}
+.nav-links{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap;}
+.nav-link{text-decoration:none;padding:6px 12px;border-radius:8px;font-weight:600;font-size:.8rem;white-space:nowrap;}
+
+.container{max-width:1100px;margin:0 auto;padding:28px 20px;}
+h1{font-size:1.6rem;font-weight:800;margin-bottom:4px;}
+.subtitle{color:var(--muted);font-size:.9rem;margin-bottom:24px;}
+
+/* ── STAT CARDS ── */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--surface);border-radius:var(--radius);padding:20px;
+  border:1px solid var(--border);text-align:center;}
+.stat-card .num{font-size:2rem;font-weight:800;line-height:1;}
+.stat-card .lbl{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;margin-top:6px;}
+.stat-card.blue .num{color:var(--accent);}
+.stat-card.green .num{color:var(--green);}
+.stat-card.yellow .num{color:var(--yellow);}
+.stat-card.purple .num{color:var(--purple);}
+
+/* ── SECTION ── */
+.section{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);
+  padding:20px;margin-bottom:20px;}
+.section-title{font-size:1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+
+/* ── SUBJECT BARS ── */
+.subj-row{margin-bottom:14px;}
+.subj-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.subj-name{font-size:.85rem;font-weight:600;}
+.subj-meta{font-size:.75rem;color:var(--muted);}
+.bar-track{background:#e2e8f0;border-radius:99px;height:10px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s ease;}
+
+/* ── GRADE GRID ── */
+.grade-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.grade-cell{border-radius:10px;padding:12px 8px;text-align:center;border:1px solid var(--border);}
+.grade-cell .g-num{font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.grade-cell .g-score{font-size:1.1rem;font-weight:800;}
+.grade-cell .g-done{font-size:.65rem;color:var(--muted);}
+.grade-cell.done{border-color:transparent;}
+
+/* ── HISTORY ── */
+.hist-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;}
+.hist-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;
+  background:#1e2d45;border:1px solid var(--border);}
+.hist-badge{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.85rem;font-weight:800;flex-shrink:0;}
+.hist-info{flex:1;min-width:0;}
+.hist-title{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hist-sub{font-size:.72rem;color:var(--muted);}
+.hist-score{font-size:.9rem;font-weight:800;white-space:nowrap;}
+.hist-time{font-size:.7rem;color:var(--muted);white-space:nowrap;}
+
+/* ── LETTER DIST ── */
+.grade-dist{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.grade-dist-item{text-align:center;padding:14px;border-radius:10px;}
+.grade-dist-item .letter{font-size:1.8rem;font-weight:900;}
+.grade-dist-item .count{font-size:.75rem;color:var(--muted);font-weight:600;margin-top:2px;}
+.grade-a{background:#d1fae5;} .grade-a .letter{color:var(--green);}
+.grade-b{background:#dbeafe;} .grade-b .letter{color:var(--accent);}
+.grade-c{background:#fef3c7;} .grade-c .letter{color:var(--yellow);}
+.grade-d{background:#fee2e2;} .grade-d .letter{color:var(--red);}
+
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-state .big{font-size:3rem;margin-bottom:12px;}
+.empty-state a{color:var(--accent);font-weight:600;}
+
+.clear-btn{padding:7px 14px;background:#1a2540;border:1px solid var(--border);border-radius:8px;
+  font-size:.78rem;font-weight:600;color:var(--red);cursor:pointer;margin-left:auto;}
+.clear-btn:hover{background:#fff5f5;border-color:var(--red);}
+</style>
+  <link rel="stylesheet" href="ace-theme.css">
+
+<style id="ace-nav-css">
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+nav.topnav{background:#080e1c!important;border-bottom:1px solid #2a3a55!important;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5)!important;padding:0 20px!important;height:60px!important;display:flex!important;align-items:center!important;gap:2px!important;position:sticky!important;top:0!important;z-index:500!important;overflow-x:auto!important;}
+nav.topnav::-webkit-scrollbar{display:none;}
+nav.topnav .logo,nav.topnav a.logo{font-size:1.1rem!important;font-weight:800!important;color:#fff!important;text-decoration:none!important;margin-right:10px!important;white-space:nowrap!important;flex-shrink:0!important;display:flex!important;align-items:center!important;gap:6px!important;}
+nav.topnav .logo span,nav.topnav a.logo span{color:#a5b4fc!important;}
+nav.topnav a.nav-link,nav.topnav a.back-link{display:inline-flex!important;align-items:center!important;gap:3px!important;text-decoration:none!important;padding:6px 9px!important;border-radius:7px!important;font-size:.76rem!important;font-weight:600!important;white-space:nowrap!important;color:#7a8fa8!important;transition:background .15s,color .15s!important;font-family:inherit!important;}
+nav.topnav a.nav-link:hover,nav.topnav a.back-link:hover{background:rgba(255,255,255,.07)!important;color:#e8edf5!important;}
+nav.topnav a.nav-link.active{background:rgba(99,102,241,.18)!important;color:#a5b4fc!important;}
+nav.topnav .spacer,nav.topnav h1.nav-title{flex:1!important;color:#7a8fa8!important;font-size:.8rem!important;font-weight:500!important;}
+nav.topnav input,nav.topnav select{background:#111827!important;border:1px solid #2a3a55!important;color:#e8edf5!important;border-radius:6px!important;padding:5px 10px!important;font-size:.78rem!important;font-family:inherit!important;outline:none!important;}
+:root{--bg:#0b1120;--surface:#1a2540;--border:#2a3a55;--text:#e8edf5;--muted:#7a8fa8;--accent:#6366f1;--accent-light:rgba(99,102,241,0.18);}
+body{background:var(--bg);color:var(--text);}
+footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid #2a3a55!important;}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#334466;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#7a8fa8}
+</style>
+
+
+<script src="auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+  <a href="curriculum.html" class="brand">
+    <span class="brand-icon">🎓</span>
+    <span class="brand-name">ace<span class="brand-accent">Academy</span></span>
+  </a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+    <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
+  <a href="citation.html" class="nav-link">📖 Citations</a>
+  <a href="tools.html" class="nav-link">🔬 Tools</a>
+  <a href="assign.html" class="nav-link">📋 Assignments</a>
+  <a href="parent.html" class="nav-link">👪 Parent View</a>
+  <div class="nav-spacer"></div>
+  <nav class="nav-links">
+  <a href="curriculum.html" class="nav-link" data-color="#4f46e5">📚 Curriculum</a>
+  <a href="worksheets.html" class="nav-link" data-color="#0284c7">📄 Worksheets</a>
+  <a href="tests.html" class="nav-link" data-color="#059669">✏️ Tests</a>
+  <a href="language.html" class="nav-link" data-color="#0891b2">🌏 Languages</a>
+  <a href="flashcards.html" class="nav-link" data-color="#7c3aed">🃏 Flashcards</a>
+  <a href="notebook.html" class="nav-link" data-color="#d97706">📁 Notebook</a>
+  <a href="calendar.html" class="nav-link" data-color="#0ea5e9">📅 Calendar</a>
+  <a href="progress.html" class="nav-link active" data-color="#059669">📊 Progress</a>
+  <a href="tutor.html" class="nav-link" data-color="#6366f1">🎓 AI Tutor</a>
+  
+  <a href="frq.html" class="nav-link">📝 FRQ</a>
+  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
+  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
+  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
+  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
+  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
+  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+</nav>
+</header>
+
+<div class="container">
+  <h1>📊 My Progress</h1>
+  <p class="subtitle">All your test results in one place — updated automatically every time you finish a test.</p>
+  <div id="main"></div>
+</div>
+
+<script>
+const SUBJECTS = {
+  math:     {label:'Math',     icon:'➕', color:'#2563eb'},
+  science:  {label:'Science',  icon:'🔬', color:'#059669'},
+  ela:      {label:'ELA',      icon:'📖', color:'#7c3aed'},
+  history:  {label:'History',  icon:'🌍', color:'#d97706'},
+  cs:       {label:'CS',       icon:'💻', color:'#0891b2'},
+  health:   {label:'Health',   icon:'❤️', color:'#e11d48'},
+};
+
+function fmtDate(ts){
+  if(!ts) return '';
+  const d=new Date(ts), now=new Date(), diff=now-d;
+  if(diff<60000) return 'just now';
+  if(diff<3600000) return Math.floor(diff/60000)+'m ago';
+  if(diff<86400000) return Math.floor(diff/3600000)+'h ago';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function letterGrade(pct){
+  if(pct>=90) return {l:'A',cls:'grade-a'};
+  if(pct>=80) return {l:'B',cls:'grade-b'};
+  if(pct>=70) return {l:'C',cls:'grade-c'};
+  return {l:'D',cls:'grade-d'};
+}
+
+function barColor(pct){
+  if(pct>=90) return 'var(--green)';
+  if(pct>=70) return 'var(--accent)';
+  if(pct>=50) return 'var(--yellow)';
+  return 'var(--red)';
+}
+
+function loadAllScores(){
+  const out=[];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(!k.startsWith('aceTestScore_')) continue;
+      const v=JSON.parse(localStorage.getItem(k)||'null');
+      if(v) out.push(v);
+    }
+  }catch(e){}
+  return out;
+}
+
+function loadHistory(){
+  try{ return JSON.parse(localStorage.getItem('aceTestHistory')||'[]'); }
+  catch(e){ return []; }
+}
+
+function render(){
+  const scores = loadAllScores();
+  const history = loadHistory();
+  const main = document.getElementById('main');
+
+  if(!scores.length){
+    main.innerHTML=`<div class="empty-state">
+      <div class="big">📋</div>
+      <strong>No tests taken yet!</strong><br><br>
+      Head to <a href="tests.html">✏️ Tests</a> to take your first unit test —
+      your scores will automatically appear here.
+    </div>`;
+    return;
+  }
+
+  // ── Overall stats ──
+  const total = scores.length;
+  const avgPct = Math.round(scores.reduce((a,s)=>a+Math.round(s.correct/s.total*100),0)/total);
+  const best = Math.max(...scores.map(s=>Math.round(s.correct/s.total*100)));
+  const streak = calcStreak(history);
+
+  // ── Per-subject aggregates ──
+  const bySubj = {};
+  Object.keys(SUBJECTS).forEach(s=>{ bySubj[s]={correct:0,total:0,count:0}; });
+  scores.forEach(s=>{
+    if(!bySubj[s.subj]) return;
+    bySubj[s.subj].correct += s.correct;
+    bySubj[s.subj].total   += s.total;
+    bySubj[s.subj].count   += 1;
+  });
+
+  // ── Per-grade aggregates ──
+  const byGrade = {};
+  for(let g=6;g<=12;g++) byGrade[g]={correct:0,total:0,count:0};
+  scores.forEach(s=>{
+    if(!byGrade[s.grade]) return;
+    byGrade[s.grade].correct += s.correct;
+    byGrade[s.grade].total   += s.total;
+    byGrade[s.grade].count   += 1;
+  });
+
+  // ── AP Score Predictor ──
+  const apScores = scores.filter(s=>s.grade==='ap');
+  const AP_SUBJS = {
+    math:{label:'AP Math',icon:'➕'},science:{label:'AP Science',icon:'🔬'},
+    ela:{label:'AP English',icon:'📖'},history:{label:'AP History',icon:'🌍'},
+    cs:{label:'AP CS',icon:'💻'},arts:{label:'AP Arts',icon:'🎨'},
+    languages:{label:'AP Languages',icon:'🗣️'},capstone:{label:'AP Capstone',icon:'🎓'},
+  };
+  function pctToAPScore(pct){
+    if(pct>=88) return 5; if(pct>=76) return 4; if(pct>=60) return 3;
+    if(pct>=44) return 2; return 1;
+  }
+  const apBySubj = {};
+  apScores.forEach(s=>{
+    if(!apBySubj[s.subj]) apBySubj[s.subj]={correct:0,total:0,count:0};
+    apBySubj[s.subj].correct+=s.correct; apBySubj[s.subj].total+=s.total; apBySubj[s.subj].count+=1;
+  });
+  let apPredictorHtml = '';
+  if(apScores.length){
+    const apRows = Object.entries(apBySubj).map(([subj,d])=>{
+      const pct=Math.round(d.correct/d.total*100);
+      const pred=pctToAPScore(pct);
+      const color=pred>=4?'var(--green)':pred===3?'var(--yellow)':'var(--red)';
+      const info=AP_SUBJS[subj]||{label:subj,icon:'📝'};
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:1.1rem">${info.icon}</span>
+        <span style="flex:1;font-size:.88rem;font-weight:600">${info.label}</span>
+        <span style="font-size:.8rem;color:var(--muted)">${pct}% avg (${d.count} test${d.count!==1?'s':''})</span>
+        <span style="font-size:1.2rem;font-weight:900;color:${color};min-width:24px;text-align:center">${pred}</span>
+        <span style="font-size:.75rem;color:${color};font-weight:700">/ 5</span>
+      </div>`;
+    }).join('');
+    apPredictorHtml = `<div class="section">
+      <div class="section-title">🎯 AP Score Predictor
+        <span style="font-size:.75rem;font-weight:400;color:var(--muted);margin-left:8px">Based on your practice test scores</span>
+      </div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">
+        Score scale: <strong style="color:var(--green)">5</strong>=Excellent (88%+) &nbsp;
+        <strong style="color:var(--green)">4</strong>=Great (76%+) &nbsp;
+        <strong style="color:var(--yellow)">3</strong>=Passing (60%+) &nbsp;
+        <strong style="color:var(--red)">2</strong>=Developing (44%+) &nbsp;
+        <strong style="color:var(--red)">1</strong>=Needs work
+      </div>
+      ${apRows}
+    </div>`;
+  }
+
+  // ── Letter distribution ──
+  const dist={A:0,B:0,C:0,D:0};
+  scores.forEach(s=>{
+    const pct=Math.round(s.correct/s.total*100);
+    const l=letterGrade(pct).l;
+    dist[l]=(dist[l]||0)+1;
+  });
+
+  let html=`
+  <!-- STAT CARDS -->
+  <div class="stat-row">
+    <div class="stat-card blue"><div class="num">${total}</div><div class="lbl">Tests Taken</div></div>
+    <div class="stat-card green"><div class="num">${avgPct}%</div><div class="lbl">Average Score</div></div>
+    <div class="stat-card yellow"><div class="num">${best}%</div><div class="lbl">Best Score</div></div>
+    <div class="stat-card purple"><div class="num">${streak}</div><div class="lbl">Day Streak 🔥</div></div>
+  </div>
+
+  <!-- SUBJECT BREAKDOWN -->
+  <div class="section">
+    <div class="section-title">📚 Score by Subject</div>
+    ${Object.entries(SUBJECTS).map(([key,info])=>{
+      const d=bySubj[key];
+      if(!d||!d.count) return `<div class="subj-row"><div class="subj-header">
+        <span class="subj-name">${info.icon} ${info.label}</span>
+        <span class="subj-meta">No tests yet</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:0%;background:${info.color}"></div></div>
+      </div>`;
+      const pct=Math.round(d.correct/d.total*100);
+      return `<div class="subj-row">
+        <div class="subj-header">
+          <span class="subj-name">${info.icon} ${info.label}</span>
+          <span class="subj-meta">${pct}% &nbsp;·&nbsp; ${d.count} test${d.count!==1?'s':''}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${info.color}"></div></div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <!-- GRADE BREAKDOWN -->
+  <div class="section">
+    <div class="section-title">🎓 Score by Grade</div>
+    <div class="grade-grid">
+      ${[6,7,8,9,10,11,12].map(g=>{
+        const d=byGrade[g];
+        if(!d||!d.count) return `<div class="grade-cell">
+          <div class="g-num">Gr ${g}</div>
+          <div class="g-score" style="color:#ccc">—</div>
+          <div class="g-done">0 tests</div></div>`;
+        const pct=Math.round(d.correct/d.total*100);
+        const lg=letterGrade(pct);
+        return `<div class="grade-cell done" style="background:${pct>=90?'#d1fae5':pct>=80?'#dbeafe':pct>=70?'#fef3c7':'#fee2e2'}">
+          <div class="g-num">Gr ${g}</div>
+          <div class="g-score" style="color:${barColor(pct)}">${pct}%</div>
+          <div class="g-done">${d.count} test${d.count!==1?'s':''}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- LETTER GRADE DISTRIBUTION -->
+  <div class="section">
+    <div class="section-title">🏆 Grade Distribution</div>
+    <div class="grade-dist">
+      ${['A','B','C','D'].map(l=>`<div class="grade-dist-item grade-${l.toLowerCase()}">
+        <div class="letter">${l}</div>
+        <div class="count">${dist[l]||0} test${(dist[l]||0)!==1?'s':''}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- AP SCORE PREDICTOR -->
+  ${apPredictorHtml}
+
+  <!-- RECENT HISTORY -->
+  <div class="section">
+    <div class="section-title">🕐 Recent Tests
+      <button class="clear-btn" onclick="clearHistory()">🗑 Clear History</button>
+    </div>
+    ${history.length?`<div class="hist-list">
+      ${history.slice(0,50).map(s=>{
+        const pct=Math.round(s.correct/s.total*100);
+        const lg=letterGrade(pct);
+        const info=SUBJECTS[s.subj]||{label:s.subj,icon:'📝',color:'#888'};
+        return `<div class="hist-item">
+          <div class="hist-badge ${lg.cls}">${lg.l}</div>
+          <div class="hist-info">
+            <div class="hist-title">${info.icon} ${info.label} — Grade ${s.grade}, Unit ${s.unitIdx+1}</div>
+            <div class="hist-sub">${s.correct}/${s.total} correct</div>
+          </div>
+          <div>
+            <div class="hist-score" style="color:${barColor(pct)}">${pct}%</div>
+            <div class="hist-time">${fmtDate(s.ts)}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`:'<div style="color:var(--muted);font-size:.85rem;padding:8px 0;">No history yet.</div>'}
+  </div>`;
+
+  main.innerHTML = html;
+
+  // Animate bars
+  setTimeout(()=>{
+    document.querySelectorAll('.bar-fill').forEach(b=>{
+      b.style.width = b.style.width; // trigger reflow-based CSS transition
+    });
+  }, 50);
+}
+
+function calcStreak(history){
+  if(!history.length) return 0;
+  const days=new Set(history.map(h=>{
+    const d=new Date(h.ts);
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }));
+  let streak=0, d=new Date();
+  while(true){
+    const k=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    if(!days.has(k)) break;
+    streak++;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function clearHistory(){
+  if(!confirm('Clear all progress data? This cannot be undone.')) return;
+  try{
+    const keysToRemove=[];
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k.startsWith('aceTestScore_')||k==='aceTestHistory') keysToRemove.push(k);
+    }
+    keysToRemove.forEach(k=>localStorage.removeItem(k));
+  }catch(e){}
+  render();
+}
+
+render();
+</script>
+
+<!-- ══ STUDY TIMER WIDGET ══════════════════════════════════════════════ -->
+<style>
+#timerBtn{position:fixed;bottom:84px;right:24px;width:52px;height:52px;border-radius:50%;
+  background:#059669;color:#fff;border:none;font-size:1.3rem;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,0,0,.22);z-index:9997;display:flex;align-items:center;
+  justify-content:center;transition:transform .15s,box-shadow .15s;}
+#timerBtn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.3);}
+#timerBtn.running{animation:timerPulse 2s ease-in-out infinite;}
+@keyframes timerPulse{0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,.5);}50%{box-shadow:0 0 0 10px rgba(5,150,105,0);}}
+#timerPanel{position:fixed;bottom:148px;right:24px;width:300px;background:#1a2540;
+  border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.22);z-index:9998;
+  display:flex;flex-direction:column;opacity:0;pointer-events:none;
+  transform:translateY(14px);transition:opacity .2s,transform .2s;overflow:hidden;}
+#timerPanel.open{opacity:1;pointer-events:auto;transform:translateY(0);}
+.tp-head{background:#059669;color:#fff;padding:13px 16px;
+  display:flex;align-items:center;justify-content:space-between;}
+.tp-head h3{margin:0;font-size:.95rem;font-weight:700;}
+.tp-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;
+  padding:3px 9px;cursor:pointer;font-size:.85rem;}
+.tp-close:hover{background:rgba(255,255,255,.35);}
+.tp-mode-row{display:flex;border-bottom:1px solid #e2e8f0;background:#1e2d45;}
+.tp-mode-btn{flex:1;padding:8px;border:none;background:none;cursor:pointer;font-size:.72rem;
+  font-weight:700;color:#94a3b8;letter-spacing:.04em;transition:all .15s;}
+.tp-mode-btn.active{color:#059669;border-bottom:2px solid #059669;background:#1a2540;}
+.tp-circle-wrap{display:flex;justify-content:center;align-items:center;padding:22px 0 14px;}
+.tp-svg{transform:rotate(-90deg);}
+.tp-circle-bg{fill:none;stroke:#e2e8f0;stroke-width:8;}
+.tp-circle-fg{fill:none;stroke:#059669;stroke-width:8;stroke-linecap:round;
+  stroke-dasharray:283;stroke-dashoffset:0;transition:stroke-dashoffset .5s linear,stroke .3s;}
+.tp-time-text{position:absolute;font-size:1.8rem;font-weight:800;color:#ffffff;letter-spacing:-.02em;}
+.tp-session-label{position:absolute;top:68px;font-size:.65rem;font-weight:700;
+  color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;}
+.tp-circle-center{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.tp-controls{display:flex;justify-content:center;gap:10px;padding:0 16px 16px;}
+.tp-ctrl-btn{padding:9px 22px;border-radius:10px;border:none;font-weight:700;
+  font-size:.85rem;cursor:pointer;transition:all .15s;}
+.tp-start{background:#059669;color:#fff;}
+.tp-start:hover{background:#047857;}
+.tp-reset{background:#0b1120;color:#7a8fa8;}
+.tp-reset:hover{background:#e2e8f0;}
+.tp-footer{background:#1e2d45;border-top:1px solid #e2e8f0;padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:#7a8fa8;}
+.tp-sessions{font-weight:700;color:#059669;}
+.tp-settings-row{display:flex;gap:8px;padding:0 16px 12px;align-items:center;}
+.tp-settings-row label{font-size:.72rem;color:#7a8fa8;font-weight:600;}
+.tp-num{width:52px;padding:5px 6px;border:1px solid #2a3a55;border-radius:7px;
+  font-size:.82rem;font-weight:700;text-align:center;outline:none;}
+.tp-num:focus{border-color:#059669;}
+</style>
+
+<button id="timerBtn" onclick="toggleTimer()" title="Study Timer">⏱</button>
+
+<div id="timerPanel">
+  <div class="tp-head">
+    <h3>⏱ Study Timer</h3>
+    <button class="tp-close" onclick="toggleTimer()">✕</button>
+  </div>
+  <div class="tp-mode-row">
+    <button class="tp-mode-btn active" id="tmWork"  onclick="setTimerMode('work')">FOCUS</button>
+    <button class="tp-mode-btn"        id="tmShort" onclick="setTimerMode('short')">SHORT BREAK</button>
+    <button class="tp-mode-btn"        id="tmLong"  onclick="setTimerMode('long')">LONG BREAK</button>
+  </div>
+  <div class="tp-circle-wrap">
+    <svg class="tp-svg" width="120" height="120" viewBox="0 0 100 100">
+      <circle class="tp-circle-bg" cx="50" cy="50" r="45"/>
+      <circle class="tp-circle-fg" id="timerArc" cx="50" cy="50" r="45"/>
+    </svg>
+    <div class="tp-circle-center" style="position:absolute;">
+      <div class="tp-time-text" id="timerDisplay">25:00</div>
+      <div class="tp-session-label" id="timerModeLabel">Focus Time</div>
+    </div>
+  </div>
+  <div class="tp-settings-row">
+    <label>Focus</label>
+    <input class="tp-num" id="tpFocusMin" type="number" min="1" max="99" value="25" onchange="updateTimerSettings()"/>
+    <label>min &nbsp; Short</label>
+    <input class="tp-num" id="tpShortMin" type="number" min="1" max="30" value="5" onchange="updateTimerSettings()"/>
+    <label>min</label>
+  </div>
+  <div class="tp-controls">
+    <button class="tp-ctrl-btn tp-start" id="timerStartBtn" onclick="toggleTimerRun()">▶ Start</button>
+    <button class="tp-ctrl-btn tp-reset" onclick="resetTimer()">↺ Reset</button>
+  </div>
+  <div class="tp-footer">
+    <span>Sessions today: <span class="tp-sessions" id="tpSessionCount">0</span></span>
+    <span id="tpStatusText" style="color:#94a3b8;">Ready</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  const MODES = {
+    work:  {label:'Focus Time',  color:'#059669'},
+    short: {label:'Short Break', color:'#0891b2'},
+    long:  {label:'Long Break',  color:'#7c3aed'},
+  };
+  let mode='work', running=false, remaining=25*60, total=25*60;
+  let intervalId=null, sessions=0, longBreakMin=15;
+
+  function getFocusMin(){ return Math.max(1,parseInt(document.getElementById('tpFocusMin')?.value||25)); }
+  function getShortMin(){ return Math.max(1,parseInt(document.getElementById('tpShortMin')?.value||5)); }
+
+  function modeSeconds(m){
+    if(m==='work')  return getFocusMin()*60;
+    if(m==='short') return getShortMin()*60;
+    return longBreakMin*60;
+  }
+
+  window.updateTimerSettings = function(){
+    if(!running){ total=modeSeconds(mode); remaining=total; updateDisplay(); }
+  };
+
+  window.setTimerMode = function(m){
+    if(running) stopTimer();
+    mode=m;
+    total=modeSeconds(m);
+    remaining=total;
+    document.querySelectorAll('.tp-mode-btn').forEach(b=>b.classList.remove('active'));
+    const ids={work:'tmWork',short:'tmShort',long:'tmLong'};
+    document.getElementById(ids[m])?.classList.add('active');
+    document.getElementById('timerArc').style.stroke=MODES[m].color;
+    document.getElementById('timerBtn').style.background=MODES[m].color;
+    document.getElementById('timerModeLabel').textContent=MODES[m].label;
+    updateDisplay();
+    document.getElementById('tpStatusText').textContent='Ready';
+  };
+
+  window.toggleTimer = function(){
+    const p=document.getElementById('timerPanel');
+    p.classList.toggle('open');
+  };
+
+  window.toggleTimerRun = function(){
+    running ? stopTimer() : startTimer();
+  };
+
+  function startTimer(){
+    if(remaining<=0) resetTimer();
+    running=true;
+    intervalId=setInterval(tick,1000);
+    document.getElementById('timerStartBtn').textContent='⏸ Pause';
+    document.getElementById('timerBtn').classList.add('running');
+    document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
+  }
+
+  function stopTimer(){
+    running=false;
+    clearInterval(intervalId);
+    document.getElementById('timerStartBtn').textContent='▶ Start';
+    document.getElementById('timerBtn').classList.remove('running');
+    document.getElementById('tpStatusText').textContent='Paused';
+  }
+
+  window.resetTimer = function(){
+    stopTimer();
+    remaining=total=modeSeconds(mode);
+    updateDisplay();
+    document.getElementById('tpStatusText').textContent='Ready';
+  };
+
+  function tick(){
+    remaining--;
+    if(remaining<=0){
+      remaining=0;
+      updateDisplay();
+      stopTimer();
+      playBell();
+      if(mode==='work'){
+        sessions++;
+        document.getElementById('tpSessionCount').textContent=sessions;
+        // auto-switch to break
+        const nextMode = sessions%4===0?'long':'short';
+        setTimeout(()=>{ setTimerMode(nextMode); playBell(); },500);
+        document.getElementById('tpStatusText').textContent='Session done! 🎉';
+      } else {
+        setTimeout(()=>{ setTimerMode('work'); },500);
+        document.getElementById('tpStatusText').textContent='Break over!';
+      }
+      // open panel so user sees the notification
+      document.getElementById('timerPanel').classList.add('open');
+      return;
+    }
+    updateDisplay();
+  }
+
+  function updateDisplay(){
+    const m=Math.floor(remaining/60), s=remaining%60;
+    document.getElementById('timerDisplay').textContent =
+      String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    const arc=document.getElementById('timerArc');
+    if(arc){
+      const pct = total>0 ? remaining/total : 1;
+      arc.style.strokeDashoffset = String(Math.round(283*(1-pct)));
+    }
+    // Update page title while running
+    if(running){
+      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — aceAcademy';
+    } else {
+      document.title = document.title.replace(/^⏱.*?—\s*/,'');
+    }
+  }
+
+  function playBell(){
+    try{
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      [0,0.15,0.3].forEach((delay,i)=>{
+        const osc=ctx.createOscillator(), gain=ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value=i===0?880:i===1?1046:1318;
+        gain.gain.setValueAtTime(0.3,ctx.currentTime+delay);
+        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+0.6);
+        osc.start(ctx.currentTime+delay);
+        osc.stop(ctx.currentTime+delay+0.7);
+      });
+    }catch(e){}
+  }
+
+  // Close on outside click (avoid conflicting with notes panel)
+  document.addEventListener('click',function(e){
+    const p=document.getElementById('timerPanel');
+    const b=document.getElementById('timerBtn');
+    if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!b.contains(e.target)){
+      p.classList.remove('open');
+    }
+  });
+
+  // Shift notes button up so they don't overlap
+  const nb=document.getElementById('notesBtn');
+  if(nb) nb.style.bottom='84px';
+  const tp=document.getElementById('timerBtn');
+  if(tp) tp.style.bottom='24px';
+})();
+</script>
+<!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
+
+</body>
+</html>

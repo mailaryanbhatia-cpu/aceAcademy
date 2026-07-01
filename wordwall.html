@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vocabulary Word Wall — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#92400e,#d97706);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.tabs{display:flex;border-bottom:2px solid var(--border);background:#fff;overflow-x:auto}
+.tab{padding:12px 22px;font-size:.88rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-right:6px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
+.btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--muted)}
+.btn-sm:hover{background:var(--bg)}.btn-sm.del{color:var(--red)}.btn-sm.del:hover{background:#fef2f2}
+
+/* Word Wall */
+.wall{display:flex;flex-wrap:wrap;gap:10px}
+.word-tile{border-radius:10px;padding:10px 16px;cursor:pointer;border:2px solid transparent;transition:.15s;position:relative}
+.word-tile:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.word-tile .w{font-size:1rem;font-weight:800;margin-bottom:2px}
+.word-tile .pos{font-size:.7rem;font-weight:600;opacity:.7;text-transform:uppercase}
+.word-tile .mastered-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--green)}
+
+/* Word detail panel */
+.detail-panel{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;display:none}
+.detail-panel .word{font-size:1.6rem;font-weight:900;color:var(--accent);margin-bottom:4px}
+.detail-panel .pronunciation{font-size:.85rem;color:var(--muted);margin-bottom:8px;font-style:italic}
+.detail-panel .definition{font-size:.9rem;line-height:1.7;margin-bottom:8px}
+.detail-panel .example{font-size:.87rem;color:var(--muted);font-style:italic;border-left:3px solid var(--accent);padding-left:10px;margin-bottom:10px}
+.detail-panel .synonyms{font-size:.82rem;color:var(--muted);margin-bottom:10px}
+.detail-panel .actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Quiz */
+.quiz-q{font-size:1rem;font-weight:700;line-height:1.5;margin-bottom:14px}
+.quiz-choices{display:flex;flex-direction:column;gap:8px}
+.qchoice{padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:.88rem;transition:.12s}
+.qchoice:hover{border-color:var(--accent);background:#eff6ff}
+.qchoice.correct{border-color:var(--green);background:#d1fae5}
+.qchoice.wrong{border-color:var(--red);background:#fee2e2}
+.quiz-feedback{margin-top:10px;font-size:.85rem;font-weight:600;padding:10px;border-radius:8px;display:none}
+.quiz-feedback.ok{background:#d1fae5;color:#065f46;display:block}
+.quiz-feedback.err{background:#fee2e2;color:#7f1d1d;display:block}
+
+/* Form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}
+label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.field input,.field select,.field textarea{width:100%}
+
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.stat .n{font-size:1.5rem;font-weight:900;color:var(--amber)}
+.stat .l{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;margin-top:2px}
+
+.section-tab{display:none}.section-tab.active{display:block}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.search-bar{display:flex;gap:8px;margin-bottom:14px}
+.search-bar input{flex:1}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}.tabs{background:#12121f}.btn-sm{background:#1a1a2e}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="wordwall.html" class="nav-link active">📖 Word Wall</a>
+  <a href="flashcards.html" class="nav-link">🃏 Flashcards</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+<div class="hero">
+  <h1>📖 Vocabulary Word Wall</h1>
+  <p>Build your vocabulary — add words, study definitions, and quiz yourself for mastery.</p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('wall',this)">🧱 Word Wall</div>
+  <div class="tab" onclick="showTab('add',this)">➕ Add Words</div>
+  <div class="tab" onclick="showTab('quiz',this)">🧠 Quiz</div>
+  <div class="tab" onclick="showTab('featured',this)">⭐ Featured Words</div>
+</div>
+
+<div class="container">
+  <!-- WORD WALL -->
+  <div class="section-tab active" id="tab-wall">
+    <div class="stat-row" id="statRow"></div>
+    <div class="search-bar">
+      <input id="searchInput" placeholder="Search words..." oninput="renderWall()">
+      <select id="filterSubj" onchange="renderWall()"><option value="">All Subjects</option></select>
+      <select id="filterStatus" onchange="renderWall()">
+        <option value="">All</option>
+        <option value="learning">Learning</option>
+        <option value="mastered">Mastered</option>
+      </select>
+    </div>
+    <div class="detail-panel" id="detailPanel"></div>
+    <div class="wall" id="wordWall"></div>
+  </div>
+
+  <!-- ADD WORDS -->
+  <div class="section-tab" id="tab-add">
+    <div class="card">
+      <h2>Add a New Word</h2>
+      <div class="form-grid">
+        <div class="field full"><label>Word</label><input id="w-word" placeholder="e.g. Ephemeral"></div>
+        <div class="field"><label>Part of Speech</label>
+          <select id="w-pos">
+            <option>adjective</option><option>noun</option><option>verb</option>
+            <option>adverb</option><option>conjunction</option><option>preposition</option>
+          </select>
+        </div>
+        <div class="field"><label>Subject / Context</label>
+          <select id="w-subj">
+            <option value="General">General</option><option value="SAT/ACT">SAT/ACT</option>
+            <option value="AP English">AP English</option><option value="AP History">AP History</option>
+            <option value="AP Science">AP Science</option><option value="Literature">Literature</option>
+            <option value="Science">Science</option><option value="History">History</option>
+          </select>
+        </div>
+        <div class="field full"><label>Definition</label><textarea id="w-def" placeholder="What does it mean?"></textarea></div>
+        <div class="field full"><label>Example Sentence</label><textarea id="w-example" placeholder="Use it in a sentence..."></textarea></div>
+        <div class="field"><label>Synonyms (comma-separated)</label><input id="w-syns" placeholder="fleeting, transient, brief"></div>
+        <div class="field"><label>Pronunciation (optional)</label><input id="w-pron" placeholder="EH-feh-meh-ral"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addWord()" style="margin-top:14px">📖 Add Word</button>
+    </div>
+
+    <div class="card">
+      <h2>🚀 Quick-Add Common SAT/ACT Words</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px" id="quickAddTags"></div>
+      <button class="btn btn-outline" onclick="addAllFeatured()">Add All Featured Words</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section-tab" id="tab-quiz">
+    <div class="card" id="quizCard">
+      <h2 id="quizTitle">🧠 Vocabulary Quiz</h2>
+      <div id="quizContent"><div class="empty">Add some words first, then quiz yourself!</div></div>
+    </div>
+  </div>
+
+  <!-- FEATURED -->
+  <div class="section-tab" id="tab-featured">
+    <div class="card">
+      <h2>⭐ High-Value Academic Vocabulary</h2>
+      <p style="font-size:.83rem;color:var(--muted);margin-bottom:14px">Click any word to add it to your wall.</p>
+      <div id="featuredList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FEATURED = [
+  {word:'Ephemeral',pos:'adjective',def:'Lasting for a very short time; transitory.',example:'The cherry blossoms are ephemeral, lasting only a week.',syns:'fleeting, transient, momentary',subj:'SAT/ACT'},
+  {word:'Ambivalent',pos:'adjective',def:'Having mixed or contradictory feelings about something.',example:'She was ambivalent about the decision to move abroad.',syns:'uncertain, conflicted, undecided',subj:'SAT/ACT'},
+  {word:'Pragmatic',pos:'adjective',def:'Dealing with things sensibly and realistically; practical.',example:'A pragmatic approach to the budget is necessary.',syns:'practical, realistic, logical',subj:'SAT/ACT'},
+  {word:'Benevolent',pos:'adjective',def:'Well-meaning and kindly; generous.',example:'The benevolent donor funded the entire library.',syns:'generous, charitable, kind',subj:'SAT/ACT'},
+  {word:'Cacophony',pos:'noun',def:'A harsh, discordant mixture of sounds.',example:'The cacophony of car horns filled the city street.',syns:'discord, din, noise',subj:'AP English'},
+  {word:'Juxtapose',pos:'verb',def:'To place side by side for contrast or comparison.',example:'The author juxtaposes wealth and poverty in the novel.',syns:'compare, contrast, place alongside',subj:'AP English'},
+  {word:'Solipsistic',pos:'adjective',def:'Relating to the view that only one\'s own mind is sure to exist; self-centered.',example:'His solipsistic worldview made collaboration difficult.',syns:'egocentric, self-absorbed',subj:'AP English'},
+  {word:'Hegemony',pos:'noun',def:'Leadership or dominance, especially of one country or group over others.',example:'The hegemony of the Roman Empire shaped European civilization.',syns:'dominance, supremacy, control',subj:'AP History'},
+  {word:'Imperialism',pos:'noun',def:'A policy of extending a country\'s power and influence through colonization or force.',example:'British imperialism affected economies worldwide.',syns:'colonialism, expansionism',subj:'AP History'},
+  {word:'Osmosis',pos:'noun',def:'Movement of water across a semi-permeable membrane from high to low concentration.',example:'Water enters plant roots through osmosis.',syns:'diffusion, absorption',subj:'AP Science'},
+  {word:'Entropy',pos:'noun',def:'The tendency toward disorder or chaos in a system; lack of order.',example:'The entropy of the universe always increases.',syns:'disorder, chaos, randomness',subj:'AP Science'},
+  {word:'Catharsis',pos:'noun',def:'The process of releasing strong emotions through art or drama; emotional purging.',example:'The tragic play provided catharsis for the audience.',syns:'purging, release, cleansing',subj:'Literature'},
+  {word:'Hubris',pos:'noun',def:'Excessive pride or self-confidence, especially leading to downfall.',example:'Macbeth\'s hubris was his ultimate undoing.',syns:'arrogance, overconfidence, pride',subj:'Literature'},
+  {word:'Ubiquitous',pos:'adjective',def:'Present, appearing, or found everywhere.',example:'Smartphones have become ubiquitous in modern life.',syns:'omnipresent, universal, everywhere',subj:'SAT/ACT'},
+  {word:'Lucid',pos:'adjective',def:'Expressed clearly; easy to understand; mentally clear.',example:'Her lucid explanation helped everyone understand.',syns:'clear, coherent, transparent',subj:'SAT/ACT'},
+];
+
+const TILE_COLORS = [
+  {bg:'#dbeafe',text:'#1e40af'},{bg:'#d1fae5',text:'#065f46'},{bg:'#ede9fe',text:'#4c1d95'},
+  {bg:'#fef3c7',text:'#78350f'},{bg:'#cffafe',text:'#164e63'},{bg:'#fce7f3',text:'#9d174d'},
+  {bg:'#fef9c3',text:'#713f12'},{bg:'#f0fdf4',text:'#14532d'},{bg:'#fff7ed',text:'#7c2d12'},
+];
+
+let words = JSON.parse(localStorage.getItem('ace_words')||'[]');
+let selectedWord = null;
+let quizActive = false;
+let quizAnswered = 0, quizCorrect = 0;
+
+function save(){ localStorage.setItem('ace_words', JSON.stringify(words)); }
+
+function addWord(wordObj){
+  const w = wordObj || {
+    id: Date.now(),
+    word: document.getElementById('w-word').value.trim(),
+    pos: document.getElementById('w-pos').value,
+    subj: document.getElementById('w-subj').value,
+    def: document.getElementById('w-def').value.trim(),
+    example: document.getElementById('w-example').value.trim(),
+    syns: document.getElementById('w-syns').value.trim(),
+    pron: document.getElementById('w-pron').value.trim(),
+    mastered: false,
+    ts: Date.now(),
+  };
+  if(!w.word||!w.def){ alert('Enter a word and definition.'); return; }
+  if(words.find(x=>x.word.toLowerCase()===w.word.toLowerCase())){ alert(`"${w.word}" is already on your wall.`); return; }
+  words.unshift({...w, id:Date.now(), mastered:false, ts:Date.now()});
+  save();
+  if(!wordObj){
+    ['w-word','w-def','w-example','w-syns','w-pron'].forEach(id=>document.getElementById(id).value='');
+  }
+  renderWall(); renderStats(); populateFilter();
+}
+
+function addFeatured(f){
+  addWord({...f, id:Date.now(), mastered:false, ts:Date.now()});
+}
+
+function addAllFeatured(){
+  FEATURED.forEach(f=>{
+    if(!words.find(x=>x.word.toLowerCase()===f.word.toLowerCase())){
+      words.push({...f, id:Date.now()+Math.random(), mastered:false, ts:Date.now()});
+    }
+  });
+  save(); renderWall(); renderStats(); populateFilter();
+}
+
+function toggleMastered(id){
+  const w=words.find(w=>w.id===id);
+  if(w){ w.mastered=!w.mastered; save(); renderWall(); renderStats(); showDetail(id); }
+}
+
+function deleteWord(id){
+  if(!confirm('Remove this word?')) return;
+  words=words.filter(w=>w.id!==id);
+  save(); selectedWord=null; document.getElementById('detailPanel').style.display='none'; renderWall(); renderStats();
+}
+
+function getColor(word){
+  const sum=[...word].reduce((a,c)=>a+c.charCodeAt(0),0);
+  return TILE_COLORS[sum%TILE_COLORS.length];
+}
+
+function showDetail(id){
+  selectedWord=id;
+  const w=words.find(x=>x.id===id);
+  if(!w) return;
+  const c=getColor(w.word);
+  document.getElementById('detailPanel').style.display='block';
+  document.getElementById('detailPanel').innerHTML=`
+    <div class="word">${w.word}</div>
+    ${w.pron?`<div class="pronunciation">/${w.pron}/</div>`:''}
+    <div style="margin-bottom:8px"><span style="background:${c.bg};color:${c.text};padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700">${w.pos}</span> <span style="background:#f3f4f6;color:var(--muted);padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700">${w.subj}</span> ${w.mastered?'<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700">✅ Mastered</span>':''}</div>
+    <div class="definition"><strong>Definition:</strong> ${w.def}</div>
+    ${w.example?`<div class="example">"${w.example}"</div>`:''}
+    ${w.syns?`<div class="synonyms"><strong>Synonyms:</strong> ${w.syns}</div>`:''}
+    <div class="actions">
+      <button class="btn-sm" onclick="toggleMastered(${id})">${w.mastered?'↩ Unmark':'✅ Mark Mastered'}</button>
+      <button class="btn-sm del" onclick="deleteWord(${id})">✕ Remove</button>
+    </div>`;
+  document.getElementById('detailPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function renderStats(){
+  const total=words.length, mastered=words.filter(w=>w.mastered).length;
+  document.getElementById('statRow').innerHTML=`
+    <div class="stat"><div class="n">${total}</div><div class="l">Words</div></div>
+    <div class="stat"><div class="n" style="color:var(--green)">${mastered}</div><div class="l">Mastered</div></div>
+    <div class="stat"><div class="n" style="color:var(--red)">${total-mastered}</div><div class="l">Learning</div></div>
+    <div class="stat"><div class="n" style="color:var(--accent)">${total>0?Math.round(mastered/total*100):0}%</div><div class="l">Progress</div></div>`;
+}
+
+function populateFilter(){
+  const subjs=[...new Set(words.map(w=>w.subj))];
+  document.getElementById('filterSubj').innerHTML='<option value="">All Subjects</option>'+subjs.map(s=>`<option>${s}</option>`).join('');
+}
+
+function renderWall(){
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const fs=document.getElementById('filterSubj').value;
+  const fm=document.getElementById('filterStatus').value;
+  let list=words;
+  if(q) list=list.filter(w=>w.word.toLowerCase().includes(q)||w.def.toLowerCase().includes(q));
+  if(fs) list=list.filter(w=>w.subj===fs);
+  if(fm==='mastered') list=list.filter(w=>w.mastered);
+  if(fm==='learning') list=list.filter(w=>!w.mastered);
+
+  const wall=document.getElementById('wordWall');
+  if(!list.length){ wall.innerHTML='<div class="empty" style="width:100%">No words match.</div>'; return; }
+
+  wall.innerHTML=list.map(w=>{
+    const c=getColor(w.word);
+    return `<div class="word-tile" style="background:${c.bg};color:${c.text}" onclick="showDetail(${w.id})">
+      ${w.mastered?'<div class="mastered-dot"></div>':''}
+      <div class="w">${w.word}</div>
+      <div class="pos">${w.pos}</div>
+    </div>`;
+  }).join('');
+}
+
+// Featured tab
+document.getElementById('featuredList').innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:10px">'+
+  FEATURED.map(f=>{
+    const c=getColor(f.word);
+    return `<div style="background:${c.bg};color:${c.text};padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:700;font-size:.88rem" onclick="addFeatured(${JSON.stringify(f).replace(/"/g,"&quot;")}) "title="${f.def}">${f.word}</div>`;
+  }).join('')+'</div>'+
+  '<div style="margin-top:16px;font-size:.83rem;color:var(--muted)">Hover over a word to see its definition. Click to add it to your wall.</div>';
+
+// Quick add tags
+document.getElementById('quickAddTags').innerHTML=FEATURED.slice(0,8).map(f=>
+  `<span style="padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted)" onclick="addFeatured(${JSON.stringify(f).replace(/"/g,"&quot;")})">${f.word}</span>`
+).join('');
+
+// Quiz
+function startQuiz(){
+  const pool = words.filter(w=>!w.mastered);
+  if(pool.length<2){ document.getElementById('quizContent').innerHTML='<div class="empty">Add at least 2 unmastered words to quiz yourself!</div>'; return; }
+  const word = pool[Math.floor(Math.random()*pool.length)];
+  const type = Math.random()<0.5?'definition':'example';
+  // Get 3 wrong answers
+  const wrong = pool.filter(w=>w.id!==word.id).sort(()=>Math.random()-.5).slice(0,3);
+  const choices = [word, ...wrong].sort(()=>Math.random()-.5);
+
+  let q, getChoice;
+  if(type==='definition'){
+    q=`What is the definition of: <strong>${word.word}</strong>?`;
+    getChoice=c=>c.def.length>80?c.def.slice(0,80)+'...':c.def;
+  } else {
+    q=`Which word best fits: <em>"${word.example||word.def}"</em>`;
+    getChoice=c=>c.word;
+  }
+
+  document.getElementById('quizTitle').textContent='🧠 Vocabulary Quiz';
+  document.getElementById('quizContent').innerHTML=`
+    <div class="quiz-q">${q}</div>
+    <div class="quiz-choices">
+      ${choices.map((c,i)=>`<div class="qchoice" onclick="checkQuiz(this,${c.id===word.id},'${word.word}',${word.id})">${getChoice(c)}</div>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qfb"></div>
+    <div style="margin-top:14px;display:none" id="nextBtns">
+      <button class="btn btn-primary" onclick="startQuiz()">Next Word →</button>
+    </div>`;
+}
+
+function checkQuiz(el, correct, word, wordId){
+  if(el.parentElement.querySelector('.correct,.wrong')) return;
+  const fb=document.getElementById('qfb');
+  if(correct){
+    el.classList.add('correct');
+    fb.className='quiz-feedback ok';
+    fb.textContent='✅ Correct!';
+  } else {
+    el.classList.add('wrong');
+    [...el.parentElement.children].forEach(c=>{ if(c.onclick&&c.onclick.toString().includes('true')) c.classList.add('correct'); });
+    fb.className='quiz-feedback err';
+    fb.textContent=`✗ The answer was "${word}"`;
+  }
+  document.getElementById('nextBtns').style.display='block';
+}
+
+// Tab switching
+function showTab(id, el){
+  document.querySelectorAll('.section-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='quiz') startQuiz();
+}
+
+renderStats(); populateFilter(); renderWall();
+</script>
+</body>
+</html>

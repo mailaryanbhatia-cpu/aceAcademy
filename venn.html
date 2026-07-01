@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Venn Diagram Builder — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:24px 36px 18px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
+.hero p{color:#7a8fa8;font-size:.83rem;margin-top:3px}
+.hero-btns{display:flex;gap:8px}
+.btn{padding:8px 14px;border-radius:9px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+
+.workspace{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 130px)}
+@media(max-width:768px){.workspace{grid-template-columns:1fr}}
+.panel{background:#080e1c;border-right:1px solid #2a3a55;padding:18px 14px;overflow-y:auto}
+.canvas-area{padding:24px;display:flex;flex-direction:column;align-items:center;gap:20px}
+@media(max-width:768px){.panel{border-right:none;border-bottom:1px solid #2a3a55}}
+
+/* Mode toggle */
+.mode-toggle{display:flex;gap:4px;background:#0d1628;border-radius:10px;padding:4px;margin-bottom:16px}
+.mode-btn{flex:1;padding:7px;border-radius:7px;border:none;background:transparent;color:#7a8fa8;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;text-align:center}
+.mode-btn.active{background:#6366f1;color:#fff}
+
+/* Labels */
+.label-row{display:flex;gap:10px;margin-bottom:14px}
+.label-input{flex:1;padding:8px 11px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.82rem;font-family:inherit;outline:none;font-weight:700;transition:.15s}
+.label-input:focus{border-color:#6366f1}
+
+/* Item adding */
+.add-section{margin-bottom:14px}
+.section-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.section-dot{width:10px;height:10px;border-radius:50%}
+.add-row{display:flex;gap:7px}
+.add-input{flex:1;padding:8px 11px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.82rem;font-family:inherit;outline:none;transition:.15s}
+.add-input:focus{border-color:#6366f1}
+.add-btn{padding:8px 13px;border-radius:8px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;transition:.15s;white-space:nowrap}
+.item-list{margin-top:8px;display:flex;flex-direction:column;gap:5px}
+.item-tag{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px;font-size:.78rem;font-weight:600;background:#111c32;border:1px solid #2a3a55}
+.item-del{border:none;background:transparent;color:#3d4f6e;cursor:pointer;font-size:.7rem;margin-left:auto;transition:.15s}
+.item-del:hover{color:#f87171}
+
+/* Venn SVG */
+.venn-wrap{width:100%;max-width:680px}
+svg.venn{width:100%;height:auto}
+.circle-left{fill:rgba(99,102,241,.25);stroke:#6366f1;stroke-width:2}
+.circle-right{fill:rgba(16,185,129,.25);stroke:#10b981;stroke-width:2}
+.circle-mid{fill:rgba(245,158,11,.25);stroke:#f59e0b;stroke-width:2}
+.venn-label{font-family:'Inter',sans-serif;font-weight:800;font-size:14px}
+.venn-item{font-family:'Inter',sans-serif;font-size:11px;font-weight:600}
+
+/* Table view */
+.table-view{width:100%;border-collapse:collapse;background:#111c32;border-radius:12px;overflow:hidden}
+.table-view th{padding:11px 14px;background:#0d1628;font-size:.75rem;font-weight:800;text-align:left;border-bottom:1px solid #2a3a55}
+.table-view td{padding:9px 14px;font-size:.82rem;border-bottom:1px solid #1a2540;vertical-align:top}
+.table-view tr:last-child td{border-bottom:none}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="venn.html" class="nav-link active">⭕ Venn Diagram</a>
+  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
+  <a href="research.html" class="nav-link">🔬 Research</a>
+  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+</nav>
+
+<div class="hero">
+  <div>
+    <h1>⭕ Venn Diagram <span>Builder</span></h1>
+    <p>Compare two or three topics visually. Click Export to save as image.</p>
+  </div>
+  <div class="hero-btns">
+    <button class="btn btn-ghost" onclick="clearAll()">🗑 Clear</button>
+    <button class="btn btn-ghost" onclick="exportDiagram()">📤 Export</button>
+    <button class="btn btn-primary" onclick="saveDiagram()">💾 Save</button>
+  </div>
+</div>
+
+<div class="workspace">
+  <div class="panel">
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode2btn" onclick="setMode(2)">2 Circles</button>
+      <button class="mode-btn" id="mode3btn" onclick="setMode(3)">3 Circles</button>
+    </div>
+
+    <!-- Labels -->
+    <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:8px">Circle Labels</div>
+    <div class="label-row" id="labelRow2">
+      <input class="label-input" id="label1" placeholder="Topic A" style="border-color:#6366f1;color:#a5b4fc" oninput="render()">
+      <input class="label-input" id="label2" placeholder="Topic B" style="border-color:#10b981;color:#6ee7b7" oninput="render()">
+    </div>
+    <div class="label-row" id="labelRow3" style="display:none">
+      <input class="label-input" id="label3" placeholder="Topic C" style="border-color:#f59e0b;color:#fcd34d;max-width:120px" oninput="render()">
+    </div>
+
+    <div style="height:1px;background:#2a3a55;margin:14px 0"></div>
+
+    <!-- Left only -->
+    <div class="add-section">
+      <div class="section-title"><div class="section-dot" style="background:#6366f1"></div><span id="sec1label">Topic A Only</span></div>
+      <div class="add-row">
+        <input class="add-input" id="addLeft" placeholder="Add item…" onkeydown="if(event.key==='Enter')addItem('left')">
+        <button class="add-btn" style="background:#6366f1" onclick="addItem('left')">＋</button>
+      </div>
+      <div class="item-list" id="listLeft"></div>
+    </div>
+
+    <!-- Both (center) -->
+    <div class="add-section">
+      <div class="section-title"><div class="section-dot" style="background:#a78bfa"></div><span>Both / All (Overlap)</span></div>
+      <div class="add-row">
+        <input class="add-input" id="addCenter" placeholder="Add shared item…" onkeydown="if(event.key==='Enter')addItem('center')">
+        <button class="add-btn" style="background:#7c3aed" onclick="addItem('center')">＋</button>
+      </div>
+      <div class="item-list" id="listCenter"></div>
+    </div>
+
+    <!-- Right only -->
+    <div class="add-section">
+      <div class="section-title"><div class="section-dot" style="background:#10b981"></div><span id="sec2label">Topic B Only</span></div>
+      <div class="add-row">
+        <input class="add-input" id="addRight" placeholder="Add item…" onkeydown="if(event.key==='Enter')addItem('right')">
+        <button class="add-btn" style="background:#10b981" onclick="addItem('right')">＋</button>
+      </div>
+      <div class="item-list" id="listRight"></div>
+    </div>
+
+    <!-- Third circle (3-mode only) -->
+    <div class="add-section" id="sec3wrap" style="display:none">
+      <div class="section-title"><div class="section-dot" style="background:#f59e0b"></div><span id="sec3label">Topic C Only</span></div>
+      <div class="add-row">
+        <input class="add-input" id="addThird" placeholder="Add item…" onkeydown="if(event.key==='Enter')addItem('third')">
+        <button class="add-btn" style="background:#d97706" onclick="addItem('third')">＋</button>
+      </div>
+      <div class="item-list" id="listThird"></div>
+    </div>
+
+    <!-- Saved -->
+    <div style="height:1px;background:#2a3a55;margin:14px 0"></div>
+    <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:8px">Saved Diagrams</div>
+    <div id="savedList"><div style="color:#7a8fa8;font-size:.75rem">No saved diagrams.</div></div>
+  </div>
+
+  <div class="canvas-area">
+    <div class="venn-wrap">
+      <svg class="venn" id="vennSvg" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div id="tableView" style="width:100%;max-width:680px"></div>
+  </div>
+</div>
+
+<script>
+let mode = 2;
+let items = { left: [], center: [], right: [], third: [] };
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('mode2btn').classList.toggle('active', m === 2);
+  document.getElementById('mode3btn').classList.toggle('active', m === 3);
+  document.getElementById('labelRow3').style.display = m === 3 ? 'flex' : 'none';
+  document.getElementById('sec3wrap').style.display = m === 3 ? 'block' : 'none';
+  render();
+}
+
+function addItem(zone) {
+  const input = document.getElementById('add' + zone.charAt(0).toUpperCase() + zone.slice(1));
+  const val = input.value.trim();
+  if (!val) return;
+  items[zone].push(val);
+  input.value = '';
+  renderLists();
+  render();
+  save();
+}
+
+function deleteItem(zone, idx) {
+  items[zone].splice(idx, 1);
+  renderLists();
+  render();
+  save();
+}
+
+function renderLists() {
+  const zones = ['left','center','right','third'];
+  zones.forEach(zone => {
+    const list = document.getElementById('list' + zone.charAt(0).toUpperCase() + zone.slice(1));
+    if (!list) return;
+    const colors = { left:'#6366f1', center:'#7c3aed', right:'#10b981', third:'#f59e0b' };
+    list.innerHTML = items[zone].map((item, i) => `
+      <div class="item-tag" style="border-color:${colors[zone]}22">
+        <span style="color:${colors[zone]};font-size:.6rem">●</span> ${item}
+        <button class="item-del" onclick="deleteItem('${zone}',${i})">✕</button>
+      </div>
+    `).join('');
+  });
+
+  const l1 = document.getElementById('label1').value || 'Topic A';
+  const l2 = document.getElementById('label2').value || 'Topic B';
+  const l3 = document.getElementById('label3')?.value || 'Topic C';
+  document.getElementById('sec1label').textContent = l1 + ' Only';
+  document.getElementById('sec2label').textContent = l2 + ' Only';
+  if (document.getElementById('sec3label')) document.getElementById('sec3label').textContent = l3 + ' Only';
+}
+
+function wrapText(items, x, y, maxWidth, lineHeight, fill, svg) {
+  items.forEach((item, idx) => {
+    const words = item.split(' ');
+    let line = '', lines = [];
+    words.forEach(w => {
+      const test = line + (line ? ' ' : '') + w;
+      if (test.length * 6 > maxWidth && line) { lines.push(line); line = w; }
+      else line = test;
+    });
+    if (line) lines.push(line);
+    const startY = y + idx * (lines.length * lineHeight + 4);
+    lines.forEach((l, li) => {
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('x', x); t.setAttribute('y', startY + li * lineHeight);
+      t.setAttribute('text-anchor', 'middle'); t.setAttribute('fill', fill);
+      t.setAttribute('font-size', '11'); t.setAttribute('font-family', 'Inter,sans-serif');
+      t.setAttribute('font-weight', '600');
+      t.textContent = l;
+      svg.appendChild(t);
+    });
+  });
+}
+
+function render() {
+  const svg = document.getElementById('vennSvg');
+  svg.innerHTML = '';
+  const l1 = document.getElementById('label1').value || 'Topic A';
+  const l2 = document.getElementById('label2').value || 'Topic B';
+  const l3 = document.getElementById('label3')?.value || 'Topic C';
+
+  if (mode === 2) {
+    svg.setAttribute('viewBox', '0 0 680 380');
+    // Left circle
+    const c1 = makeCircle(230, 190, 160, 'rgba(99,102,241,.2)', '#6366f1');
+    // Right circle
+    const c2 = makeCircle(450, 190, 160, 'rgba(16,185,129,.2)', '#10b981');
+    svg.appendChild(c1); svg.appendChild(c2);
+
+    // Labels
+    addLabel(svg, l1, 140, 40, '#a5b4fc');
+    addLabel(svg, l2, 540, 40, '#6ee7b7');
+    addLabel(svg, 'Both', 340, 40, '#c4b5fd');
+
+    // Items
+    listItems(svg, items.left, 160, 100, 120, '#a5b4fc');
+    listItems(svg, items.center, 340, 100, 100, '#c4b5fd');
+    listItems(svg, items.right, 520, 100, 120, '#6ee7b7');
+  } else {
+    svg.setAttribute('viewBox', '0 0 680 460');
+    const c1 = makeCircle(240, 170, 160, 'rgba(99,102,241,.2)', '#6366f1');
+    const c2 = makeCircle(440, 170, 160, 'rgba(16,185,129,.2)', '#10b981');
+    const c3 = makeCircle(340, 320, 160, 'rgba(245,158,11,.2)', '#f59e0b');
+    svg.appendChild(c1); svg.appendChild(c2); svg.appendChild(c3);
+
+    addLabel(svg, l1, 120, 80, '#a5b4fc');
+    addLabel(svg, l2, 560, 80, '#6ee7b7');
+    addLabel(svg, l3, 340, 440, '#fcd34d');
+    addLabel(svg, 'All', 340, 220, '#c4b5fd');
+
+    listItems(svg, items.left, 170, 130, 120, '#a5b4fc');
+    listItems(svg, items.right, 510, 130, 120, '#6ee7b7');
+    listItems(svg, items.third, 340, 360, 100, '#fcd34d');
+    listItems(svg, items.center, 340, 210, 80, '#c4b5fd');
+  }
+
+  renderTable(l1, l2, l3);
+}
+
+function makeCircle(cx, cy, r, fill, stroke) {
+  const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+  c.setAttribute('fill', fill); c.setAttribute('stroke', stroke); c.setAttribute('stroke-width', '2');
+  return c;
+}
+
+function addLabel(svg, text, x, y, fill) {
+  const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  t.setAttribute('x', x); t.setAttribute('y', y);
+  t.setAttribute('text-anchor', 'middle'); t.setAttribute('fill', fill);
+  t.setAttribute('font-size', '14'); t.setAttribute('font-family', 'Inter,sans-serif');
+  t.setAttribute('font-weight', '800');
+  t.textContent = text;
+  svg.appendChild(t);
+}
+
+function listItems(svg, arr, x, startY, maxW, fill) {
+  arr.slice(0, 8).forEach((item, i) => {
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', x); t.setAttribute('y', startY + i * 16);
+    t.setAttribute('text-anchor', 'middle'); t.setAttribute('fill', fill);
+    t.setAttribute('font-size', '11'); t.setAttribute('font-family', 'Inter,sans-serif');
+    t.setAttribute('font-weight', '600');
+    t.textContent = item.length > 18 ? item.substring(0, 17) + '…' : item;
+    svg.appendChild(t);
+  });
+}
+
+function renderTable(l1, l2, l3) {
+  const tv = document.getElementById('tableView');
+  const hasItems = Object.values(items).some(arr => arr.length);
+  if (!hasItems) { tv.innerHTML = ''; return; }
+
+  const cols = mode === 2
+    ? [l1 + ' Only', 'Both', l2 + ' Only']
+    : [l1 + ' Only', 'Both / All', l2 + ' Only', l3 + ' Only'];
+  const colItems = mode === 2
+    ? [items.left, items.center, items.right]
+    : [items.left, items.center, items.right, items.third];
+  const maxLen = Math.max(...colItems.map(a => a.length), 1);
+
+  let rows = '';
+  for (let i = 0; i < maxLen; i++) {
+    rows += '<tr>' + colItems.map(col => `<td>${col[i] || ''}</td>`).join('') + '</tr>';
+  }
+
+  tv.innerHTML = `<table class="table-view"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function clearAll() {
+  if (!confirm('Clear all items?')) return;
+  items = { left: [], center: [], right: [], third: [] };
+  renderLists();
+  render();
+}
+
+function save() {
+  try { localStorage.setItem('venn-items', JSON.stringify({ items, mode, labels: [document.getElementById('label1').value, document.getElementById('label2').value, document.getElementById('label3')?.value || ''] })); } catch(e) {}
+}
+
+function saveDiagram() {
+  const name = prompt('Save as:');
+  if (!name) return;
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem('venn-saved') || '[]'); } catch(e) {}
+  saved.unshift({ name, items: JSON.parse(JSON.stringify(items)), mode, labels: [document.getElementById('label1').value, document.getElementById('label2').value, document.getElementById('label3')?.value || ''], savedAt: new Date().toLocaleString() });
+  try { localStorage.setItem('venn-saved', JSON.stringify(saved.slice(0, 15))); } catch(e) {}
+  renderSavedList();
+  alert('Saved!');
+}
+
+function renderSavedList() {
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem('venn-saved') || '[]'); } catch(e) {}
+  const list = document.getElementById('savedList');
+  if (!saved.length) { list.innerHTML = '<div style="color:#7a8fa8;font-size:.75rem">No saved diagrams.</div>'; return; }
+  list.innerHTML = saved.map((d, i) => `
+    <div style="padding:8px 10px;background:#111c32;border-radius:9px;border:1.5px solid #2a3a55;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+      <div style="flex:1">
+        <div style="font-size:.8rem;font-weight:700">${d.name}</div>
+        <div style="font-size:.68rem;color:#7a8fa8">${d.savedAt}</div>
+      </div>
+      <button onclick="loadDiagram(${i})" style="padding:4px 10px;border-radius:6px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s">Load</button>
+    </div>
+  `).join('');
+}
+
+function loadDiagram(i) {
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem('venn-saved') || '[]'); } catch(e) {}
+  const d = saved[i];
+  if (!d) return;
+  items = d.items;
+  setMode(d.mode || 2);
+  document.getElementById('label1').value = d.labels?.[0] || '';
+  document.getElementById('label2').value = d.labels?.[1] || '';
+  if (document.getElementById('label3')) document.getElementById('label3').value = d.labels?.[2] || '';
+  renderLists();
+  render();
+}
+
+function exportDiagram() {
+  const svgEl = document.getElementById('vennSvg');
+  const serializer = new XMLSerializer();
+  const svgStr = serializer.serializeToString(svgEl);
+  const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'venn-diagram.svg';
+  a.click();
+}
+
+// Load saved state
+try {
+  const s = JSON.parse(localStorage.getItem('venn-items') || '{}');
+  if (s.items) items = s.items;
+  if (s.mode) { mode = s.mode; setMode(mode); }
+  if (s.labels) {
+    document.getElementById('label1').value = s.labels[0] || '';
+    document.getElementById('label2').value = s.labels[1] || '';
+    if (document.getElementById('label3')) document.getElementById('label3').value = s.labels[2] || '';
+  }
+} catch(e) {}
+
+renderLists();
+renderSavedList();
+render();
+</script>
+</body>
+</html>

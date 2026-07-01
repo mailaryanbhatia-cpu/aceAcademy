@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Concept Explainer — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
+<style>
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+nav.topnav .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px;white-space:nowrap;flex-shrink:0}
+nav.topnav .logo span{color:#a5b4fc}
+.nav-link{font-size:.78rem;font-weight:500;color:#94a3b8;text-decoration:none;padding:6px 11px;border-radius:8px;white-space:nowrap;transition:.15s}
+.nav-link:hover,.nav-link.active{background:#1e2d45;color:#e2e8f0}
+
+main{max-width:820px;margin:0 auto;padding:32px 20px 60px}
+h1{font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:6px}
+.subtitle{color:var(--muted);font-size:.92rem;margin-bottom:28px}
+
+.search-box{display:flex;gap:10px;margin-bottom:20px}
+.search-box input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:1rem;color:var(--text);outline:none;transition:.2s}
+.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.18)}
+.search-box input::placeholder{color:var(--muted)}
+.explain-btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px 22px;font-size:.95rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}
+.explain-btn:hover{background:var(--accent-hover)}
+.explain-btn:disabled{opacity:.5;cursor:default}
+
+.suggestions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.sug-chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:.78rem;color:var(--text-2);cursor:pointer;transition:.15s}
+.sug-chip:hover{border-color:var(--accent);color:var(--accent-2)}
+
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-bottom:18px;display:none}
+.result-card.show{display:block}
+.result-card h2{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.result-card h2 .badge{font-size:.7rem;background:var(--accent-light);color:var(--accent-2);border-radius:6px;padding:2px 8px;font-weight:600}
+
+.section-label{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+.section-label:first-of-type{margin-top:0}
+
+.definition{font-size:.98rem;line-height:1.7;color:var(--text);background:var(--surface-2);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:4px}
+
+.key-points{display:flex;flex-direction:column;gap:7px}
+.kp{display:flex;gap:10px;align-items:flex-start;font-size:.88rem;color:var(--text-2);line-height:1.5}
+.kp::before{content:"•";color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px}
+
+.examples-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.example-card{background:var(--surface-3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:.83rem;color:var(--text-2);line-height:1.5}
+.example-card strong{color:var(--text);display:block;margin-bottom:3px;font-size:.78rem}
+
+.why-matters{font-size:.88rem;line-height:1.65;color:var(--text-2);background:rgba(99,102,241,.08);border-radius:8px;padding:13px 15px}
+
+.related-chips{display:flex;flex-wrap:wrap;gap:7px}
+.rel-chip{background:var(--surface-3);border:1px solid var(--border);border-radius:6px;padding:4px 11px;font-size:.76rem;color:var(--muted);cursor:pointer;transition:.15s}
+.rel-chip:hover{border-color:var(--accent);color:var(--accent-2)}
+
+.not-found{text-align:center;padding:40px 20px;display:none}
+.not-found.show{display:block}
+.not-found .icon{font-size:3rem;margin-bottom:12px}
+.not-found p{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+
+.history-section{margin-top:40px}
+.history-section h3{font-size:.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.history-list{display:flex;flex-direction:column;gap:6px}
+.history-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:.84rem;color:var(--text-2);cursor:pointer;transition:.15s;display:flex;justify-content:space-between;align-items:center}
+.history-item:hover{border-color:var(--accent);color:var(--text)}
+.history-item .del{color:var(--muted);font-size:.75rem;padding:2px 7px;border-radius:5px}
+.history-item .del:hover{background:var(--danger-bg);color:var(--danger)}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="index.html" class="nav-link">📚 Curriculum</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+  <a href="conceptexplainer.html" class="nav-link active">💡 Explainer</a>
+</nav>
+
+<main>
+  <h1>💡 Concept Explainer</h1>
+  <p class="subtitle">Type any topic, term, or concept — get a plain-English breakdown instantly.</p>
+
+  <div class="search-box">
+    <input type="text" id="topicInput" placeholder="e.g. photosynthesis, quadratic formula, Manifest Destiny…" autocomplete="off" oninput="clearResult()" onkeydown="if(event.key==='Enter')explain()"/>
+    <button class="explain-btn" id="explainBtn" onclick="explain()">Explain It</button>
+  </div>
+
+  <div class="suggestions" id="suggestions"></div>
+
+  <div class="result-card" id="resultCard">
+    <h2 id="resultTitle"></h2>
+    <div class="section-label">Definition</div>
+    <div class="definition" id="resultDef"></div>
+    <div class="section-label">Key Points</div>
+    <div class="key-points" id="resultPoints"></div>
+    <div class="section-label">Examples</div>
+    <div class="examples-grid" id="resultExamples"></div>
+    <div class="section-label">Why It Matters</div>
+    <div class="why-matters" id="resultWhy"></div>
+    <div class="section-label">Related Concepts</div>
+    <div class="related-chips" id="resultRelated"></div>
+  </div>
+
+  <div class="not-found" id="notFound">
+    <div class="icon">🔍</div>
+    <p>No explanation found for <strong id="notFoundTerm"></strong>.<br>Try a different keyword or check the spelling.</p>
+    <p style="font-size:.8rem;color:var(--muted)">Tip: Try searching the full term, or a related topic like "photosynthesis" instead of "photosynth".</p>
+  </div>
+
+  <div class="history-section" id="historySection" style="display:none">
+    <h3>Recently Explained</h3>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</main>
+
+<script>
+const CONCEPTS = [
+  {
+    key:['photosynthesis','photosynthes'],
+    title:'Photosynthesis',subject:'Biology',
+    def:'Photosynthesis is the process by which plants, algae, and some bacteria convert light energy (usually from the sun) into chemical energy stored as glucose (sugar), using carbon dioxide and water.',
+    points:['Occurs in the chloroplasts of plant cells, specifically in the thylakoids and stroma','Equation: 6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂','Two stages: Light Reactions (capture energy) and Calvin Cycle (make sugar)','Chlorophyll is the green pigment that absorbs light — mostly red and blue wavelengths','Produces oxygen as a byproduct, which is essential for most life on Earth'],
+    examples:[{label:'Sunlight ➜ Sugar',desc:'A leaf uses sunlight to convert CO₂ from the air and H₂O from roots into glucose.'},{label:'Oxygen Release',desc:'Aquatic plants like elodea visibly bubble O₂ when placed under light.'},{label:'Autumn Leaves',desc:'When days shorten, chlorophyll breaks down, revealing other pigments underneath.'}],
+    why:'Photosynthesis is the foundation of nearly all food chains on Earth. It transfers energy from the sun into biological systems and produces the oxygen we breathe.',
+    related:['Cellular Respiration','Chlorophyll','Calvin Cycle','Glucose','Carbon Cycle']
+  },
+  {
+    key:['mitosis','cell division','mitosi'],
+    title:'Mitosis',subject:'Biology',
+    def:'Mitosis is the process by which one cell divides into two genetically identical daughter cells. It is used for growth, repair, and asexual reproduction.',
+    points:['4 phases: Prophase, Metaphase, Anaphase, Telophase (PMAT)','DNA is duplicated during Interphase before mitosis begins','Produces 2 cells with the same chromosome number as the parent (diploid → diploid)','Different from meiosis, which produces 4 genetically unique sex cells','A full cycle including interphase is called the cell cycle'],
+    examples:[{label:'Skin Healing',desc:'When you cut your skin, cells undergo mitosis to replace damaged tissue.'},{label:'Plant Growth',desc:'A seedling grows taller as root and stem cells divide via mitosis.'},{label:'Cancer',desc:'Cancer is uncontrolled mitosis — cells divide without normal regulation.'}],
+    why:'Mitosis enables organisms to grow, repair themselves, and reproduce asexually. Understanding it helps explain both normal biology and diseases like cancer.',
+    related:['Meiosis','Cell Cycle','DNA Replication','Interphase','Chromosomes']
+  },
+  {
+    key:['meiosis'],
+    title:'Meiosis',subject:'Biology',
+    def:'Meiosis is a type of cell division that produces four genetically unique sex cells (gametes) — sperm or eggs — each with half the normal chromosome count.',
+    points:['Reduces chromosome number by half (diploid → haploid)','Two rounds of division: Meiosis I and Meiosis II','Crossing over in Prophase I creates genetic variation','Produces 4 genetically different daughter cells','Only occurs in reproductive organs (gonads)'],
+    examples:[{label:'Sperm & Egg',desc:'Human sperm and eggs each have 23 chromosomes; when they unite, the zygote has 46.'},{label:'Genetic Variation',desc:'Siblings look different because crossing over reshuffles genes differently each time.'}],
+    why:'Meiosis enables sexual reproduction and generates genetic diversity, which drives evolution and helps species adapt to changing environments.',
+    related:['Mitosis','Gametes','Chromosomes','Crossing Over','Genetics']
+  },
+  {
+    key:['quadratic','quadratic formula','quadratic equation'],
+    title:'Quadratic Formula',subject:'Algebra',
+    def:'The quadratic formula solves any equation in the form ax² + bx + c = 0. The formula is: x = (−b ± √(b²−4ac)) / 2a.',
+    points:['Works when factoring is difficult or impossible','The discriminant (b²−4ac) tells you how many solutions exist: >0 = two real roots, =0 = one root, <0 = no real roots (complex)','Always identify a, b, and c first — a is the x² coefficient','The ± sign gives two possible answers','Derived by completing the square on the general form ax²+bx+c=0'],
+    examples:[{label:'x²−5x+6=0',desc:'a=1, b=−5, c=6. Discriminant=1. x=(5±1)/2 → x=3 or x=2.'},{label:'x²+4=0',desc:'Discriminant=−16 (negative), so no real solutions — complex roots only.'},{label:'x²−4x+4=0',desc:'Discriminant=0, so exactly one solution: x=2.'}],
+    why:'The quadratic formula is one of the most powerful tools in algebra. It unlocks parabolic motion in physics, profit/loss models in economics, and countless engineering problems.',
+    related:['Completing the Square','Discriminant','Parabola','Factoring','Polynomials']
+  },
+  {
+    key:['pythagorean','pythagorean theorem','pythagoras'],
+    title:'Pythagorean Theorem',subject:'Geometry',
+    def:'In a right triangle, the square of the hypotenuse equals the sum of the squares of the other two sides: a² + b² = c², where c is the hypotenuse.',
+    points:['Only applies to right triangles (the side opposite the 90° angle is the hypotenuse)','Used to find any missing side when two sides are known','Pythagorean triples: 3-4-5, 5-12-13, 8-15-17 always satisfy the theorem','The converse is also true: if a²+b²=c², the triangle is a right triangle','Named after Greek mathematician Pythagoras (~570–495 BC)'],
+    examples:[{label:'Find Hypotenuse',desc:'Legs 3 and 4: c²=9+16=25, so c=5.'},{label:'Diagonal of a Square',desc:'A 1×1 square has diagonal √2 ≈ 1.41.'},{label:'Navigation',desc:'A ship goes 6 miles east and 8 miles north — direct distance = 10 miles.'}],
+    why:'The Pythagorean Theorem underlies GPS, construction, navigation, physics, and computer graphics. It is one of the most widely used formulas in all of mathematics.',
+    related:['Right Triangles','Trigonometry','Distance Formula','SOH-CAH-TOA','Hypotenuse']
+  },
+  {
+    key:['manifest destiny','manifest'],
+    title:'Manifest Destiny',subject:'U.S. History',
+    def:'Manifest Destiny was the 19th-century belief that the United States was destined — by God and by nature — to expand westward across North America to the Pacific Ocean.',
+    points:['Coined by journalist John O\'Sullivan in 1845','Justified territorial expansion including the Mexican-American War (1846–48) and Louisiana Purchase','Led to the displacement and destruction of Native American nations','Fueled migration via the Oregon Trail and California Gold Rush','Reflected a belief in American exceptionalism and racial superiority'],
+    examples:[{label:'Oregon Trail',desc:'500,000 settlers migrated west between 1840–1860, displacing Indigenous peoples.'},{label:'Mexican-American War',desc:'The U.S. gained California, Texas, and the Southwest (Mexican Cession) after the 1846 war.'},{label:'Transcontinental Railroad',desc:'Completed in 1869, connected the coasts and symbolized "civilizing" the West.'}],
+    why:'Manifest Destiny shaped the geographic, political, and cultural boundaries of the modern United States — and established patterns of expansion and empire that persisted into the 20th century.',
+    related:['Westward Expansion','Mexican-American War','Indian Removal Act','Gold Rush','Imperialism']
+  },
+  {
+    key:['civil war','american civil war'],
+    title:'American Civil War',subject:'U.S. History',
+    def:'The Civil War (1861–1865) was a conflict between the Northern states (Union) and the Southern states (Confederacy) over slavery, states\' rights, and the future of the nation.',
+    points:['Confederate states seceded after Lincoln\'s 1860 election, fearing he would end slavery','Key turning points: Battle of Antietam (1862) and Gettysburg (1863)','Emancipation Proclamation (1863) freed enslaved people in Confederate states','Union victory preserved the U.S. and ended slavery','Reconstruction followed (1865–1877), reshaping the South'],
+    examples:[{label:'Gettysburg',desc:'3-day battle with 50,000+ casualties — Union victory halted Confederate invasion of the North.'},{label:'Emancipation Proclamation',desc:'Lincoln\'s executive order redefined the war as a fight for freedom, not just union.'},{label:'Surrender at Appomattox',desc:'Lee surrendered to Grant on April 9, 1865, effectively ending the war.'}],
+    why:'The Civil War settled the question of slavery and national unity. Its aftermath — Reconstruction, the 13th/14th/15th Amendments — shaped American democracy, race relations, and politics for over a century.',
+    related:['Slavery','Reconstruction','Abraham Lincoln','Emancipation Proclamation','States\' Rights']
+  },
+  {
+    key:['natural selection','natural select','darwin'],
+    title:'Natural Selection',subject:'Biology / Evolution',
+    def:'Natural selection is the mechanism of evolution in which organisms with traits better suited to their environment survive, reproduce, and pass those traits to offspring, gradually changing populations over time.',
+    points:['Four conditions: variation, heritability, differential survival, differential reproduction','Proposed by Charles Darwin in "On the Origin of Species" (1859)','Does not produce "perfect" organisms — only "good enough" ones for current conditions','Can lead to speciation when populations become reproductively isolated','Works on existing variation — does not create mutations, but selects among them'],
+    examples:[{label:'Peppered Moths',desc:'Industrial pollution darkened trees; dark moths survived better than light ones — dark moths became more common.'},{label:'Antibiotic Resistance',desc:'Bacteria that survive antibiotics reproduce — populations evolve resistance over time.'},{label:'Finch Beaks',desc:'Darwin observed that finch beak shapes matched food sources on different Galápagos Islands.'}],
+    why:'Natural selection explains the diversity of life on Earth and is the cornerstone of modern biology. It also has practical applications in medicine, agriculture, and conservation.',
+    related:['Evolution','Mutation','Adaptation','Speciation','Darwin','Genetics']
+  },
+  {
+    key:['newton','newton\'s laws','laws of motion','inertia'],
+    title:"Newton's Laws of Motion",subject:'Physics',
+    def:'Newton\'s three laws describe how objects move and interact with forces. They form the foundation of classical mechanics.',
+    points:['First Law (Inertia): An object at rest stays at rest; an object in motion stays in motion — unless acted on by a net force','Second Law: F = ma (Force = mass × acceleration) — larger force = more acceleration; larger mass = less acceleration','Third Law: For every action there is an equal and opposite reaction','These laws apply at everyday speeds — break down near speed of light (where relativity takes over)','Used to analyze everything from car crashes to rocket launches'],
+    examples:[{label:'Seatbelts (1st Law)',desc:'When a car stops suddenly, your body continues forward — inertia. The seatbelt applies force to stop you.'},{label:'Pushing a Cart (2nd Law)',desc:'A heavier grocery cart requires more force to accelerate to the same speed as an empty one.'},{label:'Rocket (3rd Law)',desc:'Rocket exhaust pushes down → rocket goes up. Equal forces, opposite directions.'}],
+    why:'Newton\'s Laws are the foundation of classical mechanics, used in engineering, architecture, space travel, sports science, and virtually every field that involves motion.',
+    related:['Force','Friction','Gravity','Momentum','Acceleration','Mass']
+  },
+  {
+    key:['supply and demand','supply','demand','market equilibrium'],
+    title:'Supply and Demand',subject:'Economics',
+    def:'Supply and demand is the economic model explaining how prices and quantities in a market are determined by the interaction between producers (supply) and consumers (demand).',
+    points:['Law of Demand: As price rises, quantity demanded falls (inverse relationship)','Law of Supply: As price rises, quantity supplied rises (direct relationship)','Equilibrium: Where supply and demand curves intersect — the market-clearing price','Shifts: Changes in income, preferences, or production costs shift the curves','Elasticity: How sensitive supply or demand is to price changes'],
+    examples:[{label:'Concert Tickets',desc:'High demand + limited seats = high prices. When demand falls, venues discount tickets.'},{label:'Gas Prices',desc:'When oil supply drops (OPEC cuts), prices rise. When demand drops (recession), prices fall.'},{label:'Smartphones',desc:'New model releases reduce demand for old models, dropping their prices.'}],
+    why:'Supply and demand is the core model of market economics. It explains prices, production decisions, wages, and resource allocation in virtually every market.',
+    related:['Elasticity','Market Equilibrium','Price Floor','Price Ceiling','Inflation','GDP']
+  },
+  {
+    key:['theme','literary theme','motif'],
+    title:'Theme (Literature)',subject:'ELA',
+    def:'A theme is the central message or insight about life that an author conveys through a story. It is a universal truth or observation, expressed as a complete idea — not just a topic.',
+    points:['Theme ≠ topic. Topic: "war." Theme: "War destroys innocence."','A single work can have multiple themes','Themes are revealed through character choices, conflict, and consequences','Common themes: courage, identity, justice, power, love, loss, survival','Universal themes connect fictional stories to real human experience'],
+    examples:[{label:'The Great Gatsby',desc:'Theme: The American Dream is ultimately hollow and corrupt.'},{label:'To Kill a Mockingbird',desc:'Theme: Moral courage means doing what\'s right even when it\'s unpopular.'},{label:'Animal Farm',desc:'Theme: Power corrupts, and unchecked authority leads to oppression.'}],
+    why:'Identifying themes allows readers to connect literature to their own lives and the broader human condition. It is a core skill in literary analysis and AP exams.',
+    related:['Motif','Symbol','Character Arc','Conflict','Author\'s Purpose','Allegory']
+  },
+  {
+    key:['slope','slope intercept','linear equation','y=mx+b'],
+    title:'Slope & Linear Equations',subject:'Algebra',
+    def:'Slope (m) measures the steepness and direction of a line: m = (y₂−y₁)/(x₂−x₁). The slope-intercept form y = mx + b shows the slope and y-intercept directly.',
+    points:['Positive slope: line goes up left to right. Negative: goes down. Zero: horizontal. Undefined: vertical','y-intercept (b): where the line crosses the y-axis (when x=0)','Two points are enough to define any line','Parallel lines have the same slope; perpendicular lines have slopes that are negative reciprocals','Standard form: Ax + By = C; Point-slope: y−y₁ = m(x−x₁)'],
+    examples:[{label:'y = 2x + 3',desc:'Slope is 2 (rises 2 for every 1 right), y-intercept is 3.'},{label:'Cost Model',desc:'Taxi: y = 2.50x + 3 (base fare $3, $2.50/mile). Slope = cost per mile.'},{label:'Parallel Lines',desc:'y = 3x + 1 and y = 3x − 5 are parallel (same slope, different b).'}],
+    why:'Linear equations model countless real-world situations: costs, rates, distance, trends. Slope is used in calculus, statistics (regression), and data analysis.',
+    related:['Graphing','Linear Equations','Systems of Equations','Rate of Change','X-intercept']
+  },
+  {
+    key:['cell','plant cell','animal cell','cell structure','organelle'],
+    title:'Cell Structure',subject:'Biology',
+    def:'The cell is the basic unit of life. All living organisms are made of one or more cells. Cells contain organelles that carry out specific functions.',
+    points:['Prokaryotes (bacteria): no nucleus; simpler structure. Eukaryotes (plants, animals, fungi): have a membrane-bound nucleus','Cell membrane controls what enters and exits','Nucleus contains DNA and directs cell activity','Mitochondria produce energy (ATP) through cellular respiration','Plant cells have cell walls (rigid), chloroplasts (photosynthesis), and large central vacuoles; animal cells do not'],
+    examples:[{label:'Mitochondria',desc:'"Powerhouse of the cell" — converts glucose into ATP through respiration.'},{label:'Ribosome',desc:'Small organelles that build proteins from amino acids based on DNA instructions.'},{label:'Vacuole',desc:'In plant cells, stores water; keeps plant rigid (turgor pressure).'}],
+    why:'Understanding cell structure is the foundation of biology. All disease, medicine, genetics, and physiology depends on understanding how cells function.',
+    related:['Organelles','Prokaryotes','Eukaryotes','Mitosis','DNA','Cellular Respiration']
+  },
+  {
+    key:['constitution','us constitution','bill of rights','amendments'],
+    title:'U.S. Constitution',subject:'Civics / U.S. History',
+    def:'The U.S. Constitution is the supreme law of the United States, ratified in 1788. It establishes the three branches of government, the powers they hold, and the rights of citizens.',
+    points:['Three branches: Legislative (Congress makes laws), Executive (President enforces laws), Judicial (Courts interpret laws)','Checks and balances prevent any one branch from becoming too powerful','The Bill of Rights (first 10 amendments) protects individual freedoms: speech, religion, press, assembly, right to bear arms, fair trial','Article I = Congress. Article II = President. Article III = Courts','Can be amended — 27 amendments total, starting with the Bill of Rights (1791)'],
+    examples:[{label:'1st Amendment',desc:'Protects freedom of speech, religion, press, and assembly.'},{label:'Veto Power',desc:'President can veto a law; Congress can override with ⅔ vote — checks and balances in action.'},{label:'Marbury v. Madison',desc:'Established judicial review — the Supreme Court\'s power to strike down unconstitutional laws.'}],
+    why:'The Constitution is the framework for American government and democracy. Every law, court case, and election operates within its structure. It is the most studied legal document in U.S. history.',
+    related:['Federalism','Bill of Rights','Separation of Powers','Checks and Balances','Amendments','Supreme Court']
+  },
+  {
+    key:['french revolution','revolution france','liberté'],
+    title:'French Revolution',subject:'World History',
+    def:'The French Revolution (1789–1799) was a period of radical political and societal transformation in France that overthrew the monarchy, established a republic, and ended in Napoleon\'s rise to power.',
+    points:['Causes: inequality between Estates, Enlightenment ideas, financial crisis, poor harvests','Key events: Storming of the Bastille (1789), Declaration of Rights of Man, execution of Louis XVI (1793)','Reign of Terror (1793–94): radical phase; thousands executed by guillotine under Robespierre','Led to the rise of Napoleon Bonaparte, who seized power in 1799','Spread ideals of liberté, égalité, fraternité (liberty, equality, fraternity) across Europe'],
+    examples:[{label:'Estates System',desc:'99% of people were in the Third Estate (commoners), paying most taxes — fueling resentment.'},{label:'Bastille Storming',desc:'July 14, 1789 (now Bastille Day) — symbolic launch of the Revolution.'},{label:'Napoleon',desc:'Chaos from the Revolution created conditions for Napoleon\'s military coup in 1799.'}],
+    why:'The French Revolution changed the political map of Europe, spread democratic ideals, ended feudalism, and influenced revolutions worldwide for the next two centuries.',
+    related:['Enlightenment','Napoleon','Declaration of Rights of Man','Reign of Terror','Nationalism']
+  },
+  {
+    key:['chemical bond','ionic bond','covalent bond','bonding','electronegativity'],
+    title:'Chemical Bonds',subject:'Chemistry',
+    def:'Chemical bonds are forces that hold atoms together in compounds. The main types are ionic bonds (electron transfer) and covalent bonds (electron sharing).',
+    points:['Ionic bonds: one atom donates electrons to another; forms between metals and nonmetals; results in ions with opposite charges that attract','Covalent bonds: atoms share electrons; usually between nonmetals; can be single, double, or triple','Polar covalent: electrons shared unequally (one atom is more electronegative)','Metallic bonds: electrons flow freely among metal atoms — explains conductivity and malleability','Bond strength order: ionic ≈ covalent > metallic (in general)'],
+    examples:[{label:'NaCl (Table Salt)',desc:'Ionic: Na⁺ donates an electron to Cl⁻. Ions attract and form a crystal lattice.'},{label:'H₂O (Water)',desc:'Covalent: O shares electrons with 2 H atoms. Polar — O has stronger pull.'},{label:'O₂ (Oxygen gas)',desc:'Covalent double bond: 2 oxygen atoms share 4 electrons equally.'}],
+    why:'Chemical bonding explains why substances have different properties — why salt dissolves in water, why metals conduct electricity, why oil and water don\'t mix.',
+    related:['Electronegativity','Valence Electrons','Periodic Table','Polarity','Intermolecular Forces']
+  },
+  {
+    key:['thesis statement','thesis','argument','claim'],
+    title:'Thesis Statement',subject:'Writing / ELA',
+    def:'A thesis statement is a single sentence that presents the main argument or claim of an essay and indicates how it will be supported.',
+    points:['Should be specific, arguable, and provable — not a fact or question','Usually placed at the end of the introduction paragraph','A strong thesis: states a clear position AND previews the main supporting points','Avoid: "In this essay I will..." or overly broad statements like "Technology is bad"','A thesis can evolve as you write — the final version should match your actual argument'],
+    examples:[{label:'Weak',desc:'"The Civil War was important." (Too vague, not arguable)'},{label:'Better',desc:'"The Civil War was caused primarily by the institution of slavery, not states\' rights alone."'},{label:'Strong',desc:'"By depicting Gatsby\'s hollow pursuit of the American Dream, Fitzgerald argues that material success cannot replace moral integrity or genuine human connection."'}],
+    why:'The thesis is the engine of an essay. Everything else — evidence, analysis, structure — exists to support it. A clear thesis is the difference between a focused argument and a disorganized summary.',
+    related:['Topic Sentence','Evidence','Essay Structure','Argumentation','Analysis']
+  },
+  {
+    key:['photosynthesis vs respiration','cellular respiration','respiration','atp','glucose energy'],
+    title:'Cellular Respiration',subject:'Biology',
+    def:'Cellular respiration is the process by which cells break down glucose to release energy (ATP), using oxygen and producing carbon dioxide and water as byproducts.',
+    points:['Equation: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP (energy)','Three stages: Glycolysis (cytoplasm), Krebs Cycle (mitochondria matrix), Electron Transport Chain (inner membrane)','Produces ~36–38 ATP molecules per glucose molecule','Aerobic respiration (with O₂) is far more efficient than anaerobic (fermentation)','Opposite of photosynthesis — they are complementary processes'],
+    examples:[{label:'Exercise',desc:'Muscles burn glucose rapidly during exercise; if O₂ runs out, lactic acid fermentation kicks in (causes soreness).'},{label:'Fermentation (Bread)',desc:'Yeast use anaerobic respiration, producing CO₂ that makes bread rise and alcohol.'},{label:'ATP',desc:'Every cell process — muscle contraction, active transport, protein synthesis — is powered by ATP.'}],
+    why:'Cellular respiration powers everything your body does. Understanding it is essential for studying metabolism, disease, exercise physiology, and ecology.',
+    related:['ATP','Photosynthesis','Mitochondria','Glycolysis','Krebs Cycle','Fermentation']
+  },
+  {
+    key:['plate tectonics','tectonic plates','continental drift','earthquake','volcano'],
+    title:'Plate Tectonics',subject:'Earth Science',
+    def:'Plate tectonics is the theory that Earth\'s lithosphere is divided into large plates that float on the mantle and move slowly, causing earthquakes, volcanoes, and mountain formation.',
+    points:['Earth\'s layers: crust, mantle, outer core, inner core. Plates float on the semi-liquid asthenosphere','Convergent boundaries: plates collide → mountains (Himalayas) or subduction zones (trenches, volcanoes)','Divergent boundaries: plates separate → mid-ocean ridges, rift valleys (seafloor spreading)','Transform boundaries: plates slide past each other → earthquakes (San Andreas Fault)','Alfred Wegener proposed continental drift in 1912 — confirmed by seafloor spreading evidence in the 1960s'],
+    examples:[{label:'Himalayas',desc:'India plate collided with Eurasian plate — the collision is still ongoing, and the mountains are still growing.'},{label:'Ring of Fire',desc:'Most of the world\'s earthquakes and volcanoes occur along the Pacific plate boundaries.'},{label:'Iceland',desc:'Sits on a divergent boundary — two plates pulling apart, creating volcanic activity.'}],
+    why:'Plate tectonics explains the distribution of earthquakes, volcanoes, mountain ranges, and even the evolution of life. It is one of the grand unifying theories of Earth science.',
+    related:['Continental Drift','Earthquakes','Volcanoes','Seafloor Spreading','Rock Cycle']
+  },
+  {
+    key:['symbolism','symbol','literary device','figurative language','imagery','metaphor','simile'],
+    title:'Literary Devices',subject:'ELA',
+    def:'Literary devices are techniques authors use to convey meaning, create effects, and engage readers beyond the literal level.',
+    points:['Simile: comparison using "like" or "as" ("fast as lightning")','Metaphor: direct comparison ("Life is a journey")','Symbolism: object/color/place represents a larger idea (green light in Gatsby = American Dream)','Imagery: vivid language that appeals to the senses','Alliteration: repeated initial consonant sounds ("Peter Piper picked...")','Irony types: verbal (says one thing, means another), situational (opposite of expected), dramatic (reader knows more than character)'],
+    examples:[{label:'Symbolism',desc:'In The Scarlet Letter, the letter "A" symbolizes sin, then identity, then strength.'},{label:'Dramatic Irony',desc:'In Romeo & Juliet, the audience knows Juliet is alive when Romeo believes she is dead.'},{label:'Extended Metaphor',desc:'In "I Know Why the Caged Bird Sings," the caged bird symbolizes oppression throughout the poem.'}],
+    why:'Recognizing literary devices is essential for deep reading and analysis. They are tested on SAT, AP Literature, and state exams, and appear in every genre of writing.',
+    related:['Theme','Motif','Tone','Mood','Point of View','Allusion','Foreshadowing']
+  },
+  {
+    key:['world war 2','world war ii','wwii','ww2','holocaust','pearl harbor','d-day'],
+    title:'World War II',subject:'World History',
+    def:'World War II (1939–1945) was a global conflict between the Allied Powers (U.S., UK, Soviet Union, France) and the Axis Powers (Germany, Italy, Japan), ending in Allied victory.',
+    points:['Causes: Rise of fascism, appeasement of Hitler, Japanese expansion, Hitler\'s invasion of Poland (1939)','Holocaust: Nazi Germany systematically murdered 6 million Jews and millions of others','Pacific Theater: Japan attacked Pearl Harbor (Dec 1941) → U.S. entered the war','European Theater: D-Day (June 6, 1944) — Allied invasion of Normandy turned the tide','Ended: Germany surrendered May 1945; Japan surrendered September 1945 after atomic bombs on Hiroshima and Nagasaki'],
+    examples:[{label:'D-Day',desc:'June 6, 1944 — 156,000 Allied troops landed on Normandy beaches, beginning the liberation of Western Europe.'},{label:'Holocaust',desc:'Systematic genocide of 6 million Jews in concentration camps like Auschwitz.'},{label:'Atomic Bomb',desc:'U.S. dropped bombs on Hiroshima (Aug 6) and Nagasaki (Aug 9) 1945, prompting Japanese surrender.'}],
+    why:'WWII reshaped the world order: it led to the UN, NATO, the Cold War, decolonization, the founding of Israel, and the trials at Nuremberg that established international war crimes law.',
+    related:['Holocaust','Cold War','United Nations','Nazi Germany','Hiroshima','Marshall Plan']
+  }
+];
+
+const SUGGESTIONS = [
+  'Photosynthesis','Quadratic Formula','Natural Selection','Newton\'s Laws',
+  'Manifest Destiny','Theme (Literature)','Supply & Demand','Plate Tectonics',
+  'Mitosis','Pythagorean Theorem','Thesis Statement','Civil War','French Revolution'
+];
+
+function buildSuggestions() {
+  const el = document.getElementById('suggestions');
+  SUGGESTIONS.forEach(s => {
+    const chip = document.createElement('span');
+    chip.className = 'sug-chip';
+    chip.textContent = s;
+    chip.onclick = () => {
+      document.getElementById('topicInput').value = s;
+      explain();
+    };
+    el.appendChild(chip);
+  });
+}
+
+function findConcept(query) {
+  const q = query.toLowerCase().trim();
+  if (!q) return null;
+  // exact key match
+  for (const c of CONCEPTS) {
+    for (const k of c.key) {
+      if (q === k || q.includes(k) || k.includes(q)) return c;
+    }
+  }
+  // fuzzy: any word match
+  const words = q.split(/\s+/);
+  for (const c of CONCEPTS) {
+    const searchable = (c.title + ' ' + c.def + ' ' + c.key.join(' ')).toLowerCase();
+    if (words.some(w => w.length > 3 && searchable.includes(w))) return c;
+  }
+  return null;
+}
+
+function clearResult() {
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('notFound').classList.remove('show');
+}
+
+function explain() {
+  const q = document.getElementById('topicInput').value.trim();
+  if (!q) return;
+
+  clearResult();
+  const concept = findConcept(q);
+
+  if (concept) {
+    showResult(concept);
+    saveHistory(q, concept.title);
+  } else {
+    document.getElementById('notFoundTerm').textContent = '"' + q + '"';
+    document.getElementById('notFound').classList.add('show');
+  }
+}
+
+function showResult(c) {
+  document.getElementById('resultTitle').innerHTML =
+    c.title + ' <span class="badge">' + c.subject + '</span>';
+  document.getElementById('resultDef').textContent = c.def;
+
+  const pts = document.getElementById('resultPoints');
+  pts.innerHTML = '';
+  c.points.forEach(p => {
+    const d = document.createElement('div');
+    d.className = 'kp';
+    d.textContent = p;
+    pts.appendChild(d);
+  });
+
+  const ex = document.getElementById('resultExamples');
+  ex.innerHTML = '';
+  c.examples.forEach(e => {
+    const d = document.createElement('div');
+    d.className = 'example-card';
+    d.innerHTML = '<strong>' + e.label + '</strong>' + e.desc;
+    ex.appendChild(d);
+  });
+
+  document.getElementById('resultWhy').textContent = c.why;
+
+  const rel = document.getElementById('resultRelated');
+  rel.innerHTML = '';
+  c.related.forEach(r => {
+    const chip = document.createElement('span');
+    chip.className = 'rel-chip';
+    chip.textContent = r;
+    chip.onclick = () => {
+      document.getElementById('topicInput').value = r;
+      explain();
+    };
+    rel.appendChild(chip);
+  });
+
+  document.getElementById('resultCard').classList.add('show');
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function saveHistory(query, title) {
+  try {
+    let h = JSON.parse(localStorage.getItem('explainer-history') || '[]');
+    h = h.filter(i => i.title !== title);
+    h.unshift({query, title, time: Date.now()});
+    if (h.length > 10) h = h.slice(0, 10);
+    localStorage.setItem('explainer-history', JSON.stringify(h));
+    renderHistory();
+  } catch(e) {}
+}
+
+function renderHistory() {
+  try {
+    const h = JSON.parse(localStorage.getItem('explainer-history') || '[]');
+    const section = document.getElementById('historySection');
+    const list = document.getElementById('historyList');
+    if (!h.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    list.innerHTML = '';
+    h.forEach((item, idx) => {
+      const d = document.createElement('div');
+      d.className = 'history-item';
+      d.innerHTML = '<span>' + item.title + '</span><span class="del" onclick="deleteHistory(' + idx + ');event.stopPropagation()">✕</span>';
+      d.onclick = () => {
+        document.getElementById('topicInput').value = item.query;
+        explain();
+      };
+      list.appendChild(d);
+    });
+  } catch(e) {}
+}
+
+function deleteHistory(idx) {
+  try {
+    let h = JSON.parse(localStorage.getItem('explainer-history') || '[]');
+    h.splice(idx, 1);
+    localStorage.setItem('explainer-history', JSON.stringify(h));
+    renderHistory();
+  } catch(e) {}
+}
+
+buildSuggestions();
+renderHistory();
+</script>
+</body>
+</html>

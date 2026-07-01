@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Exam Countdown — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+input,select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
+input:focus,select:focus{border-color:var(--accent)}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--muted)}
+.btn-sm.del{color:var(--red)}.btn-sm.del:hover{background:#fef2f2}
+
+/* Countdown cards */
+.countdown-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.countdown-card{border-radius:14px;padding:20px;position:relative;overflow:hidden;border:1.5px solid var(--border);background:var(--card)}
+.countdown-card.urgent{border-color:#fca5a5;background:linear-gradient(135deg,#fff1f2,#fff5f5)}
+.countdown-card.soon{border-color:#fde68a;background:linear-gradient(135deg,#fffbeb,#fef9c3)}
+.countdown-card.ok{border-color:#6ee7b7;background:linear-gradient(135deg,#f0fdf4,#ecfdf5)}
+.countdown-card.past{opacity:.55;border-style:dashed}
+.countdown-card .subject{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+.countdown-card .days{font-size:3rem;font-weight:900;line-height:1;margin-bottom:4px}
+.countdown-card.urgent .days{color:var(--red)}
+.countdown-card.soon .days{color:var(--amber)}
+.countdown-card.ok .days{color:var(--green)}
+.countdown-card .days-label{font-size:.75rem;color:var(--muted);font-weight:600;margin-bottom:8px}
+.countdown-card .date{font-size:.82rem;color:var(--muted);margin-bottom:10px}
+.countdown-card .progress-bar{background:#e5e7eb;border-radius:99px;height:6px;overflow:hidden;margin-bottom:10px}
+.countdown-card .progress-fill{height:100%;border-radius:99px;transition:width .4s}
+.countdown-card .actions{display:flex;gap:6px;flex-wrap:wrap}
+.countdown-card .del-btn{position:absolute;top:10px;right:10px}
+
+.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.form-row .field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:160px}
+.form-row .field label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.form-row select{width:100%}
+.form-row input{width:100%}
+
+/* Tips */
+.tip-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.tip-card{background:var(--bg);border-radius:10px;padding:14px;border:1px solid var(--border)}
+.tip-card .phase{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.tip-card h3{font-size:.88rem;font-weight:700;margin-bottom:5px}
+.tip-card p{font-size:.82rem;line-height:1.5;color:var(--muted)}
+
+.empty{text-align:center;padding:48px;color:var(--muted);font-size:.9rem}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  input,select{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}.tip-card{background:#12121f}
+  .countdown-card.urgent,.countdown-card.soon,.countdown-card.ok{background:var(--card)}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="tests.html" class="nav-link">✏️ AP Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link active">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+
+  <a href="frq.html" class="nav-link">📝 FRQ</a>
+  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
+  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
+  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
+  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
+  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
+  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+</nav>
+<div class="hero">
+  <h1>⏳ AP Exam Countdown</h1>
+  <p>Track every AP exam with a live countdown — know exactly how many days you have left.</p>
+</div>
+<div class="container">
+  <div class="card">
+    <h2>➕ Add an AP Exam</h2>
+    <div class="form-row">
+      <div class="field">
+        <label>AP Subject</label>
+        <select id="ap-subj">
+          <option>AP Calculus AB</option><option>AP Calculus BC</option><option>AP Statistics</option>
+          <option>AP Biology</option><option>AP Chemistry</option><option>AP Physics 1</option>
+          <option>AP Physics 2</option><option>AP Physics C</option><option>AP Environmental Science</option>
+          <option>AP English Language</option><option>AP English Literature</option>
+          <option>AP US History</option><option>AP World History</option><option>AP European History</option>
+          <option>AP US Government</option><option>AP Comparative Government</option>
+          <option>AP Psychology</option><option>AP Human Geography</option>
+          <option>AP Computer Science A</option><option>AP Computer Science Principles</option>
+          <option>AP Macroeconomics</option><option>AP Microeconomics</option>
+          <option>AP Spanish Language</option><option>AP French Language</option>
+          <option>AP Latin</option><option>AP Art History</option><option>AP Music Theory</option>
+          <option>Other AP Exam</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Exam Date</label>
+        <input type="date" id="ap-date">
+      </div>
+      <div class="field">
+        <label>Study Start Date (optional)</label>
+        <input type="date" id="ap-start">
+      </div>
+      <div>
+        <button class="btn btn-primary" onclick="addExam()" style="margin-top:21px">⏳ Add Countdown</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="countdownGrid" class="countdown-grid" style="margin-bottom:20px"></div>
+
+  <div class="card">
+    <h2>📋 Study Phase Guide</h2>
+    <div class="tip-list">
+      <div class="tip-card">
+        <div class="phase" style="color:var(--green)">60+ Days Out</div>
+        <h3>🌱 Foundation Phase</h3>
+        <p>Cover all content units — use flashcards and unit tests. Don't rush; understanding > memorization.</p>
+      </div>
+      <div class="tip-card">
+        <div class="phase" style="color:#0891b2">30-60 Days Out</div>
+        <h3>📖 Deep Review Phase</h3>
+        <p>Re-do units you scored below 70% on. Start with FRQ practice. Review AP College Board rubrics.</p>
+      </div>
+      <div class="tip-card">
+        <div class="phase" style="color:var(--amber)">14-30 Days Out</div>
+        <h3>📝 Practice Test Phase</h3>
+        <p>Take 1-2 full AP practice tests. Time yourself. Identify weak areas and drill those units.</p>
+      </div>
+      <div class="tip-card">
+        <div class="phase" style="color:var(--accent)">7-14 Days Out</div>
+        <h3>🎯 Intensive Review</h3>
+        <p>Focus only on weak spots. Review FRQ rubrics daily. Do 1 past FRQ per day under timed conditions.</p>
+      </div>
+      <div class="tip-card">
+        <div class="phase" style="color:var(--amber)">3-7 Days Out</div>
+        <h3>🔄 Light Review</h3>
+        <p>No new material. Review formulas, key terms, and major themes. One practice FRQ per day max.</p>
+      </div>
+      <div class="tip-card">
+        <div class="phase" style="color:var(--red)">Exam Week</div>
+        <h3>😴 Rest & Ready</h3>
+        <p>Sleep 8+ hours. Eat breakfast. Quick card review only. Arrive 30 min early with pencils and ID.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let exams = JSON.parse(localStorage.getItem('ace_ap_exams')||'[]');
+function save(){ localStorage.setItem('ace_ap_exams', JSON.stringify(exams)); }
+
+function addExam(){
+  const subj = document.getElementById('ap-subj').value;
+  const date = document.getElementById('ap-date').value;
+  if(!date){ alert('Please select an exam date.'); return; }
+  const start = document.getElementById('ap-start').value;
+  exams.push({id:Date.now(), subj, date, start});
+  save(); renderExams();
+  document.getElementById('ap-date').value='';
+  document.getElementById('ap-start').value='';
+}
+
+function deleteExam(id){
+  exams = exams.filter(e=>e.id!==id);
+  save(); renderExams();
+}
+
+function renderExams(){
+  const grid = document.getElementById('countdownGrid');
+  if(!exams.length){ grid.innerHTML='<div class="empty">No AP exams added yet. Add your first countdown above!</div>'; return; }
+
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  const sorted = [...exams].sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  grid.innerHTML = sorted.map(e=>{
+    const examDate = new Date(e.date+'T00:00:00');
+    const days = Math.ceil((examDate-today)/86400000);
+    let cls = days<0?'past':days<=7?'urgent':days<=30?'soon':'ok';
+    const dayStr = days<0?`${Math.abs(days)} days ago`:days===0?'TODAY!':days===1?'Tomorrow!':days+' days';
+
+    let pct = 0;
+    if(e.start){
+      const startDate = new Date(e.start+'T00:00:00');
+      const total = Math.ceil((examDate-startDate)/86400000);
+      const elapsed = Math.ceil((today-startDate)/86400000);
+      pct = total>0?Math.max(0,Math.min(100,Math.round(elapsed/total*100))):0;
+    }
+
+    const fillColor = cls==='urgent'?'var(--red)':cls==='soon'?'var(--amber)':cls==='ok'?'var(--green)':'var(--muted)';
+    const phase = days>60?'Foundation':days>30?'Deep Review':days>14?'Practice Tests':days>7?'Intensive':days>0?'Final Sprint':days===0?'Exam Day!':'Complete';
+
+    return `<div class="countdown-card ${cls}">
+      <button class="btn-sm del del-btn" onclick="deleteExam(${e.id})">✕</button>
+      <div class="subject">${e.subj}</div>
+      <div class="days">${days<0?'✓':days===0?'🎯':days}</div>
+      <div class="days-label">${dayStr}</div>
+      <div class="date">📅 ${examDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+      ${e.start?`
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${fillColor}"></div></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px">${pct}% of study period complete</div>`:''}
+      <div style="font-size:.75rem;font-weight:700;color:${fillColor}">📍 ${phase}</div>
+    </div>`;
+  }).join('');
+}
+
+renderExams();
+
+// Refresh every minute
+setInterval(renderExams, 60000);
+</script>
+</body>
+</html>

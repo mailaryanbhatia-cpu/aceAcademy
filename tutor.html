@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>aceAcademy — AI Tutor</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#f8fafc;--surface:#fff;--accent:#6366f1;--accent2:#8b5cf6;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--hover:#f1f5f9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.topnav{display:flex;align-items:center;gap:10px;padding:0 20px;height:52px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.logo{font-weight:800;font-size:1.1rem;color:var(--accent);text-decoration:none}
+.logo span{color:var(--accent2)}
+.nav-link{font-size:.8rem;color:var(--muted);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:16px;transition:all .15s}
+.nav-link:hover{background:var(--hover);color:var(--text)}
+.spacer{flex:1}
+.status-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite;background:#10b981}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.acer-status{font-size:.78rem;font-weight:600;display:flex;align-items:center;gap:6px;color:#10b981}
+.layout{display:flex;flex:1;overflow:hidden}
+.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar-section{padding:14px 12px 8px}
+.sidebar-label{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+select.side-select{width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.8rem;color:var(--text);background:var(--surface);cursor:pointer}
+select.side-select:focus{outline:none;border-color:var(--accent)}
+.subj-btns{display:flex;flex-direction:column;gap:3px}
+.subj-btn{padding:7px 10px;border-radius:8px;border:none;background:none;font-size:.8rem;color:var(--muted);cursor:pointer;text-align:left;transition:all .12s;display:flex;align-items:center;gap:7px}
+.subj-btn:hover{background:var(--hover);color:var(--text)}
+.subj-btn.active{background:rgba(99,102,241,0.18);color:var(--accent);font-weight:600}
+.quick-section{padding:10px 12px}
+.quick-chip{display:block;width:100%;margin-bottom:5px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:.74rem;color:var(--text);cursor:pointer;text-align:left;transition:all .12s;line-height:1.3}
+.quick-chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,0.18)}
+.mode-badge{margin:10px 12px 4px;padding:6px 10px;border-radius:8px;font-size:.72rem;font-weight:600;text-align:center;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.chat-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.messages{flex:1;overflow-y:auto;padding:24px 20px;display:flex;flex-direction:column;gap:16px}
+.messages::-webkit-scrollbar{width:5px}
+.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.msg{display:flex;gap:10px;max-width:84%;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.acer{align-self:flex-start}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;flex-shrink:0;margin-top:2px;color:#fff}
+.msg.acer .avatar{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+.msg.user .avatar{background:linear-gradient(135deg,#10b981,#059669)}
+.bubble{padding:12px 16px;border-radius:16px;font-size:.875rem;line-height:1.65;max-width:100%}
+.msg.acer .bubble{background:var(--surface);border:1px solid var(--border);border-top-left-radius:4px;color:var(--text)}
+.msg.user .bubble{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-top-right-radius:4px}
+.bubble pre{background:#0b1120;border-radius:8px;padding:10px 12px;font-size:.8rem;overflow-x:auto;margin:8px 0;font-family:monospace;line-height:1.5;white-space:pre-wrap}
+.bubble strong{font-weight:700}
+.typing-bubble{display:flex;align-items:center;gap:5px;padding:12px 16px}
+.typing-bubble span{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:bounce .9s infinite}
+.typing-bubble span:nth-child(2){animation-delay:.15s}
+.typing-bubble span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.input-wrap{padding:14px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
+.input-wrap textarea{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:.875rem;font-family:inherit;resize:none;max-height:120px;line-height:1.5;color:var(--text);transition:border .15s}
+.input-wrap textarea:focus{outline:none;border-color:var(--accent)}
+.send-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s}
+.send-btn:hover{opacity:.85}
+.send-btn svg{width:18px;height:18px}
+.welcome{text-align:center;padding:40px 24px;max-width:420px;margin:auto}
+.welcome .acer-big{font-size:3rem;margin-bottom:12px}
+.welcome h2{font-size:1.25rem;font-weight:800;margin-bottom:8px}
+.welcome p{font-size:.875rem;color:var(--muted);line-height:1.6;margin-bottom:20px}
+.welcome-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.welcome-chip{padding:6px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:.78rem;cursor:pointer;transition:all .15s;background:var(--surface)}
+.welcome-chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,0.18)}
+</style>
+  <link rel="stylesheet" href="ace-theme.css">
+
+<style id="ace-nav-css">
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+nav.topnav{background:#080e1c!important;border-bottom:1px solid #2a3a55!important;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5)!important;padding:0 20px!important;height:60px!important;display:flex!important;align-items:center!important;gap:2px!important;position:sticky!important;top:0!important;z-index:500!important;overflow-x:auto!important;}
+nav.topnav::-webkit-scrollbar{display:none;}
+nav.topnav .logo,nav.topnav a.logo{font-size:1.1rem!important;font-weight:800!important;color:#fff!important;text-decoration:none!important;margin-right:10px!important;white-space:nowrap!important;flex-shrink:0!important;display:flex!important;align-items:center!important;gap:6px!important;}
+nav.topnav .logo span,nav.topnav a.logo span{color:#a5b4fc!important;}
+nav.topnav a.nav-link,nav.topnav a.back-link{display:inline-flex!important;align-items:center!important;gap:3px!important;text-decoration:none!important;padding:6px 9px!important;border-radius:7px!important;font-size:.76rem!important;font-weight:600!important;white-space:nowrap!important;color:#7a8fa8!important;transition:background .15s,color .15s!important;font-family:inherit!important;}
+nav.topnav a.nav-link:hover,nav.topnav a.back-link:hover{background:rgba(255,255,255,.07)!important;color:#e8edf5!important;}
+nav.topnav a.nav-link.active{background:rgba(99,102,241,.18)!important;color:#a5b4fc!important;}
+nav.topnav .spacer,nav.topnav h1.nav-title{flex:1!important;color:#7a8fa8!important;font-size:.8rem!important;font-weight:500!important;}
+nav.topnav input,nav.topnav select{background:#111827!important;border:1px solid #2a3a55!important;color:#e8edf5!important;border-radius:6px!important;padding:5px 10px!important;font-size:.78rem!important;font-family:inherit!important;outline:none!important;}
+:root{--bg:#0b1120;--surface:#1a2540;--border:#2a3a55;--text:#e8edf5;--muted:#7a8fa8;--accent:#6366f1;--accent-light:rgba(99,102,241,0.18);}
+body{background:var(--bg);color:var(--text);}
+footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid #2a3a55!important;}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#334466;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#7a8fa8}
+</style>
+<script src="auth-guard.js"></script>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a class="nav-link" href="index.html">&#8592; Curriculum</a>
+  <a class="nav-link" href="worksheets.html">&#128196; Worksheets</a>
+  <a class="nav-link" href="calendar.html">&#128197; Calendar</a>
+  <a class="nav-link" href="tests.html">&#9999;&#65039; Tests</a>
+  <a class="nav-link" href="language.html">&#127759; Languages</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+    <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
+  <a href="citation.html" class="nav-link">📖 Citations</a>
+  <a href="tools.html" class="nav-link">🔬 Tools</a>
+  <a href="assign.html" class="nav-link">📋 Assignments</a>
+  <a href="parent.html" class="nav-link">👪 Parent View</a>
+  <div class="spacer"></div>
+  <div class="acer-status"><div class="status-dot"></div><span>Acer is ready</span></div>
+</nav>
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Your Grade</div>
+      <select class="side-select" id="gradeSelect">
+        <option value="6">Grade 6</option><option value="7">Grade 7</option>
+        <option value="8">Grade 8</option><option value="9" selected>Grade 9</option>
+        <option value="10">Grade 10</option><option value="11">Grade 11</option>
+        <option value="12">Grade 12</option>
+      </select>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Subject</div>
+      <div class="subj-btns">
+        <button class="subj-btn active" data-subj="any" onclick="setSubj(this)">&#127775; Any Subject</button>
+        <button class="subj-btn" data-subj="Math" onclick="setSubj(this)">&#128208; Math</button>
+        <button class="subj-btn" data-subj="Science" onclick="setSubj(this)">&#128300; Science</button>
+        <button class="subj-btn" data-subj="English/ELA" onclick="setSubj(this)">&#128214; ELA</button>
+        <button class="subj-btn" data-subj="History" onclick="setSubj(this)">&#127963; History</button>
+        <button class="subj-btn" data-subj="Computer Science" onclick="setSubj(this)">&#128187; CS</button>
+        <button class="subj-btn" data-subj="Health" onclick="setSubj(this)">&#128170; Health</button>
+        <button class="subj-btn" data-subj="Arts (AP)" onclick="setSubj(this)">&#127912; Arts (AP)</button>
+        <button class="subj-btn" data-subj="World Languages (AP)" onclick="setSubj(this)">&#127760; Languages (AP)</button>
+        <button class="subj-btn" data-subj="AP Capstone" onclick="setSubj(this)">&#127891; Capstone</button>
+      </div>
+    </div>
+    <div class="mode-badge">&#129302; Acer Smart Tutor</div>
+    <div class="quick-section">
+      <div class="sidebar-label" style="padding-bottom:8px">Quick asks</div>
+      <button class="quick-chip" onclick="quickAsk('Can you explain this step by step?')">&#129332; Step by step</button>
+      <button class="quick-chip" onclick="quickAsk('Give me a practice problem.')">&#127919; Practice problem</button>
+      <button class="quick-chip" onclick="quickAsk('Can you give me an example?')">&#128161; Give an example</button>
+      <button class="quick-chip" onclick="quickAsk('What are the key things to remember?')">&#128273; Key points</button>
+      <button class="quick-chip" onclick="quickAsk('Why do we learn this in real life?')">&#127757; Real-life use</button>
+    </div>
+  </div>
+  <div class="chat-wrap">
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div class="acer-big">&#129302;</div>
+        <h2>Hi, I'm Acer!</h2>
+        <p>aceAcademy's smart tutor — type an equation and I'll guide you through solving it yourself. Ask me anything about any subject too!</p>
+        <div class="welcome-chips">
+          <div class="welcome-chip" onclick="quickAsk('How do I solve equations with variables on both sides?')">Algebra help</div>
+          <div class="welcome-chip" onclick="quickAsk('What is photosynthesis and how does it work?')">Photosynthesis</div>
+          <div class="welcome-chip" onclick="quickAsk('How do I write a strong thesis statement?')">Thesis writing</div>
+          <div class="welcome-chip" onclick="quickAsk('What caused World War I?')">WWI causes</div>
+          <div class="welcome-chip" onclick="quickAsk('What is the difference between a for loop and a while loop?')">For vs While loops</div>
+          <div class="welcome-chip" onclick="quickAsk('What are macronutrients?')">Nutrition basics</div>
+          <div class="welcome-chip" onclick="quickAsk('3x + 5 = 20')">Try an equation</div>
+          <div class="welcome-chip" onclick="quickAsk('What is DNA and what does it do?')">DNA explained</div>
+        </div>
+      </div>
+    </div>
+    <div class="input-wrap">
+      <textarea id="inputBox" rows="1" placeholder="Ask anything, or type an equation like 2x+3=11 to practice..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" onclick="sendMessage()">
+        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+'use strict';
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentSubj = 'any', chatStarted = false, isTyping = false;
+let lastTopicId = null;
+const variantIdx = {};
+let guided = null; // Socratic guided problem state
+
+const getGrade = () => +document.getElementById('gradeSelect').value;
+
+// ─── MATH ENGINE ─────────────────────────────────────────────────────────────
+
+function tryMath(raw) {
+  // Preprocess: strip leading verbs
+  let s = raw.replace(/^\s*(solve|find|calculate|compute|evaluate|simplify|what is|what's)\s*/i, '').trim();
+  // Expand "squared"/"cubed"
+  s = s.replace(/(\d+\.?\d*)\s*squared/gi, '$1^2').replace(/(\d+\.?\d*)\s*cubed/gi, '$1^3');
+  const lo = s.toLowerCase();
+
+  // ── Percentage: "X% of Y" ─────────────────────────────────────────────────
+  let m = s.match(/(\d+\.?\d*)\s*%\s*of\s*(\d+\.?\d*)/i);
+  if (m) {
+    const p = +m[1], n = +m[2], ans = +(p / 100 * n).toFixed(4);
+    return `<strong>${p}% of ${n} = ${ans}</strong><br><br>Step by step:<br>• "Percent" means per 100 → ${p}% = ${p}/100 = ${p/100}<br>• Multiply: ${p/100} × ${n} = <strong>${ans}</strong><br><br>Quick trick: 10% of ${n} = ${n/10}. Then scale from there!<br><br>Want to try another percentage?`;
+  }
+
+  // ── Mean/Average ──────────────────────────────────────────────────────────
+  if (/\b(mean|average)\b/.test(lo)) {
+    const nums = s.match(/\d+\.?\d*/g);
+    if (nums && nums.length >= 2) {
+      const vals = nums.map(Number);
+      const sum = vals.reduce((a, b) => a + b, 0);
+      const mean = +(sum / vals.length).toFixed(4);
+      return `<strong>Mean of ${vals.join(', ')}:</strong><br><br>• Add all: ${vals.join(' + ')} = ${sum}<br>• Divide by count: ${sum} ÷ ${vals.length} = <strong>${mean}</strong><br><br>The mean is <strong>${mean}</strong>! Want the median and mode too?`;
+    }
+  }
+
+  // ── Pythagorean ───────────────────────────────────────────────────────────
+  if (/pythagor|hypotenuse/.test(lo)) {
+    const nums = s.match(/\d+\.?\d*/g);
+    if (nums && nums.length >= 2) {
+      const [a, b] = [+nums[0], +nums[1]];
+      const c = +Math.sqrt(a * a + b * b).toFixed(4);
+      return `<strong>Pythagorean Theorem: a² + b² = c²</strong><br><br>With a = ${a} and b = ${b}:<br>• a² = ${a}² = ${a*a}<br>• b² = ${b}² = ${b*b}<br>• c² = ${a*a} + ${b*b} = ${a*a+b*b}<br>• c = √${a*a+b*b} = <strong>${c}</strong><br><br>The hypotenuse is <strong>${c}</strong>! Remember: this only works for right triangles.`;
+    }
+  }
+
+  // ── Area of rectangle: "area rectangle 5 by 8" ───────────────────────────
+  m = s.match(/rect(?:angle)?\s*[^0-9]*(\d+\.?\d*)\s*(?:by|x|×|,)\s*(\d+\.?\d*)/i);
+  if (m && /area|perimeter/.test(lo)) {
+    const l = +m[1], w = +m[2];
+    return `<strong>Rectangle (l=${l}, w=${w}):</strong><br>• Area = l × w = ${l} × ${w} = <strong>${l*w}</strong><br>• Perimeter = 2(l+w) = 2(${l}+${w}) = <strong>${2*(l+w)}</strong>`;
+  }
+
+  // ── Area of circle: "area circle radius 5" ───────────────────────────────
+  m = s.match(/circle.*?(\d+\.?\d*)|(\d+\.?\d*).*?circle/i);
+  if (m && /area|circumference/.test(lo)) {
+    const r = +(m[1] || m[2]);
+    const area = +(Math.PI * r * r).toFixed(4), circ = +(2 * Math.PI * r).toFixed(4);
+    return `<strong>Circle (radius=${r}):</strong><br>• Area = πr² = π × ${r}² = <strong>${area}</strong><br>• Circumference = 2πr = 2π × ${r} = <strong>${circ}</strong>`;
+  }
+
+  // ── NOTE: Linear equations (ax+b=c, variables on both sides) are handled
+  // exclusively by tryGuidedMath() so students work through them step by step.
+
+  // ── Pure arithmetic expression ────────────────────────────────────────────
+  if (/^[\d\s+\-*/^().,%!]+$/.test(s) && /\d/.test(s)) {
+    try {
+      const result = typeof math !== 'undefined' ? math.evaluate(s) : eval(s.replace(/\^/g,'**'));
+      if (typeof result === 'number' && isFinite(result)) {
+        const disp = Number.isInteger(result) ? result : +result.toFixed(6);
+        return `<strong>${s} = ${disp}</strong><br><br>Calculated! Want me to break down the steps, or try another expression?`;
+      }
+    } catch(e) {}
+  }
+
+  return null;
+}
+
+// ─── KNOWLEDGE BASE ──────────────────────────────────────────────────────────
+// keys[]: first 3 are "anchor" keywords (score ×3 on match); rest score ×1
+// r[]: array of response functions (g = grade number)
+// p: optional practice problem generator
+
+const KB = [
+
+// ══ MATH ═════════════════════════════════════════════════════════════════════
+
+{id:'fractions', keys:['fraction','numerator','denominator','mixed number','improper fraction','common denominator','simplify fraction','equivalent fraction','lcm'], r:[
+  g=>`<strong>Fractions have two parts:</strong><br>• <strong>Numerator</strong> (top) = parts you have<br>• <strong>Denominator</strong> (bottom) = total parts<br><br><strong>Add/Subtract</strong> → find LCD first<br>1/3 + 1/4 → LCD=12 → 4/12 + 3/12 = <strong>7/12</strong><br><br><strong>Multiply</strong> → straight across<br>2/3 × 3/4 = 6/12 = <strong>1/2</strong><br><br><strong>Divide (KCF)</strong> → Keep · Change · Flip<br>3/4 ÷ 1/2 → 3/4 × 2/1 = <strong>3/2</strong><br><br>Which operation are you working on?`,
+  g=>`<strong>Simplifying fractions:</strong><br>Divide top and bottom by their GCF.<br>12/18 → GCF=6 → 12÷6 / 18÷6 = <strong>2/3</strong><br><br><strong>Mixed numbers ↔ Improper fractions:</strong><br>2¾ → (2×4)+3 = 11/4<br>11/4 → 11÷4 = 2 remainder 3 → 2¾<br><br>Share your specific problem and I'll walk through every step!`,
+], p:g=>{
+  const ops=['+','-','×'], op=ops[Math.floor(Math.random()*ops.length)];
+  const d1=[2,3,4,5,6][Math.floor(Math.random()*5)], d2=[2,3,4,5,6][Math.floor(Math.random()*5)];
+  const n1=Math.floor(Math.random()*(d1-1))+1, n2=Math.floor(Math.random()*(d2-1))+1;
+  return `Practice problem!<br><br><strong>${n1}/${d1} ${op} ${n2}/${d2} = ?</strong><br><br>Take your time. What do you get? I'll check your work! 😊`;
+}},
+
+{id:'decimals', keys:['decimal','decimal point','tenths','hundredths','thousandths','rounding decimals','place value'], r:[
+  g=>`<strong>Decimals</strong> = fractions with denominators 10, 100, 1000...<br>• 0.5 = 5/10 = ½<br>• 0.25 = 25/100 = ¼<br>• 0.1 = 1/10<br><br><strong>Add/Subtract:</strong> line up the decimal points<br><strong>Multiply:</strong> ignore decimals → multiply → count total decimal places<br>2.5 × 1.2 → 25×12=300 → 2 decimal places → <strong>3.00</strong><br><br><strong>Divide:</strong> move decimal right until divisor is a whole number<br>3.6 ÷ 1.2 → 36 ÷ 12 = <strong>3</strong><br><br>What operation are you working on?`,
+]},
+
+{id:'percentages', keys:['percent','percentage','discount','tax','tip','markup','percent change','percent increase','percent decrease'], r:[
+  g=>`<strong>Three essential percent formulas:</strong><br><br>1. Find the <strong>part</strong>: (percent ÷ 100) × whole<br>   → 30% of 80: 0.30 × 80 = <strong>24</strong><br><br>2. Find the <strong>percent</strong>: (part ÷ whole) × 100<br>   → 18 out of 24: 18/24 × 100 = <strong>75%</strong><br><br>3. Find the <strong>whole</strong>: part ÷ (percent/100)<br>   → 15 is 25% of what? 15 ÷ 0.25 = <strong>60</strong><br><br>Real-life tip: 15% tip on $40 → 10%=$4, 5%=$2 → total $6!<br><br>Which type do you have?`,
+  g=>`<strong>Percent change formula:</strong><br>(New − Old) ÷ Old × 100<br><br>$80 → $100: (100−80)÷80×100 = <strong>25% increase</strong><br>$80 → $60: (60−80)÷80×100 = <strong>−25% decrease</strong><br><br>Always divide by the <em>original</em>! Share your numbers and I'll compute it.`,
+], p:g=>{
+  const pcts=[10,15,20,25,30,40,50], nums=[80,120,200,350,45,90,150];
+  const p=pcts[Math.floor(Math.random()*pcts.length)], n=nums[Math.floor(Math.random()*nums.length)];
+  return `Practice problem!<br><br><strong>What is ${p}% of ${n}?</strong><br><br>Hint: Convert ${p}% to a decimal (${p/100}), then multiply. What do you get?`;
+}},
+
+{id:'ratios', keys:['ratio','proportion','rate','unit rate','cross multiply','scale','proportional'], r:[
+  g=>`<strong>Ratios</strong> compare two quantities — written as 3:4 or 3/4.<br><br><strong>To solve a proportion</strong>, cross multiply:<br>3/4 = x/12 → 3×12 = 4×x → 36 = 4x → <strong>x = 9</strong><br><br><strong>Unit rate</strong> = ratio with denominator 1:<br>150 miles in 3 hours = 50 miles per hour<br><br><strong>Scale factor</strong> example: map 1:100 → 5cm on map = 500cm real<br><br>Share your ratio or proportion!`,
+]},
+
+{id:'algebra_linear', keys:['equation','solve for','algebra','linear equation','variable','coefficient','two-step equation','isolate','like terms','balance equation','find x','find the value'], r:[
+  g=>`<strong>The Golden Rule:</strong> Whatever you do to one side, do to the other.<br><br><strong>Two-step example:</strong> 2x + 3 = 11<br>→ Subtract 3: 2x = 8<br>→ Divide by 2: <strong>x = 4</strong><br>→ Check: 2(4)+3 = 11 ✓<br><br><strong>Variables on both sides:</strong> 5x − 2 = 3x + 6<br>→ Subtract 3x: 2x − 2 = 6<br>→ Add 2: 2x = 8 → <strong>x = 4</strong><br><br>💡 Type your equation directly (e.g., "2x+3=11") and I'll solve it!`,
+  g=>`<strong>Combining like terms</strong> first simplifies everything:<br><br>3x + 2 + 5x − 4 = 18<br>→ 8x − 2 = 18<br>→ 8x = 20<br>→ <strong>x = 2.5</strong><br><br>Like terms = same variable. Constants can combine with constants.<br>What's your equation?`,
+], p:g=>{
+  const a=Math.floor(Math.random()*5)+2, b=Math.floor(Math.random()*10)-5, x=Math.floor(Math.random()*8)+1, c=a*x+b;
+  return `Practice problem!<br><br><strong>Solve for x: ${a}x ${b>=0?'+':''}${b} = ${c}</strong><br><br>Undo operations in reverse order. What do you get?`;
+}},
+
+{id:'algebra_quadratic', keys:['quadratic','parabola','x squared','x^2','discriminant','vertex','quadratic formula','factoring','completing the square'], r:[
+  g=>`<strong>Quadratic equations:</strong> ax² + bx + c = 0<br><br><strong>Method 1 — Factoring</strong> (when factors are nice):<br>x² − 5x + 6 = 0 → (x−2)(x−3) = 0 → <strong>x = 2 or x = 3</strong><br>(Find two numbers that multiply to +6 and add to −5)<br><br><strong>Method 2 — Quadratic Formula</strong> (always works):<br>x = (−b ± √(b²−4ac)) ÷ 2a<br><br>For x²−5x+6=0: a=1, b=−5, c=6<br>x = (5 ± √(25−24)) ÷ 2 = (5±1)/2 → <strong>x=3 or x=2</strong><br><br><strong>Discriminant (b²−4ac):</strong><br>> 0 → 2 real roots | = 0 → 1 root | < 0 → no real roots<br><br>What's your quadratic?`,
+]},
+
+{id:'geometry', keys:['area','perimeter','volume','circumference','triangle','circle','rectangle','polygon','angle','coordinate geometry','surface area','shape','formula','calculate area','find area','find perimeter','square','parallelogram'], r:[
+  g=>`<strong>Key Geometry Formulas:</strong><br><br>📐 <strong>2D Shapes:</strong><br>• Rectangle: A = l×w, P = 2(l+w)<br>• Triangle: A = ½bh<br>• Circle: A = πr², C = 2πr<br>• Parallelogram: A = bh<br>• Trapezoid: A = ½(b₁+b₂)h<br><br>📦 <strong>3D Shapes:</strong><br>• Rectangular prism: V = lwh<br>• Cylinder: V = πr²h<br>• Cone: V = ⅓πr²h<br>• Sphere: V = ⁴⁄₃πr³<br><br>💡 Type your problem (e.g., "area rectangle 6 by 9") and I'll calculate it!`,
+  g=>`<strong>Coordinate Geometry:</strong><br>• Distance: d = √[(x₂−x₁)² + (y₂−y₁)²]<br>• Midpoint: ((x₁+x₂)/2, (y₁+y₂)/2)<br>• Slope: m = (y₂−y₁)/(x₂−x₁)<br>• Line equation: y = mx + b<br><br>Example: distance (1,2) → (4,6):<br>√[(4−1)²+(6−2)²] = √[9+16] = √25 = <strong>5</strong><br><br>What shape or formula?`,
+], p:g=>{
+  const r=Math.floor(Math.random()*3);
+  if(r===0){const l=Math.floor(Math.random()*10)+3,w=Math.floor(Math.random()*8)+2;return `Practice!<br><br>Rectangle: length=<strong>${l}</strong>, width=<strong>${w}</strong><br>Find the <strong>area</strong> AND <strong>perimeter</strong>.`;}
+  if(r===1){const b=Math.floor(Math.random()*10)+4,h=Math.floor(Math.random()*8)+3;return `Practice!<br><br>Triangle: base=<strong>${b}</strong>, height=<strong>${h}</strong><br>Find the <strong>area</strong>.`;}
+  const rad=Math.floor(Math.random()*7)+2;return `Practice!<br><br>Circle: radius=<strong>${rad}</strong><br>Find the <strong>area</strong> and <strong>circumference</strong>. (Use π ≈ 3.14)`;
+}},
+
+{id:'pythagorean', keys:['pythagorean theorem','hypotenuse','right triangle','a squared b squared','pythagoras'], r:[
+  g=>`<strong>Pythagorean Theorem: a² + b² = c²</strong><br><br>• a, b = the two <strong>legs</strong> (shorter sides)<br>• c = <strong>hypotenuse</strong> (longest, opposite right angle)<br><br>Example: legs 3 and 4<br>→ 9 + 16 = 25 = c² → c = <strong>5</strong><br><br>Common triples: <strong>3-4-5, 5-12-13, 8-15-17</strong><br><br>💡 Type "hypotenuse 3 4" and I'll calculate! Or "pythagorean 6 8"`,
+]},
+
+{id:'statistics', keys:['mean','median','mode','range','standard deviation','average','data set','central tendency','outlier','box plot','histogram'], r:[
+  g=>`<strong>Measures of Center:</strong><br><br>📊 <strong>Mean</strong> = sum ÷ count<br>4, 7, 2, 9, 3 → sum=25 ÷ 5 = <strong>5</strong><br><br>📊 <strong>Median</strong> = middle value (sort first!)<br>2, 3, <strong>4</strong>, 7, 9 → median = <strong>4</strong><br>(Even # of values: average the two middle numbers)<br><br>📊 <strong>Mode</strong> = most frequent<br>2, 3, 3, 4, 7 → mode = <strong>3</strong><br><br>📊 <strong>Range</strong> = max − min = 9 − 2 = <strong>7</strong><br><br>💡 Tip: mean is pulled by outliers; median isn't. Share your data set!`,
+], p:g=>{
+  const n=5+Math.floor(Math.random()*3);
+  const data=Array.from({length:n},()=>Math.floor(Math.random()*20)+1).sort((a,b)=>a-b);
+  return `Practice!<br><br>Find the <strong>mean, median, mode, and range</strong> of:<br><strong>${data.join(', ')}</strong><br><br>Sort first — then find median. What do you get?`;
+}},
+
+{id:'probability', keys:['probability','chance','likelihood','sample space','favorable outcome','independent events','dependent events','combination','permutation'], r:[
+  g=>`<strong>Probability</strong> = favorable outcomes ÷ total outcomes<br><br>Rolling a 4 on a die → 1/6 ≈ 16.7%<br><br><strong>Key rules:</strong><br>• <strong>Complement:</strong> P(not A) = 1 − P(A)<br>  P(not rolling 4) = 1 − 1/6 = 5/6<br>• <strong>Independent events</strong> (multiply):<br>  P(heads twice) = ½ × ½ = <strong>1/4</strong><br>• <strong>Mutually exclusive</strong> (add):<br>  P(1 or 2) = 1/6 + 1/6 = <strong>2/6 = 1/3</strong><br><br>What's your probability question?`,
+]},
+
+{id:'trig', keys:['sine','cosine','tangent','sin','cos','tan','sohcahtoa','trigonometry','unit circle','radian','degree','trig ratio'], r:[
+  g=>`<strong>SOHCAHTOA</strong> — for right triangles:<br><br>• <strong>SOH:</strong> sin(θ) = Opposite / Hypotenuse<br>• <strong>CAH:</strong> cos(θ) = Adjacent / Hypotenuse<br>• <strong>TOA:</strong> tan(θ) = Opposite / Adjacent<br><br>Example: θ=30°, hyp=10<br>→ sin(30°) = 0.5 → opposite = 5<br>→ cos(30°) = 0.866 → adjacent ≈ 8.66<br><br><strong>Key angles:</strong><br>θ: 30° | 45° | 60°<br>sin: ½ | √2/2 | √3/2<br>cos: √3/2 | √2/2 | ½<br>tan: 1/√3 | 1 | √3<br><br>What angle/side are you finding?`,
+]},
+
+{id:'functions', keys:['function','domain','range','f(x)','input output','inverse function','composition','linear function','slope intercept','y=mx+b','vertical line test'], r:[
+  g=>`<strong>A function</strong> maps each input to exactly one output.<br><br>f(x) = 2x + 3<br>• f(4) = 2(4)+3 = <strong>11</strong><br>• f(−1) = 2(−1)+3 = <strong>1</strong><br><br><strong>Domain</strong> = all valid inputs<br><strong>Range</strong> = all possible outputs<br><br><strong>Vertical Line Test:</strong> if any vertical line crosses the graph more than once → NOT a function.<br><br><strong>Inverse function</strong> (f⁻¹): swap x and y, then solve for y<br>f(x)=2x+3 → y=2x+3 → x=2y+3 → y=(x−3)/2 → f⁻¹(x)=(x−3)/2<br><br>What type of function?`,
+]},
+
+// ══ SCIENCE ══════════════════════════════════════════════════════════════════
+
+{id:'cells', keys:['cell','organelle','mitochondria','nucleus','ribosome','cell membrane','chloroplast','golgi','vacuole','eukaryote','prokaryote'], r:[
+  g=>`<strong>Cell Organelles — what they do:</strong><br><br>🔵 <strong>Nucleus</strong> — control center, holds DNA<br>⚡ <strong>Mitochondria</strong> — energy factory (makes ATP)<br>🏭 <strong>Ribosomes</strong> — build proteins<br>📬 <strong>Golgi Apparatus</strong> — packages & ships proteins<br>🚿 <strong>Endoplasmic Reticulum</strong> — protein transport network<br>🧹 <strong>Lysosomes</strong> — digest waste (animal cells)<br>💧 <strong>Vacuole</strong> — storage (huge in plant cells)<br>🌿 <strong>Chloroplast</strong> — photosynthesis (plant cells only)<br>🧱 <strong>Cell Wall</strong> — rigid support (plant cells only)<br><br><strong>Plant vs Animal:</strong> Plants have cell wall, chloroplast, large vacuole. Animals have centrioles.<br><br>Which organelle do you need more on?`,
+]},
+
+{id:'mitosis', keys:['mitosis','meiosis','cell division','interphase','prophase','metaphase','anaphase','telophase','chromosome','chromatid'], r:[
+  g=>`<strong>Cell Division — two types:</strong><br><br>🔁 <strong>MITOSIS</strong> (body growth/repair)<br>1 cell → 2 identical diploid cells<br>Stages: PMAT — Prophase, Metaphase, Anaphase, Telophase<br><br>🧬 <strong>MEIOSIS</strong> (sex cell production)<br>1 cell → 4 unique haploid cells (half chromosomes)<br>Goes through 2 rounds of division<br><br>Memory: <strong>Mitosis = Make a cOpy (body)</strong><br><strong>Meiosis = Make sEx cells</strong><br><br>What phase are you studying?`,
+]},
+
+{id:'photosynthesis', keys:['photosynthesis','chlorophyll','light reaction','calvin cycle','carbon dioxide','co2','light energy','stroma','thylakoid'], r:[
+  g=>`<strong>Photosynthesis equation:</strong><br><strong>6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂</strong><br><br>In plain English:<br>• Plants take in <strong>CO₂</strong> (air) + <strong>water</strong> (roots)<br>• Use <strong>sunlight</strong> as energy<br>• Make <strong>glucose</strong> (food) + release <strong>oxygen</strong><br><br>Where: <strong>chloroplast</strong>, using green pigment <strong>chlorophyll</strong><br><br><strong>Two stages:</strong><br>1. <strong>Light reactions</strong> (thylakoid membrane) — capture light, make ATP<br>2. <strong>Calvin cycle</strong> (stroma) — use ATP to build glucose<br><br>Want me to compare this to cellular respiration (which is basically the reverse)?`,
+]},
+
+{id:'genetics', keys:['dna','rna','gene','chromosome','allele','dominant','recessive','genotype','phenotype','punnett square','heredity','mutation','mendel'], r:[
+  g=>`<strong>Genetics basics:</strong><br><br>🧬 <strong>DNA → genes → traits</strong><br>• DNA is in chromosomes, in the nucleus<br>• Humans: 46 chromosomes (23 pairs)<br><br><strong>Dominant (B) vs Recessive (b):</strong><br>• BB or Bb → shows dominant trait<br>• bb → shows recessive trait only<br><br><strong>Punnett Square — Bb × Bb:</strong><br>&nbsp;&nbsp;&nbsp;&nbsp;B &nbsp;&nbsp;b<br>B | BB | Bb<br>b | Bb | bb<br>Results: 25%BB, 50%Bb, 25%bb → 75% dominant phenotype<br><br>What genetics topic?`,
+]},
+
+{id:'chemistry', keys:['element','compound','atom','molecule','periodic table','proton','neutron','electron','atomic number','ion','chemical bond','ionic','covalent','matter','substance','metal','nonmetal','valence'], r:[
+  g=>`<strong>Atomic Structure:</strong><br><br>⚛️ An atom has 3 particles:<br>• <strong>Protons</strong> (+) — nucleus, = atomic number<br>• <strong>Neutrons</strong> (neutral) — nucleus<br>• <strong>Electrons</strong> (−) — orbit in shells<br><br>Carbon (C) has atomic number 6 → 6 protons, 6 neutrons, 6 electrons<br><br><strong>Periodic table:</strong> rows = periods (energy levels), columns = groups (similar properties)<br><br><strong>Ions</strong> = atoms that gained/lost electrons → have a charge<br>Na → Na⁺ (lost 1e⁻) | Cl → Cl⁻ (gained 1e⁻)<br><br>What are you studying — elements, bonds, reactions?`,
+]},
+
+{id:'reactions', keys:['chemical reaction','reactant','product','balanced equation','synthesis','decomposition','combustion','acid','base','ph','exothermic','endothermic','catalyst'], r:[
+  g=>`<strong>Chemical Reactions — types:</strong><br><br>• <strong>Synthesis:</strong> A + B → AB (combine)<br>• <strong>Decomposition:</strong> AB → A + B (break apart)<br>• <strong>Single replacement:</strong> A + BC → AC + B<br>• <strong>Combustion:</strong> fuel + O₂ → CO₂ + H₂O 🔥<br><br><strong>Balancing equations</strong> (atoms must be equal on both sides):<br>H₂ + O₂ → H₂O → <strong>2H₂ + O₂ → 2H₂O</strong><br><br>• Exothermic = releases heat (burning)<br>• Endothermic = absorbs heat (cold pack)<br><br>Which reaction type?`,
+]},
+
+{id:'physics_forces', keys:['force','newton','acceleration','mass','velocity','momentum','inertia','friction','gravity','net force','newtons law','speed','distance','time','motion','physics','weight','free fall'], r:[
+  g=>`<strong>Newton's 3 Laws of Motion:</strong><br><br>1️⃣ <strong>Inertia:</strong> Objects stay at rest (or moving) unless a net force acts.<br>2️⃣ <strong>F = ma</strong>: Force = mass × acceleration (Newtons)<br>3️⃣ <strong>Action-Reaction:</strong> Every action has an equal, opposite reaction.<br><br><strong>Key formulas:</strong><br>• Weight = mass × gravity = mg (g = 9.8 m/s²)<br>• Momentum = mass × velocity (p = mv)<br>• Speed = distance ÷ time<br>• Acceleration = (v_final − v_initial) ÷ time<br><br>Mass stays the same everywhere; weight changes on other planets.<br><br>What's your physics problem?`,
+]},
+
+{id:'physics_energy', keys:['kinetic energy','potential energy','thermal energy','conservation of energy','work','power','joule','watt','wave','frequency','amplitude'], r:[
+  g=>`<strong>Energy types:</strong><br><br>⚡ <strong>Kinetic (KE)</strong> = energy of motion<br>KE = ½mv² (½ × mass × velocity²)<br><br>🏔️ <strong>Gravitational PE</strong> = stored height energy<br>PE = mgh (mass × 9.8 × height)<br><br><strong>Law of Conservation of Energy:</strong><br>Energy is NEVER created or destroyed — only transferred!<br>Ball falling: PE → KE. At bottom: max KE, zero PE.<br><br><strong>Work = Force × distance</strong> (Joules)<br><strong>Power = Work ÷ time</strong> (Watts)<br><br>Which energy concept?`,
+]},
+
+{id:'ecology', keys:['ecosystem','food web','food chain','producer','consumer','decomposer','predator','prey','biome','habitat','biodiversity','carrying capacity'], r:[
+  g=>`<strong>Ecosystems</strong> = living things + their environment interacting.<br><br><strong>Energy flow:</strong><br>Sun → Producers (plants) → Primary consumers (herbivores) → Secondary consumers → Decomposers<br><br>Only ~<strong>10% of energy</strong> transfers to each level!<br>(Why there are fewer lions than zebras)<br><br><strong>Ecological relationships:</strong><br>• Predator/prey: wolf eats rabbit<br>• Mutualism: both benefit (bees + flowers)<br>• Commensalism: one benefits, other unaffected<br>• Parasitism: one benefits, host harmed<br><br>What topic?`,
+]},
+
+// ══ ELA ══════════════════════════════════════════════════════════════════════
+
+{id:'essay', keys:['thesis','essay','argument','introduction','conclusion','body paragraph','claim','evidence','topic sentence','hook','outline'], r:[
+  g=>`<strong>Essay Structure:</strong><br>📝 <strong>Intro:</strong> Hook → Background → Thesis<br>📝 <strong>Body ×3:</strong> Topic sentence → Evidence → Analysis → Transition<br>📝 <strong>Conclusion:</strong> Restate thesis → Summarize → Clincher<br><br><strong>Strong Thesis Formula:</strong> Topic + Claim + Reasons<br>✅ "Social media harms teens because it reduces real connection, promotes comparison, and is psychologically addictive."<br>❌ "Social media is bad." (too vague!)<br><br>Your thesis must be <em>arguable</em> — not just a fact.<br><br>What's your essay topic?`,
+  g=>`<strong>Body paragraph = TEAL:</strong><br><br><strong>T</strong>opic sentence — your mini-argument<br><strong>E</strong>vidence — quote or specific example<br><strong>A</strong>nalysis — WHY does this support your claim?<br><strong>L</strong>ink — transition to next paragraph<br><br>❌ Don't just retell the story<br>✅ Analyze — explain what it means<br><br>Share your paragraph and I'll give feedback!`,
+]},
+
+{id:'literary_devices', keys:['metaphor','simile','alliteration','personification','irony','foreshadowing','symbolism','imagery','hyperbole','onomatopoeia','theme','literary device','figurative language'], r:[
+  g=>`<strong>Key Literary Devices:</strong><br><br>🌸 <strong>Simile</strong> — comparison using "like" or "as"<br>&nbsp;&nbsp;"Her smile was <em>like</em> sunshine"<br>🌺 <strong>Metaphor</strong> — direct comparison<br>&nbsp;&nbsp;"Life is a rollercoaster"<br>🗣️ <strong>Personification</strong> — human traits to non-humans<br>&nbsp;&nbsp;"The wind <em>whispered</em>"<br>📢 <strong>Alliteration</strong> — repeated initial consonants<br>&nbsp;&nbsp;"Peter Piper picked..."<br>🔊 <strong>Onomatopoeia</strong> — words sound like their meaning<br>&nbsp;&nbsp;"buzz, snap, crackle"<br>⚡ <strong>Foreshadowing</strong> — hints at future events<br>💬 <strong>Irony</strong> — saying the opposite of what's meant<br>🔗 <strong>Symbolism</strong> — object represents bigger idea<br><br>Which device do you need examples of?`,
+]},
+
+{id:'grammar', keys:['noun','verb','adjective','adverb','pronoun','preposition','conjunction','parts of speech','subject','predicate','clause','punctuation','comma','semicolon'], r:[
+  g=>`<strong>Parts of Speech:</strong><br><br>📌 <strong>Noun</strong> — person, place, thing, idea (dog, school, love)<br>📌 <strong>Verb</strong> — action or state (run, is, seems)<br>📌 <strong>Adjective</strong> — describes nouns (blue, tall, happy)<br>📌 <strong>Adverb</strong> — describes verbs/adj (quickly, very, almost)<br>📌 <strong>Pronoun</strong> — replaces nouns (he, she, they, it)<br>📌 <strong>Preposition</strong> — shows relationship (in, on, under, between)<br>📌 <strong>Conjunction</strong> — connects clauses (and, but, because, although)<br><br>Every sentence needs: <strong>Subject + Predicate</strong><br>"The cat [subject] sleeps [predicate]"<br><br>What grammar concept?`,
+]},
+
+{id:'poetry', keys:['poem','poetry','stanza','rhyme','meter','sonnet','haiku','free verse','rhythm','iambic pentameter','couplet','verse'], r:[
+  g=>`<strong>Poetry Basics:</strong><br><br>📜 <strong>Stanza</strong> = group of lines (like a paragraph)<br>📜 <strong>Rhyme scheme</strong> = pattern (ABAB, AABB, ABCABC...)<br>📜 <strong>Meter</strong> = rhythm of stressed/unstressed syllables<br><br><strong>Forms:</strong><br>• <strong>Haiku:</strong> 5-7-5 syllables (3 lines)<br>• <strong>Sonnet:</strong> 14 lines, iambic pentameter<br>• <strong>Free verse:</strong> no set rhyme or meter<br><br><strong>Iambic pentameter:</strong> da-DUM × 5 per line<br>"Shall I com-<em>PARE</em> thee <em>TO</em> a <em>SUM</em>-mer's <em>DAY</em>?"<br><br>When analyzing: look for imagery, tone, theme, figurative language.<br><br>What poem are you analyzing?`,
+]},
+
+{id:'reading', keys:['inference','theme','main idea','summarize','context clue','author purpose','point of view','text evidence','reading comprehension'], r:[
+  g=>`<strong>Reading Comprehension Strategies:</strong><br><br>🔍 <strong>Inference</strong> = text clues + prior knowledge<br>"She slammed the door" → she's angry (inferred!)<br><br>📌 <strong>Theme</strong> = the big life message (not just the plot!)<br>Ask: What does the author want us to understand about life?<br><br>📋 <strong>Summary</strong> = most important ideas only<br>Characters + Problem + Resolution<br><br>🎯 <strong>Author's Purpose:</strong><br>• Inform (teach), Persuade (convince), Entertain (engage)<br><br>What passage or concept?`,
+]},
+
+// ══ HISTORY ══════════════════════════════════════════════════════════════════
+
+{id:'american_revolution', keys:['american revolution','colonial','declaration of independence','revolutionary war','founding fathers','boston tea party','1776','british colonies','taxation without representation'], r:[
+  g=>`<strong>American Revolution (1775–1783):</strong><br><br>🔑 <strong>Causes (TRIN):</strong><br>• Taxes without representation (Stamp Act, Townshend Acts)<br>• Revolutionary ideas (Enlightenment — Locke, natural rights)<br>• Incidents (Boston Massacre 1770, Boston Tea Party 1773)<br>• Need for self-governance<br><br>📜 <strong>Timeline:</strong><br>• 1775: Lexington & Concord (first shots)<br>• 1776: Declaration of Independence (July 4)<br>• 1777: Saratoga — turning point (France joins!)<br>• 1781: Yorktown — British surrender<br>• 1783: Treaty of Paris<br><br>The Declaration states all people have "unalienable rights" — life, liberty, and the pursuit of happiness.<br><br>What aspect?`,
+]},
+
+{id:'civil_war', keys:['civil war','slavery','union','confederacy','lincoln','emancipation proclamation','reconstruction','secession','gettysburg','abolitionist'], r:[
+  g=>`<strong>American Civil War (1861–1865):</strong><br><br>🔑 <strong>Causes:</strong><br>• Slavery — moral and economic divide<br>• States' rights — South believed states could leave the Union<br>• Election of Lincoln (1860) — South feared abolition<br><br>📜 <strong>Key events:</strong><br>• 1861: Fort Sumter — war begins<br>• 1863: Emancipation Proclamation — freed enslaved people in Confederate states<br>• 1863: Gettysburg — turning point; Lincoln's address<br>• 1865: Lee surrenders at Appomattox<br>• 1865: 13th Amendment abolishes slavery<br><br>Over 620,000 Americans died — deadliest war in U.S. history.<br><br>What aspect?`,
+]},
+
+{id:'world_wars', keys:['world war','wwi','wwii','ww1','ww2','nazi','hitler','holocaust','d-day','pearl harbor','trench warfare','treaty of versailles'], r:[
+  g=>`<strong>WWI (1914–1918):</strong><br>Causes (MAIN): Militarism, Alliances, Imperialism, Nationalism + assassination of Archduke Franz Ferdinand<br>Allies vs Central Powers; new: trench warfare, poison gas, tanks<br>Ended with Treaty of Versailles → harsh terms → seeds of WWII<br><br><strong>WWII (1939–1945):</strong><br>Causes: Rise of fascism, Great Depression, weak Versailles Treaty<br>Allies (US, UK, USSR) vs Axis (Germany, Italy, Japan)<br>• Holocaust: Nazi genocide of 6 million Jews<br>• Pearl Harbor 1941: US enters war<br>• D-Day June 6, 1944: Allied invasion of Normandy<br>• 1945: Atomic bombs → Japan surrenders<br><br>What specific aspect?`,
+]},
+
+{id:'civil_rights', keys:['civil rights','martin luther king','rosa parks','segregation','jim crow','brown v board','march on washington','voting rights act','civil rights act','nonviolent protest'], r:[
+  g=>`<strong>Civil Rights Movement (1950s–1960s):</strong><br><br>🔑 <strong>Key events:</strong><br>• 1954: Brown v. Board — ended school segregation<br>• 1955: Montgomery Bus Boycott (Rosa Parks) — MLK leads 381-day boycott<br>• 1960: Greensboro Sit-ins — nonviolent resistance<br>• 1963: March on Washington — "I Have a Dream" speech<br>• 1964: Civil Rights Act — banned discrimination<br>• 1965: Voting Rights Act — protected voting rights<br><br>🕊️ MLK's philosophy: <strong>nonviolent direct action</strong>, inspired by Gandhi<br><br>Key figures: MLK Jr., Rosa Parks, John Lewis, Thurgood Marshall, Malcolm X<br><br>What aspect?`,
+]},
+
+{id:'government', keys:['constitution','amendment','bill of rights','congress','senate','house of representatives','president','supreme court','branches of government','checks and balances','democracy','federalism'], r:[
+  g=>`<strong>U.S. Government — 3 Branches:</strong><br><br>🏛️ <strong>Legislative</strong> (Congress = Senate + House) — makes laws<br>🏛️ <strong>Executive</strong> (President) — enforces laws<br>🏛️ <strong>Judicial</strong> (Supreme Court) — interprets laws<br><br>⚖️ <strong>Checks & Balances:</strong><br>Congress passes law → President can veto → Congress overrides with ⅔ vote → Courts can declare unconstitutional<br><br>📜 <strong>Bill of Rights</strong> = first 10 Amendments:<br>1st: speech, religion, press<br>2nd: bear arms<br>4th: no unreasonable search<br>5th: due process, no self-incrimination<br>14th: equal protection<br>19th: women's voting rights<br><br>What topic?`,
+]},
+
+// ══ CS ═══════════════════════════════════════════════════════════════════════
+
+{id:'loops', keys:['loop','for loop','while loop','iteration','range','nested loop','infinite loop','break','continue','iterate'], r:[
+  g=>`<strong>Loops repeat code automatically:</strong><br><br>🔁 <strong>For loop</strong> — known # of repetitions:<br><pre>for i in range(5):\n    print(i)  # 0,1,2,3,4</pre>🔄 <strong>While loop</strong> — repeats until condition is false:<br><pre>count = 0\nwhile count < 5:\n    count += 1</pre><strong>When to use:</strong><br>• <strong>For:</strong> "Loop exactly N times" or "go through a list"<br>• <strong>While:</strong> "Keep going until something happens"<br><br>🚨 Infinite loop = condition never becomes False → program freezes! Always update your variable.<br><br>What language? What are you trying to loop through?`,
+  g=>`<strong>Nested loops</strong> = loop inside a loop:<br><pre>for i in range(3):\n    for j in range(3):\n        print(i, j)</pre>Outputs 9 combinations: (0,0), (0,1)... Great for grids!<br><br><strong>List comprehension</strong> (Python shortcut):<br><pre>[x*2 for x in range(5)]  # [0,2,4,6,8]</pre>What are you looping through?`,
+]},
+
+{id:'conditionals', keys:['if statement','if else','elif','conditional','boolean','true false','comparison operator','logical operator','and or not'], r:[
+  g=>`<strong>Conditionals make decisions:</strong><br><pre>if score >= 90:\n    print("A")\nelif score >= 80:\n    print("B")\nelse:\n    print("Keep practicing!")</pre><strong>Comparison operators:</strong><br>== (equal) | != (not equal) | > | < | >= | <=<br><br><strong>Logical operators:</strong><br>• <strong>and</strong> — both must be True<br>• <strong>or</strong> — at least one True<br>• <strong>not</strong> — reverses True/False<br><br>Example: <code>if age >= 13 and has_permission:</code><br><br>What condition are you writing?`,
+]},
+
+{id:'functions_cs', keys:['function definition','def','parameter','argument','return value','method','local variable','global variable','recursion','call a function'], r:[
+  g=>`<strong>Functions</strong> = reusable blocks of code:<br><pre>def greet(name):\n    return "Hello, " + name + "!"\n\nprint(greet("Alex"))  # Hello, Alex!</pre><strong>Key terms:</strong><br>• <strong>Parameter</strong> = variable in definition (name)<br>• <strong>Argument</strong> = actual value passed in ("Alex")<br>• <strong>Return</strong> = what the function gives back<br><br>🔁 <strong>Recursion</strong> = function that calls itself:<br><pre>def factorial(n):\n    if n <= 1: return 1\n    return n * factorial(n-1)\n# factorial(5) = 5×4×3×2×1 = 120</pre>What are you building?`,
+]},
+
+{id:'data_structures', keys:['array','list','dictionary','data type','string','integer','float','index','append','sort','key value','variable','data structure'], r:[
+  g=>`<strong>Storing data in Python:</strong><br><br>📋 <strong>List</strong> — ordered, changeable:<br><pre>grades = [92, 85, 78, 95]\ngrades[0]   # 92 (first item)\ngrades[-1]  # 95 (last item)\ngrades.append(88)  # adds 88</pre>🗂️ <strong>Dictionary</strong> — key:value pairs:<br><pre>student = {"name": "Alex", "grade": 10}\nstudent["name"]  # "Alex"</pre><strong>Data types:</strong> int (5) | float (3.14) | str ("hello") | bool (True/False)<br><br>What data are you working with?`,
+]},
+
+{id:'html_css', keys:['html','css','web page','tag','element','style attribute','class selector','href','div','span','heading tag','javascript web'], r:[
+  g=>`<strong>HTML = structure, CSS = style</strong><br><br>📄 <strong>HTML:</strong><br><pre>&lt;h1&gt;Heading&lt;/h1&gt;\n&lt;p&gt;A paragraph.&lt;/p&gt;\n&lt;a href="url"&gt;Link&lt;/a&gt;\n&lt;img src="photo.jpg"&gt;</pre>🎨 <strong>CSS:</strong><br><pre>h1 {\n  color: blue;\n  font-size: 24px;\n}\n.my-class { background: yellow; }</pre>Box model: content → padding → border → margin<br>Classes (.name) for groups | IDs (#name) for one element<br><br>What are you building?`,
+]},
+
+{id:'algorithms', keys:['algorithm','sorting','binary search','big o','time complexity','bubble sort','merge sort','pseudocode','problem solving'], r:[
+  g=>`<strong>Algorithms</strong> = step-by-step problem-solving instructions.<br><br>🔍 <strong>Binary Search</strong> (sorted list → O(log n)):<br>Split in half, check middle, go left or right. Much faster than checking every item O(n)!<br><br>📊 <strong>Sorting algorithms:</strong><br>• <strong>Bubble sort:</strong> compare pairs, swap → O(n²) slow<br>• <strong>Merge sort:</strong> divide & conquer → O(n log n) fast<br>• <strong>Quick sort:</strong> pick pivot, partition → O(n log n) avg<br><br><strong>Big O notation</strong> = how code scales with data size:<br>O(1) constant | O(log n) fast | O(n) linear | O(n²) slow<br><br>What algorithm?`,
+]},
+
+{id:'binary', keys:['binary','bit','byte','hexadecimal','base 2','binary number','ones complement','twos complement'], r:[
+  g=>`<strong>Binary (Base 2)</strong> — computers use only 0s and 1s!<br><br>Place values double: ...32, 16, 8, 4, 2, 1<br><br><strong>Binary → Decimal:</strong><br>1011₂ = 1×8 + 0×4 + 1×2 + 1×1 = <strong>11</strong><br><br><strong>Decimal → Binary:</strong><br>13: 13÷2=6R1, 6÷2=3R0, 3÷2=1R1, 1÷2=0R1<br>Read remainders bottom-up: <strong>1101</strong><br><br>• 1 <strong>bit</strong> = one binary digit<br>• 1 <strong>byte</strong> = 8 bits = 256 possible values (0–255)<br><br>Give me a number to convert!`,
+]},
+
+// ══ HEALTH ═══════════════════════════════════════════════════════════════════
+
+{id:'nutrition', keys:['nutrition','macronutrient','carbohydrate','protein','fat','vitamin','mineral','calorie','healthy eating','fiber','nutrient'], r:[
+  g=>`<strong>The 3 Macronutrients:</strong><br><br>🍞 <strong>Carbohydrates</strong> — primary energy fuel<br>• 4 cal/gram | Simple (sugar) vs Complex (whole grains)<br>• Complex = slower, steadier energy<br><br>🥩 <strong>Protein</strong> — builds and repairs muscle/tissue<br>• 4 cal/gram | Sources: meat, eggs, beans, nuts<br><br>🥑 <strong>Fat</strong> — brain function, hormones, vitamin absorption<br>• 9 cal/gram | Healthy: olive oil, avocado, nuts<br>• Limit: trans fats, saturated fats<br><br>🌿 <strong>Micronutrients</strong> (vitamins & minerals):<br>• Vitamin C → immune system<br>• Calcium → bones<br>• Iron → blood cells<br><br>What nutrition topic?`,
+]},
+
+{id:'mental_health', keys:['mental health','stress','anxiety','depression','mindfulness','coping strategies','emotion regulation','wellbeing','self care','meditation'], r:[
+  g=>`<strong>Mental health is just as important as physical health.</strong><br><br>🧠 <strong>Common experiences:</strong><br>• <strong>Stress</strong>: normal response to challenge — can be motivating<br>• <strong>Anxiety</strong>: worry that feels out of proportion to the situation<br>• <strong>Depression</strong>: persistent low mood, loss of interest<br><br>🛠️ <strong>Evidence-based coping strategies:</strong><br>• Exercise — releases endorphins (natural mood boosters)<br>• Sleep — 8-10 hours recommended for teens<br>• Deep breathing — slow exhale activates the calm response<br>• Talking to someone you trust<br>• Mindfulness — staying present in the moment<br><br>It's always okay to ask for help from a counselor or therapist. 💙<br><br>What would you like to understand?`,
+]},
+
+{id:'body_systems', keys:['body system','digestive','respiratory','circulatory','nervous system','immune system','skeletal','muscular','endocrine','heart lung brain organ'], r:[
+  g=>`<strong>Human Body Systems:</strong><br><br>❤️ <strong>Circulatory</strong> — heart pumps blood → delivers O₂, removes CO₂<br>🫁 <strong>Respiratory</strong> — lungs exchange O₂ and CO₂<br>🍔 <strong>Digestive</strong> — breaks food into nutrients (mouth→stomach→intestines)<br>🧠 <strong>Nervous</strong> — brain + spinal cord + nerves → controls everything<br>🦴 <strong>Skeletal</strong> — 206 bones; structure, protection, blood cell production<br>💪 <strong>Muscular</strong> — movement (voluntary) and organ function (involuntary)<br>🛡️ <strong>Immune</strong> — fights infection (white blood cells, antibodies)<br>⚗️ <strong>Endocrine</strong> — hormones control growth, mood, metabolism<br><br>Systems work together! Which are you studying?`,
+]},
+
+// ══ MATH (additional) ════════════════════════════════════════════════════════
+
+{id:'exponents', keys:['exponent','power','squared','cubed','base','square root','cube root','scientific notation','radical','nth root','negative exponent','laws of exponents'], r:[
+  g=>`<strong>Exponents</strong> show repeated multiplication:<br><br>2³ = 2 × 2 × 2 = <strong>8</strong> (2 is the base, 3 is the exponent)<br><br><strong>Laws of Exponents:</strong><br>• xᵃ × xᵇ = x^(a+b) → 2³ × 2² = 2⁵ = 32<br>• xᵃ ÷ xᵇ = x^(a−b) → 2⁵ ÷ 2² = 2³ = 8<br>• (xᵃ)ᵇ = x^(ab) → (2³)² = 2⁶ = 64<br>• x⁰ = 1 (anything to the power 0 = 1)<br>• x⁻ⁿ = 1/xⁿ → 2⁻³ = 1/8<br><br><strong>Square roots</strong> undo squaring: √25 = 5 because 5² = 25<br>Common squares: 1,4,9,16,25,36,49,64,81,100<br><br>What type of exponent problem?`,
+]},
+
+{id:'order_of_operations', keys:['order of operations','pemdas','bodmas','bedmas','parentheses','brackets','exponent order','please excuse my dear aunt sally'], r:[
+  g=>`<strong>Order of Operations — PEMDAS:</strong><br><br><strong>P</strong>arentheses first → (2+3) × 4 = 5 × 4 = 20<br><strong>E</strong>xponents → 2³ + 1 = 9<br><strong>M</strong>ultiplication and <strong>D</strong>ivision (left to right)<br><strong>A</strong>ddition and <strong>S</strong>ubtraction (left to right)<br><br>Example: 3 + 4 × 2² − (1 + 1)<br>Step 1 (Parentheses): 3 + 4 × 2² − 2<br>Step 2 (Exponents): 3 + 4 × 4 − 2<br>Step 3 (Multiply): 3 + 16 − 2<br>Step 4 (Add/Sub): <strong>17</strong><br><br>Memory trick: <strong>P</strong>lease <strong>E</strong>xcuse <strong>M</strong>y <strong>D</strong>ear <strong>A</strong>unt <strong>S</strong>ally<br><br>Want to try a practice problem?`,
+], p:g=>{
+  const a=Math.floor(Math.random()*5)+2, b=Math.floor(Math.random()*4)+2, c=Math.floor(Math.random()*6)+1, d=Math.floor(Math.random()*3)+1;
+  return `Practice! Solve using PEMDAS:<br><br><strong>${a} + ${b} × ${c}² − (${d} + ${d})</strong><br><br>What do you get? (Remember: parentheses and exponents first!)`;
+}},
+
+{id:'inequalities', keys:['inequality','greater than','less than','solve inequality','number line','compound inequality','absolute value inequality'], r:[
+  g=>`<strong>Inequalities</strong> use < > ≤ ≥ instead of =<br><br>Solve like an equation — with one key rule:<br>⚠️ <strong>Flip the sign when multiplying or dividing by a negative!</strong><br><br>Example: 2x + 3 > 11<br>→ Subtract 3: 2x > 8<br>→ Divide by 2: <strong>x > 4</strong><br><br>Example with flip: −3x ≤ 9<br>→ Divide by −3 (flip!): <strong>x ≥ −3</strong><br><br><strong>Graphing on a number line:</strong><br>• Open circle ○ for < or > (not including the value)<br>• Closed circle ● for ≤ or ≥ (including the value)<br>• Shade in the direction of the solution<br><br>What's your inequality?`,
+]},
+
+{id:'integers', keys:['integer','negative number','positive number','absolute value','opposite','number line integers','adding negative','subtracting negative'], r:[
+  g=>`<strong>Integers</strong> = whole numbers + their negatives: ...−3, −2, −1, 0, 1, 2, 3...<br><br><strong>Rules for operations:</strong><br>• (+) × (+) = + and (−) × (−) = + <em>(same signs → positive)</em><br>• (+) × (−) = − <em>(different signs → negative)</em><br><br><strong>Adding/Subtracting negatives:</strong><br>• 5 + (−3) = 5 − 3 = <strong>2</strong><br>• 5 − (−3) = 5 + 3 = <strong>8</strong> (subtracting a negative = adding!)<br><br><strong>Absolute value</strong> |x| = distance from zero (always ≥ 0):<br>|−7| = 7 | |3| = 3 | |0| = 0<br><br>Think of a number line — negatives go left, positives go right. What are you working on?`,
+]},
+
+{id:'systems', keys:['system of equations','simultaneous equations','substitution method','elimination method','two equations','linear system','solve two variables'], r:[
+  g=>`<strong>Systems of equations</strong> = two equations, two unknowns.<br><br><strong>Method 1 — Substitution:</strong><br>y = 2x + 1 and x + y = 7<br>→ Replace y: x + (2x+1) = 7 → 3x = 6 → x = 2<br>→ Then: y = 2(2)+1 = <strong>5</strong><br>→ Solution: (2, 5)<br><br><strong>Method 2 — Elimination:</strong><br>2x + y = 8 and x − y = 1<br>→ Add equations: 3x = 9 → x = 3<br>→ Plug back: y = 8−6 = <strong>2</strong><br><br>Check both solutions by substituting into BOTH equations!<br><br>Share your system and I'll walk through it!`,
+]},
+
+{id:'graphing', keys:['graph','slope','y-intercept','x-intercept','plot','coordinate plane','linear graph','rise over run','table of values'], r:[
+  g=>`<strong>Graphing linear equations (y = mx + b):</strong><br><br>• <strong>m</strong> = slope = rise/run = how steep the line is<br>• <strong>b</strong> = y-intercept = where line crosses y-axis<br><br>Example: y = 2x + 1<br>• Start at (0, 1) — the y-intercept<br>• Slope = 2 → go up 2, right 1 → next point (1, 3)<br>• Connect the dots → straight line!<br><br><strong>Finding slope from two points:</strong><br>m = (y₂ − y₁) / (x₂ − x₁)<br>Points (1,3) and (3,7): m = (7−3)/(3−1) = 4/2 = <strong>2</strong><br><br>Positive slope = rises left to right<br>Negative slope = falls left to right<br>Zero slope = horizontal line<br><br>What are you graphing?`,
+]},
+
+// ══ SCIENCE (additional) ═════════════════════════════════════════════════════
+
+{id:'evolution', keys:['evolution','natural selection','darwin','adaptation','survival of fittest','mutation','species','variation','fossil record','common ancestor','selective pressure'], r:[
+  g=>`<strong>Evolution</strong> = change in a species over many generations.<br><br>🔑 <strong>Natural Selection (Darwin):</strong><br>1. Variation exists in a population (some birds have longer beaks)<br>2. Some traits help survival better (longer beak → more food)<br>3. Those individuals survive and reproduce more<br>4. Trait becomes more common over generations → species changes<br><br><strong>Key vocabulary:</strong><br>• <strong>Adaptation</strong> — a trait that helps survival in an environment<br>• <strong>Mutation</strong> — random change in DNA (source of variation)<br>• <strong>Selective pressure</strong> — environmental factor that favors certain traits<br>• <strong>Fossil record</strong> — evidence of ancient life; shows how species changed<br><br>Classic example: Peppered moths in industrial England — dark moths survived better on soot-covered trees.<br><br>What aspect of evolution?`,
+]},
+
+{id:'earth_science', keys:['water cycle','plate tectonics','earthquake','volcano','rock cycle','weathering','erosion','sedimentary','igneous','metamorphic','continental drift','atmosphere','tectonic plate'], r:[
+  g=>`<strong>Earth Science — key cycles:</strong><br><br>💧 <strong>Water Cycle:</strong><br>Evaporation → Condensation (clouds) → Precipitation (rain/snow) → Collection → repeat<br><br>🌍 <strong>Plate Tectonics:</strong><br>Earth's crust = ~15 plates floating on mantle<br>• Convergent (collide) → mountains, volcanoes, earthquakes<br>• Divergent (separate) → mid-ocean ridges<br>• Transform (slide past) → earthquakes (San Andreas Fault)<br><br>🪨 <strong>Rock Cycle:</strong><br>• Igneous → formed from cooled magma/lava<br>• Sedimentary → layers of compressed sediment (contains fossils!)<br>• Metamorphic → changed by heat and pressure<br>Any rock can become any other type over time!<br><br>Which topic?`,
+  g=>`<strong>Earthquakes & Volcanoes</strong> happen at plate boundaries.<br><br>🔥 <strong>Volcanoes:</strong> magma escapes where plates diverge or where one dives under another<br>⚡ <strong>Earthquakes:</strong> plates sliding = seismic waves = shaking<br>• Measured on the Richter scale (each number = 10× more energy)<br>• Focus = underground origin point<br>• Epicenter = point on surface above focus<br><br><strong>Layers of Earth:</strong><br>Crust → Mantle (convection currents move plates!) → Outer core (liquid iron) → Inner core (solid iron)<br><br>What are you studying?`,
+]},
+
+{id:'climate_weather', keys:['climate','weather','atmosphere','greenhouse effect','global warming','climate change','biome','humidity','precipitation','temperature','seasons','greenhouse gas'], r:[
+  g=>`<strong>Weather vs Climate:</strong><br>• <strong>Weather</strong> = day-to-day conditions (sunny today)<br>• <strong>Climate</strong> = long-term average patterns (rainy region)<br><br><strong>Greenhouse Effect:</strong><br>Sun's energy heats Earth → Earth releases heat → greenhouse gases (CO₂, methane, water vapor) trap some heat → keeps Earth warm enough for life<br><br><strong>Climate Change:</strong><br>Burning fossil fuels adds extra CO₂ → more heat trapped → average temperatures rise → effects: rising sea levels, extreme weather, habitat loss<br><br><strong>Biomes</strong> = large areas with similar climate and organisms:<br>Tropical rainforest | Desert | Tundra | Grassland | Temperate forest | Ocean<br><br>What climate topic are you studying?`,
+]},
+
+{id:'waves_light', keys:['wave','light','sound wave','electromagnetic','reflection','refraction','wavelength','frequency amplitude','transverse','longitudinal','speed of light'], r:[
+  g=>`<strong>Waves</strong> transfer energy without transferring matter.<br><br><strong>Key properties:</strong><br>• <strong>Wavelength (λ)</strong> = distance of one full cycle<br>• <strong>Frequency (f)</strong> = cycles per second (Hz)<br>• <strong>Amplitude</strong> = height of the wave (= energy/loudness)<br>• Speed = frequency × wavelength<br><br><strong>Types:</strong><br>• <strong>Transverse</strong> — vibrates ⊥ to direction (light, water waves)<br>• <strong>Longitudinal</strong> — vibrates ∥ to direction (sound)<br><br><strong>Electromagnetic spectrum</strong> (low→high frequency):<br>Radio → Microwave → Infrared → Visible → UV → X-ray → Gamma<br><br><strong>Light:</strong><br>• Reflection = bounces off surface (angle in = angle out)<br>• Refraction = bends when entering new medium (why straws look bent)<br><br>What wave concept?`,
+]},
+
+// ══ HISTORY (additional) ═════════════════════════════════════════════════════
+
+{id:'ancient_history', keys:['ancient','mesopotamia','egypt','greece','rome','civilization','pharaoh','pyramid','democracy','roman empire','greek','feudalism','middle ages','byzantine'], r:[
+  g=>`<strong>Ancient Civilizations:</strong><br><br>🏛️ <strong>Mesopotamia</strong> (first civilization, ~3500 BCE)<br>• Between Tigris & Euphrates rivers (modern Iraq)<br>• Invented writing (cuneiform), the wheel, law codes (Hammurabi)<br><br>🏛️ <strong>Ancient Egypt</strong><br>• Nile River flood → fertile farmland<br>• Pharaohs as god-kings, pyramids, hieroglyphics<br><br>🏛️ <strong>Ancient Greece</strong><br>• Birthplace of democracy (Athens), philosophy (Socrates, Plato, Aristotle)<br>• City-states: Athens (arts/democracy) vs Sparta (military)<br><br>🏛️ <strong>Roman Empire</strong><br>• Republic → Empire; spread law, language, roads across Europe<br>• Fall of Rome 476 CE → Middle Ages begin<br><br>Which civilization are you studying?`,
+]},
+
+{id:'cold_war', keys:['cold war','ussr','soviet union','communism','capitalism','nato','arms race','space race','vietnam','korean war','cuban missile crisis','iron curtain','berlin wall'], r:[
+  g=>`<strong>Cold War (1947–1991):</strong><br><br><strong>USA vs USSR</strong> — a conflict of ideologies, not direct combat<br>• <strong>USA:</strong> capitalism, democracy, NATO alliance<br>• <strong>USSR:</strong> communism, Soviet bloc, Warsaw Pact<br><br>🔑 <strong>Key events:</strong><br>• 1949: USSR tests atomic bomb — arms race begins<br>• 1950–53: Korean War (US vs Soviet-backed North Korea)<br>• 1957: Sputnik — USSR launches first satellite → Space Race!<br>• 1961: Berlin Wall built — divides East/West Germany<br>• 1962: Cuban Missile Crisis — closest to nuclear war<br>• 1964–75: Vietnam War (US vs communist North Vietnam)<br>• 1989: Berlin Wall falls<br>• 1991: USSR collapses → Cold War ends<br><br>What aspect of the Cold War?`,
+]},
+
+{id:'renaissance_industrial', keys:['renaissance','reformation','industrial revolution','colonialism','imperialism','age of exploration','enlightenment','printing press','steam engine','factory'], r:[
+  g=>`<strong>Renaissance (1300s–1600s):</strong><br>"Rebirth" of art, science, and learning after Middle Ages<br>• Da Vinci, Michelangelo, Shakespeare<br>• Printing press (Gutenberg, 1440) → ideas spread fast<br>• Shift: religion-centered → human-centered thinking<br><br><strong>Age of Exploration (1400s–1600s):</strong><br>Europe explores the Americas, Africa, Asia → colonialism, trade, and the devastating forced displacement of indigenous peoples<br><br><strong>Industrial Revolution (1760s–1840s):</strong><br>Began in Britain → factories, steam engines, mass production<br>• Changed society: people moved to cities, child labor, new middle class<br>• Created modern economy<br><br><strong>Enlightenment (1600s–1700s):</strong><br>Reason + science over tradition → influenced American & French Revolutions<br><br>Which period?`,
+]},
+
+// ══ CS (additional) ══════════════════════════════════════════════════════════
+
+{id:'oop', keys:['object oriented','class','object','inheritance','method','attribute','instance','encapsulation','polymorphism','constructor','python class','java class'], r:[
+  g=>`<strong>Object-Oriented Programming (OOP):</strong><br><br>A <strong>class</strong> is a blueprint; an <strong>object</strong> is built from it.<br><pre>class Dog:\n    def __init__(self, name, breed):\n        self.name = name\n        self.breed = breed\n\n    def bark(self):\n        print(self.name + " says: Woof!")\n\nmy_dog = Dog("Rex", "Labrador")\nmy_dog.bark()  # Rex says: Woof!</pre><strong>4 pillars of OOP:</strong><br>• <strong>Encapsulation</strong> — data + methods bundled together<br>• <strong>Inheritance</strong> — child class gets parent's attributes (class Poodle(Dog):)<br>• <strong>Polymorphism</strong> — same method, different behavior<br>• <strong>Abstraction</strong> — hide complexity, show only what's needed<br><br>What are you building with OOP?`,
+]},
+
+// ══ ELA (additional) ═════════════════════════════════════════════════════════
+
+{id:'vocabulary', keys:['vocabulary','word meaning','context clue','prefix','suffix','root word','connotation','denotation','synonym','antonym','homophone'], r:[
+  g=>`<strong>Vocabulary strategies:</strong><br><br>🔍 <strong>Context clues</strong> — use surrounding words to guess meaning<br>"The arid desert had no rain for months." → arid = dry<br><br>🧩 <strong>Word parts:</strong><br>• <strong>Prefix</strong> (beginning): un- = not, re- = again, pre- = before<br>• <strong>Suffix</strong> (ending): -tion = act of, -less = without, -ful = full of<br>• <strong>Root</strong>: port = carry (transport, portable), bio = life (biology)<br><br>Example: "unbelievable" = un (not) + believe + able → not capable of being believed<br><br><strong>Connotation vs Denotation:</strong><br>• Denotation = dictionary meaning<br>• Connotation = emotional feeling → "home" vs "house" (same denotation, different feel)<br><br>What word or concept are you working on?`,
+]},
+
+{id:'speech_debate', keys:['speech','debate','persuasion','rhetoric','ethos','pathos','logos','public speaking','argument','counterargument','claim evidence reasoning'], r:[
+  g=>`<strong>Persuasion — the 3 Rhetorical Appeals:</strong><br><br>🎤 <strong>Ethos</strong> — credibility/trust<br>"As a doctor with 20 years of experience..." → you trust the speaker<br><br>❤️ <strong>Pathos</strong> — emotion<br>"Think of the children who go to bed hungry every night..." → you feel something<br><br>📊 <strong>Logos</strong> — logic/evidence<br>"Studies show 78% of students perform better with sleep..." → data persuades<br><br><strong>Strong arguments use all three!</strong><br><br><strong>Counterargument structure:</strong><br>1. State the opposing view fairly<br>2. Concede what's valid (shows you're reasonable)<br>3. Refute it with your stronger evidence<br><br>What are you preparing for?`,
+]},
+
+// ══ HEALTH (additional) ══════════════════════════════════════════════════════
+
+{id:'puberty_growth', keys:['puberty','growth','hormones','adolescence','development','reproductive system','physical changes','testosterone','estrogen','menstruation'], r:[
+  g=>`<strong>Puberty</strong> is when your body develops from a child's to an adult's — usually ages 8–16.<br><br>It's driven by <strong>hormones</strong> released by the brain and glands:<br>• <strong>Testosterone</strong> → triggers male puberty changes<br>• <strong>Estrogen</strong> → triggers female puberty changes<br><br><strong>Common changes for everyone:</strong><br>• Growth spurts<br>• Body hair<br>• Skin changes (acne is normal!)<br>• Emotional changes (mood swings, stronger feelings)<br><br>Everyone goes through puberty at different times — early, late, or right in the middle is all normal. There's no "right" timeline.<br><br>Puberty can feel overwhelming, but it's a natural part of development every human goes through. Questions are always welcome — what do you want to know more about?`,
+]},
+
+{id:'drugs_alcohol', keys:['drug','alcohol','smoking','tobacco','nicotine','vaping','substance','addiction','peer pressure','drugs effects','stimulant','depressant'], r:[
+  g=>`<strong>Understanding substances — the facts:</strong><br><br>🧠 <strong>How drugs affect the brain:</strong><br>Many drugs hijack the brain's reward system (dopamine), which is why they can become addictive. The brain starts needing the substance to feel normal.<br><br><strong>Types:</strong><br>• <strong>Stimulants</strong> (caffeine, nicotine, cocaine) — speed up nervous system<br>• <strong>Depressants</strong> (alcohol) — slow down nervous system<br>• <strong>Hallucinogens</strong> — distort perception<br><br><strong>Alcohol:</strong> impairs judgment, coordination, memory — even small amounts affect the developing teen brain more strongly than adult brains<br><br><strong>Nicotine/vaping:</strong> highly addictive; damages lungs and cardiovascular system<br><br><strong>Peer pressure:</strong> having a clear, practiced response ("No thanks, I'm good") makes it easier to say no without awkwardness.<br><br>What do you need to know more about?`,
+]},
+
+// ══ MATH — expanded ══════════════════════════════════════════════════════════
+
+{id:'number_theory', keys:['prime','composite','factor','multiple','gcf','lcm','greatest common factor','least common multiple','prime factorization','divisible','divisibility','factor tree'], r:[
+  g=>`<strong>Number Theory essentials:</strong><br><br><strong>Prime</strong> = divisible only by 1 and itself: 2, 3, 5, 7, 11, 13...<br><strong>Composite</strong> = has more than 2 factors: 4, 6, 8, 9...<br>(Note: 1 is neither prime nor composite)<br><br><strong>Prime Factorization</strong> (factor tree):<br>60 = 2 × 30 = 2 × 2 × 15 = 2 × 2 × 3 × 5 = <strong>2² × 3 × 5</strong><br><br><strong>GCF</strong> (Greatest Common Factor) — largest factor both share:<br>GCF(12, 18): factors of 12: 1,2,3,4,6,12 | of 18: 1,2,3,6,9,18 → GCF = <strong>6</strong><br>Shortcut: use prime factorization, take smallest powers of shared primes<br><br><strong>LCM</strong> (Least Common Multiple) — smallest multiple both share:<br>LCM(4, 6): multiples of 4: 4,8,12... | of 6: 6,12... → LCM = <strong>12</strong><br>Shortcut: take largest powers of ALL primes<br><br>GCF is used to simplify fractions; LCM to add fractions. What do you need?`,
+], p:g=>{
+  const a=[12,18,24,30,36][Math.floor(Math.random()*5)], b=[8,15,20,28,45][Math.floor(Math.random()*5)];
+  return `Practice!<br><br>Find the <strong>GCF</strong> and <strong>LCM</strong> of <strong>${a}</strong> and <strong>${b}</strong>.<br><br>Hint: start with prime factorization of each!`;
+}},
+
+{id:'polynomials', keys:['polynomial','monomial','binomial','trinomial','foil','degree','term','leading coefficient','factor polynomial','distribute','expanding','simplify expression'], r:[
+  g=>`<strong>Polynomials</strong> = expressions with variables and exponents.<br><br>Names by # of terms:<br>• Monomial: 5x² | Binomial: 3x + 2 | Trinomial: x² + 3x − 4<br><br><strong>Adding/Subtracting</strong> — combine like terms:<br>(3x² + 2x − 1) + (x² − 5x + 4) = <strong>4x² − 3x + 3</strong><br><br><strong>Multiplying — FOIL</strong> (First, Outer, Inner, Last):<br>(x + 3)(x − 2)<br>= x·x + x·(−2) + 3·x + 3·(−2)<br>= x² − 2x + 3x − 6 = <strong>x² + x − 6</strong><br><br><strong>Factoring</strong> (reverse FOIL) — find two numbers that multiply to c and add to b:<br>x² + 5x + 6 → (x + 2)(x + 3) ✓ because 2×3=6 and 2+3=5<br><br>Special patterns:<br>• Difference of squares: a²−b² = (a+b)(a−b)<br>• Perfect square: a²+2ab+b² = (a+b)²<br><br>What type of polynomial problem?`,
+]},
+
+{id:'radicals', keys:['radical','square root','cube root','simplify radical','rationalize','irrational number','nth root','radical expression','surd'], r:[
+  g=>`<strong>Radicals — working with roots:</strong><br><br><strong>Simplifying:</strong> find perfect square factors<br>√48 = √(16 × 3) = 4√3<br>√72 = √(36 × 2) = 6√2<br><br><strong>Adding/Subtracting</strong> — like terms only (same radicand):<br>3√5 + 2√5 = 5√5 | 3√2 + 3√3 cannot simplify<br><br><strong>Multiplying:</strong> √a × √b = √(ab)<br>√3 × √12 = √36 = 6<br><br><strong>Rationalizing the denominator</strong> (no radicals on bottom!):<br>5/√3 → multiply by √3/√3 → 5√3/3<br><br><strong>Irrational numbers</strong> can't be written as a fraction — their decimals never repeat.<br>√2 ≈ 1.4142..., π ≈ 3.14159...<br><br>What radical problem are you working on?`,
+]},
+
+{id:'exponential_log', keys:['exponential','logarithm','log','ln','natural log','exponential growth','exponential decay','half life','compound interest','base 10','log rules'], r:[
+  g=>`<strong>Exponential functions:</strong> y = aⁿ (variable in the exponent)<br><br>• Growth: y = 2ˣ doubles every step<br>• Decay: y = (½)ˣ halves every step<br>• Half-life formula: A = A₀ × (½)^(t/h)<br>• Compound interest: A = P(1 + r/n)^(nt)<br><br><strong>Logarithms</strong> are the inverse of exponentials:<br>log₂(8) = 3 because 2³ = 8<br>log₁₀(1000) = 3 because 10³ = 1000<br>ln(e) = 1 (natural log, base e ≈ 2.718)<br><br><strong>Log rules:</strong><br>• log(ab) = log a + log b<br>• log(a/b) = log a − log b<br>• log(aⁿ) = n·log a<br><br>Solving: 2ˣ = 16 → x = log₂(16) = 4<br>Or: take log of both sides → x·log2 = log16 → x = log16/log2 = 4<br><br>What type of problem?`,
+]},
+
+{id:'sequences', keys:['sequence','series','arithmetic sequence','geometric sequence','common difference','common ratio','nth term','summation','sigma','fibonacci','recursive'], r:[
+  g=>`<strong>Sequences:</strong><br><br>📐 <strong>Arithmetic sequence</strong> — add same number each time (common difference d):<br>3, 7, 11, 15... (d = 4)<br>• nth term: aₙ = a₁ + (n−1)d<br>• 10th term: 3 + 9(4) = <strong>39</strong><br>• Sum of n terms: Sₙ = n/2 × (a₁ + aₙ)<br><br>📐 <strong>Geometric sequence</strong> — multiply by same number each time (common ratio r):<br>2, 6, 18, 54... (r = 3)<br>• nth term: aₙ = a₁ × r^(n−1)<br>• 5th term: 2 × 3⁴ = 2 × 81 = <strong>162</strong><br>• Sum: Sₙ = a₁(1−rⁿ)/(1−r)<br><br><strong>Infinite geometric series</strong> (|r| < 1): S = a₁/(1−r)<br>1/2 + 1/4 + 1/8 +... = (1/2)/(1/2) = <strong>1</strong><br><br>What type of sequence?`,
+], p:g=>{
+  const a=Math.floor(Math.random()*5)+1, d=Math.floor(Math.random()*4)+2;
+  return `Practice!<br><br>Arithmetic sequence: <strong>${a}, ${a+d}, ${a+2*d}, ${a+3*d}...</strong><br><br>Find: (a) the common difference (b) the 10th term (c) the sum of the first 10 terms.`;
+}},
+
+{id:'scatter_plots', keys:['scatter plot','correlation','line of best fit','trend line','bivariate data','positive correlation','negative correlation','no correlation','regression','causation'], r:[
+  g=>`<strong>Scatter Plots</strong> show the relationship between two variables.<br><br><strong>Types of correlation:</strong><br>• <strong>Positive</strong> — both variables increase together (study time → grade ↑)<br>• <strong>Negative</strong> — one goes up, other goes down (absences → grade ↓)<br>• <strong>No correlation</strong> — no pattern (shoe size vs IQ)<br><br><strong>Line of best fit (trend line)</strong> — the line that best represents the data points<br>• Use it to make predictions<br>• Goes through the "center" of the data (not necessarily through any actual point)<br><br><strong>Correlation ≠ Causation!</strong><br>Ice cream sales and drowning rates both go up in summer — but ice cream doesn't cause drowning. (Both relate to hot weather!)<br><br><strong>r value</strong> (correlation coefficient): −1 to +1<br>Near ±1 = strong | near 0 = weak<br><br>What aspect of scatter plots?`,
+]},
+
+{id:'transformations', keys:['transformation','translation','reflection','rotation','dilation','rigid motion','congruent','similar','scale factor','image','preimage','symmetry'], r:[
+  g=>`<strong>Geometric Transformations:</strong><br><br>🔄 <strong>Translation</strong> — slide (no rotation, no flip)<br>(x, y) → (x+a, y+b) shifts right a, up b<br><br>🪞 <strong>Reflection</strong> — flip over a line<br>• Over x-axis: (x, y) → (x, −y)<br>• Over y-axis: (x, y) → (−x, y)<br>• Over y=x: (x, y) → (y, x)<br><br>🔁 <strong>Rotation</strong> about origin:<br>• 90° CCW: (x, y) → (−y, x)<br>• 180°: (x, y) → (−x, −y)<br>• 270° CCW: (x, y) → (y, −x)<br><br>📏 <strong>Dilation</strong> — resize by scale factor k<br>(x, y) → (kx, ky) | k>1 enlarges, 0<k<1 shrinks<br><br>Translations, reflections, rotations = <strong>rigid</strong> (preserve size and shape)<br>Dilations = <strong>not rigid</strong> (changes size, preserves shape → similar figures)<br><br>What transformation?`,
+]},
+
+{id:'congruence_similarity', keys:['congruent','similar','sss','sas','asa','aas','hl','corresponding','proof','triangle congruence','proportional sides'], r:[
+  g=>`<strong>Congruent</strong> = same shape AND size (≅)<br><strong>Similar</strong> = same shape, different size (~)<br><br><strong>Triangle Congruence shortcuts:</strong><br>• <strong>SSS</strong> — all 3 sides equal<br>• <strong>SAS</strong> — 2 sides + included angle<br>• <strong>ASA</strong> — 2 angles + included side<br>• <strong>AAS</strong> — 2 angles + non-included side<br>• <strong>HL</strong> — right triangles: hypotenuse + leg<br><br><strong>Similar triangles</strong> — angles equal, sides proportional:<br>If △ABC ~ △DEF with ratio 1:2, then all sides of DEF are double ABC's<br><br><strong>Angle theorems:</strong><br>• Triangle angles sum = 180°<br>• Exterior angle = sum of two non-adjacent interior angles<br>• Isosceles triangle → base angles equal<br><br>What are you trying to prove or find?`,
+]},
+
+{id:'circles_advanced', keys:['chord','arc','tangent','secant','inscribed angle','central angle','arc length','sector area','circle theorem'], r:[
+  g=>`<strong>Circle Theorems:</strong><br><br>🔵 <strong>Central angle</strong> = arc it intercepts (both same measure)<br>🔵 <strong>Inscribed angle</strong> = ½ of intercepted arc<br>🔵 <strong>Tangent</strong> ⊥ radius at point of tangency<br>🔵 Two tangents from same external point → equal length<br><br><strong>Chord relationships:</strong><br>Intersecting chords: a × b = c × d (segments multiply equally)<br><br><strong>Arc length:</strong> L = (θ/360°) × 2πr<br><strong>Sector area:</strong> A = (θ/360°) × πr²<br><br>Example: circle r=6, central angle=90°<br>Arc length = (90/360) × 2π(6) = <strong>3π ≈ 9.42</strong><br>Sector area = (90/360) × π(36) = <strong>9π ≈ 28.27</strong><br><br>What circle problem are you working on?`,
+]},
+
+{id:'limits_calculus', keys:['limit','derivative','integral','calculus','differentiation','integration','rate of change','instantaneous','slope of tangent','antiderivative','definite integral'], r:[
+  g=>`<strong>Calculus — the math of change:</strong><br><br><strong>Limits</strong> — what does a function approach?<br>lim(x→2) (x²−4)/(x−2) = lim(x→2)(x+2) = <strong>4</strong> (factor and cancel)<br><br><strong>Derivatives</strong> — instantaneous rate of change (slope of tangent line):<br>Rules:<br>• d/dx[xⁿ] = nxⁿ⁻¹ (power rule)<br>• d/dx[c] = 0 (constant)<br>• d/dx[sin x] = cos x | d/dx[cos x] = −sin x<br>• d/dx[eˣ] = eˣ<br><br>Example: f(x) = 3x² + 2x → f'(x) = 6x + 2<br>At x=1: slope = 6(1)+2 = <strong>8</strong><br><br><strong>Integrals</strong> — area under the curve (reverse derivative):<br>∫xⁿ dx = xⁿ⁺¹/(n+1) + C<br>∫(2x+3)dx = x² + 3x + C<br><br>What calculus topic?`,
+]},
+
+{id:'complex_numbers', keys:['complex number','imaginary number','imaginary unit','i squared','real part','imaginary part','conjugate','modulus','argand'], r:[
+  g=>`<strong>Complex Numbers</strong> extend the real numbers using i = √(−1).<br><br>Form: a + bi (a = real part, b = imaginary part)<br><br><strong>Powers of i:</strong><br>i¹=i | i²=−1 | i³=−i | i⁴=1 (then repeats!)<br><br><strong>Operations:</strong><br>Add: (3+2i)+(1−4i) = <strong>4−2i</strong><br>Multiply: (3+2i)(1−4i) = 3−12i+2i−8i² = 3−10i+8 = <strong>11−10i</strong><br>Divide: multiply by conjugate (change sign of imaginary part)<br>(3+2i)/(1+i) × (1−i)/(1−i) = (3−3i+2i−2i²)/(1+1) = (5−i)/2<br><br><strong>Why?</strong> Needed for quadratic equations with negative discriminant:<br>x²+1=0 → x = ±i<br><br>What complex number problem?`,
+]},
+
+{id:'conics', keys:['parabola','ellipse','hyperbola','conic section','focus','directrix','vertex parabola','axis of symmetry','semi major axis','eccentricity'], r:[
+  g=>`<strong>Conic Sections</strong> — shapes made by slicing a cone:<br><br>🔵 <strong>Circle:</strong> (x−h)²+(y−k)²=r² (center (h,k), radius r)<br><br>⬆️ <strong>Parabola:</strong> y = a(x−h)² + k<br>• Vertex at (h,k) | opens up if a>0, down if a<0<br>• Focus inside the curve, directrix is a horizontal line<br><br>🥚 <strong>Ellipse:</strong> (x−h)²/a² + (y−k)²/b² = 1<br>• Two foci inside | sum of distances from any point to foci = constant<br><br>🎯 <strong>Hyperbola:</strong> (x−h)²/a² − (y−k)²/b² = 1<br>• Two branches opening left/right | difference of distances = constant<br><br>All conics come from the equation Ax²+Bxy+Cy²+Dx+Ey+F=0<br>Discriminant B²−4AC: <0=ellipse, =0=parabola, >0=hyperbola<br><br>Which conic are you studying?`,
+]},
+
+{id:'statistics_advanced', keys:['standard deviation','variance','normal distribution','z score','sample','population','hypothesis','confidence interval','mean absolute deviation','quartile','interquartile range','box plot advanced'], r:[
+  g=>`<strong>Advanced Statistics:</strong><br><br><strong>Standard Deviation (σ)</strong> — measures spread around the mean<br>Steps: mean → differences → square → average → square root<br>Small σ = data close together | Large σ = data spread out<br><br><strong>Normal Distribution (Bell Curve):</strong><br>• Symmetrical around mean<br>• 68% of data within 1σ | 95% within 2σ | 99.7% within 3σ<br>(Empirical / 68-95-99.7 Rule)<br><br><strong>Z-score</strong> = (value − mean) / σ<br>Tells you how many standard deviations from the mean a value is<br><br><strong>IQR</strong> = Q3 − Q1 (middle 50% of data)<br>Outlier if: < Q1 − 1.5×IQR or > Q3 + 1.5×IQR<br><br><strong>Sampling:</strong> sample must be random and representative to generalize to population<br><br>What statistical concept?`,
+]},
+
+// ══ SCIENCE — expanded ═══════════════════════════════════════════════════════
+
+{id:'astronomy', keys:['solar system','planet','star','galaxy','moon','orbit','universe','light year','black hole','sun','asteroid','comet','milky way','telescope','big bang','constellation'], r:[
+  g=>`<strong>Our Universe:</strong><br><br>☀️ <strong>Solar System order:</strong><br>Mercury, Venus, Earth, Mars | asteroid belt | Jupiter, Saturn, Uranus, Neptune<br>My Very Educated Mother Just Served Us Nachos<br><br>🌟 <strong>Star life cycle:</strong><br>Nebula → protostar → main sequence star → (depending on size):<br>• Small star → red giant → white dwarf → black dwarf<br>• Large star → red supergiant → supernova → neutron star or black hole<br><br><strong>Distances:</strong><br>• Light year = distance light travels in 1 year ≈ 9.46 trillion km<br>• Nearest star: Proxima Centauri — 4.24 light years away<br><br><strong>Big Bang Theory:</strong> Universe began ~13.8 billion years ago from an incredibly hot, dense point → expanded and cooled → galaxies, stars, planets formed<br><br>The Milky Way has ~200–400 billion stars. What topic?`,
+]},
+
+{id:'matter_properties', keys:['matter','state of matter','solid','liquid','gas','plasma','physical change','chemical change','density','mass','volume','mixture','solution','element compound','pure substance'], r:[
+  g=>`<strong>Matter and Its Properties:</strong><br><br><strong>States of matter:</strong><br>• Solid: fixed shape & volume (particles close, vibrating)<br>• Liquid: fixed volume, variable shape (particles slide)<br>• Gas: variable shape & volume (particles spread out)<br>• Plasma: ionized gas (stars, lightning) — most common in universe!<br><br><strong>Physical vs Chemical Change:</strong><br>Physical: changes shape/size, NOT composition (cutting, melting, dissolving)<br>Chemical: new substance formed (burning, rusting, cooking, digesting)<br>Signs of chemical change: color change, gas/odor, precipitate, temperature change<br><br><strong>Density</strong> = mass ÷ volume (g/cm³)<br>Objects float if less dense than liquid (wood in water), sink if denser<br><br><strong>Mixtures:</strong><br>• Homogeneous (solution) — uniform throughout (saltwater, air)<br>• Heterogeneous — non-uniform (salad, sandy water)<br>Can be separated by: filtration, distillation, evaporation, magnetism<br><br>What property or change?`,
+]},
+
+{id:'electricity', keys:['electricity','circuit','current','voltage','resistance','ohm','ohms law','series circuit','parallel circuit','conductor','insulator','electromagnet','magnetic field','static electricity'], r:[
+  g=>`<strong>Electricity basics:</strong><br><br><strong>Ohm's Law:</strong> V = IR<br>Voltage (V, volts) = Current (I, amps) × Resistance (R, ohms)<br><br><strong>Circuits:</strong><br>• <strong>Series</strong>: components in one loop — same current, voltages add; one break → all off<br>• <strong>Parallel</strong>: multiple paths — voltages equal, currents add; one break → others still on<br>(Your home wiring is parallel — that's why one light turning off doesn't turn off all lights)<br><br><strong>Power:</strong> P = IV = V²/R = I²R (watts)<br><br><strong>Static electricity</strong>: buildup of charge from friction (balloon on hair)<br>Like charges repel, opposite charges attract<br><br><strong>Magnetism:</strong><br>• Moving charges create magnetic fields<br>• Electromagnet: current through coil of wire → temporary magnet<br>• Earth has a magnetic field (compass points north)<br><br>What electricity concept?`,
+]},
+
+{id:'acids_bases', keys:['acid','base','ph','neutral','indicator','litmus','hydroxide','hydrogen ion','neutralization','buffer','strong acid','weak acid'], r:[
+  g=>`<strong>Acids and Bases:</strong><br><br>🧪 <strong>pH scale</strong>: 0–14<br>• 0–6: acid (lots of H⁺ ions) — lemon juice (2), vinegar (3)<br>• 7: neutral — pure water<br>• 8–14: base/alkaline (lots of OH⁻) — baking soda (9), bleach (13)<br><br><strong>Acids:</strong> sour taste, corrode metals, turn blue litmus red<br>HCl (hydrochloric), H₂SO₄ (sulfuric), HNO₃ (nitric)<br><br><strong>Bases:</strong> bitter taste, slippery feel, turn red litmus blue<br>NaOH (sodium hydroxide), NH₃ (ammonia)<br><br><strong>Neutralization:</strong> acid + base → salt + water<br>HCl + NaOH → NaCl + H₂O<br><br>Every 1 unit on pH scale = 10× change in concentration<br>pH 3 is 10× more acidic than pH 4 and 100× more than pH 5<br><br>What acid/base concept?`,
+]},
+
+{id:'stoichiometry', keys:['stoichiometry','mole','molar mass','avogadro','limiting reagent','percent yield','mole ratio','balancing reactions math'], r:[
+  g=>`<strong>Stoichiometry</strong> — the math of chemical reactions:<br><br><strong>The mole</strong> = 6.022 × 10²³ particles (Avogadro's number)<br>Like "dozen" = 12, "mole" = 602,200,000,000,000,000,000,000<br><br><strong>Molar mass</strong> = mass of 1 mole in grams (= atomic mass from periodic table)<br>H₂O: 2(1) + 16 = <strong>18 g/mol</strong><br><br><strong>Mole map conversions:</strong><br>grams ÷ molar mass → moles → × Avogadro → particles<br><br><strong>Stoichiometry steps:</strong><br>1. Balance the equation<br>2. Convert given to moles<br>3. Use mole ratio (coefficients)<br>4. Convert to desired unit<br><br><strong>Limiting reagent</strong> = the reactant that runs out first (determines how much product forms)<br><strong>% yield</strong> = (actual yield ÷ theoretical yield) × 100<br><br>What stoichiometry problem?`,
+]},
+
+{id:'gas_laws', keys:['gas law','boyles law','charles law','ideal gas','pressure','pv','temperature gas','kelvin','combined gas law','avogadros law'], r:[
+  g=>`<strong>Gas Laws</strong> describe how gases behave with pressure, volume, temperature:<br><br>• <strong>Boyle's Law</strong>: P₁V₁ = P₂V₂ (T constant)<br>  Pressure and volume are <em>inversely</em> proportional<br>  Squeeze a balloon → pressure up, volume down<br><br>• <strong>Charles's Law</strong>: V₁/T₁ = V₂/T₂ (P constant)<br>  Volume and temperature are <em>directly</em> proportional<br>  (T must be in Kelvin: K = °C + 273)<br><br>• <strong>Gay-Lussac's Law</strong>: P₁/T₁ = P₂/T₂ (V constant)<br><br>• <strong>Combined Gas Law</strong>: P₁V₁/T₁ = P₂V₂/T₂<br><br>• <strong>Ideal Gas Law</strong>: PV = nRT<br>  (n = moles, R = 0.0821 L·atm/mol·K)<br><br>Real gas vs ideal gas: ideal gas assumes no intermolecular forces and negligible particle volume.<br><br>What gas law problem?`,
+]},
+
+{id:'human_biology', keys:['immune system','vaccine','antibody','antigen','virus','bacteria','disease','pathogen','infection','white blood cell','lymphocyte','vaccination','herd immunity'], r:[
+  g=>`<strong>Immune System — your body's defense:</strong><br><br><strong>Pathogens</strong> = disease-causing microorganisms<br>• Bacteria (living cells, treated with antibiotics)<br>• Viruses (not cells — hijack your cells to replicate; antibiotics DON'T work)<br>• Fungi, parasites<br><br><strong>Immune response:</strong><br>1. Pathogen enters → white blood cells detect antigens (foreign proteins)<br>2. B-cells make <strong>antibodies</strong> that bind to and neutralize the pathogen<br>3. T-cells kill infected cells directly<br>4. Memory cells form → faster response if same pathogen comes back!<br><br><strong>Vaccines</strong> introduce weakened/dead pathogens or antigens → body makes memory cells without getting sick → protected when exposed later<br><br><strong>Herd immunity</strong>: enough people immune → disease can't spread even to unvaccinated people<br><br>What immune system or disease concept?`,
+]},
+
+// ══ ELA — expanded ═══════════════════════════════════════════════════════════
+
+{id:'narrative_writing', keys:['narrative','story','short story','plot','character','setting','conflict','climax','resolution','point of view','first person','third person','creative writing','fiction'], r:[
+  g=>`<strong>Narrative Writing — telling a story:</strong><br><br><strong>Plot structure (Freytag's Pyramid):</strong><br>Exposition → Rising Action → Climax → Falling Action → Resolution<br><br><strong>Types of conflict:</strong><br>• Man vs Man | Man vs Nature | Man vs Society | Man vs Self (internal)<br><br><strong>Point of view:</strong><br>• 1st person: "I walked..." (narrator is a character)<br>• 3rd limited: "She walked..." (narrator knows one character's thoughts)<br>• 3rd omniscient: narrator knows all characters' thoughts<br><br><strong>Strong narrative elements:</strong><br>• Show, don't tell — "Her hands trembled" not "She was scared"<br>• Dialogue to reveal character<br>• Sensory details (sight, sound, smell, touch, taste)<br>• Pacing — slow for emotional moments, fast for action<br><br>What aspect of story writing are you working on?`,
+]},
+
+{id:'research_writing', keys:['research paper','citation','mla','apa','bibliography','works cited','source','plagiarism','paraphrase','quote citation','annotated bibliography'], r:[
+  g=>`<strong>Research Paper Essentials:</strong><br><br><strong>MLA format</strong> (common in English/humanities):<br>Works Cited entry for a book:<br><em>Last, First. Title in Italics. Publisher, Year.</em><br>In-text: (Author page#) e.g. (Smith 42)<br><br><strong>APA format</strong> (common in science/social science):<br>Reference entry: Last, F. (Year). Title. Publisher.<br>In-text: (Author, Year)<br><br><strong>Evaluating sources (CRAAP test):</strong><br>• Currency — how recent?<br>• Relevance — does it fit your topic?<br>• Authority — who wrote it? Credentials?<br>• Accuracy — is it fact-checked?<br>• Purpose — inform, sell, or persuade?<br><br><strong>Paraphrase vs Quote:</strong><br>Paraphrase = rewrite in your own words (cite it!)<br>Quote = exact words in "quotation marks" (cite it!)<br>Either way, cite the source — plagiarism is using someone's ideas without credit.<br><br>What part of research writing?`,
+]},
+
+{id:'drama_shakespeare', keys:['drama','shakespeare','play','act','scene','soliloquy','aside','dramatic irony','tragedy','comedy','protagonist','antagonist','chorus','monologue','dialogue drama'], r:[
+  g=>`<strong>Drama and Shakespeare:</strong><br><br><strong>Drama terms:</strong><br>• <strong>Soliloquy</strong> — character speaks thoughts aloud alone on stage<br>• <strong>Aside</strong> — character speaks to audience; other characters can't hear<br>• <strong>Dramatic irony</strong> — audience knows something characters don't<br>• <strong>Monologue</strong> — long speech by one character to others<br><br><strong>Shakespeare's genres:</strong><br>• <strong>Tragedies</strong>: protagonist has a fatal flaw → downfall (Hamlet, Macbeth, Romeo & Juliet)<br>• <strong>Comedies</strong>: misunderstandings → happy ending (A Midsummer Night's Dream)<br>• <strong>Histories</strong>: based on real kings (Richard III, Henry V)<br><br><strong>Shakespearean language tips:</strong><br>• "thee/thou" = you (informal) | "thy" = your<br>• "dost" = do/does | "hath" = has | "art" = are<br>• Read aloud — the rhythm (iambic pentameter) helps!<br><br>Which play or concept?`,
+]},
+
+{id:'text_structure', keys:['text structure','cause and effect','compare contrast','problem solution','chronological','description text','informational text','nonfiction structure','signal words'], r:[
+  g=>`<strong>Text Structures</strong> — how authors organize informational texts:<br><br>📋 <strong>Chronological/Sequence</strong> — events in time order<br>Signal words: first, then, next, finally, afterward<br><br>⚖️ <strong>Compare and Contrast</strong> — similarities and differences<br>Signal words: similarly, however, on the other hand, both, unlike<br><br>🔗 <strong>Cause and Effect</strong> — why something happened and results<br>Signal words: because, as a result, therefore, consequently, due to<br><br>❓ <strong>Problem and Solution</strong> — problem identified, solution(s) offered<br>Signal words: the problem is, one solution, as a result<br><br>📝 <strong>Description</strong> — details about a topic<br>Signal words: for example, such as, in addition, characteristics include<br><br>Knowing the structure helps you find the main idea faster and take better notes!<br><br>What text are you analyzing?`,
+]},
+
+{id:'active_passive', keys:['active voice','passive voice','verb tense','present tense','past tense','future tense','subject verb agreement','tense consistency','was written','were built'], r:[
+  g=>`<strong>Active vs Passive Voice:</strong><br><br>✅ <strong>Active voice</strong> — subject DOES the action (direct, clear, preferred)<br>"The dog chased the cat."<br><br>🔄 <strong>Passive voice</strong> — subject RECEIVES the action (wordy, sometimes appropriate)<br>"The cat was chased by the dog."<br><br>How to fix passive → active: identify who's doing the action → make them the subject.<br>"The report was written by Maria." → "Maria wrote the report."<br><br><strong>When passive is okay:</strong><br>• When the doer is unknown: "The window was broken."<br>• In science writing: "The solution was heated to 100°C."<br><br><strong>Verb tenses:</strong><br>• Simple: I write / I wrote / I will write<br>• Progressive: I am writing / I was writing<br>• Perfect: I have written / I had written / I will have written<br><br>Keep tense consistent! What are you writing?`,
+]},
+
+// ══ SOCIAL STUDIES — expanded ════════════════════════════════════════════════
+
+{id:'geography', keys:['geography','map','latitude','longitude','continent','ocean','equator','hemisphere','prime meridian','compass rose','scale map','physical geography','human geography','region','migration'], r:[
+  g=>`<strong>Geography Essentials:</strong><br><br>🌍 <strong>7 Continents:</strong> Africa, Antarctica, Asia, Australia, Europe, North America, South America<br>🌊 <strong>5 Oceans:</strong> Pacific (largest), Atlantic, Indian, Southern, Arctic<br><br><strong>Coordinate System:</strong><br>• <strong>Latitude</strong> — horizontal lines (parallels); measures N/S from equator (0°)<br>• <strong>Longitude</strong> — vertical lines (meridians); measures E/W from Prime Meridian (0°)<br>• Equator = 0° latitude | North Pole = 90°N<br><br><strong>5 Themes of Geography:</strong><br>• Location (where?) | Place (what's it like?) | Region (how does it group?)<br>• Movement (how do people/goods move?) | Human-Environment Interaction<br><br><strong>Map types:</strong><br>• Political — shows borders and cities<br>• Physical — shows terrain (mountains, rivers)<br>• Thematic — shows a specific topic (population, climate, resources)<br><br>What geography concept?`,
+]},
+
+{id:'economics', keys:['economics','supply','demand','market','price','inflation','gdp','scarcity','opportunity cost','trade','tariff','stock','budget','capitalism','socialism','economy'], r:[
+  g=>`<strong>Economics Fundamentals:</strong><br><br>💡 <strong>Scarcity</strong> — unlimited wants, limited resources → the core economic problem<br><strong>Opportunity cost</strong> — what you give up when making a choice<br><br>📈 <strong>Supply and Demand:</strong><br>• Higher price → less demand (inverse relationship)<br>• Higher price → more supply (direct relationship)<br>• Equilibrium = price where supply = demand<br><br><strong>Key concepts:</strong><br>• <strong>Inflation</strong>: prices rise, purchasing power falls (2% is healthy; runaway = problem)<br>• <strong>GDP</strong>: total value of goods/services a country produces per year<br>• <strong>Trade-off</strong>: every decision has a cost<br><br><strong>Economic systems:</strong><br>• Market/Capitalism: private ownership, prices by supply/demand<br>• Command/Socialism: government controls production<br>• Mixed: most countries today (blend of both)<br><br><strong>Personal finance:</strong> income − expenses = savings | compound interest grows wealth over time<br><br>What economics topic?`,
+]},
+
+{id:'native_american', keys:['native american','indigenous','first nations','trail of tears','reservation','cherokee','sioux','iroquois','manifest destiny','colonization indigenous','pre columbian'], r:[
+  g=>`<strong>Native American History:</strong><br><br><strong>Pre-Columbian America</strong>:<br>Hundreds of distinct nations with different languages, cultures, governments before European contact. Major civilizations included the Aztec, Maya, Inca (in Latin America) and the Iroquois Confederacy, Sioux, Cherokee, and many others in North America.<br><br><strong>After European contact (1492+):</strong><br>• Disease (smallpox) killed 50–90% of many indigenous populations<br>• Land treaties were repeatedly broken by the U.S. government<br>• Forced removals: <strong>Trail of Tears (1838)</strong> — Cherokee nation forced to walk 1,000+ miles to Oklahoma; 4,000+ died<br><br><strong>Manifest Destiny:</strong> 19th-century belief that U.S. was "destined" to expand westward — used to justify taking Native lands<br><br><strong>Reservations:</strong> Land set aside for tribes after displacement; many still face poverty and inadequate services today<br><br>What aspect of Native American history?`,
+]},
+
+{id:'reconstruction_gilded', keys:['reconstruction','jim crow','gilded age','progressive era','muckraker','labor union','robber baron','trust','19th amendment','suffrage','populist','womens rights early'], r:[
+  g=>`<strong>Reconstruction & After (1865–1900s):</strong><br><br>🏗️ <strong>Reconstruction (1865–1877):</strong><br>• Rebuild the South and integrate formerly enslaved people<br>• 13th, 14th, 15th Amendments (abolition, citizenship, Black male voting)<br>• Freedmen's Bureau, Black schools, Black congressmen<br>• Ended when federal troops withdrew → Jim Crow laws began<br><br>💰 <strong>Gilded Age (1870s–1900):</strong><br>• Rapid industrialization, extreme wealth inequality<br>• "Robber barons": Carnegie (steel), Rockefeller (oil), Vanderbilt (railroads)<br>• Workers in dangerous conditions, child labor → rise of labor unions<br><br>📰 <strong>Progressive Era (1900–1920):</strong><br>• Muckrakers exposed corruption (Upton Sinclair's The Jungle → meat inspection laws)<br>• Women's suffrage movement → <strong>19th Amendment (1920)</strong>: women vote<br>• Trust-busting (breaking up monopolies), food safety laws<br><br>What period or event?`,
+]},
+
+{id:'middle_ages', keys:['middle ages','medieval','feudalism','crusades','black death','plague','knight','serf','lord','castle','pope','church medieval','magna carta'], r:[
+  g=>`<strong>Middle Ages (500–1500 CE):</strong><br><br>🏰 <strong>Feudalism</strong> — social/political structure:<br>King → Lords/Nobles → Knights → Serfs (peasants who worked the land)<br>Lords protected serfs; serfs gave labor and crops<br><br>⛪ <strong>The Church</strong> was enormously powerful:<br>• Controlled education, charity, and moral law<br>• Pope could excommunicate (ban from church = social/political death)<br><br>⚔️ <strong>Crusades (1096–1291):</strong><br>Christian European armies tried to "reclaim" Jerusalem from Muslim rulers → largely failed, but increased trade and contact between cultures<br><br>☠️ <strong>Black Death (1347–1351):</strong><br>Bubonic plague killed ~1/3 of Europe's population<br>• Caused by bacteria, spread by fleas on rats<br>• Led to labor shortages → serfs gained more bargaining power → weakened feudalism<br><br>📜 <strong>Magna Carta (1215):</strong><br>English nobles forced King John to sign → limited royal power → foundation for constitutional law<br><br>What medieval topic?`,
+]},
+
+{id:'world_religions', keys:['religion','christianity','islam','judaism','hinduism','buddhism','belief system','monotheism','polytheism','bible','quran','torah','mosque','temple','church religion'], r:[
+  g=>`<strong>World Religions — basics:</strong><br><br>✝️ <strong>Christianity</strong>: monotheistic; based on teachings of Jesus Christ; Bible (Old + New Testament); Trinity (Father, Son, Holy Spirit); ~2.4B followers<br><br>☪️ <strong>Islam</strong>: monotheistic; based on teachings of Muhammad; Quran; 5 Pillars (faith, prayer, charity, fasting, pilgrimage); ~1.9B followers<br><br>✡️ <strong>Judaism</strong>: monotheistic; Torah; covenant between God and Abraham; ~15M followers (oldest Abrahamic religion)<br><br>🕉️ <strong>Hinduism</strong>: polytheistic (many gods, one Brahman); Vedas; karma, dharma, reincarnation; ~1.2B followers<br><br>☸️ <strong>Buddhism</strong>: non-theistic; founded by Siddhartha Gautama; Four Noble Truths, Eightfold Path; goal is nirvana (freedom from suffering); ~500M followers<br><br>Abrahamic religions (Christianity, Islam, Judaism) all share roots in Abraham and belief in one God.<br><br>What religion or concept are you studying?`,
+]},
+
+{id:'globalization', keys:['globalization','trade','international','global economy','multinational','free trade','tariff','immigration','culture diffusion','interdependence','outsourcing'], r:[
+  g=>`<strong>Globalization</strong> = increasing worldwide interconnection of economies, cultures, and politics.<br><br><strong>Causes:</strong><br>• Technology (internet, shipping containers)<br>• Free trade agreements (NAFTA, WTO)<br>• Multinational corporations<br><br><strong>Benefits:</strong><br>• Lower prices for consumers<br>• Economic growth in developing nations<br>• Spread of ideas and culture<br>• Access to global markets<br><br><strong>Challenges/Criticisms:</strong><br>• Job loss in manufacturing countries<br>• Cultural homogenization (local cultures disappear)<br>• Environmental strain (more production, shipping)<br>• Widening inequality within countries<br><br><strong>Cultural diffusion</strong> = spread of cultural elements (food, music, language, religion) between societies — has happened throughout all of human history<br><br><strong>Interdependence</strong>: countries rely on each other (US depends on China for goods; China depends on US for markets)<br><br>What globalization topic?`,
+]},
+
+{id:'civil_liberties', keys:['first amendment','freedom of speech','freedom of religion','civil liberties','due process','equal protection','supreme court case','rights','fourth amendment','second amendment'], r:[
+  g=>`<strong>Civil Liberties — Constitutional rights:</strong><br><br>📜 <strong>1st Amendment:</strong> freedom of speech, religion, press, assembly, petition<br>📜 <strong>2nd Amendment:</strong> right to bear arms<br>📜 <strong>4th Amendment:</strong> protection from unreasonable search and seizure<br>📜 <strong>5th Amendment:</strong> due process, no self-incrimination, no double jeopardy<br>📜 <strong>14th Amendment:</strong> equal protection, due process (applies Bill of Rights to states)<br><br><strong>Landmark Supreme Court cases:</strong><br>• <em>Marbury v. Madison (1803)</em>: established judicial review<br>• <em>Brown v. Board (1954)</em>: ended school segregation<br>• <em>Tinker v. Des Moines (1969)</em>: students have 1st Amendment rights at school<br>• <em>Miranda v. Arizona (1966)</em>: suspects must be read their rights<br><br>Rights are not unlimited — courts balance individual rights against public safety.<br><br>What civil liberties topic?`,
+]},
+
+// ══ MATH — further expanded ══════════════════════════════════════════════════
+
+{id:'measurement', keys:['measurement','unit conversion','metric','customary','length','weight','mass','volume measurement','celsius','fahrenheit','dimensional analysis','significant figures'], r:[
+  g=>`<strong>Measurement & Unit Conversions:</strong><br><br><strong>Metric system</strong> (base × 10):<br>Prefixes: kilo(1000) → hecto(100) → deka(10) → base → deci(0.1) → centi(0.01) → milli(0.001)<br>King Henry Died By Drinking Chocolate Milk<br><br><strong>Common conversions:</strong><br>Length: 1 km = 1000 m | 1 m = 100 cm | 1 inch = 2.54 cm<br>Mass: 1 kg = 1000 g | 1 lb ≈ 454 g<br>Volume: 1 L = 1000 mL | 1 gallon ≈ 3.785 L<br><br><strong>Temperature:</strong><br>°C to °F: F = (C × 9/5) + 32<br>°F to °C: C = (F − 32) × 5/9<br>Freezing: 0°C = 32°F | Boiling: 100°C = 212°F<br><br><strong>Dimensional analysis</strong> (cancel units):<br>Convert 60 mph to m/s: 60 miles/hr × 1609m/mile × 1hr/3600s = <strong>26.8 m/s</strong><br><br>What conversion do you need?`,
+]},
+
+{id:'scientific_notation', keys:['scientific notation','standard form','power of ten','very large number','very small number','significant figures'], r:[
+  g=>`<strong>Scientific Notation</strong> — writing very large or small numbers efficiently:<br><br>Form: a × 10ⁿ, where 1 ≤ a < 10<br><br>Large: 93,000,000 = <strong>9.3 × 10⁷</strong><br>Small: 0.000045 = <strong>4.5 × 10⁻⁵</strong><br><br><strong>Converting back:</strong><br>Positive exponent → move decimal RIGHT: 3.2 × 10⁴ = 32,000<br>Negative exponent → move decimal LEFT: 6.1 × 10⁻³ = 0.0061<br><br><strong>Operations:</strong><br>Multiply: (3 × 10⁴)(2 × 10³) = 6 × 10⁷<br>Divide: (6 × 10⁸) ÷ (2 × 10³) = 3 × 10⁵<br>Add/Subtract: make exponents equal first!<br><br>Used in science: Earth mass = 5.97 × 10²⁴ kg | Atom diameter ≈ 1 × 10⁻¹⁰ m<br><br>Want a practice problem?`,
+], p:g=>{
+  const n=Math.floor(Math.random()*8)+3;
+  const a=(Math.random()*9+1).toFixed(1);
+  return `Practice!<br><br>Write <strong>${a} × 10<sup>${n}</sup></strong> in standard form.<br>AND write <strong>0.00${Math.floor(Math.random()*9)+1}${Math.floor(Math.random()*9)+1}</strong> in scientific notation.`;
+}},
+
+{id:'proportional_reasoning', keys:['proportional','unit rate','constant of proportionality','direct variation','indirect variation','table proportional','graph proportional','rate problem'], r:[
+  g=>`<strong>Proportional Reasoning:</strong><br><br>Two quantities are <strong>proportional</strong> when their ratio is always the same.<br>y = kx, where k = constant of proportionality (unit rate)<br><br>Example: if 3 books cost $12, then 7 books cost ?<br>k = 12/3 = $4 per book → 7 × 4 = <strong>$28</strong><br><br><strong>Identifying proportional relationships:</strong><br>• Table: y/x = same for all rows ✓<br>• Graph: straight line through the origin (0,0) ✓<br>• Equation: y = kx form ✓<br><br><strong>Direct variation</strong>: as x increases, y increases (y = kx)<br><strong>Inverse variation</strong>: as x increases, y decreases (xy = k, or y = k/x)<br><br>Real-life examples: speed (miles per hour), unit price, recipe scaling<br><br>Share your problem!`,
+]},
+
+{id:'financial_math', keys:['simple interest','compound interest','principal','interest rate','loan','savings','budget','tax','percent financial','discount','markup','depreciation'], r:[
+  g=>`<strong>Financial Math:</strong><br><br>💰 <strong>Simple Interest:</strong> I = Prt<br>(Interest = Principal × rate × time)<br>$1000 at 5% for 3 years: I = 1000 × 0.05 × 3 = <strong>$150</strong><br><br>💰 <strong>Compound Interest:</strong> A = P(1 + r/n)^(nt)<br>(r = annual rate, n = compounds per year, t = years)<br>$1000 at 5% compounded monthly for 3 years:<br>A = 1000(1 + 0.05/12)^(12×3) = <strong>$1,161.62</strong><br>Notice: more than simple interest!<br><br><strong>Sales tax:</strong> final price = price × (1 + tax rate)<br>$80 item with 8% tax: $80 × 1.08 = <strong>$86.40</strong><br><br><strong>Discount:</strong> final price = price × (1 − discount rate)<br>$80 item, 25% off: $80 × 0.75 = <strong>$60</strong><br><br><strong>Depreciation:</strong> value decreases over time (cars, equipment)<br>V = P(1 − r)^t<br><br>What financial concept?`,
+]},
+
+// ══ SCIENCE — further expanded ══════════════════════════════════════════════
+
+{id:'scientific_method', keys:['scientific method','hypothesis','experiment','variable','independent variable','dependent variable','control','observation','conclusion','peer review','theory','law science'], r:[
+  g=>`<strong>The Scientific Method:</strong><br><br>1. 🔍 <strong>Observation</strong> — notice something interesting<br>2. ❓ <strong>Question</strong> — what do you want to know?<br>3. 💡 <strong>Hypothesis</strong> — testable prediction (If..., then... format)<br>   "If I increase light, then plants will grow taller."<br>4. 🧪 <strong>Experiment</strong> — test the hypothesis<br>5. 📊 <strong>Data/Analysis</strong> — collect and analyze results<br>6. 📝 <strong>Conclusion</strong> — does data support hypothesis?<br><br><strong>Variables:</strong><br>• <strong>Independent</strong>: what you change (light intensity)<br>• <strong>Dependent</strong>: what you measure (plant height)<br>• <strong>Control</strong>: everything kept the same (soil, water, temperature)<br><br><strong>Theory vs Law:</strong><br>• Theory: well-tested explanation (gravity theory, cell theory, evolution)<br>• Law: describes WHAT happens (law of gravity, F=ma)<br>Neither is "just a guess" — both require massive evidence!<br><br>What part of the scientific method?`,
+]},
+
+{id:'nuclear', keys:['nuclear','radioactivity','fission','fusion','radioactive decay','alpha','beta','gamma radiation','half life','isotope','atomic bomb','nuclear energy'], r:[
+  g=>`<strong>Nuclear Science:</strong><br><br>⚛️ <strong>Radioactive decay</strong> — unstable atoms release energy/particles:<br>• Alpha (α): large particle (2p + 2n), low penetration<br>• Beta (β): electron, medium penetration<br>• Gamma (γ): energy wave, high penetration (needs lead to stop)<br><br><strong>Half-life</strong>: time for half of a radioactive sample to decay<br>Start: 100g | after 1 half-life: 50g | after 2: 25g | after 3: 12.5g<br>Formula: A = A₀ × (½)^(t/T), where T = half-life<br><br>⚡ <strong>Nuclear Fission</strong>: split large atom (uranium) → enormous energy<br>Used in: nuclear power plants, atomic bombs<br><br>☀️ <strong>Nuclear Fusion</strong>: combine small atoms (hydrogen) → even more energy<br>Powers the sun! Scientists are working on fusion reactors.<br><br><strong>Nuclear power</strong>: no CO₂ emissions, but produces radioactive waste<br><br>What nuclear concept?`,
+]},
+
+{id:'genetics_advanced', keys:['codominance','incomplete dominance','sex linked','blood type','multiple alleles','genotype ratio','phenotype ratio','dihybrid cross','law of segregation','law of independent assortment'], r:[
+  g=>`<strong>Advanced Genetics:</strong><br><br><strong>Beyond simple dominant/recessive:</strong><br>• <strong>Incomplete dominance</strong>: red × white = pink (blend)<br>• <strong>Codominance</strong>: both alleles fully expressed<br>  Blood type AB: both A and B expressed simultaneously<br><br><strong>Blood Types (ABO system):</strong><br>Type A: Iᴬ Iᴬ or Iᴬ i | Type B: Iᴮ Iᴮ or Iᴮ i<br>Type AB: Iᴬ Iᴮ (codominant) | Type O: ii (recessive)<br><br><strong>Sex-linked traits</strong> (genes on X chromosome):<br>Males (XY) only have 1 copy → more likely to show recessive X-linked traits<br>Color blindness, hemophilia are X-linked recessive<br><br><strong>Mendel's Laws:</strong><br>• Segregation: allele pairs separate during gamete formation<br>• Independent Assortment: genes for different traits sort independently<br><br><strong>Dihybrid cross</strong> (2 traits): 9:3:3:1 ratio for dominant phenotypes<br><br>What genetics problem?`,
+]},
+
+{id:'plant_biology', keys:['plant','root','stem','leaf','flower','seed','photosynthesis plant','transpiration','germination','tropism','vascular','xylem','phloem','pollination'], r:[
+  g=>`<strong>Plant Biology:</strong><br><br>🌱 <strong>Plant structures and functions:</strong><br>• <strong>Roots</strong>: absorb water and minerals; anchor plant<br>• <strong>Stem</strong>: transport water (xylem) and sugar (phloem) between roots and leaves<br>• <strong>Leaves</strong>: photosynthesis; stomata control gas exchange<br>• <strong>Flowers</strong>: reproduction (attract pollinators)<br>• <strong>Seeds</strong>: contain embryo; dispersed by wind, animals, water<br><br>💧 <strong>Transpiration</strong>: plants lose water through leaves → pulls water up through xylem<br><br>🌻 <strong>Tropisms</strong> (plant responses):<br>• Phototropism: grow toward light<br>• Gravitropism: roots grow down, shoots grow up<br>• Thigmotropism: grow toward touch (vines wrap around support)<br><br><strong>Vascular vs Non-vascular:</strong><br>Vascular (has xylem/phloem): trees, flowers, ferns<br>Non-vascular (no transport system): mosses, liverworts<br><br>What plant topic?`,
+]},
+
+// ══ ELA — further expanded ═══════════════════════════════════════════════════
+
+{id:'sentence_types', keys:['simple sentence','compound sentence','complex sentence','independent clause','dependent clause','subordinate','conjunction','semicolon use','run on sentence','fragment','compound complex'], r:[
+  g=>`<strong>Sentence Types:</strong><br><br>📌 <strong>Simple</strong>: 1 independent clause<br>"The dog ran."<br><br>📌 <strong>Compound</strong>: 2+ independent clauses joined by FANBOYS (For, And, Nor, But, Or, Yet, So) or a semicolon<br>"The dog ran, but the cat hid."<br>"I studied; I passed."<br><br>📌 <strong>Complex</strong>: 1 independent + 1 dependent clause (starts with subordinator: because, although, when, if, since, while)<br>"Although it was raining, she went for a walk."<br><br>📌 <strong>Compound-Complex</strong>: 2+ independent + 1+ dependent<br>"Although it rained, she walked, and she enjoyed it."<br><br><strong>Avoid:</strong><br>• Run-on: "I like school I go every day" (needs punctuation/conjunction)<br>• Fragment: "Because I was tired." (incomplete thought — needs main clause)<br><br>What sentence structure?`,
+]},
+
+{id:'author_craft', keys:['author craft','word choice','diction','tone','mood','syntax','style','rhetorical device','anaphora','repetition','parallelism','sentence variety','point of view effect'], r:[
+  g=>`<strong>Author's Craft</strong> — the choices writers make and why:<br><br>📝 <strong>Diction</strong> (word choice): formal vs informal, connotation matters<br>"walked" vs "sauntered" vs "trudged" — same action, very different feel<br><br>🎭 <strong>Tone</strong>: author's attitude (sarcastic, somber, joyful, critical)<br>🌫️ <strong>Mood</strong>: how the reader feels (suspenseful, hopeful, eerie)<br><br>📐 <strong>Syntax</strong>: sentence structure effects<br>Short. Punchy. Creates urgency.<br>Longer, more flowing sentences create a sense of calm and reflection.<br><br><strong>Rhetorical devices:</strong><br>• <strong>Anaphora</strong>: repetition at sentence start ("I have a dream..." repeated)<br>• <strong>Parallelism</strong>: matching grammatical structure ("I came, I saw, I conquered")<br>• <strong>Rhetorical question</strong>: question asked for effect, not answer<br>• <strong>Antithesis</strong>: contrasting ideas in parallel structure ("Ask not what your country can do for you...")<br><br>When analyzing: always ask WHY the author made a choice.`,
+]},
+
+{id:'argument_writing', keys:['argumentative','persuasive writing','counterclaim','rebuttal','evidence warrant','logical fallacy','appeal','concession','position','debate writing'], r:[
+  g=>`<strong>Argumentative Writing:</strong><br><br><strong>Structure:</strong><br>1. <strong>Claim</strong> (thesis) — your clear position<br>2. <strong>Evidence</strong> — facts, statistics, expert quotes, examples<br>3. <strong>Warrant/Reasoning</strong> — explain WHY the evidence proves your claim<br>4. <strong>Counterclaim</strong> — fairly state the opposing view<br>5. <strong>Rebuttal</strong> — refute the counterclaim with evidence<br><br><strong>Strong evidence types:</strong><br>• Statistics ("Studies show...")<br>• Expert testimony (credible sources)<br>• Real-world examples (specific cases)<br><br><strong>Logical fallacies</strong> to avoid:<br>• Ad hominem: attacking the person not the argument<br>• Straw man: misrepresenting opponent's view<br>• Slippery slope: assuming extreme chain of events<br>• Bandwagon: "everyone believes it" (so it must be true)<br>• False dichotomy: "either X or Y" (ignoring other options)<br><br>What are you arguing?`,
+]},
+
+// ══ SOCIAL STUDIES — further expanded ═══════════════════════════════════════
+
+{id:'french_revolution', keys:['french revolution','napoleon','estates','bastille','enlightenment french','reign of terror','liberty equality fraternity','bourgeoisie','guillotine','1789'], r:[
+  g=>`<strong>French Revolution (1789–1799):</strong><br><br><strong>Causes:</strong><br>• Extreme inequality: 3 Estates — clergy (1%), nobles (2%), everyone else (97%) paid all taxes<br>• Enlightenment ideas: Locke, Rousseau → rights, consent of the governed<br>• Financial crisis (France bankrupt helping American Revolution)<br>• Food shortages<br><br><strong>Key Events:</strong><br>• 1789: Storming the Bastille (July 14) — symbol of revolt<br>• Declaration of Rights of Man: "Liberty, Equality, Fraternity"<br>• Reign of Terror (1793–94): Robespierre executes tens of thousands by guillotine<br>• 1799: Napoleon Bonaparte seizes power → empire<br><br><strong>Napoleon:</strong><br>• Spread revolutionary ideas across Europe (Napoleonic Code — equal laws)<br>• But also conquered much of Europe<br>• Defeated at Waterloo (1815) → exiled<br><br><strong>Impact:</strong> inspired revolutions worldwide; end of absolute monarchy in France<br><br>What aspect?`,
+]},
+
+{id:'manifest_destiny', keys:['manifest destiny','westward expansion','louisiana purchase','lewis and clark','oregon trail','mexican american war','gold rush','homestead act','frontier'], r:[
+  g=>`<strong>Westward Expansion & Manifest Destiny:</strong><br><br><strong>Manifest Destiny</strong> = 19th-century belief that the U.S. was "destined" to expand to the Pacific Ocean. Used to justify taking land from Native peoples and Mexico.<br><br>📅 <strong>Key events:</strong><br>• 1803: Louisiana Purchase (doubled U.S. size, bought from France)<br>• 1804–06: Lewis and Clark Expedition (mapped the West)<br>• 1830: Indian Removal Act → Trail of Tears<br>• 1840s: Oregon Trail (settlers move West)<br>• 1846–48: Mexican-American War → U.S. gains California, Texas, Southwest<br>• 1848: California Gold Rush → mass migration West<br>• 1862: Homestead Act (free land for settlers)<br>• 1869: Transcontinental Railroad completed<br><br><strong>Consequences:</strong><br>Displacement of millions of Native Americans; U.S. becomes continental power; deep environmental impact<br><br>What period or event?`,
+]},
+
+{id:'vietnam_modern', keys:['vietnam war','watergate','nixon','cold war america','great society','moon landing','terrorism','september 11','iraq war','modern america','1960s','1970s'], r:[
+  g=>`<strong>Modern America (1960s–2000s):</strong><br><br>🌙 <strong>Space Race:</strong> 1969 — Neil Armstrong walks on the moon (Apollo 11). USA wins race against USSR.<br><br>🇻🇳 <strong>Vietnam War (1955–1975):</strong><br>US fought to stop communist North Vietnam. Drafted 2.7M Americans. No clear victory → troops withdrew 1973. First televised war → massive anti-war protests at home.<br><br>📰 <strong>Watergate (1972–74):</strong><br>Nixon campaign broke into Democratic HQ → Nixon covered it up → impeachment proceedings → Nixon resigned (first president to do so)<br><br>✈️ <strong>9/11 (September 11, 2001):</strong><br>Al-Qaeda terrorist attacks: 2,977 killed. Led to War in Afghanistan, USA PATRIOT Act, Department of Homeland Security, War in Iraq (2003).<br><br>📱 <strong>Technology revolution:</strong> Internet, smartphones, social media transformed society<br><br>What period or event?`,
+]},
+
+{id:'geography_regions', keys:['region','middle east','africa','asia','europe','latin america','south america','southeast asia','pacific','caribbean','sub saharan','cultural region'], r:[
+  g=>`<strong>World Regions:</strong><br><br>🌍 <strong>Africa:</strong> 54 countries; Sahara Desert (largest); diverse cultures; many post-colonial nations; major resources; growing economies<br><br>🕌 <strong>Middle East:</strong> crossroads of three continents; birthplace of major religions; significant oil reserves; Israel-Palestine conflict; mix of monarchy and republic governments<br><br>🌏 <strong>Asia:</strong> largest continent; includes China (most populous), India (most populous as of 2023), Japan (technology), Korea, Southeast Asia (diverse islands and peninsulas)<br><br>🏛️ <strong>Europe:</strong> European Union; many democracies; post-WWII recovery and integration; aging population; Russia spans Europe and Asia<br><br>🌎 <strong>Latin America:</strong> Mexico, Central America, Caribbean, South America; Spanish/Portuguese colonial legacy; Amazon rainforest; growing economies<br><br>Key geographic factors that shape history: rivers (Nile, Amazon, Yangtze), mountains (Himalayas, Andes), deserts, trade routes<br><br>Which region are you studying?`,
+]},
+
+{id:'civic_participation', keys:['voting','election','democracy participation','citizen','civic duty','political party','primary election','electoral college','census','jury duty','petition','advocacy'], r:[
+  g=>`<strong>Civic Participation — how citizens engage:</strong><br><br>🗳️ <strong>Voting:</strong><br>• Requirements: 18+, registered, US citizen<br>• Primary elections: pick party's candidate<br>• General election: vote between candidates<br>• Electoral College: electors (not popular vote directly) choose president<br><br><strong>Beyond voting:</strong><br>• Jury duty (constitutional right to jury trial)<br>• Census participation (determines representation and funding)<br>• Contacting representatives<br>• Peaceful protest (1st Amendment protected)<br>• Running for office<br>• Community service<br><br><strong>Political parties:</strong><br>Groups with shared beliefs that organize to win elections. US has two dominant parties (Democrat, Republican) plus many third parties.<br><br><strong>Gerrymandering:</strong> redrawing district lines to favor one party — a contested practice affecting representation<br><br><strong>Why it matters:</strong> Low voter turnout = politicians cater to those who DO vote<br><br>What civic concept?`,
+]},
+
+
+// ══ AP COURSES ═══════════════════════════════════════════════════════════════
+
+{id:'ap_calculus', keys:['calculus','derivative','integral','limit','chain rule','product rule','quotient rule','antiderivative','fundamental theorem','implicit differentiation','related rates','mean value theorem','riemann sum','u-substitution','ap calc','ap calculus'], r:[
+  g=>`<strong>AP Calculus — Derivatives</strong><br><br>The derivative measures <em>instantaneous rate of change</em>.<br><br><strong>Key rules:</strong><br>• Power: d/dx[xⁿ] = nxⁿ⁻¹<br>• Product: (uv)′ = u′v + uv′<br>• Quotient: (u/v)′ = (u′v − uv′)/v²<br>• Chain: d/dx[f(g(x))] = f′(g(x))·g′(x)<br><br><strong>Examples:</strong><br>d/dx[x³] = 3x²<br>d/dx[sin x] = cos x<br>d/dx[eˣ] = eˣ<br>d/dx[ln x] = 1/x<br><br>What rule or problem are you working on?`,
+  g=>`<strong>AP Calculus — Limits</strong><br><br>lim(x→a) f(x) = L means f(x) approaches L as x→a.<br><br><strong>Key techniques:</strong><br>• Direct substitution first<br>• Factor and cancel for 0/0 indeterminate forms<br>• L'Hôpital's Rule: if 0/0 or ∞/∞, take derivative of top and bottom<br>• Squeeze theorem for bounded functions<br><br><strong>L'Hôpital example:</strong><br>lim(x→0) sin(x)/x → 0/0 → cos(x)/1 = <strong>1</strong><br><br>What limit are you trying to evaluate?`,
+  g=>`<strong>AP Calculus — Integrals</strong><br><br>∫f(x)dx = F(x)+C where F′=f (antiderivative)<br><br><strong>Basic antiderivatives:</strong><br>∫xⁿdx = xⁿ⁺¹/(n+1)+C<br>∫eˣdx = eˣ+C<br>∫cos x dx = sin x+C<br>∫sin x dx = −cos x+C<br><br><strong>Fundamental Theorem of Calculus:</strong><br>∫[a,b] f(x)dx = F(b) − F(a)<br><br><strong>u-substitution:</strong> when you see f(g(x))·g′(x)<br>Let u=g(x), du=g′(x)dx, then ∫f(u)du<br><br>Share the integral you're working on!`,
+]},
+
+{id:'ap_statistics', keys:['statistics','hypothesis test','p-value','confidence interval','standard deviation','normal distribution','regression','correlation','chi-square','t-test','z-test','sample mean','central limit theorem','type i error','type ii error','ap stats','ap statistics'], r:[
+  g=>`<strong>AP Statistics — Hypothesis Testing</strong><br><br><strong>Steps (use every time):</strong><br>1. State H₀ and H₁<br>2. Choose significance level α (usually 0.05)<br>3. Check conditions (random, Normal, independent)<br>4. Compute test statistic (z or t)<br>5. Find p-value<br>6. Conclude: if p < α → reject H₀<br><br><strong>Test statistics:</strong><br>• z = (x̄ − μ₀)/(σ/√n) — when σ known<br>• t = (x̄ − μ₀)/(s/√n) — when σ unknown<br><br>Never "accept" H₀ — you either reject or fail to reject!`,
+  g=>`<strong>AP Statistics — Confidence Intervals</strong><br><br>CI = estimate ± margin of error<br>ME = z* × (σ/√n) or t* × (s/√n)<br><br>A 95% CI means: if we repeated sampling many times, 95% of intervals would contain the true parameter.<br><br><strong>Width affected by:</strong><br>• ↑ Confidence level → wider interval<br>• ↑ Sample size → narrower interval<br>• ↑ Variability → wider interval<br><br><strong>Example:</strong> n=100, x̄=50, s=10, 95% CI:<br>50 ± 1.96(10/10) = 50 ± 1.96 = <strong>(48.04, 51.96)</strong><br><br>What type of interval problem do you have?`,
+]},
+
+{id:'ap_biology', keys:['biology','cell','mitosis','meiosis','dna','rna','protein synthesis','natural selection','evolution','photosynthesis','respiration','cellular respiration','genetics','mendel','enzyme','homeostasis','ap bio','ap biology'], r:[
+  g=>`<strong>AP Biology — Cellular Respiration</strong><br><br><strong>Overall:</strong> C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ~36–38 ATP<br><br><strong>Stages:</strong><br>1. <strong>Glycolysis</strong> (cytoplasm): glucose → 2 pyruvate + 2 ATP + 2 NADH<br>2. <strong>Pyruvate Oxidation</strong> (matrix): pyruvate → acetyl-CoA + CO₂ + NADH<br>3. <strong>Krebs Cycle</strong> (matrix): 2 ATP + 6 NADH + 2 FADH₂ per glucose<br>4. <strong>ETC</strong> (inner membrane): NADH/FADH₂ → ~32–34 ATP; O₂ = final electron acceptor → H₂O<br><br>💡 Most ATP comes from the Electron Transport Chain!`,
+  g=>`<strong>AP Biology — Genetics & Natural Selection</strong><br><br><strong>Mendelian inheritance:</strong><br>• Dominant masks recessive<br>• Monohybrid cross Aa×Aa → 3:1 phenotypic ratio<br>• Dihybrid cross AaBb×AaBb → 9:3:3:1<br><br><strong>Natural Selection requires:</strong><br>1. Variation in a trait<br>2. Trait is heritable<br>3. Differential reproductive success<br><br><strong>Hardy-Weinberg:</strong> p² + 2pq + q² = 1; p + q = 1<br>Assumptions: no mutation, random mating, large population, no gene flow, no selection<br><br>What genetics or evolution topic?`,
+]},
+
+{id:'ap_chemistry', keys:['chemistry','moles','stoichiometry','equilibrium','acid','base','buffer','electronegativity','bonding','lewis structure','orbital','enthalpy','entropy','gibbs','le chatelier','ap chem','ap chemistry'], r:[
+  g=>`<strong>AP Chemistry — Stoichiometry</strong><br><br><strong>Mole is the bridge between mass and particles!</strong><br><br>• Moles = mass (g) ÷ molar mass (g/mol)<br>• Particles = moles × 6.022×10²³<br>• At STP: 1 mol gas = 22.4 L<br><br><strong>Limiting reagent:</strong> find moles of each reactant, convert to moles of product — the reactant that gives fewer moles of product is limiting.<br><br><strong>% yield</strong> = (actual yield / theoretical yield) × 100<br><br>What stoichiometry problem are you working on?`,
+  g=>`<strong>AP Chemistry — Equilibrium & Thermodynamics</strong><br><br><strong>Le Chatelier's Principle:</strong><br>• Add reactant → shift right (→)<br>• Remove product → shift right (→)<br>• Increase pressure → shift toward fewer moles of gas<br>• Increase temperature → shift toward endothermic direction<br><br><strong>Gibbs Free Energy:</strong><br>ΔG = ΔH − TΔS<br>• ΔG < 0 → spontaneous<br>• ΔG > 0 → non-spontaneous<br>• ΔG = 0 → equilibrium<br><br>Share your equilibrium or thermodynamics question!`,
+]},
+
+{id:'ap_physics', keys:['physics','kinematics','force','newton','momentum','energy','wave','electric field','magnetic field','circuit','capacitor','ap physics'], r:[
+  g=>`<strong>AP Physics — Mechanics</strong><br><br><strong>Kinematics (no friction):</strong><br>• v = v₀ + at<br>• x = x₀ + v₀t + ½at²<br>• v² = v₀² + 2ax<br><br><strong>Newton's Laws:</strong><br>1. Inertia: F_net=0 → constant velocity<br>2. F_net = ma<br>3. F_AB = −F_BA (action-reaction)<br><br><strong>Energy:</strong><br>• KE = ½mv²<br>• PE_grav = mgh<br>• Work = Fd cosθ<br>• W_net = ΔKE<br><br><strong>Momentum:</strong><br>• p = mv<br>• Impulse = FΔt = Δp<br>• Conservation: p_total = constant (no external force)<br><br>What topic or problem?`,
+]},
+
+{id:'ap_english', keys:['rhetorical analysis','ethos','pathos','logos','rhetoric','synthesis','argument','thesis','diction','syntax','tone','ap lang','ap english language','ap literature','literary analysis','volta','bildungsroman'], r:[
+  g=>`<strong>AP English Language — Rhetorical Analysis</strong><br><br><strong>Rhetorical Triangle:</strong><br>• <strong>Ethos</strong> = credibility/character ("As a doctor of 20 years...")<br>• <strong>Pathos</strong> = emotion ("Children are suffering...")<br>• <strong>Logos</strong> = logic/evidence (statistics, expert quotes)<br><br><strong>Rhetorical Situation (SOAPS):</strong><br>• <strong>S</strong>peaker, <strong>O</strong>ccasion, <strong>A</strong>udience, <strong>P</strong>urpose, <strong>S</strong>ubject<br><br><strong>Devices to look for:</strong><br>• Anaphora (repetition at start)<br>• Chiasmus ("Ask not what your country can do...")<br>• Antithesis (contrasting ideas in parallel structure)<br>• Parallelism, Juxtaposition, Metaphor<br><br>Share the passage and what you're analyzing!`,
+  g=>`<strong>AP Literature — Literary Analysis</strong><br><br><strong>Key terms:</strong><br>• <strong>Volta</strong>: a turn in a poem (esp. sonnets at line 9 or 13)<br>• <strong>Frame narrative</strong>: story within a story<br>• <strong>Unreliable narrator</strong>: narrator whose credibility is compromised<br>• <strong>Bildungsroman</strong>: coming-of-age novel<br>• <strong>Free indirect discourse</strong>: 3rd-person narration blending with character's thoughts<br><br><strong>Writing AP Lit essays:</strong><br>Always tie literary devices BACK to meaning/theme. Don't just label — analyze effect!<br><br>What text or concept are you analyzing?`,
+]},
+
+{id:'ap_us_history', keys:['us history','civil war','manifest destiny','reconstruction','gilded age','progressive era','new deal','cold war','civil rights','constitution','ap us history','apush'], r:[
+  g=>`<strong>AP US History — Key Themes</strong><br><br><strong>Causation of Civil War:</strong><br>Primary cause = slavery and its expansion. Key events: Compromise of 1850 (CA free + Fugitive Slave Act), Kansas-Nebraska Act (popular sovereignty), Dred Scott (1857), 1860 election of Lincoln → secession.<br><br><strong>Reconstruction (1865–1877):</strong><br>13th (abolished slavery), 14th (equal protection), 15th (Black male suffrage) amendments. Ended with Compromise of 1877 (Hayes-Tilden).<br><br><strong>Writing APUSH essays (SAQ, LEQ, DBQ):</strong><br>Always use specific evidence. For DBQ, cite documents AND outside knowledge. Thesis must make a historically defensible claim.<br><br>What period or essay are you working on?`,
+]},
+
+{id:'ap_psychology', keys:['psychology','classical conditioning','operant','cognitive','neuron','memory','motivation','personality','social psychology','abnormal','maslow','freud','piaget','ap psych','ap psychology'], r:[
+  g=>`<strong>AP Psychology — Learning</strong><br><br><strong>Classical Conditioning (Pavlov):</strong><br>NS + US → UR → CS → CR<br>Bell (NS) + Food (US) → Salivation (UR) → Bell alone (CS) → Salivation (CR)<br><br><strong>Operant Conditioning (Skinner):</strong><br>• Positive reinforcement: add reward → behavior ↑<br>• Negative reinforcement: remove aversive → behavior ↑<br>• Positive punishment: add aversive → behavior ↓<br>• Negative punishment: remove reward → behavior ↓<br><br><strong>Schedules:</strong> Variable-ratio (e.g., slot machines) is most resistant to extinction!<br><br>What psych topic or unit?`,
+  g=>`<strong>AP Psychology — Biopsychology</strong><br><br><strong>Neuron structure:</strong><br>Dendrites → Cell body → Axon → Terminal buttons → Synapse<br><br><strong>Neurotransmitters:</strong><br>• Dopamine: reward, motivation (low → Parkinson, schizophrenia)<br>• Serotonin: mood, sleep (low → depression)<br>• Acetylcholine: muscle movement, memory<br>• GABA: inhibitory (low → anxiety)<br>• Norepinephrine: alertness, fight-or-flight<br><br><strong>Brain lobes:</strong><br>• Frontal: planning, reasoning, personality<br>• Parietal: spatial processing, touch<br>• Temporal: hearing, language (Wernicke's area)<br>• Occipital: vision<br><br>What psych concept do you need help with?`,
+]},
+
+{id:'ap_cs', keys:['computer science','java','object oriented','inheritance','polymorphism','algorithm','binary search','time complexity','recursion','data structure','boolean','encryption','ap csa','ap computer science','ap csp','ap cs principles'], r:[
+  g=>`<strong>AP CS A — Java Essentials</strong><br><br><strong>OOP Pillars:</strong><br>• <strong>Encapsulation</strong>: private fields + public getters/setters<br>• <strong>Inheritance</strong>: class Dog extends Animal<br>• <strong>Polymorphism</strong>: subclass overrides parent method<br>• <strong>Abstraction</strong>: abstract classes / interfaces hide details<br><br><strong>Common pitfalls:</strong><br>• Off-by-one errors in loops<br>• NullPointerException (reference not initialized)<br>• Integer division: 7/2 = 3 (not 3.5!)<br><br><strong>Sorting:</strong><br>• Selection sort: O(n²)<br>• Insertion sort: O(n²), fast for nearly sorted<br>• Merge sort: O(n log n), divide-and-conquer<br><br>Share your Java question or code snippet!`,
+  g=>`<strong>AP CS A — Arrays & ArrayLists</strong><br><br><strong>Array:</strong> fixed size, int[] arr = new int[5];<br><strong>ArrayList:</strong> dynamic, ArrayList&lt;Integer&gt; list = new ArrayList<>();<br><br><strong>2D Arrays:</strong><br>int[][] grid = new int[rows][cols];<br>Access: grid[row][col]<br>Traverse: nested for loops<br><br><strong>Common methods:</strong><br>Arrays.sort(arr) — sorts in place<br>list.add(x), list.get(i), list.size(), list.remove(i)<br><br><strong>Binary search</strong> requires sorted array, runs O(log n).<br><br>What data structure or algorithm question?`,
+]},
+
+
+// ══ AP ARTS ═══════════════════════════════════════════════════════════════════
+
+{id:'ap_art_history', keys:['art history','ap art history','iconography','formal analysis','contextualization','period style','renaissance art','baroque','impressionism','modernism','ancient greece art','roman art','medieval art','stylistic analysis','visual analysis'], r:[
+  g=>`<strong>AP Art History — Formal Analysis</strong><br><br>Formal analysis describes the visual elements of a work <em>before</em> interpreting meaning.<br><br><strong>Elements to analyze:</strong><br>• <strong>Line</strong>: direction, quality (jagged, flowing)<br>• <strong>Shape/Form</strong>: geometric vs. organic; 2D vs. 3D<br>• <strong>Color</strong>: hue, saturation, value; warm/cool<br>• <strong>Space</strong>: perspective, depth, negative/positive space<br>• <strong>Texture</strong>: actual vs. implied<br>• <strong>Composition</strong>: balance, focal point, rule of thirds<br><br>Start with what you <em>observe</em>, then move to what it <em>means</em>. What work are you analyzing?`,
+  g=>`<strong>AP Art History — Contextualization</strong><br><br>Context explains <em>why</em> a work looks the way it does.<br><br><strong>Key context types:</strong><br>• <strong>Historical</strong>: political events, patrons, power<br>• <strong>Religious/Cultural</strong>: beliefs, rituals, iconography<br>• <strong>Social</strong>: class, gender, race represented<br>• <strong>Artistic</strong>: movement, influence, reaction against prior styles<br><br><strong>Example:</strong> Michelangelo's <em>David</em> (1504) — commissioned by Florence as civic pride; Goliath = Florentine enemies; heroic nudity = Greek/Roman revival (Renaissance humanism).<br><br>What period or work do you need context for?`,
+  g=>`<strong>AP Art History — Global Traditions</strong><br><br>AP Art History covers works from across all cultures and time periods.<br><br><strong>Major traditions:</strong><br>• <strong>Ancient Mediterranean</strong>: Egypt, Greece, Rome — idealized form, civic/religious function<br>• <strong>South/Southeast Asia</strong>: Buddhist/Hindu iconography (mudras, mandalas)<br>• <strong>Indigenous Americas</strong>: Aztec, Maya, Inca — cosmological meaning<br>• <strong>Africa</strong>: power objects, masquerade, ancestor veneration<br>• <strong>Islamic</strong>: geometric abstraction, calligraphy, no figural imagery in sacred space<br>• <strong>East Asia</strong>: ink painting, ceramics, landscape tradition<br><br>Which tradition or work are you studying?`,
+]},
+
+{id:'ap_music_theory', keys:['music theory','ap music theory','chord','harmony','counterpoint','rhythm','meter','melody','interval','scale','key signature','voice leading','figured bass','species counterpoint','solfege','ear training','sight singing'], r:[
+  g=>`<strong>AP Music Theory — Harmony & Chords</strong><br><br><strong>Chord types:</strong><br>• Major triad: root + major 3rd + perfect 5th (C–E–G)<br>• Minor triad: root + minor 3rd + perfect 5th (C–E♭–G)<br>• Diminished: root + minor 3rd + diminished 5th<br>• Dominant 7th: major triad + minor 7th (V7 → very tense → resolves to I)<br><br><strong>Roman numeral analysis:</strong><br>I (tonic) – IV (subdominant) – V (dominant) – vi (relative minor)<br>Upper case = major; lower case = minor<br><br><strong>Key progressions:</strong><br>I–IV–V–I (authentic cadence)<br>I–V–vi–IV (pop progression)<br><br>Share a chord or passage you want to analyze!`,
+  g=>`<strong>AP Music Theory — Intervals</strong><br><br>An interval = distance between two pitches.<br><br><strong>Naming intervals:</strong><br>1. Count lines and spaces inclusively (C to G = 5th)<br>2. Qualify with: Perfect (P), Major (M), minor (m), diminished (d), Augmented (A)<br><br><strong>Perfect intervals:</strong> Unison, 4th, 5th, Octave<br><strong>Major intervals</strong> (in major scale): 2nd, 3rd, 6th, 7th<br>Lower a major by half step → minor; lower a minor/perfect → diminished<br><br><strong>Memory trick:</strong> Count half steps<br>m3 = 3 half steps | M3 = 4 | P5 = 7 | M7 = 11<br><br>What interval or melody are you working on?`,
+]},
+
+{id:'ap_studio_art', keys:['studio art','ap studio art','2d design','3d design','drawing portfolio','portfolio','breadth','sustained investigation','concentration','principles of design','elements of art','critique','composition','medium technique'], r:[
+  g=>`<strong>AP Studio Art — Portfolio Structure</strong><br><br>AP Studio Art has <strong>3 portfolio options</strong>: 2-D Design, 3-D Design, Drawing.<br><br><strong>Each portfolio requires:</strong><br>• <strong>Sustained Investigation</strong> (15 images): a coherent inquiry — works that show process, experimentation, and revision around a central idea or question<br>• <strong>Selected Works</strong> (5 images): your strongest pieces showing skillful, intentional artmaking<br><br><strong>Key AP reader criteria:</strong><br>• Evidence of skill and craft<br>• Depth of investigation (not just variety)<br>• Coherent conceptual thread<br>• Risk-taking and revision<br><br>What's your concentration/investigation idea?`,
+  g=>`<strong>AP Studio Art — Principles of Design</strong><br><br><strong>7 Principles:</strong><br>• <strong>Balance</strong>: symmetrical, asymmetrical, radial<br>• <strong>Contrast</strong>: differences that create visual interest (light/dark, large/small)<br>• <strong>Emphasis</strong>: focal point — where the eye goes first<br>• <strong>Movement</strong>: how the eye travels through the composition<br>• <strong>Pattern/Repetition</strong>: recurring elements creating unity<br>• <strong>Proportion/Scale</strong>: size relationships<br>• <strong>Unity/Variety</strong>: cohesion vs. interest — too much unity = boring; too much variety = chaos<br><br>Which principle are you applying to your work?`,
+]},
+
+// ══ AP WORLD LANGUAGES ════════════════════════════════════════════════════════
+
+{id:'ap_languages', keys:['ap language','ap spanish','ap french','ap chinese','ap japanese','ap german','ap italian','ap latin','ap world language','interpersonal','interpretive','presentational','ap language exam','language proficiency','ap lang exam','target language'], r:[
+  g=>`<strong>AP World Languages — Three Communication Modes</strong><br><br>All AP language exams assess three modes:<br><br>• <strong>Interpretive</strong>: reading and listening comprehension — you receive and understand authentic texts/audio (no interaction)<br>• <strong>Interpersonal</strong>: two-way communication — simulated conversation, email reply (real-time negotiation of meaning)<br>• <strong>Presentational</strong>: one-way output — spoken presentation, persuasive essay (crafted, no interaction)<br><br><strong>Exam sections (vary by language):</strong><br>Multiple choice (interpretive) + Free response (interpersonal + presentational)<br><br>Which language and section are you preparing for?`,
+  g=>`<strong>AP Language Exam — Presentational Writing Tips</strong><br><br><strong>Persuasive essay structure:</strong><br>1. <strong>Introduction</strong>: state your position clearly in the target language<br>2. <strong>Body paragraphs</strong>: each makes one main point + evidence from the provided sources (you must cite at least 2–3 sources)<br>3. <strong>Counterargument paragraph</strong>: acknowledge and refute the opposing view<br>4. <strong>Conclusion</strong>: restate position + broader significance<br><br><strong>AP scorer priorities:</strong><br>• Use of target language throughout (no English!)<br>• Accuracy of grammar and vocabulary<br>• Complexity and variety of structures<br>• Clear organization and transitions<br><br>What language and topic is your essay on?`,
+  g=>`<strong>AP Spanish Language — Key Grammar Review</strong><br><br><strong>Subjunctive triggers (WEIRDO):</strong><br>Wishes, Emotion, Impersonal expressions, Requests/Recommendations, Doubt/Denial, Ojalá<br>Example: <em>Quiero que tú <strong>hables</strong></em> (not hablas)<br><br><strong>Ser vs. Estar:</strong><br>Ser: identity, origin, material, time, passive voice<br>Estar: state, location, progressive, result of change<br><em>Es aburrido</em> (he's a boring person) vs. <em>Está aburrido</em> (he's bored right now)<br><br><strong>Por vs. Para:</strong><br>Por: cause, exchange, duration, movement through<br>Para: purpose, recipient, deadline, destination<br><br>Which grammar point or section do you need help with?`,
+]},
+
+{id:'ap_latin', keys:['latin','ap latin','vergil','aeneid','caesar','gallic wars','latin translation','ablative absolute','gerund','gerundive','indirect statement','subjunctive latin','latin grammar','deponent verb','latin syntax'], r:[
+  g=>`<strong>AP Latin — Translation Strategies</strong><br><br>AP Latin focuses on <strong>Vergil's <em>Aeneid</em></strong> (Books 1,2,4,6,10,12) and <strong>Caesar's <em>Gallic Wars</em></strong> (selections).<br><br><strong>Translation approach:</strong><br>1. Find the <strong>main verb</strong> first (it tells you tense, mood, person)<br>2. Find the <strong>subject</strong> (matches verb in person/number)<br>3. Find the <strong>object</strong> (accusative case)<br>4. Handle subordinate clauses (look for subordinating conjunctions: cum, ut, si, dum)<br>5. Resolve participial phrases and ablative absolutes last<br><br><strong>Ablative absolute:</strong> noun + participle, both in ablative = "with X having been done" / "when X was done"<br><br>Share the passage you're translating!`,
+  g=>`<strong>AP Latin — Key Constructions</strong><br><br><strong>Indirect Statement (with verbs of saying/thinking/perceiving):</strong><br>Accusative subject + Infinitive<br><em>Dicit Aeneam venire</em> = He says that Aeneas is coming<br><br><strong>Purpose Clauses</strong>: ut + subjunctive = "in order that/to"<br><em>Venit ut videret</em> = He came in order to see<br><br><strong>Result Clauses</strong>: ita/tam/tot... ut + subjunctive = "so... that"<br><em>Tam fortis erat ut vinceret</em> = He was so brave that he conquered<br><br><strong>Cum Clauses</strong>:<br>• cum + indicative = when (temporal)<br>• cum + subjunctive = when/since/although (circumstantial/causal/concessive)<br><br>What construction or passage needs help?`,
+]},
+
+// ══ AP CAPSTONE ═══════════════════════════════════════════════════════════════
+
+{id:'ap_capstone', keys:['ap capstone','ap seminar','ap research','academic research paper','team multimedia presentation','irr individual research report','twm team written argument','performance task','scholarly sources','research methodology','argument of consequence','argument of policy','argument of value','argument of fact','primary source secondary source'], r:[
+  g=>`<strong>AP Seminar — Building an Argument</strong><br><br>AP Seminar teaches you to <strong>research, analyze, and argue</strong> across disciplines.<br><br><strong>4 types of claims (AP framework):</strong><br>• <strong>Fact</strong>: Is it true? (evidence-based)<br>• <strong>Value</strong>: Is it good/bad/significant?<br>• <strong>Policy</strong>: What should be done?<br>• <strong>Consequence</strong>: What will/did happen as a result?<br><br><strong>Strong argument structure:</strong><br>1. Clear, debatable claim<br>2. Evidence from credible, diverse sources (quantitative + qualitative)<br>3. Reasoning that connects evidence to claim<br>4. Acknowledgment of counterarguments<br>5. Conclusion addressing significance/implications<br><br>What's your seminar topic or task?`,
+  g=>`<strong>AP Seminar — Evaluating Sources</strong><br><br>AP Seminar requires <strong>credible, relevant, diverse</strong> sources.<br><br><strong>Source evaluation (SIFT method):</strong><br>• <strong>Stop</strong>: don't share before checking<br>• <strong>Investigate</strong>: who made this? What's their expertise/bias?<br>• <strong>Find better coverage</strong>: is this corroborated elsewhere?<br>• <strong>Trace claims</strong>: go upstream to the original source<br><br><strong>Source types AP rewards:</strong><br>• Peer-reviewed academic articles (highest credibility)<br>• Government/institutional data<br>• Reputable journalism<br>• Primary sources (firsthand accounts, original data)<br><br><strong>Red flags:</strong> no author, no date, sensational headlines, only secondary sources cited<br><br>What sources are you evaluating?`,
+  g=>`<strong>AP Research — The Research Paper</strong><br><br>AP Research requires a <strong>4,000–5,000 word academic paper</strong> plus a 20-minute oral defense.<br><br><strong>Paper structure:</strong><br>1. <strong>Introduction</strong>: background, research gap, your question<br>2. <strong>Literature Review</strong>: synthesize existing research; show the gap<br>3. <strong>Methodology</strong>: how you collected/analyzed data; why this method<br>4. <strong>Findings/Results</strong>: what you found (no interpretation yet)<br>5. <strong>Discussion</strong>: interpret findings; connect to literature; limitations<br>6. <strong>Conclusion</strong>: implications; future research directions<br><br><strong>Research question criteria:</strong> specific, researchable, novel, significant<br>Weak: "Is social media bad?" Strong: "How does Instagram use correlate with body image among 13-15 year old girls in suburban schools?"<br><br>What stage of your research are you at?`,
+]},
+
+]; // end KB
+
+// ─── NLP SCORING ─────────────────────────────────────────────────────────────
+
+const STOP = new Set(['the','a','an','and','or','but','is','are','was','were','be','been','have','has','had','do','does','did','will','would','could','should','may','might','can','to','of','in','on','at','for','with','about','it','i','me','my','you','your','he','she','we','they','this','that','these','those','what','how','why','when','where','who','which','if','so','not','no','yes','just','get','give','tell','show','help','need','want','know','understand','explain','please','make','use']);
+
+function tokenize(text) {
+  return text.toLowerCase().split(/[\s,;.!?()\[\]"']+/).filter(w => w.length > 1 && !STOP.has(w));
+}
+
+function scoreTopic(topic, tokens, lo) {
+  let score = 0;
+  for (let i = 0; i < topic.keys.length; i++) {
+    const key = topic.keys[i].toLowerCase();
+    if (lo.includes(key)) {
+      score += i < 3 ? 3 : 1; // anchor keys score more
+    } else {
+      // token-level partial match
+      const keyTokens = key.split(' ');
+      for (const kt of keyTokens) {
+        if (tokens.some(t => t === kt || (t.length > 3 && kt.startsWith(t)) || (kt.length > 3 && t.startsWith(kt)))) {
+          score += 0.5;
+        }
+      }
+    }
+  }
+  return score;
+}
+
+function findBestTopic(input) {
+  const lo = input.toLowerCase();
+  const tokens = tokenize(input);
+  let best = null, bestScore = 0;
+  for (const topic of KB) {
+    const s = scoreTopic(topic, tokens, lo);
+    if (s > bestScore) { bestScore = s; best = topic; }
+  }
+  return bestScore >= 0.5 ? best : null;
+}
+
+// ─── SPECIAL DETECTION ────────────────────────────────────────────────────────
+
+function detectSpecial(input) {
+  const lo = input.toLowerCase().trim();
+  if (/^(hi|hello|hey|howdy|sup|good morning|good afternoon)[\s!?.]*$/.test(lo)) return 'greeting';
+  if (lo.length < 50 && /thank|thanks|thx|ty\b|appreciate/.test(lo)) return 'thanks';
+  if (/\b(practice|quiz|test me|give me a problem|problem to try|exercise for me|problem please)\b/.test(lo)) return 'practice';
+  if (/\b(check|is (this|my|that) (right|correct)|did i get|verify|is .{1,20} correct)\b/.test(lo)) return 'check';
+  if (/\bdon'?t understand|i'?m confused|i'?m lost|doesn'?t make sense|what do you mean\b/.test(lo)) return 'confused';
+  if (/\breal.?life|why (do we|learn|study)|when (will i|would i|do we) (use|need)\b/.test(lo)) return 'reallife';
+  if (/\bkey (points?|things?|facts?)|important|need to (know|remember|memorize)\b/.test(lo)) return 'keypoints';
+  return null;
+}
+
+// ─── GUIDED (SOCRATIC) MODE ──────────────────────────────────────────────────
+// When a student types an equation, Acer asks THEM to figure out each step.
+
+function tryGuidedMath(raw) {
+  // Strip common leading phrases so "how do I solve 2x+3=11" → "2x+3=11"
+  let s = raw
+    .replace(/^\s*(?:how (?:do|can|would) (?:i|you|we)|can you|could you|please|let(?:'s| us)|i need to|i (?:want|need) (?:to|help with)|i'm (?:trying|working) (?:to|on))\s+/i, '')
+    .replace(/^\s*(?:help (?:me )?(?:solve|with|figure out|work (?:out|through))|solve this|work (?:out|through)|figure out|find|calculate|evaluate|step by step:?|solve)\s*/i, '')
+    .trim();
+  s = s.replace(/(\d+\.?\d*)\s*squared/gi, '$1^2');
+
+  // Match linear equation  ax + b = c
+  const m = s.match(/^([-+]?\s*\d*\.?\d*)\s*\*?\s*([a-zA-Z])\s*([-+]\s*\d+\.?\d*)?\s*=\s*([-+]?\s*\d+\.?\d*)\s*$/);
+  if (!m) return null;
+
+  let aStr = m[1].replace(/\s/g,''); if(!aStr||aStr==='+') aStr='1'; if(aStr==='-') aStr='-1';
+  const a=+aStr, v=m[2], b=m[3]?+(m[3].replace(/\s/g,'')):0, c=+(m[4].replace(/\s/g,''));
+  const ans = +((c-b)/a).toFixed(6);
+  const aDisp = a===1?'':a===-1?'-':String(a);
+  const bDisp = b>0?`+${b}`:b<0?String(b):'';
+  const display = `${aDisp}${v}${bDisp} = ${c}`;
+
+  const steps = [];
+  let interC = c;
+
+  // Step 1: remove constant term
+  if (b !== 0) {
+    const val = Math.abs(b), op = b>0?'subtract':'add', newC = c-b;
+    interC = newC;
+    steps.push({
+      q: `What's the first step to solve <strong>${display}</strong>?<br><em>(Think about what's being added or subtracted to the variable side.)</em>`,
+      hint: `We need to get rid of the ${b>0?'+':'-'}${val}. Try: ${op} ${val} from both sides.`,
+      check: lo => {
+        const n = lo.replace(/\s+/g,'');
+        return n.includes('subtract')||n.includes(`-${val}`)||n.includes('minus'+val)||
+               (b<0&&(n.includes('add')||n.includes('+'+val)))||
+               n.includes(v+'='+newC)||n.includes('='+newC);
+      },
+      successMsg: `✓ Yes! ${b>0?'Subtract':'Add'} ${val} from both sides:<br><strong>${a===1?'':a}${v} = ${newC}</strong>`
+    });
+  }
+
+  // Step 2: remove coefficient
+  if (Math.abs(a) !== 1) {
+    const step2q = steps.length>0
+      ? `Now we have <strong>${a}${v} = ${interC}</strong>. What's the next step?`
+      : `What's the first step to solve <strong>${display}</strong>?`;
+    steps.push({
+      q: step2q + `<br><em>(${v} still has something attached to it — how do we get it alone?)</em>`,
+      hint: `We have ${a}${v} = ${interC}. Divide both sides by <strong>${a}</strong> to isolate ${v}.`,
+      check: lo => {
+        const n = lo.replace(/\s+/g,'');
+        return n.includes('divide')||n.includes(`÷${a}`)||n.includes(`/${a}`)||
+               n.includes(`${v}=${ans}`)||n.includes(String(ans));
+      },
+      successMsg: `✓ Exactly! Divide both sides by ${a}:`
+    });
+  } else if (a===-1) {
+    const step2q = steps.length>0
+      ? `Now we have <strong>-${v} = ${interC}</strong>. What's the next step?`
+      : `What's the first step to solve <strong>-${v} = ${c}</strong>?`;
+    steps.push({
+      q: step2q,
+      hint: `Multiply both sides by -1 to make ${v} positive.`,
+      check: lo => lo.includes('multiply')||lo.includes('-1')||lo.includes('negate')||lo.includes(String(ans)),
+      successMsg: `✓ Right! Multiply both sides by -1:`
+    });
+  }
+
+  if (steps.length === 0) return null; // Already solved (e.g. "x = 5")
+
+  guided = {
+    display, v, ans, steps, step: 0, wrongAttempts: 0,
+    finalAnswer: `${v} = ${ans}`,
+    doneMsg: `🎉 You solved it! <strong>${v} = ${ans}</strong><br><br>✓ Check: ${a}(${ans})${bDisp} = ${+(a*ans+b).toFixed(4)} = ${c}<br><br>Great thinking! Want another problem to practice? 😊`
+  };
+
+  return `Let's work through <strong>${display}</strong> together — I won't give you the answer, you'll figure it out! 🤔<br><br>${steps[0].q}<br><br><em>Stuck? Just say "hint"</em>`;
+}
+
+function handleGuided(input) {
+  if (!guided) return null;
+  const lo = input.toLowerCase().trim();
+
+  // Student gives up → reveal answer
+  if (/\b(just tell me|give me the answer|what'?s the answer|skip|quit|forget it|i give up)\b/.test(lo)) {
+    const {finalAnswer:fa, display:d} = guided;
+    guided = null;
+    return `The answer to <strong>${d}</strong> is <strong>${fa}</strong>.<br><br>No worries — review the steps, then try a similar problem on your own. You'll get it! 💪`;
+  }
+
+  // Hint request
+  if (/^(hint|help|stuck|don'?t know|idk|no idea|what do i do|i'?m lost|i'?m confused)/.test(lo)) {
+    guided.wrongAttempts = 0; // reset after hint
+    return `💡 <strong>Hint:</strong> ${guided.steps[guided.step].hint}<br><br>Give it a try!`;
+  }
+
+  const step = guided.steps[guided.step];
+
+  if (step.check(lo)) {
+    // ✓ Correct
+    guided.wrongAttempts = 0;
+    guided.step++;
+    if (guided.step >= guided.steps.length) {
+      const done = guided.doneMsg;
+      guided = null;
+      return done;
+    }
+    return `${step.successMsg}<br><br>${guided.steps[guided.step].q}<br><em>Stuck? Just say "hint"</em>`;
+  } else {
+    // ✗ Wrong
+    guided.wrongAttempts++;
+    if (guided.wrongAttempts >= 2) {
+      // After 2 wrong tries, show this step and move on
+      guided.wrongAttempts = 0;
+      guided.step++;
+      if (guided.step >= guided.steps.length) {
+        const done = guided.doneMsg;
+        guided = null;
+        return `No worries! Here's that step: ${step.successMsg}<br><br>${done}`;
+      }
+      return `Let me show you that step: ${step.successMsg}<br><br>Now: ${guided.steps[guided.step].q}`;
+    }
+    return `Not quite — try again! 💪<br><br>💡 Hint: ${step.hint}`;
+  }
+}
+
+// ─── RESPONSE BUILDER ─────────────────────────────────────────────────────────
+
+const GREETINGS = [
+  g=>`Hey! 👋 I'm <strong>Acer</strong>, your aceAcademy smart tutor. I can explain concepts, solve math problems, and generate practice questions for Grade ${g}.<br><br>What are you working on today?`,
+  g=>`Hi there! 😊 Ready to learn? I'm Acer. Tell me what topic you're studying for Grade ${g} and I'll break it down step by step.`,
+  g=>`Hello! Great to meet you. I'm Acer — I cover Math, Science, ELA, History, CS, and Health. What shall we tackle for Grade ${g}?`,
+];
+const THANKS = [
+  `You're welcome! 😊 Keep up the great work. What else can I help with?`,
+  `Happy to help! Learning is a journey — you're doing great. 💪 Any more questions?`,
+  `Of course! That's what I'm here for. What else would you like to explore?`,
+];
+const CONFUSED = [
+  `No worries at all! Let's slow down. Tell me exactly which part is confusing — a specific step, a word, or the whole concept? The more specific, the better I can help! 😊`,
+  `Being confused means you're learning! Tell me what you DO understand so far, and I'll fill in the gaps from there.`,
+];
+const FALLBACK = [
+  g=>`I want to help! Could you be a bit more specific? For example:<br>• "2x + 3 = 11" — I'll guide you through it step by step<br>• "What is photosynthesis?"<br>• "Explain the causes of WWI"<br>• "What is a metaphor?"<br>• "What's a for loop?"<br><br>Or type any equation and we'll solve it together! 🤔`,
+  g=>`Good question! I cover Math, Science, ELA, History, CS, and Health for grades 6-12. What topic are you studying? The more specific, the better the explanation! 📚`,
+];
+const KEYPOINTS = [
+  (g, topic) => topic ? `Here are the <strong>key points</strong> for ${topic.keys[0]}:<br><br>` + (topic.r[0])(g) : `Tell me the specific topic and I'll give you the most important things to remember! 🔑`,
+];
+
+let gi=0, ti=0, ci=0, fi=0;
+
+function getVariant(topic) {
+  if (!variantIdx[topic.id]) variantIdx[topic.id] = 0;
+  const fn = topic.r[variantIdx[topic.id] % topic.r.length];
+  variantIdx[topic.id]++;
+  return fn(getGrade());
+}
+
+function buildResponse(input) {
+  const g = getGrade();
+  const lo = input.toLowerCase();
+
+  // ── Guided mode: if a problem is in progress, process response first ───────
+  if (guided) return handleGuided(input);
+
+  const special = detectSpecial(input);
+
+  if (special === 'greeting') return GREETINGS[gi++ % GREETINGS.length](g);
+  if (special === 'thanks') return THANKS[ti++ % THANKS.length];
+  if (special === 'confused') return CONFUSED[ci++ % CONFUSED.length];
+  if (special === 'check') return `Sure! Share the problem and your answer — write them both out and I'll check every step. 📝`;
+
+  // ── Guided mode: equations → Socratic step-by-step (no direct answer) ─────
+  // Always try guided mode — even "how do I solve 2x+3=11" goes through here
+  const guidedResult = tryGuidedMath(input);
+  if (guidedResult) return guidedResult;
+
+  // ── Direct math solver (percentages, means, geometry, pure arithmetic) ─────
+  const mathResult = tryMath(input);
+  if (mathResult) { lastTopicId = 'algebra_linear'; return mathResult; }
+
+  // Find best topic
+  const topic = findBestTopic(input);
+
+  if (special === 'practice') {
+    const t = topic || (lastTopicId ? KB.find(x => x.id === lastTopicId) : null);
+    if (t && t.p) { lastTopicId = t.id; return t.p(g); }
+    return `I'd love to make a practice problem! Which topic — <strong>algebra, fractions, geometry, photosynthesis, essay writing, probability</strong>? Just say the topic and I'll create one! 🎯`;
+  }
+
+  if (special === 'reallife') {
+    const t = topic || (lastTopicId ? KB.find(x => x.id === lastTopicId) : null);
+    if (t) return `Great question! <strong>Real-life uses of ${t.keys[0]}:</strong><br><br>` + realLifeUse(t.id, g);
+    return `Which topic are you asking about? Real-world connections make everything click — tell me the subject!`;
+  }
+
+  if (topic) {
+    lastTopicId = topic.id;
+    return getVariant(topic);
+  }
+
+  // Smart fallback: detect subject area and give targeted suggestion
+  const subjHints = [
+    { words:['math','number','calculate','multiply','divide','add','subtract','formula'], msg:`It looks like a math question! Try being more specific, e.g.:<br>• "How do I solve 4x − 2 = 10?"<br>• "What is PEMDAS?"<br>• "How do I find the area of a circle?"` },
+    { words:['science','biology','physics','chemistry','energy','force','cell','atom','plant','animal','body'], msg:`Looks like a science question! Try:<br>• "What is photosynthesis?"<br>• "Explain Newton's laws"<br>• "How does DNA work?"` },
+    { words:['history','war','president','country','revolution','colonist','government','century'], msg:`Looks like a history question! Try:<br>• "What caused World War I?"<br>• "Explain the Civil Rights Movement"<br>• "What is the Bill of Rights?"` },
+    { words:['english','writing','essay','story','poem','read','book','author','character','plot'], msg:`Looks like an ELA question! Try:<br>• "How do I write a strong thesis?"<br>• "What is a metaphor?"<br>• "How do I find the theme of a story?"` },
+    { words:['code','program','computer','python','javascript','variable','loop','function','app'], msg:`Looks like a CS question! Try:<br>• "What is a for loop?"<br>• "How do functions work in Python?"<br>• "What is an algorithm?"` },
+    { words:['health','body','food','exercise','stress','mental','nutrition','drug','sleep'], msg:`Looks like a health question! Try:<br>• "What are macronutrients?"<br>• "How does stress affect the body?"<br>• "What happens during puberty?"` },
+  ];
+  for (const hint of subjHints) {
+    if (hint.words.some(w => lo.includes(w))) {
+      return `${hint.msg}<br><br>The more specific you are, the better I can help! 😊`;
+    }
+  }
+  return FALLBACK[fi++ % FALLBACK.length](g);
+}
+
+function realLifeUse(id, g) {
+  const uses = {
+    fractions: `Recipes use fractions (½ cup of flour). Carpenters measure in fractions of inches. Music is built on fractions of a beat (quarter note, half note).`,
+    percentages: `Sales discounts, taxes, tipping at restaurants, calculating interest on savings, reading polls and statistics in the news — all percentages!`,
+    algebra_linear: `Engineers use equations to design bridges. Scientists calculate unknown quantities. Nurses calculate medicine dosages. Business people predict profits.`,
+    geometry: `Architects design buildings. Interior designers calculate floor space. GPS uses coordinate geometry. Game developers create 3D worlds.`,
+    statistics: `Sports analytics (which player is better?), medical research (does this drug work?), polling, business decisions — all rely on statistics.`,
+    cells: `Medicine (treating disease requires knowing how cells work), cancer research, developing vaccines, genetic engineering.`,
+    photosynthesis: `Agriculture (how to grow more food), biofuels (plants as energy), climate change (plants absorb CO₂).`,
+    chemistry: `Cooking is chemistry! Medicines, cleaning products, batteries, smartphones — all chemistry.`,
+    physics_forces: `Car brakes, roller coasters, rockets, sports (how to throw a ball further), bridges that don't collapse.`,
+    essay: `Job applications, emails to bosses, college essays, news articles, legal documents — clear writing is essential everywhere.`,
+    loops: `Every website, app, and video game uses loops. Spotify loops through your playlist. Instagram loops to load new posts.`,
+    nutrition: `Choosing what to eat, athletic performance, managing health conditions, cooking for your family.`,
+  };
+  return (uses[id] || `${id.replace(/_/g,' ')} appears in science, technology, medicine, and everyday decisions. The foundational knowledge you build now connects to real careers and real problems.`) + `<br><br>Want to go deeper on this?`;
+}
+
+// ─── UI ───────────────────────────────────────────────────────────────────────
+
+function setSubj(btn) {
+  document.querySelectorAll('.subj-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSubj = btn.dataset.subj;
+}
+
+function addMsg(html, who) {
+  const msgs = document.getElementById('messages');
+  if (!chatStarted) { const w = document.getElementById('welcome'); if(w) w.remove(); chatStarted = true; }
+  const div = document.createElement('div');
+  div.className = `msg ${who}`;
+  div.innerHTML = `<div class="avatar">${who === 'acer' ? 'A' : 'S'}</div><div class="bubble">${html}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  if (!chatStarted) { const w = document.getElementById('welcome'); if(w) w.remove(); chatStarted = true; }
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg acer'; div.id = 'typ';
+  div.innerHTML = `<div class="avatar">A</div><div class="bubble"><div class="typing-bubble"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typ'); if(t) t.remove(); }
+
+async function sendMessage() {
+  if (isTyping) return;
+  const inp = document.getElementById('inputBox');
+  const text = inp.value.trim();
+  if (!text) return;
+  addMsg(text, 'user');
+  inp.value = ''; inp.style.height = ''; isTyping = true;
+  showTyping();
+  await new Promise(r => setTimeout(r, 350 + Math.random() * 350));
+  removeTyping();
+  addMsg(buildResponse(text), 'acer');
+  isTyping = false;
+}
+
+function quickAsk(text) { document.getElementById('inputBox').value = text; sendMessage(); }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+
+document.getElementById('gradeSelect').addEventListener('change', () => {
+  lastTopicId = null;
+  addMsg(`Switched to <strong>Grade ${getGrade()} mode</strong>! I'll tailor everything to your level. What are you working on? 😊`, 'acer');
+});
+
+window.onload = () => {
+  setTimeout(() => {
+    showTyping();
+    setTimeout(() => {
+      removeTyping();
+      addMsg(`Hey! 👋 I'm <strong>Acer</strong>, your aceAcademy smart tutor. I can solve math equations, explain any concept step by step, and generate practice problems — for <strong>Math, Science, ELA, History, CS, and Health</strong>.<br><br>💡 Try typing an equation like <strong>3x + 5 = 20</strong> and I'll solve it! Or ask me any question.`, 'acer');
+    }, 900);
+  }, 400);
+};
+</script>
+
+<!-- ══ FLOATING NOTES WIDGET ══════════════════════════════════════════ -->
+<style>
+#notesBtn{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#6c63ff);color:#fff;border:none;font-size:1.4rem;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,0,0,.25);z-index:9998;display:flex;align-items:center;
+  justify-content:center;transition:transform .15s,box-shadow .15s;}
+#notesBtn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.35);}
+#notesBtn .badge{position:absolute;top:-4px;right:-4px;background:#f06;color:#fff;
+  font-size:.6rem;font-weight:700;padding:2px 5px;border-radius:10px;display:none;}
+#notesPanel{position:fixed;bottom:88px;right:24px;width:360px;max-height:520px;
+  background:#1a2540;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.22);
+  z-index:9999;display:flex;flex-direction:column;opacity:0;pointer-events:none;
+  transform:translateY(16px);transition:opacity .2s,transform .2s;overflow:hidden;}
+#notesPanel.open{opacity:1;pointer-events:auto;transform:translateY(0);}
+.np-head{background:var(--accent,#6c63ff);color:#fff;padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.np-head h3{margin:0;font-size:1rem;font-weight:700;letter-spacing:.02em;}
+.np-head-btns{display:flex;gap:8px;align-items:center;}
+.np-icon-btn{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;
+  padding:4px 8px;font-size:.8rem;cursor:pointer;transition:background .15s;}
+.np-icon-btn:hover{background:rgba(255,255,255,.35);}
+.np-tabs{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #eee;flex-shrink:0;
+  scrollbar-width:none;}
+.np-tabs::-webkit-scrollbar{display:none;}
+.np-tab{padding:8px 14px;font-size:.75rem;font-weight:600;border:none;background:none;
+  cursor:pointer;color:#888;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s;}
+.np-tab.active{color:var(--accent,#6c63ff);border-bottom-color:var(--accent,#6c63ff);}
+.np-body{flex:1;display:flex;flex-direction:column;min-height:0;}
+.np-textarea{flex:1;width:100%;border:none;outline:none;resize:none;
+  padding:14px 16px;font-size:.88rem;font-family:inherit;line-height:1.6;
+  color:#333;background:#fafafa;min-height:240px;}
+.np-footer{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;border-top:1px solid #eee;background:#1a2540;flex-shrink:0;}
+.np-wordcount{font-size:.72rem;color:#aaa;}
+.np-foot-btns{display:flex;gap:6px;}
+.np-foot-btn{font-size:.72rem;padding:4px 10px;border:1px solid #ddd;border-radius:8px;
+  background:#1a2540;cursor:pointer;color:#555;transition:all .15s;}
+.np-foot-btn:hover{background:#f5f5ff;border-color:var(--accent,#6c63ff);color:var(--accent,#6c63ff);}
+.np-foot-btn.danger:hover{background:#fff0f0;border-color:#f06;color:#f06;}
+@media(max-width:420px){
+  #notesPanel{width:calc(100vw - 32px);right:16px;}
+  #notesBtn{bottom:16px;right:16px;}
+}
+</style>
+
+<button id="notesBtn" onclick="toggleNotes()" title="Notes">
+  📝<span class="badge" id="notesBadge">!</span>
+</button>
+
+<div id="notesPanel">
+  <div class="np-head">
+    <h3>📝 My Notes</h3>
+    <div class="np-head-btns">
+      <button class="np-icon-btn" onclick="downloadNotes()" title="Download all notes">⬇ Save</button>
+      <button class="np-icon-btn" onclick="toggleNotes()" title="Close">✕</button>
+    </div>
+  </div>
+  <div class="np-tabs" id="notesTabs"></div>
+  <div class="np-body">
+    <textarea class="np-textarea" id="notesTA"
+      placeholder="Start typing your notes here…&#10;&#10;💡 Tips:&#10;• Use *asterisks* for key terms&#10;• Jot formulas, vocab, or reminders&#10;• Notes are saved automatically"
+      oninput="saveNote();updateWordCount();updateBadge()"></textarea>
+  </div>
+  <div class="np-footer">
+    <span class="np-wordcount" id="npWordCount">0 words</span>
+    <div class="np-foot-btns">
+      <button class="np-foot-btn" onclick="copyNotes()">📋 Copy</button>
+      <button class="np-foot-btn danger" onclick="clearNote()">🗑 Clear</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const NOTE_TABS = [
+    {key:'general',   label:'📓 General'},
+    {key:'math',      label:'➕ Math'},
+    {key:'science',   label:'🔬 Science'},
+    {key:'ela',       label:'📖 ELA'},
+    {key:'history',   label:'🌍 History'},
+    {key:'cs',        label:'💻 CS'},
+    {key:'health',    label:'❤️ Health'},
+    {key:'languages', label:'🌏 Languages'},
+  ];
+  let activeTab = 'general';
+
+  function noteKey(k){ return 'aceNotes_' + k; }
+
+  function loadNote(k){
+    try{ return localStorage.getItem(noteKey(k)) || ''; }catch(e){ return ''; }
+  }
+  function saveNote(){
+    try{ localStorage.setItem(noteKey(activeTab), document.getElementById('notesTA').value); }catch(e){}
+  }
+  window.saveNote = saveNote;
+
+  function buildTabs(){
+    const container = document.getElementById('notesTabs');
+    container.innerHTML = NOTE_TABS.map(t=>
+      `<button class="np-tab${t.key===activeTab?' active':''}" onclick="switchTab('${t.key}')">${t.label}</button>`
+    ).join('');
+  }
+
+  window.switchTab = function(k){
+    saveNote();
+    activeTab = k;
+    buildTabs();
+    const ta = document.getElementById('notesTA');
+    ta.value = loadNote(k);
+    ta.focus();
+    updateWordCount();
+    updateBadge();
+  };
+
+  window.toggleNotes = function(){
+    const p = document.getElementById('notesPanel');
+    p.classList.toggle('open');
+    if(p.classList.contains('open')){
+      document.getElementById('notesTA').value = loadNote(activeTab);
+      updateWordCount();
+      updateBadge();
+      document.getElementById('notesTA').focus();
+    }
+  };
+
+  window.updateWordCount = function(){
+    const v = (document.getElementById('notesTA')?.value||'').trim();
+    const words = v ? v.split(/\s+/).length : 0;
+    const el = document.getElementById('npWordCount');
+    if(el) el.textContent = words + (words===1?' word':' words');
+  };
+
+  window.updateBadge = function(){
+    // Show badge if any tab has content
+    const hasNotes = NOTE_TABS.some(t=> loadNote(t.key).trim().length > 0);
+    const b = document.getElementById('notesBadge');
+    if(b) b.style.display = hasNotes ? 'block' : 'none';
+  };
+
+  window.clearNote = function(){
+    if(!confirm('Clear notes for this tab?')) return;
+    try{ localStorage.removeItem(noteKey(activeTab)); }catch(e){}
+    document.getElementById('notesTA').value = '';
+    updateWordCount();
+    updateBadge();
+  };
+
+  window.copyNotes = function(){
+    const ta = document.getElementById('notesTA');
+    if(!ta || !ta.value.trim()){ alert('No notes to copy!'); return; }
+    navigator.clipboard.writeText(ta.value).then(()=>{
+      const btn = event.target;
+      const orig = btn.textContent;
+      btn.textContent = '✅ Copied!';
+      setTimeout(()=>{ btn.textContent = orig; }, 1500);
+    }).catch(()=>{
+      ta.select();
+      document.execCommand('copy');
+    });
+  };
+
+  window.downloadNotes = function(){
+    const allNotes = NOTE_TABS
+      .map(t=>{ const c=loadNote(t.key).trim(); return c ? `=== ${t.label} ===\n${c}` : ''; })
+      .filter(Boolean).join('\n\n');
+    if(!allNotes){ alert('No notes to save!'); return; }
+    const blob = new Blob([allNotes], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'aceAcademy-notes.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  // Init
+  buildTabs();
+  updateBadge();
+
+  // Close panel when clicking outside
+  document.addEventListener('click', function(e){
+    const p = document.getElementById('notesPanel');
+    const b = document.getElementById('notesBtn');
+    if(p && p.classList.contains('open') && !p.contains(e.target) && !b.contains(e.target)){
+      p.classList.remove('open');
+    }
+  });
+})();
+</script>
+<!-- ══ END NOTES WIDGET ════════════════════════════════════════════════ -->
+
+
+<!-- ══ STUDY TIMER WIDGET ══════════════════════════════════════════════ -->
+<style>
+#timerBtn{position:fixed;bottom:84px;right:24px;width:52px;height:52px;border-radius:50%;
+  background:#059669;color:#fff;border:none;font-size:1.3rem;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,0,0,.22);z-index:9997;display:flex;align-items:center;
+  justify-content:center;transition:transform .15s,box-shadow .15s;}
+#timerBtn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.3);}
+#timerBtn.running{animation:timerPulse 2s ease-in-out infinite;}
+@keyframes timerPulse{0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,.5);}50%{box-shadow:0 0 0 10px rgba(5,150,105,0);}}
+#timerPanel{position:fixed;bottom:148px;right:24px;width:300px;background:#1a2540;
+  border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.22);z-index:9998;
+  display:flex;flex-direction:column;opacity:0;pointer-events:none;
+  transform:translateY(14px);transition:opacity .2s,transform .2s;overflow:hidden;}
+#timerPanel.open{opacity:1;pointer-events:auto;transform:translateY(0);}
+.tp-head{background:#059669;color:#fff;padding:13px 16px;
+  display:flex;align-items:center;justify-content:space-between;}
+.tp-head h3{margin:0;font-size:.95rem;font-weight:700;}
+.tp-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;
+  padding:3px 9px;cursor:pointer;font-size:.85rem;}
+.tp-close:hover{background:rgba(255,255,255,.35);}
+.tp-mode-row{display:flex;border-bottom:1px solid #e2e8f0;background:#1e2d45;}
+.tp-mode-btn{flex:1;padding:8px;border:none;background:none;cursor:pointer;font-size:.72rem;
+  font-weight:700;color:#94a3b8;letter-spacing:.04em;transition:all .15s;}
+.tp-mode-btn.active{color:#059669;border-bottom:2px solid #059669;background:#1a2540;}
+.tp-circle-wrap{display:flex;justify-content:center;align-items:center;padding:22px 0 14px;}
+.tp-svg{transform:rotate(-90deg);}
+.tp-circle-bg{fill:none;stroke:#e2e8f0;stroke-width:8;}
+.tp-circle-fg{fill:none;stroke:#059669;stroke-width:8;stroke-linecap:round;
+  stroke-dasharray:283;stroke-dashoffset:0;transition:stroke-dashoffset .5s linear,stroke .3s;}
+.tp-time-text{position:absolute;font-size:1.8rem;font-weight:800;color:#ffffff;letter-spacing:-.02em;}
+.tp-session-label{position:absolute;top:68px;font-size:.65rem;font-weight:700;
+  color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;}
+.tp-circle-center{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.tp-controls{display:flex;justify-content:center;gap:10px;padding:0 16px 16px;}
+.tp-ctrl-btn{padding:9px 22px;border-radius:10px;border:none;font-weight:700;
+  font-size:.85rem;cursor:pointer;transition:all .15s;}
+.tp-start{background:#059669;color:#fff;}
+.tp-start:hover{background:#047857;}
+.tp-reset{background:#0b1120;color:#7a8fa8;}
+.tp-reset:hover{background:#e2e8f0;}
+.tp-footer{background:#1e2d45;border-top:1px solid #e2e8f0;padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:#7a8fa8;}
+.tp-sessions{font-weight:700;color:#059669;}
+.tp-settings-row{display:flex;gap:8px;padding:0 16px 12px;align-items:center;}
+.tp-settings-row label{font-size:.72rem;color:#7a8fa8;font-weight:600;}
+.tp-num{width:52px;padding:5px 6px;border:1px solid #2a3a55;border-radius:7px;
+  font-size:.82rem;font-weight:700;text-align:center;outline:none;}
+.tp-num:focus{border-color:#059669;}
+</style>
+
+<button id="timerBtn" onclick="toggleTimer()" title="Study Timer">⏱</button>
+
+<div id="timerPanel">
+  <div class="tp-head">
+    <h3>⏱ Study Timer</h3>
+    <button class="tp-close" onclick="toggleTimer()">✕</button>
+  </div>
+  <div class="tp-mode-row">
+    <button class="tp-mode-btn active" id="tmWork"  onclick="setTimerMode('work')">FOCUS</button>
+    <button class="tp-mode-btn"        id="tmShort" onclick="setTimerMode('short')">SHORT BREAK</button>
+    <button class="tp-mode-btn"        id="tmLong"  onclick="setTimerMode('long')">LONG BREAK</button>
+  </div>
+  <div class="tp-circle-wrap">
+    <svg class="tp-svg" width="120" height="120" viewBox="0 0 100 100">
+      <circle class="tp-circle-bg" cx="50" cy="50" r="45"/>
+      <circle class="tp-circle-fg" id="timerArc" cx="50" cy="50" r="45"/>
+    </svg>
+    <div class="tp-circle-center" style="position:absolute;">
+      <div class="tp-time-text" id="timerDisplay">25:00</div>
+      <div class="tp-session-label" id="timerModeLabel">Focus Time</div>
+    </div>
+  </div>
+  <div class="tp-settings-row">
+    <label>Focus</label>
+    <input class="tp-num" id="tpFocusMin" type="number" min="1" max="99" value="25" onchange="updateTimerSettings()"/>
+    <label>min &nbsp; Short</label>
+    <input class="tp-num" id="tpShortMin" type="number" min="1" max="30" value="5" onchange="updateTimerSettings()"/>
+    <label>min</label>
+  </div>
+  <div class="tp-controls">
+    <button class="tp-ctrl-btn tp-start" id="timerStartBtn" onclick="toggleTimerRun()">▶ Start</button>
+    <button class="tp-ctrl-btn tp-reset" onclick="resetTimer()">↺ Reset</button>
+  </div>
+  <div class="tp-footer">
+    <span>Sessions today: <span class="tp-sessions" id="tpSessionCount">0</span></span>
+    <span id="tpStatusText" style="color:#94a3b8;">Ready</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  const MODES = {
+    work:  {label:'Focus Time',  color:'#059669'},
+    short: {label:'Short Break', color:'#0891b2'},
+    long:  {label:'Long Break',  color:'#7c3aed'},
+  };
+  let mode='work', running=false, remaining=25*60, total=25*60;
+  let intervalId=null, sessions=0, longBreakMin=15;
+
+  function getFocusMin(){ return Math.max(1,parseInt(document.getElementById('tpFocusMin')?.value||25)); }
+  function getShortMin(){ return Math.max(1,parseInt(document.getElementById('tpShortMin')?.value||5)); }
+
+  function modeSeconds(m){
+    if(m==='work')  return getFocusMin()*60;
+    if(m==='short') return getShortMin()*60;
+    return longBreakMin*60;
+  }
+
+  window.updateTimerSettings = function(){
+    if(!running){ total=modeSeconds(mode); remaining=total; updateDisplay(); }
+  };
+
+  window.setTimerMode = function(m){
+    if(running) stopTimer();
+    mode=m;
+    total=modeSeconds(m);
+    remaining=total;
+    document.querySelectorAll('.tp-mode-btn').forEach(b=>b.classList.remove('active'));
+    const ids={work:'tmWork',short:'tmShort',long:'tmLong'};
+    document.getElementById(ids[m])?.classList.add('active');
+    document.getElementById('timerArc').style.stroke=MODES[m].color;
+    document.getElementById('timerBtn').style.background=MODES[m].color;
+    document.getElementById('timerModeLabel').textContent=MODES[m].label;
+    updateDisplay();
+    document.getElementById('tpStatusText').textContent='Ready';
+  };
+
+  window.toggleTimer = function(){
+    const p=document.getElementById('timerPanel');
+    p.classList.toggle('open');
+  };
+
+  window.toggleTimerRun = function(){
+    running ? stopTimer() : startTimer();
+  };
+
+  function startTimer(){
+    if(remaining<=0) resetTimer();
+    running=true;
+    intervalId=setInterval(tick,1000);
+    document.getElementById('timerStartBtn').textContent='⏸ Pause';
+    document.getElementById('timerBtn').classList.add('running');
+    document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
+  }
+
+  function stopTimer(){
+    running=false;
+    clearInterval(intervalId);
+    document.getElementById('timerStartBtn').textContent='▶ Start';
+    document.getElementById('timerBtn').classList.remove('running');
+    document.getElementById('tpStatusText').textContent='Paused';
+  }
+
+  window.resetTimer = function(){
+    stopTimer();
+    remaining=total=modeSeconds(mode);
+    updateDisplay();
+    document.getElementById('tpStatusText').textContent='Ready';
+  };
+
+  function tick(){
+    remaining--;
+    if(remaining<=0){
+      remaining=0;
+      updateDisplay();
+      stopTimer();
+      playBell();
+      if(mode==='work'){
+        sessions++;
+        document.getElementById('tpSessionCount').textContent=sessions;
+        // auto-switch to break
+        const nextMode = sessions%4===0?'long':'short';
+        setTimeout(()=>{ setTimerMode(nextMode); playBell(); },500);
+        document.getElementById('tpStatusText').textContent='Session done! 🎉';
+      } else {
+        setTimeout(()=>{ setTimerMode('work'); },500);
+        document.getElementById('tpStatusText').textContent='Break over!';
+      }
+      // open panel so user sees the notification
+      document.getElementById('timerPanel').classList.add('open');
+      return;
+    }
+    updateDisplay();
+  }
+
+  function updateDisplay(){
+    const m=Math.floor(remaining/60), s=remaining%60;
+    document.getElementById('timerDisplay').textContent =
+      String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    const arc=document.getElementById('timerArc');
+    if(arc){
+      const pct = total>0 ? remaining/total : 1;
+      arc.style.strokeDashoffset = String(Math.round(283*(1-pct)));
+    }
+    // Update page title while running
+    if(running){
+      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — aceAcademy';
+    } else {
+      document.title = document.title.replace(/^⏱.*?—\s*/,'');
+    }
+  }
+
+  function playBell(){
+    try{
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      [0,0.15,0.3].forEach((delay,i)=>{
+        const osc=ctx.createOscillator(), gain=ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value=i===0?880:i===1?1046:1318;
+        gain.gain.setValueAtTime(0.3,ctx.currentTime+delay);
+        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+0.6);
+        osc.start(ctx.currentTime+delay);
+        osc.stop(ctx.currentTime+delay+0.7);
+      });
+    }catch(e){}
+  }
+
+  // Close on outside click (avoid conflicting with notes panel)
+  document.addEventListener('click',function(e){
+    const p=document.getElementById('timerPanel');
+    const b=document.getElementById('timerBtn');
+    if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!b.contains(e.target)){
+      p.classList.remove('open');
+    }
+  });
+
+  // Shift notes button up so they don't overlap
+  const nb=document.getElementById('notesBtn');
+  if(nb) nb.style.bottom='84px';
+  const tp=document.getElementById('timerBtn');
+  if(tp) tp.style.bottom='24px';
+})();
+</script>
+<!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
+
+</body>
+</html>

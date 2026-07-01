@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>College Prep Checklist — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:32px 40px 24px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.hero-text h1{font-size:1.7rem;font-weight:900}
+.hero-text h1 span{color:#a5b4fc}
+.hero-text p{color:#7a8fa8;font-size:.88rem;margin-top:4px}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.progress-ring-wrap{display:flex;align-items:center;gap:12px}
+.progress-label{font-size:.78rem;color:#7a8fa8;font-weight:600}
+.progress-pct{font-size:1.4rem;font-weight:900;color:#a5b4fc}
+
+/* Grade tabs */
+.grade-tabs{display:flex;gap:4px;padding:16px 40px;background:#0d1628;border-bottom:1px solid #2a3a55;overflow-x:auto}
+.grade-tab{padding:8px 18px;border-radius:10px;border:none;background:transparent;color:#7a8fa8;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.grade-tab:hover{background:rgba(255,255,255,.06);color:#e8edf5}
+.grade-tab.active{background:#6366f1;color:#fff}
+.tab-note{font-size:.72rem;color:#7a8fa8;padding-left:10px;align-self:center}
+
+.container{max-width:920px;margin:0 auto;padding:28px 24px 60px}
+@media(max-width:700px){.container{padding:18px 14px}.hero{padding:22px 18px 18px}.grade-tabs{padding:12px 14px}}
+
+/* Section */
+.section{margin-bottom:28px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';width:3px;height:14px;border-radius:2px;background:#6366f1}
+.section-count{font-size:.72rem;font-weight:700;color:#a5b4fc;background:rgba(99,102,241,.15);padding:2px 9px;border-radius:20px}
+
+.checklist{display:flex;flex-direction:column;gap:8px}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;cursor:pointer;user-select:none;transition:.15s}
+.check-item:hover{border-color:#6366f1}
+.check-item.done{opacity:.6}
+.check-item.done .check-text{text-decoration:line-through;color:#7a8fa8}
+.check-box{width:22px;height:22px;border-radius:7px;border:2px solid #2a3a55;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:.15s;margin-top:1px}
+.check-item.done .check-box{background:#10b981;border-color:#10b981;color:#fff}
+.check-content{flex:1}
+.check-text{font-size:.87rem;font-weight:600;color:#e8edf5;line-height:1.4}
+.check-note{font-size:.73rem;color:#7a8fa8;margin-top:3px;line-height:1.45}
+.check-deadline{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(245,158,11,.15);color:#fcd34d;margin-top:5px;display:inline-block}
+.check-urgent{background:rgba(239,68,68,.15);color:#fca5a5}
+
+/* College tracker */
+.college-section{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:20px;margin-bottom:28px}
+.college-title{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.college-title::before{content:'';width:3px;height:14px;border-radius:2px;background:#a5b4fc}
+.college-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.college-item{display:flex;align-items:center;gap:10px;padding:10px 13px;background:#0d1628;border-radius:10px}
+.college-name{flex:1;font-size:.88rem;font-weight:700}
+.college-type{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px}
+.type-reach{background:rgba(239,68,68,.15);color:#fca5a5}
+.type-match{background:rgba(99,102,241,.15);color:#a5b4fc}
+.type-safety{background:rgba(16,185,129,.15);color:#6ee7b7}
+.college-status{font-size:.72rem;color:#7a8fa8}
+.college-del{border:none;background:transparent;color:#3d4f6e;cursor:pointer;font-size:.75rem;transition:.15s;padding:3px}
+.college-del:hover{color:#f87171}
+.add-college-row{display:flex;gap:8px;flex-wrap:wrap}
+.add-college-input{flex:1;min-width:150px;padding:8px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.add-college-input:focus{border-color:#6366f1}
+.add-college-select{padding:8px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.add-college-btn{padding:8px 14px;background:#6366f1;border:none;border-radius:9px;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+
+/* Overall progress bar */
+.overall-bar{height:8px;background:#1a2540;border-radius:4px;overflow:hidden;margin-top:8px}
+.overall-fill{height:100%;background:linear-gradient(90deg,#6366f1,#10b981);border-radius:4px;transition:width .5s}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="collegeprep.html" class="nav-link active">🎓 College Prep</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-text">
+    <h1>🎓 College Prep <span>Checklist</span></h1>
+    <p>Every step for your college application journey — organized by grade year.</p>
+  </div>
+  <div class="hero-right">
+    <div class="progress-pct" id="overallPct">0%</div>
+    <div class="progress-label">overall complete</div>
+    <div class="overall-bar" style="width:160px"><div class="overall-fill" id="overallFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="grade-tabs">
+  <button class="grade-tab active" onclick="setGrade('9',this)">Grade 9 (Freshman)</button>
+  <button class="grade-tab" onclick="setGrade('10',this)">Grade 10 (Sophomore)</button>
+  <button class="grade-tab" onclick="setGrade('11',this)">Grade 11 (Junior)</button>
+  <button class="grade-tab" onclick="setGrade('12',this)">Grade 12 (Senior)</button>
+  <button class="grade-tab" onclick="setGrade('all',this)">📋 All</button>
+  <span class="tab-note">Check off items as you complete them</span>
+</div>
+
+<div class="container">
+  <div class="college-section" id="collegeTracker">
+    <div class="college-title">🏫 My College List</div>
+    <div class="college-list" id="collegeList"></div>
+    <div class="add-college-row">
+      <input class="add-college-input" id="newCollegeName" placeholder="College name">
+      <select class="add-college-select" id="newCollegeType">
+        <option value="reach">Reach</option>
+        <option value="match" selected>Match</option>
+        <option value="safety">Safety</option>
+      </select>
+      <input class="add-college-input" id="newCollegeDeadline" placeholder="Deadline (e.g. Jan 1)" style="max-width:170px">
+      <button class="add-college-btn" onclick="addCollege()">＋ Add</button>
+    </div>
+  </div>
+
+  <div id="checklistContainer"></div>
+</div>
+
+<script>
+const CHECKLIST = {
+  '9': [
+    {
+      section:'📚 Academics',
+      items:[
+        {text:'Meet with your school counselor to plan your 4-year course map',note:'Ask about AP, IB, or honors courses available at your school.',deadline:'Fall of 9th grade'},
+        {text:'Aim for a strong GPA in all core subjects (Math, English, Science, History)',note:'Colleges see your transcript starting freshman year.'},
+        {text:'Take challenging courses that align with your interests',note:'Consider honors versions of courses you enjoy.'},
+        {text:'Develop strong study habits and time management skills',note:'This foundation will carry you through the hardest years.'},
+      ]
+    },
+    {
+      section:'🌟 Extracurriculars',
+      items:[
+        {text:'Join at least 1–2 clubs, sports, or activities that genuinely interest you',note:'Quality and passion matter more than quantity.'},
+        {text:'Explore leadership opportunities within activities',note:'Even small roles count — secretary, committee chair, etc.'},
+        {text:'Start or join a volunteer or community service opportunity',note:'Colleges value consistent, meaningful service over one-off events.'},
+      ]
+    },
+    {
+      section:'🗺 Exploration',
+      items:[
+        {text:'Research career interests and potential majors',note:'Take career aptitude quizzes. Talk to people in fields you like.'},
+        {text:'Visit a college campus if possible (even just a tour)',note:'Get a feel for what college life looks like.'},
+        {text:'Begin building relationships with teachers who may write recommendations later',note:'Strong rec letters come from teachers who know you well.'},
+      ]
+    },
+  ],
+  '10': [
+    {
+      section:'📚 Academics',
+      items:[
+        {text:'Continue strong GPA — sophomore year grades matter',note:'Upward trends are viewed positively by admissions.'},
+        {text:'Take your first AP or honors class if you haven\'t already',note:'Success in rigorous courses signals college readiness.'},
+        {text:'Take the PSAT/NMSQT in October',note:'Good practice for the SAT; qualifies you for National Merit scholarship in 11th grade.'},
+      ]
+    },
+    {
+      section:'🌟 Extracurriculars',
+      items:[
+        {text:'Deepen your commitment to your strongest activities',note:'Colleges want to see sustained involvement over multiple years.'},
+        {text:'Consider a part-time job, internship, or summer program',note:'Real-world experience stands out in applications.'},
+        {text:'Research academic summer programs at universities',note:'Many have programs for 10th graders in STEM, arts, writing, etc.'},
+      ]
+    },
+    {
+      section:'🏫 College Research',
+      items:[
+        {text:'Start a college list with 8–12 schools across reach/match/safety categories',note:'Use Common Data Sets, Niche, or College Board\'s BigFuture.'},
+        {text:'Research admission requirements for schools on your list',note:'Note GPA, test score ranges, and required courses.'},
+        {text:'Attend any local college fairs or virtual info sessions',note:'Sign up for mailing lists — demonstrated interest matters at some schools.'},
+      ]
+    },
+  ],
+  '11': [
+    {
+      section:'📝 Testing',
+      items:[
+        {text:'Take the PSAT/NMSQT in October (National Merit qualifying year)',note:'Top 1% of scorers qualify for prestigious National Merit scholarship.',deadline:'October'},
+        {text:'Register for SAT or ACT — aim to take it at least twice',note:'Most students improve on the second attempt.',deadline:'Spring of 11th grade'},
+        {text:'Research whether your target schools are test-optional',note:'Even at test-optional schools, a strong score can strengthen your app.'},
+        {text:'Prep for SAT/ACT using Khan Academy (free official prep)',note:'Ideally start 3–6 months before your first test date.'},
+      ]
+    },
+    {
+      section:'📚 Academics',
+      items:[
+        {text:'Take the most rigorous courseload your school offers',note:'This is the most important academic year for admissions.'},
+        {text:'Aim for 3–5 AP exams (score 4 or 5 for college credit)',note:'Check which AP credits your target colleges accept.'},
+        {text:'Maintain strong grades — mid-year transcripts go to colleges',note:'Junior year grades arrive at colleges in February (mid-year report).'},
+      ]
+    },
+    {
+      section:'🏫 College Visits & Research',
+      items:[
+        {text:'Visit 3–5 schools on your list (in person or virtual)',note:'Take notes on each campus — you\'ll forget specifics later.'},
+        {text:'Attend college information sessions and interviews if offered',note:'Demonstrated interest can give you a slight edge.'},
+        {text:'Narrow your list to 8–12 finalists',note:'Mix of 2–3 reach, 3–5 match, 2–3 safety schools.'},
+        {text:'Research scholarship opportunities at each school',note:'Note merit aid cutoffs (GPA, test scores) for your list.',deadline:'Ongoing'},
+      ]
+    },
+    {
+      section:'✍️ Essays & Applications',
+      items:[
+        {text:'Brainstorm Common App essay topics over summer',note:'Ask: what story about me would only I be able to tell?'},
+        {text:'Ask 2 teachers and your counselor for recommendation letters',note:'Ask by end of junior year — give them the whole summer.',deadline:'May/June'},
+        {text:'Make a list of supplemental essays required by each school',note:'Many schools require 1–3 additional short essays (150–650 words).'},
+      ]
+    },
+  ],
+  '12': [
+    {
+      section:'📝 Applications',
+      items:[
+        {text:'Complete your Common App profile and essays',note:'Main essay: 250–650 words. Have 2–3 people proofread it.',deadline:'August–September',urgent:true},
+        {text:'Request official transcripts from your high school',note:'Ask your counselor well in advance — they manage hundreds of these.',deadline:'September'},
+        {text:'Submit Early Decision or Early Action applications',note:'ED is binding; EA is not. Deadlines typically November 1–15.',deadline:'Nov 1–15',urgent:true},
+        {text:'Submit Regular Decision applications',note:'Most deadlines are January 1 or January 15.',deadline:'January 1',urgent:true},
+        {text:'Send SAT/ACT scores to each school you apply to',note:'Order from College Board or ACT website — allow 2–3 weeks.',deadline:'Before deadlines'},
+        {text:'Follow up to confirm all materials were received',note:'Check each school\'s application portal.'},
+      ]
+    },
+    {
+      section:'💰 Financial Aid',
+      items:[
+        {text:'Complete FAFSA as soon as it opens (October 1)',note:'Many schools are first-come, first-served for aid. Earlier = more money.',deadline:'Oct 1',urgent:true},
+        {text:'Complete CSS Profile if required (private colleges)',note:'Required by ~400 colleges. Deadline varies by school.',deadline:'October–November'},
+        {text:'Research and apply to outside scholarships',note:'Check Fastweb, Scholarships.com, local community foundations.'},
+        {text:'Compare financial aid award letters',note:'Due in April after admission decisions. Don\'t just look at total cost — look at net price.'},
+      ]
+    },
+    {
+      section:'✅ Senior Spring',
+      items:[
+        {text:'Receive admission decisions and compare offers',note:'Regular Decision results arrive March–April.'},
+        {text:'Submit enrollment deposit to your chosen school',note:'National Candidate Reply Date is May 1.',deadline:'May 1',urgent:true},
+        {text:'Request final transcript sent to enrolled school',note:'Required for admission to be finalized.'},
+        {text:'Apply for housing and register for orientation',note:'Many schools fill housing on a first-come basis.'},
+        {text:'Notify schools you\'re not attending (decline offers)',note:'Frees up spots for waitlisted students — good etiquette.'},
+        {text:'Write thank-you notes to recommenders',note:'A small gesture that goes a long way.'},
+      ]
+    },
+  ],
+};
+
+let checks = {};
+let colleges = [];
+let currentGrade = '9';
+try{ checks = JSON.parse(localStorage.getItem('cp-checks')||'{}'); }catch(e){}
+try{ colleges = JSON.parse(localStorage.getItem('cp-colleges')||'[]'); }catch(e){}
+
+function saveChecks(){ try{localStorage.setItem('cp-checks',JSON.stringify(checks));}catch(e){} }
+function saveColleges(){ try{localStorage.setItem('cp-colleges',JSON.stringify(colleges));}catch(e){} }
+
+function toggleCheck(id){
+  checks[id] = !checks[id];
+  saveChecks();
+  renderPage();
+  updateOverall();
+}
+
+function renderPage(){
+  const grades = currentGrade==='all' ? ['9','10','11','12'] : [currentGrade];
+  const container = document.getElementById('checklistContainer');
+  container.innerHTML = '';
+
+  grades.forEach(grade=>{
+    const sections = CHECKLIST[grade]||[];
+    if(currentGrade==='all'){
+      const gradeHeader = document.createElement('div');
+      gradeHeader.style.cssText='font-size:1.1rem;font-weight:900;color:#a5b4fc;margin:24px 0 14px;border-left:3px solid #6366f1;padding-left:12px';
+      gradeHeader.textContent = {9:'Grade 9 — Freshman',10:'Grade 10 — Sophomore',11:'Grade 11 — Junior',12:'Grade 12 — Senior'}[grade];
+      container.appendChild(gradeHeader);
+    }
+
+    sections.forEach(sec=>{
+      const done = sec.items.filter((_,i)=>checks[`${grade}-${sec.section}-${i}`]).length;
+      const secEl = document.createElement('div');
+      secEl.className='section';
+      secEl.innerHTML=`
+        <div class="section-header">
+          <div class="section-title">${sec.section}</div>
+          <div class="section-count">${done}/${sec.items.length}</div>
+        </div>
+        <div class="checklist">
+          ${sec.items.map((item,i)=>{
+            const id=`${grade}-${sec.section}-${i}`;
+            const isDone=checks[id];
+            return `<div class="check-item${isDone?' done':''}" onclick="toggleCheck('${id}')">
+              <div class="check-box">${isDone?'✓':''}</div>
+              <div class="check-content">
+                <div class="check-text">${item.text}</div>
+                ${item.note?`<div class="check-note">${item.note}</div>`:''}
+                ${item.deadline?`<span class="check-deadline${item.urgent?' check-urgent':''}">⏰ ${item.deadline}</span>`:''}
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      `;
+      container.appendChild(secEl);
+    });
+  });
+}
+
+function updateOverall(){
+  let total=0, done=0;
+  Object.values(CHECKLIST).forEach((sections,gi)=>{
+    const grade=Object.keys(CHECKLIST)[gi];
+    sections.forEach(sec=>{
+      sec.items.forEach((_,i)=>{
+        total++;
+        if(checks[`${grade}-${sec.section}-${i}`]) done++;
+      });
+    });
+  });
+  const pct = total?Math.round(done/total*100):0;
+  document.getElementById('overallPct').textContent=pct+'%';
+  document.getElementById('overallFill').style.width=pct+'%';
+}
+
+function setGrade(g, el){
+  currentGrade=g;
+  document.querySelectorAll('.grade-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderPage();
+}
+
+function renderColleges(){
+  const list=document.getElementById('collegeList');
+  if(!colleges.length){ list.innerHTML='<div style="color:#7a8fa8;font-size:.82rem;padding:6px 0">No colleges added yet. Build your list above.</div>'; return; }
+  list.innerHTML=colleges.map((c,i)=>`
+    <div class="college-item">
+      <div class="college-name">${c.name}</div>
+      <span class="college-type type-${c.type}">${c.type.charAt(0).toUpperCase()+c.type.slice(1)}</span>
+      ${c.deadline?`<span class="college-status">📅 ${c.deadline}</span>`:''}
+      <button class="college-del" onclick="deleteCollege(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function addCollege(){
+  const name=document.getElementById('newCollegeName').value.trim();
+  if(!name) return;
+  const type=document.getElementById('newCollegeType').value;
+  const deadline=document.getElementById('newCollegeDeadline').value.trim();
+  colleges.push({name,type,deadline});
+  saveColleges();
+  renderColleges();
+  document.getElementById('newCollegeName').value='';
+  document.getElementById('newCollegeDeadline').value='';
+}
+
+function deleteCollege(i){
+  colleges.splice(i,1);
+  saveColleges();
+  renderColleges();
+}
+
+// Init
+renderColleges();
+renderPage();
+updateOverall();
+</script>
+</body>
+</html>

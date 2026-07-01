@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading Comprehension — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#065f46,#059669);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.container{max-width:860px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+select,input{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
+select:focus,input:focus{border-color:var(--accent)}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-right:6px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
+.controls .field{display:flex;flex-direction:column;gap:5px}
+.controls label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+
+.passage-box{background:#fafbff;border:1.5px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px;line-height:1.9;font-size:.93rem}
+.passage-box h3{font-size:.85rem;font-weight:800;color:var(--accent);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}
+
+.q-block{margin-bottom:14px;padding:14px;background:var(--bg);border-radius:10px;border:1.5px solid var(--border)}
+.q-text{font-size:.9rem;font-weight:600;line-height:1.5;margin-bottom:10px}
+.choices{display:flex;flex-direction:column;gap:7px}
+.choice{display:flex;gap:10px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:.87rem;transition:.12s;align-items:flex-start}
+.choice:hover{background:var(--card);border-color:var(--accent)}
+.choice.selected{border-color:var(--accent);background:#ede9fe}
+.choice.correct{border-color:var(--green);background:#d1fae5}
+.choice.wrong{border-color:var(--red);background:#fee2e2}
+.choice-letter{font-weight:800;min-width:18px;flex-shrink:0}
+.explanation{margin-top:10px;padding:10px 14px;background:#f0fdf4;border:1.5px solid #6ee7b7;border-radius:8px;font-size:.83rem;line-height:1.5;display:none}
+
+.score-summary{display:flex;gap:20px;align-items:center;padding:12px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap}
+.score-summary .num{font-size:1.6rem;font-weight:900;color:var(--accent)}
+.score-summary .lbl{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase}
+
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  select,input{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}.q-block,.passage-box{background:#12121f}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="essay.html" class="nav-link">📝 Essay</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link active">📄 Passages</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+<div class="hero">
+  <h1>📄 Reading Comprehension</h1>
+  <p>Practice with grade-leveled passages across science, history, literature, and current events.</p>
+</div>
+<div class="container">
+  <div class="card">
+    <div class="controls">
+      <div class="field"><label>Grade Level</label>
+        <select id="r-grade">
+          <option value="6-8">Grades 6-8</option>
+          <option value="9-10">Grades 9-10</option>
+          <option value="11-12" selected>Grades 11-12</option>
+          <option value="ap">AP / College</option>
+        </select>
+      </div>
+      <div class="field"><label>Subject</label>
+        <select id="r-subj">
+          <option value="science">Science</option>
+          <option value="history">History</option>
+          <option value="literature">Literature</option>
+          <option value="social">Social Issues</option>
+          <option value="random">Random</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="loadPassage()" style="margin-top:21px">📄 Load Passage</button>
+    </div>
+  </div>
+
+  <div id="passageArea"></div>
+</div>
+
+<script>
+const PASSAGES = [
+  {
+    grade:'6-8', subj:'science',
+    title:'The Water Cycle',
+    text:`Water is constantly moving through the environment in a process known as the water cycle, or hydrological cycle. This cycle has no true beginning or end — water simply changes form and location continuously.\n\nEvaporation occurs when the sun heats water in oceans, lakes, and rivers, converting liquid water into water vapor. This vapor rises into the atmosphere where, as it cools, it undergoes condensation — forming tiny water droplets that make up clouds. When these droplets combine and grow heavy enough, precipitation occurs in the form of rain, snow, or hail.\n\nOnce precipitation reaches the ground, it may be absorbed into the soil through infiltration, run across the surface into streams and rivers, or collect in bodies of water to begin evaporating once again. Plants contribute to the cycle through transpiration, releasing water vapor through their leaves.\n\nUnderstanding the water cycle is essential for predicting weather patterns, managing freshwater resources, and understanding the effects of climate change on global precipitation.`,
+    questions:[
+      {q:'What causes evaporation in the water cycle?',choices:['Wind','Sunlight heating water','Cold temperatures','Precipitation'],a:1,exp:'The passage states: "Evaporation occurs when the sun heats water."'},
+      {q:'What is another name for the water cycle?',choices:['Photosynthesis cycle','Hydrological cycle','Carbon cycle','Nitrogen cycle'],a:1,exp:'The passage says: "the water cycle, or hydrological cycle."'},
+      {q:'Which process do plants contribute to the water cycle through?',choices:['Evaporation','Condensation','Transpiration','Infiltration'],a:2,exp:'"Plants contribute to the cycle through transpiration, releasing water vapor through their leaves."'},
+      {q:'According to the passage, which of the following is NOT listed as a form of precipitation?',choices:['Rain','Snow','Hail','Fog'],a:3,exp:'The passage lists rain, snow, and hail as forms of precipitation. Fog is not mentioned.'},
+      {q:'What is the main purpose of this passage?',choices:['To argue that the water cycle is endangered','To explain how the water cycle works','To persuade readers to conserve water','To describe rainfall patterns globally'],a:1,exp:'The passage is informational — it explains the stages and importance of the water cycle.'},
+    ]
+  },
+  {
+    grade:'9-10', subj:'history',
+    title:'The Industrial Revolution and Its Social Impact',
+    text:`The Industrial Revolution, which began in Britain in the late 18th century and spread throughout Europe and North America, fundamentally transformed human society. Mechanized production replaced skilled artisanal work, steam power drove factories and transportation, and urbanization accelerated as workers migrated from agricultural regions to industrial cities.\n\nWhile the revolution produced unprecedented economic growth, its social consequences were deeply contradictory. Child labor became widespread in mines and factories, where children as young as five worked dangerous twelve-hour shifts. Living conditions in urban slums were overcrowded and unsanitary, contributing to disease epidemics. Workers had no legal protections, no minimum wage, and no right to organize.\n\nIn response, labor reform movements gained momentum throughout the 19th century. Reformers like Robert Owen advocated for shorter workdays and humane conditions, while investigative journalists exposed factory abuses. Gradually, legislation such as the British Factory Acts limited child labor and improved working conditions. By the early 20th century, the labor union movement had established the eight-hour workday in many countries.\n\nThe Industrial Revolution thus illustrates how economic progress and social injustice can coexist — and how sustained reform efforts can eventually reshape the conditions created by rapid change.`,
+    questions:[
+      {q:'What does the author mean by the revolution\'s consequences being "deeply contradictory"?',choices:['The revolution happened very quickly','Economic benefits coexisted with severe social problems','Historians disagree about whether it happened','It affected different countries differently'],a:1,exp:'The author describes economic growth alongside child labor, dangerous conditions, and lack of workers\' rights — contradictory outcomes.'},
+      {q:'Which of the following best describes the purpose of the final paragraph?',choices:['To celebrate the Industrial Revolution','To summarize child labor statistics','To draw a broader lesson from the historical example','To argue that progress is always harmful'],a:2,exp:'The final paragraph offers a broader interpretation: economic progress and injustice can coexist, and reform can follow.'},
+      {q:'According to the passage, what role did investigative journalists play?',choices:['They wrote positive stories about factories','They exposed factory abuses to the public','They organized labor unions','They drafted the Factory Acts'],a:1,exp:'"investigative journalists exposed factory abuses" — they publicized problems.'},
+      {q:'The word "unprecedented" (paragraph 2) most nearly means:',choices:['Expected','Temporary','Never seen before','Well-documented'],a:2,exp:'"Unprecedented" means having no previous example; "never before seen."'},
+      {q:'Which of the following is the best title for this passage?',choices:['Why the Industrial Revolution Failed','Child Labor in Victorian England','Progress and Its Price: The Industrial Revolution\'s Social Legacy','Robert Owen and Labor Reform'],a:2,exp:'The passage covers both the social problems created by industrialization AND the reform movements that addressed them — making this the most comprehensive title.'},
+    ]
+  },
+  {
+    grade:'11-12', subj:'literature',
+    title:'On the Nature of Ambition (adapted)',
+    text:`Ambition is a peculiar force — it drives individuals to extraordinary achievement while simultaneously rendering them blind to the costs of pursuit. Great empires have been built on ambition; great lives have been destroyed by it. The ancient Romans gave us the word itself, derived from "ambitio" — the act of going around to solicit votes, a metaphor for self-promotion that carries within it the seed of excess.\n\nModern psychology distinguishes between intrinsic and extrinsic motivation. Those driven by intrinsic goals — mastery, purpose, growth — tend toward resilience and sustained satisfaction. Those driven primarily by external validation — status, wealth, the defeat of rivals — often achieve spectacular short-term success at considerable personal cost. The paradox is that the very drive that enables achievement can undermine the wellbeing that achievement is meant to produce.\n\nLiterature has long grappled with this tension. Macbeth's unchecked ambition transforms a brave soldier into a tyrant consumed by paranoia. Jay Gatsby's ambition for Daisy — which he conflates with the American Dream itself — destroys him precisely because he cannot recognize that his ideal is a fiction. In both cases, the authors suggest that ambition divorced from moral grounding is not a path to fulfillment but to tragedy.\n\nPerhaps the question is not whether to be ambitious, but what to be ambitious for — and what one is willing to forfeit in its pursuit.`,
+    questions:[
+      {q:'What does the author suggest about the relationship between ambition and achievement?',choices:['Ambition always leads to achievement','Achievement is impossible without ambition','Ambition enables achievement but can also undermine wellbeing','Achievement destroys ambition over time'],a:2,exp:'"The very drive that enables achievement can undermine the wellbeing that achievement is meant to produce."'},
+      {q:'According to the passage, intrinsically motivated people tend to experience:',choices:['Greater fame but less happiness','Resilience and sustained satisfaction','More external validation','Spectacular short-term success'],a:1,exp:'"Those driven by intrinsic goals... tend toward resilience and sustained satisfaction."'},
+      {q:'What literary examples does the author use, and what do they share?',choices:['Both examples show ambition leading to success','Both characters are villains who deserve their fate','Both illustrate ambition without moral grounding leading to tragedy','Both come from the same era of literature'],a:2,exp:'The author states both Macbeth and Gatsby illustrate "ambition divorced from moral grounding" leading to tragedy.'},
+      {q:'The phrase "carries within it the seed of excess" (paragraph 1) most likely means:',choices:['The word ambition comes from farming terminology','The concept of ambition inherently contains the potential for going too far','Romans were obsessed with gardening','Excess ambition was common in ancient Rome'],a:1,exp:'A "seed" of something means a built-in, embryonic quality — the potential for excess is embedded in ambition itself.'},
+      {q:'Which best describes the author\'s overall argument?',choices:['Ambition is destructive and should be avoided','All successful people are externally motivated','The nature and object of ambition matter as much as ambition itself','Macbeth and Gatsby were not truly ambitious'],a:2,exp:'The final paragraph poses the key question: not whether to be ambitious, but what to be ambitious for. The quality and direction of ambition is the central concern.'},
+    ]
+  },
+  {
+    grade:'ap', subj:'social',
+    title:'Algorithmic Bias and the Limits of Neutrality',
+    text:`The promise of algorithmic decision-making was seductive: replace the vagaries of human judgment with the consistency of code, eliminate prejudice by substituting data for intuition. If machines process applications, approve loans, and recommend sentences, surely the outcomes will be fairer. This assumption, however, rests on a fundamental misunderstanding of both algorithms and the social contexts in which they operate.\n\nAlgorithms learn from historical data. If that historical data encodes existing patterns of discrimination — in hiring, in lending, in criminal justice — then training a model on that data does not eliminate bias; it automates it, scales it, and launders it with a veneer of mathematical objectivity. The COMPAS algorithm, used in U.S. courts to assess recidivism risk, was found by ProPublica's 2016 investigation to assign higher risk scores to Black defendants than to white defendants with identical criminal histories, at nearly twice the rate. The algorithm was not programmed to be racist; it learned to be, from data generated by a racist system.\n\nDefenders of algorithmic systems often invoke statistical accuracy: the model's predictions correlate with outcomes in aggregate. But aggregate accuracy can mask systematic unfairness at the individual level. Moreover, accuracy and fairness turn out to be mathematically incompatible in certain configurations — a result known as the "impossibility theorem" of algorithmic fairness, which demonstrates that no model can simultaneously satisfy all common definitions of fairness.\n\nThe question, then, is not whether algorithms can achieve perfect neutrality — they cannot — but how their deployment should be governed, audited, and contested. Technical solutions are necessary but insufficient; they must be accompanied by institutional accountability and legal frameworks that protect those most harmed by automated decision-making.`,
+    questions:[
+      {q:'The author\'s central claim is best summarized as:',choices:['Algorithms should replace human judgment entirely','Algorithmic systems cannot be biased because they process data objectively','Algorithms reflect and amplify the biases in their training data, requiring governance','COMPAS is the only biased algorithm in use today'],a:2,exp:'The entire passage argues that algorithmic bias is real, systemic, and requires governance — not just technical fixes.'},
+      {q:'The word "launders" in paragraph 2 is used to suggest that algorithmic systems:',choices:['Clean up unfair historical data','Make bias appear legitimate and neutral','Are financially motivated','Reduce the amount of discrimination over time'],a:1,exp:'"Launder" implies disguising something illegitimate as clean/legitimate — algorithms disguise inherited bias as objective math.'},
+      {q:'What does the "impossibility theorem" of algorithmic fairness demonstrate?',choices:['Algorithms will always be biased against minorities','No model can satisfy all definitions of fairness simultaneously','Statistical accuracy is irrelevant to fairness','Algorithmic bias can be eliminated with better data'],a:2,exp:'The passage states: "no model can simultaneously satisfy all common definitions of fairness."'},
+      {q:'Which of the following best describes the structure of the passage\'s argument?',choices:['Claim → counterexample → concession → revised claim','Problem → evidence → complication → prescription','Narrative → analysis → statistical evidence → conclusion','Historical overview → present comparison → future prediction'],a:1,exp:'The passage: (1) identifies the flawed claim, (2) provides evidence of bias (COMPAS), (3) addresses the defenders\' argument and the impossibility theorem complication, then (4) prescribes governance.'},
+      {q:'The author\'s tone can best be described as:',choices:['Outraged and accusatory','Measured and analytically critical','Optimistic about technological progress','Neutral and purely descriptive'],a:1,exp:'The author presents evidence carefully, acknowledges counterarguments, and calls for governance — this is critically analytical but not emotionally outraged or purely neutral.'},
+    ]
+  },
+  {
+    grade:'6-8', subj:'history',
+    title:'The Silk Road',
+    text:`Long before the internet, there existed a network that connected civilizations across thousands of miles: the Silk Road. Spanning from China in the east to the Mediterranean Sea in the west, this ancient trade route carried far more than silk. Spices, glassware, paper, and ideas moved along its paths, shaping the cultures it touched.\n\nThe name "Silk Road" was coined by German geographer Ferdinand von Richthofen in 1877, though the routes themselves had existed for over a thousand years. At its peak, during the Tang Dynasty (618–907 CE) and later the Mongol Empire, the Silk Road was one of the busiest trade networks in the world. The Mongol rulers maintained safety along the routes, encouraging merchants and diplomats to travel across their vast territories.\n\nThe Silk Road was not a single road but a web of routes, including both overland and maritime paths. Merchants rarely traveled the entire distance themselves; goods passed through many hands and many cities — including Samarkand, Baghdad, and Constantinople — before reaching their destination.\n\nBeyond trade, the Silk Road transmitted religions, technologies, and diseases. Buddhism spread from India to China partly along these routes. Papermaking technology traveled westward from China. And in the 14th century, the Black Death spread rapidly along Silk Road trade networks, killing millions across Eurasia.`,
+    questions:[
+      {q:'What is the main idea of this passage?',choices:['The Silk Road only carried silk','The Silk Road was a single road connecting China to Rome','The Silk Road was a network that facilitated trade and cultural exchange','Ferdinand von Richthofen invented the Silk Road'],a:2,exp:'The passage emphasizes the broad cultural, religious, and technological exchanges along the Silk Road, not just silk trade.'},
+      {q:'Who coined the name "Silk Road"?',choices:['Kublai Khan','A Tang Dynasty emperor','Ferdinand von Richthofen','Marco Polo'],a:2,exp:'"The name \'Silk Road\' was coined by German geographer Ferdinand von Richthofen in 1877."'},
+      {q:'Which of the following was NOT mentioned as something spread along the Silk Road?',choices:['Buddhism','Papermaking technology','The Black Death','Democracy'],a:3,exp:'The passage mentions Buddhism, paper technology, and the Black Death. Democracy is not mentioned.'},
+      {q:'Why did merchants rarely travel the entire Silk Road themselves?',choices:['It was too dangerous at all times','Goods passed through many hands and cities along the way','The roads were too narrow for caravans','Silk was too fragile to transport long distances'],a:1,exp:'"Goods passed through many hands and many cities... before reaching their destination."'},
+    ]
+  },
+];
+
+let answered = {};
+let current = null;
+
+function loadPassage(){
+  const grade = document.getElementById('r-grade').value;
+  const subj = document.getElementById('r-subj').value;
+  let pool = PASSAGES;
+  if(grade!=='random') pool = pool.filter(p=>p.grade===grade||p.grade.includes(grade));
+  if(subj!=='random') pool = pool.filter(p=>p.subj===subj);
+  if(!pool.length) pool = PASSAGES; // fallback
+  current = pool[Math.floor(Math.random()*pool.length)];
+  answered = {};
+  render();
+}
+
+function render(){
+  const p = current;
+  let html = `<div class="card">
+    <div class="passage-box">
+      <h3>📄 ${p.title}</h3>
+      ${p.text.split('\n\n').map(para=>`<p style="margin-bottom:12px">${para}</p>`).join('')}
+    </div>
+    <div id="scoreSum" style="display:none" class="score-summary">
+      <div><div class="num" id="sc-n">0</div><div class="lbl">Correct</div></div>
+      <div><div class="num" id="sc-t" style="color:var(--muted)">/ ${p.questions.length}</div><div class="lbl">Total</div></div>
+      <div><div class="num" id="sc-p" style="color:var(--accent)">0%</div><div class="lbl">Score</div></div>
+    </div>
+    <div id="qs">
+    ${p.questions.map((q,qi)=>`
+      <div class="q-block" id="qb${qi}">
+        <div class="q-text">${qi+1}. ${q.q}</div>
+        <div class="choices">
+          ${q.choices.map((c,ci)=>`
+            <div class="choice" id="ch${qi}_${ci}" onclick="pick(${qi},${ci})">
+              <span class="choice-letter">${'ABCD'[ci]}</span>
+              <span>${c}</span>
+            </div>`).join('')}
+        </div>
+        <div class="explanation" id="ex${qi}">💡 ${q.exp}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+  document.getElementById('passageArea').innerHTML = html;
+}
+
+function pick(qi, ci){
+  if(answered[qi]!==undefined) return;
+  const q = current.questions[qi];
+  answered[qi] = ci;
+  document.querySelectorAll(`[id^="ch${qi}_"]`).forEach((el,i)=>{
+    if(i===q.a) el.classList.add('correct');
+    else if(i===ci && ci!==q.a) el.classList.add('wrong');
+  });
+  document.getElementById(`ex${qi}`).style.display='block';
+
+  if(Object.keys(answered).length===current.questions.length){
+    const correct = Object.entries(answered).filter(([qi,ci])=>current.questions[qi].a===ci).length;
+    const total = current.questions.length;
+    document.getElementById('scoreSum').style.display='flex';
+    document.getElementById('sc-n').textContent=correct;
+    document.getElementById('sc-t').textContent='/ '+total;
+    document.getElementById('sc-p').textContent=Math.round(correct/total*100)+'%';
+  }
+}
+
+loadPassage();
+</script>
+</body>
+</html>

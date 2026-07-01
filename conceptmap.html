@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Concept Map — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased;overflow:hidden}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:56px;display:flex;align-items:center;gap:2px;position:relative;z-index:500;overflow-x:auto;flex-shrink:0}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+/* Toolbar */
+.toolbar{background:#080e1c;border-bottom:1px solid #2a3a55;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0}
+.toolbar-group{display:flex;align-items:center;gap:6px;border-right:1px solid #2a3a55;padding-right:10px;margin-right:4px}
+.toolbar-group:last-child{border-right:none}
+.tool-btn{padding:7px 13px;border-radius:8px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.tool-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.tool-btn.active{background:#6366f1;border-color:#6366f1;color:#fff}
+.tool-btn.primary{background:#6366f1;border-color:#6366f1;color:#fff}
+.tool-btn.danger{border-color:rgba(239,68,68,.3);color:#f87171}
+.tool-btn.danger:hover{background:rgba(239,68,68,.1)}
+.subject-select{padding:7px 11px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.78rem;font-family:inherit;outline:none;transition:.15s}
+.subject-select:focus{border-color:#6366f1}
+.toolbar-label{font-size:.7rem;color:#7a8fa8;font-weight:600;white-space:nowrap}
+
+/* Canvas */
+.map-canvas{position:relative;flex:1;overflow:hidden;background:#0b1120;background-image:radial-gradient(circle,#2a3a55 1px,transparent 1px);background-size:28px 28px}
+.canvas-wrap{position:absolute;inset:0;cursor:grab}
+.canvas-wrap:active{cursor:grabbing}
+svg.connections{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+/* Nodes */
+.node{position:absolute;border-radius:12px;padding:10px 14px;cursor:grab;user-select:none;transition:box-shadow .15s;min-width:100px;max-width:200px;text-align:center;border:2px solid transparent}
+.node:active{cursor:grabbing}
+.node.selected{box-shadow:0 0 0 3px #fff,0 0 0 5px #6366f1}
+.node-text{font-size:.82rem;font-weight:700;line-height:1.3;color:#fff}
+.node-sub{font-size:.67rem;color:rgba(255,255,255,.7);margin-top:3px}
+.node-del{position:absolute;top:-8px;right:-8px;width:18px;height:18px;border-radius:50%;border:none;background:#ef4444;color:#fff;font-size:.65rem;cursor:pointer;display:none;align-items:center;justify-content:center;font-weight:700;line-height:1}
+.node:hover .node-del,.node.selected .node-del{display:flex}
+
+/* Node colors */
+.nc-purple{background:rgba(99,102,241,.85);border-color:#6366f1}
+.nc-green{background:rgba(16,185,129,.8);border-color:#10b981}
+.nc-amber{background:rgba(245,158,11,.8);border-color:#f59e0b}
+.nc-red{background:rgba(239,68,68,.8);border-color:#ef4444}
+.nc-blue{background:rgba(14,165,233,.8);border-color:#0ea5e9}
+.nc-pink{background:rgba(236,72,153,.8);border-color:#ec4899}
+
+/* Side panel */
+.side-panel{width:260px;background:#080e1c;border-left:1px solid #2a3a55;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.sp-section{padding:14px 14px;border-bottom:1px solid #2a3a55}
+.sp-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:10px}
+.sp-input{width:100%;padding:8px 11px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.8rem;font-family:inherit;outline:none;margin-bottom:8px;transition:.15s}
+.sp-input:focus{border-color:#6366f1}
+.color-row{display:flex;gap:7px;margin-bottom:10px}
+.color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.15s}
+.color-dot.sel{border-color:#fff;transform:scale(1.2)}
+.add-node-btn{width:100%;padding:9px;background:#6366f1;border:none;border-radius:8px;color:#fff;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.add-node-btn:hover{background:#5254d8}
+.hint{font-size:.72rem;color:#7a8fa8;line-height:1.5;padding:12px 14px}
+
+/* Templates panel */
+.tpl-btn{display:block;width:100%;padding:8px 11px;border-radius:8px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.76rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;margin-bottom:6px;transition:.15s}
+.tpl-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+/* Layout */
+body{display:flex;flex-direction:column;height:100vh}
+.main-area{display:flex;flex:1;overflow:hidden}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="conceptmap.html" class="nav-link active">🗺 Concept Map</a>
+  <a href="timeline.html" class="nav-link">📅 Timeline</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
+  <a href="research.html" class="nav-link">🔬 Research</a>
+  <a href="venn.html" class="nav-link">⭕ Venn</a>
+  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
+  <a href="grammar.html" class="nav-link">📖 Grammar</a>
+</nav>
+
+<div class="toolbar">
+  <div class="toolbar-group">
+    <span class="toolbar-label">Template:</span>
+    <select class="subject-select" onchange="loadTemplate(this.value);this.value=''">
+      <option value="">Load a template…</option>
+      <option value="photosynthesis">🌿 Photosynthesis</option>
+      <option value="frenchrev">🇫🇷 French Revolution</option>
+      <option value="cellparts">🔬 Cell Parts</option>
+      <option value="algebrabasics">📐 Algebra Basics</option>
+      <option value="waterCycle">💧 Water Cycle</option>
+    </select>
+  </div>
+  <div class="toolbar-group">
+    <button class="tool-btn" onclick="autoLayout()">⚡ Auto-Layout</button>
+    <button class="tool-btn" onclick="exportMap()">📤 Export</button>
+    <button class="tool-btn" onclick="saveMap()">💾 Save</button>
+    <button class="tool-btn" onclick="loadMap()">📂 Load</button>
+  </div>
+  <div class="toolbar-group">
+    <button class="tool-btn danger" onclick="clearMap()">🗑 Clear</button>
+  </div>
+  <div class="toolbar-label" style="margin-left:auto;color:#7a8fa8;font-size:.72rem">Drag nodes · Click two to connect · Scroll to zoom</div>
+</div>
+
+<div class="main-area">
+  <div class="map-canvas" id="mapCanvas">
+    <div class="canvas-wrap" id="canvasWrap">
+      <svg class="connections" id="svgLayer"></svg>
+    </div>
+  </div>
+
+  <div class="side-panel">
+    <div class="sp-section">
+      <div class="sp-title">Add Node</div>
+      <input class="sp-input" id="nodeText" placeholder="Concept name…" maxlength="50">
+      <input class="sp-input" id="nodeSubText" placeholder="Subtitle (optional)" maxlength="60">
+      <div class="color-row" id="colorRow"></div>
+      <button class="add-node-btn" onclick="addNode()">＋ Add Concept</button>
+    </div>
+    <div class="sp-section">
+      <div class="sp-title">Connection Label</div>
+      <input class="sp-input" id="connLabel" placeholder='e.g. "leads to", "produces"' maxlength="30">
+      <div style="font-size:.72rem;color:#7a8fa8;line-height:1.5">Click a node to select it, then click another to connect them. Hold Shift to start a connection.</div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-title">Templates</div>
+      <button class="tpl-btn" onclick="loadTemplate('photosynthesis')">🌿 Photosynthesis</button>
+      <button class="tpl-btn" onclick="loadTemplate('frenchrev')">🇫🇷 French Revolution</button>
+      <button class="tpl-btn" onclick="loadTemplate('cellparts')">🔬 Cell Parts</button>
+      <button class="tpl-btn" onclick="loadTemplate('algebrabasics')">📐 Algebra Basics</button>
+      <button class="tpl-btn" onclick="loadTemplate('waterCycle')">💧 Water Cycle</button>
+    </div>
+    <div class="hint">
+      <strong>Tips:</strong><br>
+      • Drag nodes to rearrange<br>
+      • Click two nodes to connect them<br>
+      • Click ✕ on a node to delete it<br>
+      • Use Auto-Layout for a clean arrangement<br>
+      • Export prints the map
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS = ['#6366f1','#10b981','#f59e0b','#ef4444','#0ea5e9','#ec4899'];
+const COLOR_CLS = ['nc-purple','nc-green','nc-amber','nc-red','nc-blue','nc-pink'];
+let selColor = 0;
+let nodes = [], edges = [], selNode = null, connectMode = false, connectFrom = null;
+let panX = 0, panY = 0, scale = 1, isPanning = false, panStart = {x:0,y:0};
+let nodeId = 0;
+
+function renderColorRow(){
+  document.getElementById('colorRow').innerHTML = COLORS.map((c,i)=>
+    `<div class="color-dot${i===selColor?' sel':''}" style="background:${c}" onclick="selColor=${i};renderColorRow()"></div>`
+  ).join('');
+}
+
+function addNode(text, sub, colorIdx, x, y){
+  const t = text || document.getElementById('nodeText').value.trim();
+  if(!t) return;
+  const s = sub !== undefined ? sub : document.getElementById('nodeSubText').value.trim();
+  const ci = colorIdx !== undefined ? colorIdx : selColor;
+  const canvas = document.getElementById('mapCanvas');
+  const cx = x !== undefined ? x : 100 + Math.random()*Math.max(200,canvas.offsetWidth-300);
+  const cy = y !== undefined ? y : 100 + Math.random()*Math.max(150,canvas.offsetHeight-200);
+  const id = 'n'+nodeId++;
+  nodes.push({id, text:t, sub:s, colorIdx:ci, x:cx, y:cy});
+  if(!text){ document.getElementById('nodeText').value=''; document.getElementById('nodeSubText').value=''; }
+  renderMap();
+  return id;
+}
+
+function deleteNode(id){
+  nodes = nodes.filter(n=>n.id!==id);
+  edges = edges.filter(e=>e.from!==id&&e.to!==id);
+  if(selNode===id) selNode=null;
+  renderMap();
+}
+
+function renderMap(){
+  const wrap = document.getElementById('canvasWrap');
+  wrap.style.transform = `translate(${panX}px,${panY}px) scale(${scale})`;
+
+  // Render SVG edges
+  const svg = document.getElementById('svgLayer');
+  const nodeMap = Object.fromEntries(nodes.map(n=>[n.id,n]));
+  svg.innerHTML = edges.map(e=>{
+    const a=nodeMap[e.from], b=nodeMap[e.to];
+    if(!a||!b) return '';
+    const x1=a.x+80, y1=a.y+30, x2=b.x+80, y2=b.y+30;
+    const mx=(x1+x2)/2, my=(y1+y2)/2;
+    const col = COLORS[a.colorIdx]||'#6366f1';
+    const lbl = e.label ? `<text x="${mx}" y="${my-6}" fill="${col}" font-size="10" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle" style="pointer-events:none">${e.label}</text>` : '';
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="2" stroke-opacity=".7" marker-end="url(#arr)"/>
+      ${lbl}`;
+  }).join('');
+  // Arrow marker
+  svg.innerHTML = `<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#6366f1" fill-opacity=".8"/></marker></defs>` + svg.innerHTML;
+
+  // Render nodes
+  let existing = {};
+  wrap.querySelectorAll('.node').forEach(el=>existing[el.dataset.id]=el);
+
+  // Remove deleted
+  Object.keys(existing).forEach(id=>{ if(!nodes.find(n=>n.id===id)) existing[id].remove(); });
+
+  nodes.forEach(n=>{
+    let el = wrap.querySelector(`.node[data-id="${n.id}"]`);
+    if(!el){
+      el = document.createElement('div');
+      el.className = 'node';
+      el.dataset.id = n.id;
+      el.innerHTML = `<button class="node-del" onclick="event.stopPropagation();deleteNode('${n.id}')">✕</button>
+        <div class="node-text" id="nt-${n.id}">${n.text}</div>
+        ${n.sub?`<div class="node-sub">${n.sub}</div>`:''}`;
+      el.addEventListener('mousedown', nodeMouseDown);
+      el.addEventListener('click', nodeClick);
+      wrap.appendChild(el);
+    }
+    el.style.left = n.x+'px';
+    el.style.top = n.y+'px';
+    el.className = `node ${COLOR_CLS[n.colorIdx]||'nc-purple'}${n.id===selNode?' selected':''}`;
+    el.dataset.id = n.id;
+  });
+}
+
+function nodeClick(e){
+  if(e.target.classList.contains('node-del')) return;
+  const id = this.dataset.id;
+  if(connectFrom && connectFrom !== id){
+    const label = document.getElementById('connLabel').value.trim();
+    if(!edges.find(ed=>ed.from===connectFrom&&ed.to===id)){
+      edges.push({from:connectFrom,to:id,label});
+    }
+    connectFrom = null;
+    selNode = null;
+    document.getElementById('connLabel').value='';
+  } else if(e.shiftKey || connectFrom === id){
+    connectFrom = id;
+    selNode = id;
+  } else {
+    selNode = id;
+    connectFrom = null;
+  }
+  renderMap();
+}
+
+let dragging = null, dragStart = {x:0,y:0}, nodeStart = {x:0,y:0};
+function nodeMouseDown(e){
+  if(e.target.classList.contains('node-del')) return;
+  dragging = this.dataset.id;
+  const n = nodes.find(n=>n.id===dragging);
+  dragStart = {x:e.clientX,y:e.clientY};
+  nodeStart = {x:n.x,y:n.y};
+  e.stopPropagation();
+}
+document.addEventListener('mousemove',e=>{
+  if(dragging){
+    const n=nodes.find(n=>n.id===dragging);
+    if(n){ n.x=nodeStart.x+(e.clientX-dragStart.x)/scale; n.y=nodeStart.y+(e.clientY-dragStart.y)/scale; renderMap(); }
+  } else if(isPanning){
+    panX=panStart.x+(e.clientX-dragStart.x);
+    panY=panStart.y+(e.clientY-dragStart.y);
+    document.getElementById('canvasWrap').style.transform=`translate(${panX}px,${panY}px) scale(${scale})`;
+  }
+});
+document.addEventListener('mouseup',()=>{ dragging=null; isPanning=false; });
+
+const canvas = document.getElementById('mapCanvas');
+canvas.addEventListener('mousedown',e=>{
+  if(e.target===canvas||e.target.classList.contains('canvas-wrap')||e.target.tagName==='svg'||e.target.tagName==='line'){
+    isPanning=true; dragStart={x:e.clientX,y:e.clientY}; panStart={x:panX,y:panY};
+  }
+});
+canvas.addEventListener('wheel',e=>{ e.preventDefault(); scale=Math.max(.3,Math.min(2,scale-e.deltaY*.001)); document.getElementById('canvasWrap').style.transform=`translate(${panX}px,${panY}px) scale(${scale})`; },{passive:false});
+
+function autoLayout(){
+  const cx=Math.max(400,canvas.offsetWidth)/2, cy=Math.max(300,canvas.offsetHeight)/2;
+  const r=Math.min(cx,cy)-120;
+  if(!nodes.length) return;
+  if(nodes.length===1){ nodes[0].x=cx-80; nodes[0].y=cy-30; renderMap(); return; }
+  nodes.forEach((n,i)=>{
+    const angle=(2*Math.PI*i/nodes.length)-Math.PI/2;
+    n.x=cx+r*Math.cos(angle)-80;
+    n.y=cy+r*Math.sin(angle)-30;
+  });
+  renderMap();
+}
+
+function clearMap(){ if(!confirm('Clear the entire map?')) return; nodes=[]; edges=[]; selNode=null; renderMap(); }
+
+function saveMap(){
+  const data={nodes,edges,nodeId};
+  let maps=[];
+  try{maps=JSON.parse(localStorage.getItem('concept-maps')||'[]');}catch(e){}
+  const title=prompt('Save as:','My Concept Map');
+  if(!title) return;
+  const idx=maps.findIndex(m=>m.title===title);
+  if(idx>=0) maps[idx]={title,data,savedAt:new Date().toLocaleString()};
+  else maps.unshift({title,data,savedAt:new Date().toLocaleString()});
+  try{localStorage.setItem('concept-maps',JSON.stringify(maps.slice(0,20)));}catch(e){}
+  alert('Saved!');
+}
+
+function loadMap(){
+  let maps=[];
+  try{maps=JSON.parse(localStorage.getItem('concept-maps')||'[]');}catch(e){}
+  if(!maps.length){ alert('No saved maps found.'); return; }
+  const names=maps.map((m,i)=>`${i+1}. ${m.title} (${m.savedAt})`).join('\n');
+  const n=parseInt(prompt('Choose a map:\n'+names))-1;
+  if(isNaN(n)||n<0||n>=maps.length) return;
+  const {data}=maps[n];
+  nodes=data.nodes; edges=data.edges; nodeId=data.nodeId||0;
+  renderMap();
+}
+
+function exportMap(){
+  const c=document.createElement('canvas');
+  const w=Math.max(800,canvas.offsetWidth), h=Math.max(600,canvas.offsetHeight);
+  c.width=w; c.height=h;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#0b1120'; ctx.fillRect(0,0,w,h);
+  // Draw edges
+  edges.forEach(e=>{
+    const a=nodes.find(n=>n.id===e.from), b=nodes.find(n=>n.id===e.to);
+    if(!a||!b) return;
+    ctx.strokeStyle=COLORS[a.colorIdx]+'bb'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(a.x+80,a.y+30); ctx.lineTo(b.x+80,b.y+30); ctx.stroke();
+  });
+  // Draw nodes
+  nodes.forEach(n=>{
+    ctx.fillStyle=COLORS[n.colorIdx]||'#6366f1';
+    ctx.beginPath();
+    const w2=160, h2=50;
+    ctx.roundRect(n.x,n.y,w2,h2,10);
+    ctx.fill();
+    ctx.fillStyle='#fff'; ctx.font='bold 13px Inter,sans-serif'; ctx.textAlign='center';
+    ctx.fillText(n.text.substring(0,24),n.x+80,n.y+31);
+  });
+  const a=document.createElement('a'); a.href=c.toDataURL(); a.download='concept-map.png'; a.click();
+}
+
+const TEMPLATES = {
+  photosynthesis:{
+    nodes:[
+      {id:'n0',text:'Photosynthesis',sub:'Overall process',colorIdx:1,x:300,y:200},
+      {id:'n1',text:'Sunlight',sub:'Energy input',colorIdx:2,x:80,y:80},
+      {id:'n2',text:'Carbon Dioxide',sub:'CO₂ from air',colorIdx:4,x:80,y:300},
+      {id:'n3',text:'Water',sub:'H₂O from roots',colorIdx:4,x:80,y:180},
+      {id:'n4',text:'Chlorophyll',sub:'In chloroplasts',colorIdx:1,x:300,y:80},
+      {id:'n5',text:'Light Reactions',sub:'In thylakoids',colorIdx:2,x:540,y:80},
+      {id:'n6',text:'Calvin Cycle',sub:'In stroma',colorIdx:0,x:540,y:280},
+      {id:'n7',text:'Glucose',sub:'C₆H₁₂O₆ output',colorIdx:2,x:720,y:200},
+      {id:'n8',text:'Oxygen',sub:'O₂ released',colorIdx:3,x:720,y:80},
+    ],
+    edges:[
+      {from:'n1',to:'n0',label:'powers'},{from:'n2',to:'n0',label:'input'},{from:'n3',to:'n0',label:'input'},
+      {from:'n4',to:'n5',label:'absorbs light'},{from:'n5',to:'n6',label:'ATP/NADPH'},{from:'n6',to:'n7',label:'produces'},
+      {from:'n5',to:'n8',label:'releases'},{from:'n0',to:'n5',label:'stage 1'},{from:'n0',to:'n6',label:'stage 2'},
+    ]
+  },
+  frenchrev:{
+    nodes:[
+      {id:'n0',text:'French Revolution',sub:'1789–1799',colorIdx:0,x:300,y:200},
+      {id:'n1',text:'Financial Crisis',sub:'France near bankrupt',colorIdx:3,x:60,y:100},
+      {id:'n2',text:'Enlightenment Ideas',sub:'Locke, Rousseau',colorIdx:4,x:60,y:200},
+      {id:'n3',text:'Social Inequality',sub:'Three Estates system',colorIdx:2,x:60,y:300},
+      {id:'n4',text:'Estates-General',sub:'1789',colorIdx:1,x:300,y:60},
+      {id:'n5',text:'National Assembly',sub:'Third Estate breaks off',colorIdx:1,x:540,y:60},
+      {id:'n6',text:'Storming of Bastille',sub:'July 14, 1789',colorIdx:3,x:540,y:200},
+      {id:'n7',text:'Reign of Terror',sub:'1793–94, Robespierre',colorIdx:3,x:540,y:340},
+      {id:'n8',text:'Napoleon Bonaparte',sub:'Coup 1799',colorIdx:0,x:300,y:400},
+    ],
+    edges:[
+      {from:'n1',to:'n0',label:'caused'},{from:'n2',to:'n0',label:'inspired'},{from:'n3',to:'n0',label:'fueled'},
+      {from:'n0',to:'n4',label:'led to'},{from:'n4',to:'n5',label:'became'},{from:'n5',to:'n6',label:'triggered'},
+      {from:'n6',to:'n7',label:'escalated to'},{from:'n7',to:'n8',label:'ended by'},
+    ]
+  },
+  cellparts:{
+    nodes:[
+      {id:'n0',text:'Cell',sub:'Basic unit of life',colorIdx:1,x:300,y:200},
+      {id:'n1',text:'Nucleus',sub:'Control center, DNA',colorIdx:0,x:60,y:120},
+      {id:'n2',text:'Mitochondria',sub:'ATP production',colorIdx:3,x:60,y:240},
+      {id:'n3',text:'Ribosome',sub:'Protein synthesis',colorIdx:2,x:60,y:360},
+      {id:'n4',text:'Cell Membrane',sub:'Controls entry/exit',colorIdx:4,x:300,y:60},
+      {id:'n5',text:'Endoplasmic Reticulum',sub:'Protein/lipid transport',colorIdx:5,x:540,y:120},
+      {id:'n6',text:'Golgi Apparatus',sub:'Packages proteins',colorIdx:2,x:540,y:260},
+      {id:'n7',text:'Vacuole',sub:'Storage',colorIdx:4,x:540,y:380},
+      {id:'n8',text:'Cytoplasm',sub:'Fills cell, suspends organelles',colorIdx:1,x:300,y:400},
+    ],
+    edges:[
+      {from:'n0',to:'n1',label:'contains'},{from:'n0',to:'n2',label:'contains'},{from:'n0',to:'n3',label:'contains'},
+      {from:'n0',to:'n4',label:'bounded by'},{from:'n1',to:'n3',label:'directs'},{from:'n3',to:'n5',label:'sends to'},
+      {from:'n5',to:'n6',label:'sends to'},{from:'n6',to:'n7',label:'stores in'},{from:'n0',to:'n8',label:'has'},
+    ]
+  },
+  algebrabasics:{
+    nodes:[
+      {id:'n0',text:'Algebra',sub:'Study of symbols & rules',colorIdx:0,x:300,y:200},
+      {id:'n1',text:'Variables',sub:'Unknown values (x, y)',colorIdx:4,x:60,y:100},
+      {id:'n2',text:'Expressions',sub:'Combination of terms',colorIdx:2,x:60,y:220},
+      {id:'n3',text:'Equations',sub:'Two sides with = sign',colorIdx:3,x:60,y:340},
+      {id:'n4',text:'Linear Equations',sub:'y = mx + b',colorIdx:0,x:540,y:80},
+      {id:'n5',text:'Quadratic Equations',sub:'ax² + bx + c = 0',colorIdx:0,x:540,y:200},
+      {id:'n6',text:'Functions',sub:'f(x) maps input to output',colorIdx:1,x:540,y:340},
+      {id:'n7',text:'Graphing',sub:'Visualize on coordinate plane',colorIdx:5,x:780,y:200},
+    ],
+    edges:[
+      {from:'n1',to:'n2',label:'used in'},{from:'n2',to:'n3',label:'forms'},{from:'n3',to:'n4',label:'type of'},
+      {from:'n3',to:'n5',label:'type of'},{from:'n4',to:'n6',label:'is a'},{from:'n5',to:'n6',label:'is a'},
+      {from:'n6',to:'n7',label:'represented by'},{from:'n0',to:'n1',label:'uses'},{from:'n0',to:'n3',label:'core concept'},
+    ]
+  },
+  waterCycle:{
+    nodes:[
+      {id:'n0',text:'Water Cycle',sub:'Continuous process',colorIdx:4,x:300,y:200},
+      {id:'n1',text:'Evaporation',sub:'Water → Water vapor',colorIdx:3,x:60,y:100},
+      {id:'n2',text:'Condensation',sub:'Vapor → Liquid',colorIdx:4,x:60,y:280},
+      {id:'n3',text:'Precipitation',sub:'Rain, snow, sleet',colorIdx:4,x:300,y:380},
+      {id:'n4',text:'Runoff',sub:'Flow along surface',colorIdx:1,x:540,y:380},
+      {id:'n5',text:'Infiltration',sub:'Soaks into ground',colorIdx:1,x:540,y:280},
+      {id:'n6',text:'Transpiration',sub:'Plants release vapor',colorIdx:1,x:540,y:100},
+      {id:'n7',text:'Clouds',sub:'Water droplets form',colorIdx:0,x:300,y:60},
+    ],
+    edges:[
+      {from:'n1',to:'n7',label:'forms'},{from:'n6',to:'n7',label:'contributes to'},{from:'n7',to:'n3',label:'causes'},
+      {from:'n3',to:'n4',label:'becomes'},{from:'n3',to:'n5',label:'or becomes'},{from:'n4',to:'n1',label:'→ evaporates'},
+      {from:'n5',to:'n6',label:'→ absorbed'},{from:'n2',to:'n7',label:'creates'},{from:'n1',to:'n2',label:'→'},
+    ]
+  }
+};
+
+function loadTemplate(key){
+  if(nodes.length && !confirm('Load this template? Current map will be replaced.')) return;
+  const t=TEMPLATES[key];
+  if(!t) return;
+  nodes=JSON.parse(JSON.stringify(t.nodes));
+  edges=JSON.parse(JSON.stringify(t.edges));
+  nodeId=nodes.length;
+  panX=0; panY=0; scale=1;
+  renderMap();
+}
+
+// Init
+renderColorRow();
+renderMap();
+</script>
+</body>
+</html>

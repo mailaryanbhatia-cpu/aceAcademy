@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Error Log — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#dc2626,#9f1239);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:580px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:70px}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700}
+.btn-primary{background:var(--red);color:#fff}.btn-primary:hover{background:#b91c1c}
+.btn-sm{padding:5px 12px;font-size:.78rem;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--muted)}
+.btn-sm:hover{background:var(--bg)}
+.btn-sm.del{color:var(--red);border-color:#fca5a5}.btn-sm.del:hover{background:#fef2f2}
+
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px;text-align:center}
+.stat .num{font-size:1.8rem;font-weight:900;line-height:1}
+.stat .lbl{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.filter-row select{padding:7px 10px;font-size:.83rem}
+.filter-row label{font-size:.83rem;color:var(--muted)}
+
+.log-list{display:flex;flex-direction:column;gap:10px}
+.log-item{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px;position:relative}
+.log-item.mastered{border-color:#6ee7b7;background:#ecfdf5}
+.log-item .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tag{padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+.tag.subj{background:#ede9fe;color:#4c1d95}
+.tag.type{background:#fef3c7;color:#78350f}
+.tag.grade{background:#dbeafe;color:#1e40af}
+.log-item .question{font-size:.9rem;font-weight:600;margin-bottom:4px;line-height:1.5}
+.log-item .my-answer{font-size:.83rem;color:var(--red);margin-bottom:3px}
+.log-item .correct-answer{font-size:.83rem;color:var(--green);margin-bottom:4px}
+.log-item .notes{font-size:.82rem;color:var(--muted);line-height:1.5;font-style:italic}
+.log-item .meta{font-size:.72rem;color:var(--muted);margin-top:8px}
+.log-item .actions{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+
+.weak-spots{display:flex;flex-direction:column;gap:8px}
+.weak-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)}
+.weak-bar-wrap{flex:1;background:#e5e7eb;border-radius:99px;height:7px;overflow:hidden}
+.weak-bar{height:100%;border-radius:99px;background:var(--red)}
+.empty{text-align:center;padding:32px;color:var(--muted);font-size:.9rem}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}
+  .log-item{background:#12121f}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link active">❌ Error Log</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+
+  <a href="frq.html" class="nav-link">📝 FRQ</a>
+  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
+  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
+  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
+  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
+  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
+  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+</nav>
+<div class="hero">
+  <h1>❌ Error Log</h1>
+  <p>Track every question you got wrong and why — turn mistakes into your biggest study advantage.</p>
+</div>
+<div class="container">
+  <!-- Stats -->
+  <div class="stat-row" id="statRow">
+    <div class="stat"><div class="num" id="s-total" style="color:var(--red)">0</div><div class="lbl">Errors Logged</div></div>
+    <div class="stat"><div class="num" id="s-mastered" style="color:var(--green)">0</div><div class="lbl">Mastered</div></div>
+    <div class="stat"><div class="num" id="s-review" style="color:var(--amber)">0</div><div class="lbl">Still Reviewing</div></div>
+    <div class="stat"><div class="num" id="s-top" style="color:var(--accent)">—</div><div class="lbl">Top Weak Spot</div></div>
+  </div>
+
+  <!-- Add new error -->
+  <div class="card">
+    <h2>➕ Log a New Error</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Grade</label>
+        <select id="f-grade">
+          <option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+          <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option>
+          <option>Grade 12</option><option>AP</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Subject</label>
+        <select id="f-subj">
+          <option>Math</option><option>Science</option><option>English</option>
+          <option>History</option><option>CS</option><option>AP Calculus</option>
+          <option>AP Biology</option><option>AP Chemistry</option><option>AP Physics</option>
+          <option>AP English</option><option>AP History</option><option>Languages</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Error Type</label>
+        <select id="f-type">
+          <option>Conceptual misunderstanding</option>
+          <option>Calculation mistake</option>
+          <option>Didn't read carefully</option>
+          <option>Forgot formula/rule</option>
+          <option>Ran out of time</option>
+          <option>Guessed incorrectly</option>
+          <option>Vocabulary gap</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Topic / Unit</label>
+        <input id="f-topic" placeholder="e.g. Derivatives, Osmosis...">
+      </div>
+      <div class="field full">
+        <label>Question (optional)</label>
+        <textarea id="f-question" placeholder="Paste or type the question you got wrong..."></textarea>
+      </div>
+      <div class="field full">
+        <label>My Wrong Answer</label>
+        <input id="f-wrong" placeholder="What did you answer?">
+      </div>
+      <div class="field full">
+        <label>Correct Answer</label>
+        <input id="f-correct" placeholder="What was the right answer?">
+      </div>
+      <div class="field full">
+        <label>Why I Got It Wrong / What to Remember</label>
+        <textarea id="f-notes" placeholder="Explain the mistake in your own words — this is the most important part!"></textarea>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="addError()" style="margin-top:14px">📝 Log Error</button>
+  </div>
+
+  <!-- Weak spots -->
+  <div class="card" id="weakCard" style="display:none">
+    <h2>🎯 Your Weak Spots</h2>
+    <div class="weak-spots" id="weakList"></div>
+  </div>
+
+  <!-- Log -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <h2 style="margin:0">📋 Error Log</h2>
+      <div class="filter-row" style="margin:0">
+        <label>Filter:</label>
+        <select id="filterSubj" onchange="renderLog()"><option value="">All Subjects</option></select>
+        <select id="filterStatus" onchange="renderLog()">
+          <option value="">All</option><option value="review">Reviewing</option><option value="mastered">Mastered</option>
+        </select>
+      </div>
+    </div>
+    <div class="log-list" id="logList"><div class="empty">No errors logged yet. Add your first one above!</div></div>
+  </div>
+</div>
+
+<script>
+let errors = JSON.parse(localStorage.getItem('ace_errors')||'[]');
+
+function save(){ localStorage.setItem('ace_errors', JSON.stringify(errors)); }
+
+function addError(){
+  const q = {
+    id: Date.now(),
+    grade: document.getElementById('f-grade').value,
+    subj: document.getElementById('f-subj').value,
+    type: document.getElementById('f-type').value,
+    topic: document.getElementById('f-topic').value.trim(),
+    question: document.getElementById('f-question').value.trim(),
+    wrong: document.getElementById('f-wrong').value.trim(),
+    correct: document.getElementById('f-correct').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    mastered: false,
+    ts: Date.now(),
+  };
+  if(!q.topic && !q.question){ alert('Please enter at least a topic or question.'); return; }
+  errors.unshift(q);
+  save(); renderAll();
+  ['f-topic','f-question','f-wrong','f-correct','f-notes'].forEach(id=>document.getElementById(id).value='');
+}
+
+function toggleMastered(id){
+  const e = errors.find(e=>e.id===id);
+  if(e){ e.mastered=!e.mastered; save(); renderAll(); }
+}
+
+function deleteError(id){
+  if(!confirm('Delete this error?')) return;
+  errors = errors.filter(e=>e.id!==id);
+  save(); renderAll();
+}
+
+function fmtDate(ts){ return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+
+function renderStats(){
+  const total = errors.length;
+  const mastered = errors.filter(e=>e.mastered).length;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-mastered').textContent = mastered;
+  document.getElementById('s-review').textContent = total-mastered;
+  // Top weak spot by subject
+  const counts = {};
+  errors.filter(e=>!e.mastered).forEach(e=>{ counts[e.subj]=(counts[e.subj]||0)+1; });
+  const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('s-top').textContent = top ? top[0] : '—';
+}
+
+function renderWeakSpots(){
+  const counts = {};
+  errors.filter(e=>!e.mastered).forEach(e=>{
+    const key = e.subj+(e.topic?' — '+e.topic:'');
+    counts[key]=(counts[key]||0)+1;
+  });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const max = sorted[0]?.[1]||1;
+  const card = document.getElementById('weakCard');
+  if(!sorted.length){ card.style.display='none'; return; }
+  card.style.display='block';
+  document.getElementById('weakList').innerHTML = sorted.map(([k,n])=>`
+    <div class="weak-item">
+      <span style="flex:1;font-size:.85rem;font-weight:600">${k}</span>
+      <div class="weak-bar-wrap"><div class="weak-bar" style="width:${Math.round(n/max*100)}%"></div></div>
+      <span style="font-size:.8rem;font-weight:700;color:var(--red);min-width:28px;text-align:right">${n}</span>
+    </div>`).join('');
+}
+
+function populateFilter(){
+  const subjs = [...new Set(errors.map(e=>e.subj))];
+  const sel = document.getElementById('filterSubj');
+  sel.innerHTML = '<option value="">All Subjects</option>'+subjs.map(s=>`<option>${s}</option>`).join('');
+}
+
+function renderLog(){
+  const fSubj = document.getElementById('filterSubj').value;
+  const fStatus = document.getElementById('filterStatus').value;
+  let list = errors;
+  if(fSubj) list = list.filter(e=>e.subj===fSubj);
+  if(fStatus==='mastered') list = list.filter(e=>e.mastered);
+  if(fStatus==='review') list = list.filter(e=>!e.mastered);
+
+  if(!list.length){ document.getElementById('logList').innerHTML='<div class="empty">No errors match this filter.</div>'; return; }
+
+  document.getElementById('logList').innerHTML = list.map(e=>`
+    <div class="log-item${e.mastered?' mastered':''}">
+      <div class="actions">
+        <button class="btn-sm" onclick="toggleMastered(${e.id})">${e.mastered?'↩ Unmark':'✅ Mastered'}</button>
+        <button class="btn-sm del" onclick="deleteError(${e.id})">✕</button>
+      </div>
+      <div class="tags">
+        <span class="tag subj">${e.subj}</span>
+        <span class="tag grade">${e.grade}</span>
+        <span class="tag type">${e.type}</span>
+        ${e.mastered?'<span class="tag" style="background:#d1fae5;color:#065f46">✅ Mastered</span>':''}
+      </div>
+      ${e.topic?`<div class="question">📌 ${e.topic}</div>`:''}
+      ${e.question?`<div class="question" style="font-weight:400">${e.question}</div>`:''}
+      ${e.wrong?`<div class="my-answer">✗ My answer: ${e.wrong}</div>`:''}
+      ${e.correct?`<div class="correct-answer">✓ Correct: ${e.correct}</div>`:''}
+      ${e.notes?`<div class="notes">💡 ${e.notes}</div>`:''}
+      <div class="meta">Logged ${fmtDate(e.ts)}</div>
+    </div>`).join('');
+}
+
+function renderAll(){ renderStats(); renderWeakSpots(); populateFilter(); renderLog(); }
+renderAll();
+</script>
+</body>
+</html>

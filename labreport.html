@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab Report Builder — aceAcademy</title>
+<script src="auth-guard.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:32px 40px 24px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.hero-text h1{font-size:1.7rem;font-weight:900;margin-bottom:4px}
+.hero-text h1 span{color:#a5b4fc}
+.hero-text p{color:#7a8fa8;font-size:.88rem}
+.hero-btns{display:flex;gap:10px}
+.btn{padding:9px 18px;border-radius:9px;border:none;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}
+.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}
+.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-success{background:rgba(16,185,129,.2);color:#6ee7b7;border:1.5px solid rgba(16,185,129,.3)}
+.btn-success:hover{background:rgba(16,185,129,.3)}
+
+.container{max-width:860px;margin:0 auto;padding:32px 24px 60px}
+
+/* Section card */
+.section-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:22px 24px;margin-bottom:18px}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-num{width:28px;height:28px;border-radius:8px;background:rgba(99,102,241,.2);color:#a5b4fc;font-size:.8rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-title{font-size:1rem;font-weight:800}
+.section-hint{font-size:.75rem;color:#7a8fa8;margin-top:1px}
+label{display:block;font-size:.69rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:6px}
+input[type=text],textarea,select{width:100%;padding:10px 13px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.87rem;font-family:inherit;outline:none;transition:.15s}
+input[type=text]:focus,textarea:focus,select:focus{border-color:#6366f1}
+textarea{resize:vertical;min-height:90px;line-height:1.6}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+@media(max-width:550px){.field-row{grid-template-columns:1fr}}
+.field-group{margin-bottom:12px}
+
+/* Data table builder */
+.data-table-wrap{overflow-x:auto;margin-bottom:10px}
+table.data-table{border-collapse:collapse;width:100%}
+table.data-table th,table.data-table td{border:1px solid #2a3a55;padding:7px 10px;font-size:.83rem}
+table.data-table th{background:#0d1628;font-weight:700;color:#a5b4fc;white-space:nowrap}
+table.data-table td input{border:none;background:transparent;color:#e8edf5;width:100%;font-family:inherit;font-size:.83rem;outline:none;padding:0}
+.table-btns{display:flex;gap:8px;flex-wrap:wrap}
+.tbl-btn{padding:6px 13px;border-radius:7px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.tbl-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+/* Checklist */
+.checklist{display:flex;flex-direction:column;gap:8px}
+.check-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0d1628;border-radius:8px;cursor:pointer;user-select:none}
+.check-box{width:18px;height:18px;border-radius:5px;border:2px solid #2a3a55;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:.15s}
+.check-item.checked .check-box{background:#6366f1;border-color:#6366f1;color:#fff}
+.check-text{font-size:.83rem;color:#b8c4d8}
+.check-item.checked .check-text{color:#7a8fa8;text-decoration:line-through}
+
+/* Saved reports */
+.saved-list{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.saved-item{background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.saved-info{flex:1}
+.saved-title{font-size:.9rem;font-weight:700}
+.saved-meta{font-size:.73rem;color:#7a8fa8;margin-top:2px}
+.saved-btns{display:flex;gap:8px}
+.saved-btn{padding:5px 12px;border-radius:7px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.73rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.saved-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.saved-btn.danger:hover{border-color:#ef4444;color:#f87171}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:24px;background:#080e1c;border-radius:12px;padding:4px;width:fit-content}
+.tab{padding:8px 18px;border-radius:9px;border:none;background:transparent;color:#7a8fa8;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.tab.active{background:#6366f1;color:#fff}
+.tab-content{display:none}
+.tab-content.active{display:block}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="labreport.html" class="nav-link active">🧪 Lab Report</a>
+  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="citation.html" class="nav-link">📎 Citation</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-text">
+    <h1>🧪 Lab Report <span>Builder</span></h1>
+    <p>Fill in each section, then print or save your completed lab report.</p>
+  </div>
+  <div class="hero-btns">
+    <button class="btn btn-ghost" onclick="loadSaved()">📂 Saved Reports</button>
+    <button class="btn btn-success" onclick="saveReport()">💾 Save</button>
+    <button class="btn btn-primary" onclick="printReport()">🖨 Print / Export</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('builder',this)">✏️ Builder</button>
+    <button class="tab" onclick="switchTab('checklist',this)">✅ Checklist</button>
+    <button class="tab" onclick="switchTab('saved',this)">📂 Saved</button>
+  </div>
+
+  <!-- BUILDER TAB -->
+  <div class="tab-content active" id="tab-builder">
+
+    <!-- Meta -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-num">i</div>
+        <div><div class="section-title">Report Info</div><div class="section-hint">Title, class, date</div></div>
+      </div>
+      <div class="field-row">
+        <div class="field-group"><label>Lab Title</label><input type="text" id="labTitle" placeholder="e.g. Osmosis in Potato Cells"></div>
+        <div class="field-group"><label>Class / Subject</label><input type="text" id="labClass" placeholder="e.g. AP Biology, Period 3"></div>
+      </div>
+      <div class="field-row">
+        <div class="field-group"><label>Your Name</label><input type="text" id="labName" placeholder="Full name"></div>
+        <div class="field-group"><label>Date</label><input type="text" id="labDate" placeholder="e.g. June 30, 2026"></div>
+      </div>
+      <div class="field-group"><label>Lab Partner(s)</label><input type="text" id="labPartners" placeholder="Names of partners (optional)"></div>
+    </div>
+
+    <!-- 1. Purpose -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">1</div><div><div class="section-title">Purpose / Problem Statement</div><div class="section-hint">What question is this experiment trying to answer?</div></div></div>
+      <textarea id="labPurpose" placeholder="State the scientific question or problem. Example: 'The purpose of this lab is to determine how salt concentration affects the rate of osmosis in potato cells.'"></textarea>
+    </div>
+
+    <!-- 2. Hypothesis -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">2</div><div><div class="section-title">Hypothesis</div><div class="section-hint">If–Then–Because format recommended</div></div></div>
+      <textarea id="labHypothesis" placeholder="If [independent variable is changed], then [dependent variable will change], because [scientific reasoning]."></textarea>
+    </div>
+
+    <!-- 3. Materials -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">3</div><div><div class="section-title">Materials</div><div class="section-hint">List all equipment and materials used</div></div></div>
+      <textarea id="labMaterials" placeholder="List each item on a new line:&#10;- 500 mL beaker&#10;- Electronic balance (0.01 g precision)&#10;- Potato (1 medium)&#10;- NaCl solution (0%, 1%, 2%, 3%)"></textarea>
+    </div>
+
+    <!-- 4. Procedure -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">4</div><div><div class="section-title">Procedure</div><div class="section-hint">Numbered, step-by-step instructions</div></div></div>
+      <textarea id="labProcedure" style="min-height:140px" placeholder="Number each step:&#10;1. Cut potato into 4 equal cylinders using a cork borer.&#10;2. Weigh each cylinder and record the initial mass.&#10;3. Place each cylinder in a beaker with a different NaCl concentration.&#10;4. Allow to soak for 30 minutes.&#10;5. Remove, blot dry, and record final mass."></textarea>
+    </div>
+
+    <!-- 5. Variables -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">5</div><div><div class="section-title">Variables</div><div class="section-hint">Identify your independent, dependent, and controlled variables</div></div></div>
+      <div class="field-group"><label>Independent Variable (what you change)</label><input type="text" id="labIV" placeholder="e.g. NaCl concentration of the solution (0%, 1%, 2%, 3%)"></div>
+      <div class="field-group"><label>Dependent Variable (what you measure)</label><input type="text" id="labDV" placeholder="e.g. Change in mass of potato cylinders (grams)"></div>
+      <div class="field-group"><label>Controlled Variables (what stays the same)</label><textarea id="labCV" style="min-height:70px" placeholder="e.g. Size of potato cylinders, volume of solution (100 mL each), temperature (room temp ~22°C), soak time (30 min)"></textarea></div>
+    </div>
+
+    <!-- 6. Data Table -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">6</div><div><div class="section-title">Data / Observations</div><div class="section-hint">Build your data table below, then add qualitative observations</div></div></div>
+      <div class="data-table-wrap"><table class="data-table" id="dataTable"></table></div>
+      <div class="table-btns">
+        <button class="tbl-btn" onclick="addRow()">＋ Row</button>
+        <button class="tbl-btn" onclick="addCol()">＋ Column</button>
+        <button class="tbl-btn" onclick="removeRow()">− Row</button>
+        <button class="tbl-btn" onclick="removeCol()">− Column</button>
+      </div>
+      <div class="field-group" style="margin-top:14px"><label>Qualitative Observations</label><textarea id="labObs" style="min-height:80px" placeholder="Describe what you saw, smelled, or observed during the lab (color changes, bubbles, textures, etc.)"></textarea></div>
+    </div>
+
+    <!-- 7. Analysis -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">7</div><div><div class="section-title">Analysis / Calculations</div><div class="section-hint">Show calculations, describe trends, interpret results</div></div></div>
+      <textarea id="labAnalysis" style="min-height:140px" placeholder="Describe the trends you see in your data. Include calculations (e.g., % change in mass). Explain why these results occurred based on the scientific concepts involved.&#10;&#10;Example: 'The potato cylinders in 0% NaCl gained mass (avg +0.4g), while those in 3% NaCl lost mass (avg −0.6g). This is consistent with osmosis — water moves from low solute concentration to high...'"></textarea>
+    </div>
+
+    <!-- 8. Conclusion -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">8</div><div><div class="section-title">Conclusion</div><div class="section-hint">Restate hypothesis, summarize findings, discuss errors and improvements</div></div></div>
+      <div class="field-group"><label>Was Your Hypothesis Supported?</label><select id="labHypoResult"><option value="">Select…</option><option>Yes, my hypothesis was supported.</option><option>No, my hypothesis was not supported.</option><option>Partially supported — some aspects were confirmed, others were not.</option></select></div>
+      <div class="field-group"><label>Conclusion</label><textarea id="labConclusion" style="min-height:120px" placeholder="Summarize what your results show. Address whether your hypothesis was correct and why. Reference specific data."></textarea></div>
+      <div class="field-group"><label>Sources of Error</label><textarea id="labErrors" style="min-height:80px" placeholder="List potential sources of error and whether they would cause results to be higher or lower than expected.&#10;Example: 'The potato cylinders may not have been completely blotted dry, causing slightly higher recorded mass in the final measurements.'"></textarea></div>
+      <div class="field-group"><label>Improvements for Future Experiments</label><textarea id="labImprovements" placeholder="How would you change the experiment to get more accurate or meaningful results?"></textarea></div>
+    </div>
+
+  </div><!-- /tab-builder -->
+
+  <!-- CHECKLIST TAB -->
+  <div class="tab-content" id="tab-checklist">
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">✅</div><div><div class="section-title">Lab Report Checklist</div><div class="section-hint">Check off each item before submitting</div></div></div>
+      <div class="checklist" id="checklistWrap"></div>
+    </div>
+  </div>
+
+  <!-- SAVED TAB -->
+  <div class="tab-content" id="tab-saved">
+    <div class="section-card">
+      <div class="section-header"><div class="section-num">📂</div><div><div class="section-title">Saved Reports</div></div></div>
+      <div id="savedListWrap"><div style="color:#7a8fa8;font-size:.85rem">No saved reports yet. Fill in the builder and click Save.</div></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- PRINT TEMPLATE -->
+<div id="printFrame" style="display:none"></div>
+
+<script>
+// --- Data table ---
+let tableData = {cols:['Trial','Initial Mass (g)','Final Mass (g)','Change (g)'], rows:[['1','','',''],['2','','',''],['3','','','']]};
+
+function renderDataTable(){
+  const t = document.getElementById('dataTable');
+  if(!t) return;
+  let h = '<thead><tr>'+tableData.cols.map((c,ci)=>`<th><input type="text" value="${c}" onchange="tableData.cols[${ci}]=this.value" style="font-weight:700;color:#a5b4fc;background:transparent;border:none;outline:none;font-family:inherit;font-size:.83rem;width:100px"></th>`).join('')+'</tr></thead>';
+  let b = '<tbody>'+tableData.rows.map((r,ri)=>'<tr>'+r.map((c,ci)=>`<td><input type="text" value="${c}" onchange="tableData.rows[${ri}][${ci}]=this.value"></td>`).join('')+'</tr>').join('')+'</tbody>';
+  t.innerHTML = h+b;
+}
+function addRow(){ tableData.rows.push(new Array(tableData.cols.length).fill('')); renderDataTable(); }
+function addCol(){ tableData.cols.push('Column'); tableData.rows.forEach(r=>r.push('')); renderDataTable(); }
+function removeRow(){ if(tableData.rows.length>1) tableData.rows.pop(); renderDataTable(); }
+function removeCol(){ if(tableData.cols.length>1){ tableData.cols.pop(); tableData.rows.forEach(r=>r.pop()); renderDataTable(); } }
+
+// --- Checklist ---
+const CHECKLIST = [
+  'Lab title, name, date, and class are filled in',
+  'Purpose clearly states the scientific question',
+  'Hypothesis is written in If-Then-Because format',
+  'All materials are listed with amounts/quantities',
+  'Procedure is numbered and written in past tense',
+  'Independent variable is clearly identified',
+  'Dependent variable is clearly identified',
+  'At least 3 controlled variables are listed',
+  'Data table has clear headings and units',
+  'Qualitative observations are included',
+  'Calculations are shown with correct units',
+  'Data trends are described and explained',
+  'Hypothesis is explicitly addressed in conclusion',
+  'Specific data is cited in the conclusion',
+  'At least 2 sources of error are identified',
+  'Improvements are suggested for future experiments',
+  'Writing is in third person / past tense throughout',
+  'Spelling and grammar have been checked',
+];
+let checkState = new Array(CHECKLIST.length).fill(false);
+try{ checkState = JSON.parse(localStorage.getItem('labreport-checks')||'[]'); if(checkState.length!==CHECKLIST.length) checkState=new Array(CHECKLIST.length).fill(false); }catch(e){}
+
+function renderChecklist(){
+  const wrap = document.getElementById('checklistWrap');
+  if(!wrap) return;
+  wrap.innerHTML = CHECKLIST.map((item,i)=>`
+    <div class="check-item${checkState[i]?' checked':''}" onclick="toggleCheck(${i})">
+      <div class="check-box">${checkState[i]?'✓':''}</div>
+      <div class="check-text">${item}</div>
+    </div>
+  `).join('');
+  const done = checkState.filter(Boolean).length;
+  if(!wrap.previousElementSibling?.classList.contains('check-progress')){
+    const prog = document.createElement('div');
+    prog.className='check-progress';
+    prog.style.cssText='font-size:.8rem;color:#7a8fa8;margin-bottom:12px';
+    wrap.parentNode.insertBefore(prog,wrap);
+  }
+  wrap.previousElementSibling.textContent = `${done}/${CHECKLIST.length} items complete`;
+}
+function toggleCheck(i){ checkState[i]=!checkState[i]; try{localStorage.setItem('labreport-checks',JSON.stringify(checkState));}catch(e){} renderChecklist(); }
+
+// --- Save/Load ---
+function getFormData(){
+  return {
+    title: document.getElementById('labTitle').value,
+    class: document.getElementById('labClass').value,
+    name: document.getElementById('labName').value,
+    date: document.getElementById('labDate').value,
+    partners: document.getElementById('labPartners').value,
+    purpose: document.getElementById('labPurpose').value,
+    hypothesis: document.getElementById('labHypothesis').value,
+    materials: document.getElementById('labMaterials').value,
+    procedure: document.getElementById('labProcedure').value,
+    iv: document.getElementById('labIV').value,
+    dv: document.getElementById('labDV').value,
+    cv: document.getElementById('labCV').value,
+    obs: document.getElementById('labObs').value,
+    analysis: document.getElementById('labAnalysis').value,
+    hypoResult: document.getElementById('labHypoResult').value,
+    conclusion: document.getElementById('labConclusion').value,
+    errors: document.getElementById('labErrors').value,
+    improvements: document.getElementById('labImprovements').value,
+    tableData: JSON.parse(JSON.stringify(tableData)),
+    savedAt: new Date().toLocaleString()
+  };
+}
+
+function saveReport(){
+  const d = getFormData();
+  if(!d.title){ alert('Enter a lab title first.'); return; }
+  let reports = [];
+  try{ reports = JSON.parse(localStorage.getItem('labreports')||'[]'); }catch(e){}
+  const idx = reports.findIndex(r=>r.title===d.title);
+  if(idx>=0) reports[idx]=d; else reports.unshift(d);
+  try{ localStorage.setItem('labreports', JSON.stringify(reports.slice(0,20))); }catch(e){}
+  alert('Report saved!');
+}
+
+function loadSaved(){
+  switchTab('saved', document.querySelector('.tab:nth-child(3)'));
+  renderSavedList();
+}
+
+function renderSavedList(){
+  let reports = [];
+  try{ reports = JSON.parse(localStorage.getItem('labreports')||'[]'); }catch(e){}
+  const wrap = document.getElementById('savedListWrap');
+  if(!reports.length){ wrap.innerHTML='<div style="color:#7a8fa8;font-size:.85rem">No saved reports yet.</div>'; return; }
+  wrap.innerHTML = `<div class="saved-list">${reports.map((r,i)=>`
+    <div class="saved-item">
+      <div class="saved-info">
+        <div class="saved-title">🧪 ${r.title}</div>
+        <div class="saved-meta">${r.class||''}${r.class&&r.date?' · ':''}${r.date||''} · Saved ${r.savedAt}</div>
+      </div>
+      <div class="saved-btns">
+        <button class="saved-btn" onclick="loadReport(${i})">Load</button>
+        <button class="saved-btn danger" onclick="deleteReport(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function loadReport(i){
+  let reports = [];
+  try{ reports = JSON.parse(localStorage.getItem('labreports')||'[]'); }catch(e){}
+  const r = reports[i];
+  if(!r) return;
+  document.getElementById('labTitle').value=r.title||'';
+  document.getElementById('labClass').value=r.class||'';
+  document.getElementById('labName').value=r.name||'';
+  document.getElementById('labDate').value=r.date||'';
+  document.getElementById('labPartners').value=r.partners||'';
+  document.getElementById('labPurpose').value=r.purpose||'';
+  document.getElementById('labHypothesis').value=r.hypothesis||'';
+  document.getElementById('labMaterials').value=r.materials||'';
+  document.getElementById('labProcedure').value=r.procedure||'';
+  document.getElementById('labIV').value=r.iv||'';
+  document.getElementById('labDV').value=r.dv||'';
+  document.getElementById('labCV').value=r.cv||'';
+  document.getElementById('labObs').value=r.obs||'';
+  document.getElementById('labAnalysis').value=r.analysis||'';
+  document.getElementById('labHypoResult').value=r.hypoResult||'';
+  document.getElementById('labConclusion').value=r.conclusion||'';
+  document.getElementById('labErrors').value=r.errors||'';
+  document.getElementById('labImprovements').value=r.improvements||'';
+  if(r.tableData) tableData=r.tableData;
+  renderDataTable();
+  switchTab('builder', document.querySelector('.tab:first-child'));
+}
+
+function deleteReport(i){
+  if(!confirm('Delete this report?')) return;
+  let reports = [];
+  try{ reports = JSON.parse(localStorage.getItem('labreports')||'[]'); }catch(e){}
+  reports.splice(i,1);
+  try{ localStorage.setItem('labreports', JSON.stringify(reports)); }catch(e){}
+  renderSavedList();
+}
+
+// --- Print ---
+function printReport(){
+  const d = getFormData();
+  const makeRows = () => {
+    let h='<tr>'+tableData.cols.map(c=>`<th style="border:1px solid #ccc;padding:6px 10px;background:#f0f0f0;font-weight:700">${c}</th>`).join('')+'</tr>';
+    let b=tableData.rows.map(r=>'<tr>'+r.map(c=>`<td style="border:1px solid #ccc;padding:6px 10px">${c}</td>`).join('')+'</tr>').join('');
+    return h+b;
+  };
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${d.title||'Lab Report'}</title>
+  <style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;color:#111;line-height:1.6}h1{font-size:1.5rem;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:4px}h2{font-size:1rem;color:#333;margin:20px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}p{margin-bottom:10px}table{width:100%;border-collapse:collapse;margin-bottom:12px}.meta{display:flex;gap:30px;flex-wrap:wrap;margin-bottom:20px;font-size:.9rem;color:#555}.meta span strong{color:#111}pre{white-space:pre-wrap;font-family:Georgia,serif;font-size:.9rem;margin-bottom:10px}@media print{body{margin:20px}}</style>
+  </head><body>
+  <h1>${d.title||'Lab Report'}</h1>
+  <div class="meta">
+    <span><strong>Name:</strong> ${d.name||'—'}</span>
+    <span><strong>Class:</strong> ${d.class||'—'}</span>
+    <span><strong>Date:</strong> ${d.date||'—'}</span>
+    ${d.partners?`<span><strong>Partners:</strong> ${d.partners}</span>`:''}
+  </div>
+  <h2>1. Purpose</h2><pre>${d.purpose||'—'}</pre>
+  <h2>2. Hypothesis</h2><pre>${d.hypothesis||'—'}</pre>
+  <h2>3. Materials</h2><pre>${d.materials||'—'}</pre>
+  <h2>4. Procedure</h2><pre>${d.procedure||'—'}</pre>
+  <h2>5. Variables</h2>
+  <p><strong>Independent:</strong> ${d.iv||'—'}</p>
+  <p><strong>Dependent:</strong> ${d.dv||'—'}</p>
+  <p><strong>Controlled:</strong> ${d.cv||'—'}</p>
+  <h2>6. Data &amp; Observations</h2>
+  <table>${makeRows()}</table>
+  <pre>${d.obs||''}</pre>
+  <h2>7. Analysis</h2><pre>${d.analysis||'—'}</pre>
+  <h2>8. Conclusion</h2>
+  <p><strong>${d.hypoResult||''}</strong></p>
+  <pre>${d.conclusion||'—'}</pre>
+  <p><strong>Sources of Error:</strong></p><pre>${d.errors||'—'}</pre>
+  <p><strong>Improvements:</strong></p><pre>${d.improvements||'—'}</pre>
+  </body></html>`;
+  const w = window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>w.print(),400);
+}
+
+// --- Tabs ---
+function switchTab(name, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='checklist') renderChecklist();
+  if(name==='saved') renderSavedList();
+}
+
+// Init
+renderDataTable();
+</script>
+</body>
+</html>

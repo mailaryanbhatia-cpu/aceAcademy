@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Study Schedule Generator — aceAcademy</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input,select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
+input:focus,select:focus{border-color:var(--accent)}
+.btn{padding:10px 24px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;margin-top:14px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
+.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent);margin-left:8px}.btn-outline:hover{background:#eff6ff}
+
+.subj-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.subj-tag{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.83rem;font-weight:600;color:var(--muted);transition:.15s}
+.subj-tag.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Schedule output */
+.schedule-wrap{display:none}
+.week-header{font-size:1rem;font-weight:800;color:var(--accent);margin:18px 0 10px;border-left:3px solid var(--accent);padding-left:10px}
+.day-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;flex-wrap:wrap}
+.day-label{font-size:.8rem;font-weight:700;color:var(--muted);min-width:80px;padding-top:8px;flex-shrink:0}
+.day-tasks{display:flex;gap:8px;flex-wrap:wrap;flex:1}
+.task-chip{padding:6px 12px;border-radius:20px;font-size:.82rem;font-weight:600;white-space:nowrap}
+.rest-chip{padding:6px 12px;border-radius:20px;font-size:.82rem;font-weight:600;background:#f3f4f6;color:var(--muted)}
+.exam-day{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-weight:700;color:var(--red);font-size:.88rem}
+
+.intensity-row{display:flex;gap:6px;align-items:center;margin-bottom:10px;font-size:.82rem;color:var(--muted)}
+.int-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+@media print{.topnav,.hero,.card:first-of-type,.btn{display:none!important}.schedule-wrap{display:block!important}body{background:#fff}}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+  input,select{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+  .subj-tag{background:#1a1a2e}.topnav{background:#12121f;border-color:var(--border)}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+
+  <a href="curriculum.html" class="nav-link">📚 Curriculum</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="schedule-gen.html" class="nav-link active">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">📋 Error Log</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="outline.html" class="nav-link">🗂 Outline</a>
+  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
+  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
+  <a href="reading.html" class="nav-link">📄 Passages</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
+
+<div class="hero">
+  <h1>📅 Study Schedule Generator</h1>
+  <p>Enter your exam date and subjects — get a personalised day-by-day study plan automatically.</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>Build Your Plan</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Exam / Test Date</label>
+        <input type="date" id="examDate">
+      </div>
+      <div class="field">
+        <label>Daily Study Time</label>
+        <select id="dailyHours">
+          <option value="1">1 hour / day</option>
+          <option value="2" selected>2 hours / day</option>
+          <option value="3">3 hours / day</option>
+          <option value="4">4 hours / day</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Study Style</label>
+        <select id="studyStyle">
+          <option value="balanced">Balanced (rotate subjects daily)</option>
+          <option value="deep">Deep dive (one subject per day)</option>
+          <option value="cramming">Intensive (last-week focus)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Rest Days</label>
+        <select id="restDays">
+          <option value="sun">Sundays only</option>
+          <option value="sat">Saturdays only</option>
+          <option value="both" selected>Weekends off</option>
+          <option value="none">No rest days</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label>Subjects to Study</label>
+        <div class="subj-tags" id="subjTags">
+          <div class="subj-tag selected" onclick="toggleSubj(this,'Math')">➕ Math</div>
+          <div class="subj-tag selected" onclick="toggleSubj(this,'Science')">🔬 Science</div>
+          <div class="subj-tag selected" onclick="toggleSubj(this,'English')">📖 English</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'History')">🌍 History</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'CS')">💻 CS</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'AP Calculus')">∫ AP Calc</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'AP Biology')">🧬 AP Bio</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'AP Chemistry')">⚗️ AP Chem</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'AP Physics')">⚡ AP Physics</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'AP History')">📜 AP History</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'AP English')">✍️ AP English</div>
+          <div class="subj-tag" onclick="toggleSubj(this,'Languages')">🗣️ Languages</div>
+        </div>
+      </div>
+      <div class="field full">
+        <label>Student Name (optional)</label>
+        <input type="text" id="studentName" placeholder="e.g. Alex">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="generateSchedule()">📅 Generate Schedule</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
+  </div>
+
+  <div class="schedule-wrap" id="scheduleWrap">
+    <div class="card" id="scheduleOut"></div>
+  </div>
+</div>
+
+<script>
+function toggleSubj(el, name){ el.classList.toggle('selected'); }
+
+function getSelectedSubjects(){
+  return [...document.querySelectorAll('.subj-tag.selected')].map(el=>el.textContent.trim().replace(/^[^\w]+/,'').trim());
+}
+
+const COLORS = [
+  {bg:'#dbeafe',text:'#1e40af'},{bg:'#d1fae5',text:'#065f46'},{bg:'#fce7f3',text:'#9d174d'},
+  {bg:'#fef3c7',text:'#78350f'},{bg:'#ede9fe',text:'#4c1d95'},{bg:'#fee2e2',text:'#7f1d1d'},
+  {bg:'#cffafe',text:'#164e63'},{bg:'#fef9c3',text:'#713f12'},{bg:'#f0fdf4',text:'#14532d'},
+  {bg:'#fdf2f8',text:'#701a75'},{bg:'#fff7ed',text:'#7c2d12'},{bg:'#f0f9ff',text:'#0c4a6e'},
+];
+
+function generateSchedule(){
+  const examDate = document.getElementById('examDate').value;
+  if(!examDate){ alert('Please select an exam date.'); return; }
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const exam = new Date(examDate); exam.setHours(0,0,0,0);
+  const daysLeft = Math.round((exam - today) / 86400000);
+
+  if(daysLeft < 1){ alert('Please select a future date.'); return; }
+
+  const subjects = getSelectedSubjects();
+  if(!subjects.length){ alert('Select at least one subject.'); return; }
+
+  const hours = parseInt(document.getElementById('dailyHours').value);
+  const style = document.getElementById('studyStyle').value;
+  const restDays = document.getElementById('restDays').value;
+  const name = document.getElementById('studentName').value;
+
+  // Assign colors to subjects
+  const subjColors = {};
+  subjects.forEach((s,i)=>{ subjColors[s] = COLORS[i % COLORS.length]; });
+
+  // Build day-by-day plan
+  const plan = [];
+  let subjIdx = 0;
+
+  for(let i=0; i<daysLeft; i++){
+    const d = new Date(today); d.setDate(today.getDate()+i);
+    const dow = d.getDay(); // 0=Sun,6=Sat
+    const isWeekend = dow===0||dow===6;
+    const isRest = (restDays==='both'&&isWeekend)||(restDays==='sun'&&dow===0)||(restDays==='sat'&&dow===6);
+    const isExam = i===daysLeft-1;
+
+    const dayLabel = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+    if(isExam){
+      plan.push({label:dayLabel, tasks:['EXAM DAY'], isExam:true});
+      continue;
+    }
+    if(isRest){
+      plan.push({label:dayLabel, tasks:[], isRest:true});
+      continue;
+    }
+
+    // Determine urgency
+    const pctDone = i/daysLeft;
+    const isLastWeek = daysLeft-i <= 7;
+
+    let todaySubjs = [];
+    if(style==='balanced'){
+      // Rotate subjects, fit within hours
+      const slotsPerHour = 1;
+      const slots = Math.max(1, Math.min(hours, subjects.length));
+      for(let s=0; s<slots; s++){
+        todaySubjs.push(subjects[(subjIdx+s)%subjects.length]);
+      }
+      subjIdx = (subjIdx+slots)%subjects.length;
+    } else if(style==='deep'){
+      todaySubjs = [subjects[subjIdx%subjects.length]];
+      subjIdx++;
+    } else { // cramming
+      if(isLastWeek){
+        // All subjects every day
+        todaySubjs = [...subjects];
+      } else {
+        const slots = Math.max(1, Math.min(2, subjects.length));
+        for(let s=0;s<slots;s++) todaySubjs.push(subjects[(subjIdx+s)%subjects.length]);
+        subjIdx=(subjIdx+slots)%subjects.length;
+      }
+    }
+
+    // Add review tag if close to exam
+    const tasks = todaySubjs.map(s=>{
+      if(isLastWeek && style!=='deep') return s+' (Review)';
+      return s;
+    });
+
+    plan.push({label:dayLabel, tasks, isExam:false, isRest:false});
+  }
+
+  // Group into weeks
+  const weeks = [];
+  for(let i=0; i<plan.length; i+=7){
+    weeks.push(plan.slice(i,i+7));
+  }
+
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+    <div>
+      <div style="font-size:1.2rem;font-weight:800">${name?name+"'s ":''}Study Schedule</div>
+      <div style="font-size:.85rem;color:var(--muted)">${daysLeft} days until exam · ${hours}h/day · ${subjects.length} subject${subjects.length!==1?'s':''}</div>
+    </div>
+    <div class="intensity-row">
+      ${subjects.map((s,i)=>`<span class="int-dot" style="background:${subjColors[s].bg};border:1.5px solid ${subjColors[s].text}"></span> ${s}`).join(' &nbsp;')}
+    </div>
+  </div>`;
+
+  weeks.forEach((week, wi)=>{
+    html += `<div class="week-header">Week ${wi+1}</div>`;
+    week.forEach(day=>{
+      if(day.isExam){
+        html += `<div class="exam-day">🎯 ${day.label} — EXAM DAY! Get good sleep, eat well, review notes.</div>`;
+      } else if(day.isRest){
+        html += `<div class="day-row"><span class="day-label">${day.label}</span><span class="rest-chip">🌿 Rest Day</span></div>`;
+      } else {
+        html += `<div class="day-row"><span class="day-label">${day.label}</span><div class="day-tasks">`;
+        day.tasks.forEach(t=>{
+          const baseName = t.replace(' (Review)','').replace(' (Cram)','');
+          const col = subjColors[baseName]||{bg:'#e5e7eb',text:'#374151'};
+          const isReview = t.includes('Review');
+          html += `<span class="task-chip" style="background:${col.bg};color:${col.text};border:1px solid ${col.text}40">${t}</span>`;
+        });
+        html += `</div></div>`;
+      }
+    });
+  });
+
+  // Tips section
+  html += `<div style="margin-top:20px;padding:14px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+    <div style="font-size:.88rem;font-weight:700;margin-bottom:8px">📌 Study Tips</div>
+    <div style="font-size:.82rem;color:var(--muted);line-height:1.7">
+      • Start each session by reviewing yesterday's material (5 min)<br>
+      • Use the Pomodoro technique: 25 min focus → 5 min break<br>
+      • In the last week, do full practice tests under timed conditions<br>
+      • Sleep at least 8 hours — memory consolidation happens during sleep<br>
+      • On exam day: light review only, no new material
+    </div>
+  </div>`;
+
+  document.getElementById('scheduleOut').innerHTML = html;
+  document.getElementById('scheduleWrap').style.display = 'block';
+  document.getElementById('scheduleWrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body>
+</html>
