@@ -204,9 +204,17 @@ function buildLab(id) {
 
 // ── LAB INITIALIZERS ─────────────────────────────────────
 function initLab(id) {
-  const fns = {punnett:initPunnett,osmosis:initOsmosis,mitosis:initMitosis,
-    titration:initTitration,periodic:initPeriodic,reactions:initReactions,
-    pendulum:initPendulum,projectile:initProjectile,ohm:initOhm};
+  const fns = {
+    punnett:initPunnett, osmosis:initOsmosis, mitosis:initMitosis,
+    meiosis:initMeiosis, photosynthesis:initPhotosynthesis, dna:initDna,
+    natsel:initNatsel, enzyme:initEnzyme, bloodtype:initBloodtype,
+    titration:initTitration, periodic:initPeriodic, reactions:initReactions,
+    gaslaw:initGaslaw, radioactive:initRadioactive, galvanic:initGalvanic,
+    vsepr:initVsepr, solubility:initSolubility, balance:initBalance,
+    pendulum:initPendulum, projectile:initProjectile, ohm:initOhm,
+    waves:initWaves, machines:initMachines, optics:initOptics,
+    freefall:initFreefall, energy:initEnergy, hooke:initHooke
+  };
   if (fns[id]) fns[id]();
 }
 
