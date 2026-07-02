@@ -87,10 +87,10 @@ canvas{border-radius:8px;max-width:100%}
 <div class="container">
   <!-- Subject tabs -->
   <div class="subject-tabs">
-    <button class="stab active" onclick="filterLabs('all')">🧪 All Labs</button>
-    <button class="stab" onclick="filterLabs('bio')">🧬 Biology</button>
-    <button class="stab" onclick="filterLabs('chem')">⚗️ Chemistry</button>
-    <button class="stab" onclick="filterLabs('phys')">⚡ Physics</button>
+    <button class="stab active" onclick="filterLabs(this,'all')">🧪 All Labs</button>
+    <button class="stab" onclick="filterLabs(this,'bio')">🧬 Biology</button>
+    <button class="stab" onclick="filterLabs(this,'chem')">⚗️ Chemistry</button>
+    <button class="stab" onclick="filterLabs(this,'phys')">⚡ Physics</button>
   </div>
 
   <!-- Lab cards -->
@@ -113,9 +113,9 @@ const LABS = [
   {id:'ohm',subj:'phys',icon:'⚡',title:"Ohm's Law Circuit",desc:'Build a simple circuit and see how voltage, current, and resistance relate.'},
 ];
 
-function filterLabs(subj) {
+function filterLabs(btn, subj) {
   document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  btn.classList.add('active');
   renderCards(subj);
 }
 
