@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Spelling & Vocabulary Quiz — aceAcademy</title>
+<style>
+:root{--bg:#0b1120;--surface:#1a2540;--surface2:#0f1a2e;--accent:#6366f1;--accent2:#8b5cf6;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--text:#e2e8f0;--muted:#94a3b8;--border:#2d3748}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav::-webkit-scrollbar{display:none}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:var(--surface2);border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--surface)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 22px;background:linear-gradient(135deg,#1a1040,#0b1120)}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.hero p{color:var(--muted);max-width:540px;margin:0 auto}
+.container{max-width:860px;margin:0 auto;padding:20px}
+/* Home */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:24px}
+.grade-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:.2s;text-align:center}
+.grade-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.grade-icon{font-size:2rem;margin-bottom:8px}
+.grade-title{font-size:1rem;font-weight:700;margin-bottom:4px}
+.grade-sub{font-size:.8rem;color:var(--muted)}
+.mastery-bar{height:5px;background:var(--border);border-radius:3px;margin-top:10px;overflow:hidden}
+.mastery-fill{height:100%;background:var(--green);border-radius:3px;transition:width .4s}
+/* Mode select */
+.mode-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.mode-btn{padding:10px 20px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-size:.88rem;font-weight:600;transition:.15s;text-align:center}
+.mode-btn:hover,.mode-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,.1)}
+.mode-btn .mode-icon{font-size:1.4rem;display:block;margin-bottom:4px}
+/* Quiz screen */
+.quiz-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:28px;max-width:640px;margin:0 auto}
+.q-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.back-btn{padding:7px 14px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:.82rem}
+.back-btn:hover{border-color:var(--accent);color:var(--accent)}
+.progress-wrap{flex:1}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+.progress-text{font-size:.75rem;color:var(--muted);margin-top:3px;text-align:right}
+.word-display{text-align:center;margin:20px 0}
+.big-word{font-size:2.8rem;font-weight:900;color:var(--accent);letter-spacing:.05em;margin-bottom:8px}
+.word-hint{font-size:.88rem;color:var(--muted);font-style:italic;margin-bottom:4px}
+.word-def{font-size:.92rem;color:var(--text);line-height:1.5;background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:16px}
+/* Spell input */
+.spell-input-wrap{display:flex;gap:10px;margin-bottom:12px}
+.spell-input{flex:1;padding:14px 16px;font-size:1.1rem;border-radius:10px;border:2px solid var(--border);background:var(--surface2);color:var(--text);outline:none;text-align:center;letter-spacing:.08em}
+.spell-input:focus{border-color:var(--accent)}
+.spell-input.correct{border-color:var(--green);background:rgba(16,185,129,.08)}
+.spell-input.wrong{border-color:var(--red);background:rgba(239,68,68,.08)}
+/* MC choices */
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.choice-btn{padding:13px 16px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:.9rem;font-weight:500;transition:.15s;text-align:left}
+.choice-btn:hover:not([disabled]){border-color:var(--accent)}
+.choice-btn.correct{background:rgba(16,185,129,.15);border-color:var(--green);color:var(--green)}
+.choice-btn.wrong{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red)}
+/* Buttons */
+.btn{padding:11px 24px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff;width:100%}.btn-primary:hover{background:#4f46e5}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#059669}
+/* Feedback */
+.feedback{text-align:center;padding:12px;border-radius:10px;font-size:.95rem;font-weight:600;margin-bottom:12px;display:none}
+.feedback.show{display:block}
+.feedback.correct-fb{background:rgba(16,185,129,.15);color:var(--green)}
+.feedback.wrong-fb{background:rgba(239,68,68,.12);color:var(--red)}
+/* Results */
+.results-card{background:var(--surface);border-radius:16px;padding:28px;text-align:center;max-width:500px;margin:0 auto}
+.score-big{font-size:3.5rem;font-weight:900;color:var(--accent)}
+.score-label{font-size:1rem;color:var(--muted);margin-bottom:20px}
+.stat-row{display:flex;justify-content:center;gap:24px;margin-bottom:20px}
+.stat{text-align:center}.stat-num{font-size:1.6rem;font-weight:800}.stat-name{font-size:.78rem;color:var(--muted)}
+.missed-list{text-align:left;margin-top:16px}
+.missed-item{padding:8px 12px;border-radius:8px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);margin-bottom:6px;font-size:.85rem}
+.missed-item strong{color:var(--red)}
+/* Speak btn */
+.speak-btn{background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:.82rem;margin-bottom:12px}
+.speak-btn:hover{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="flashcards.html" class="nav-link">🃏 Flashcards</a>
+  <a href="wordwall.html" class="nav-link">📖 Vocab</a>
+  <a href="sciencelab.html" class="nav-link">🔬 Lab</a>
+  <a href="spellingquiz.html" class="nav-link active">🔤 Spelling</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+</nav>
+
+<div class="hero">
+  <h1>🔤 Spelling & Vocabulary Quiz</h1>
+  <p>Grade-level word lists with spelling, definition matching, and fill-in-the-blank modes.</p>
+</div>
+
+<div class="container" id="app"></div>
+
+<script>
+const WORDS = {
+  6: [
+    {w:'adjacent',def:'Next to or adjoining something else.',ex:'The adjacent rooms share a wall.',pos:'adjective'},
+    {w:'ambiguous',def:'Open to more than one interpretation; unclear.',ex:'Her ambiguous answer confused everyone.',pos:'adjective'},
+    {w:'anonymous',def:'Made or done by someone unknown.',ex:'The anonymous donor gave a million dollars.',pos:'adjective'},
+    {w:'commemorate',def:'To recall and show respect for someone or something.',ex:'The statue commemorates the fallen soldiers.',pos:'verb'},
+    {w:'contemplate',def:'To think deeply about something.',ex:'She sat quietly to contemplate the problem.',pos:'verb'},
+    {w:'contradict',def:'To assert the opposite of a statement.',ex:'The evidence contradicted his alibi.',pos:'verb'},
+    {w:'exaggerate',def:'To represent something as greater than it really is.',ex:'He tended to exaggerate his accomplishments.',pos:'verb'},
+    {w:'extraordinary',def:'Very unusual or remarkable.',ex:'She has an extraordinary talent for music.',pos:'adjective'},
+    {w:'hypothesis',def:'A proposed explanation made on limited evidence.',ex:'The scientist tested her hypothesis.',pos:'noun'},
+    {w:'illuminate',def:'To light up or make something clearer.',ex:'The lamp illuminated the dark room.',pos:'verb'},
+    {w:'inevitable',def:'Certain to happen; unavoidable.',ex:'Change is inevitable.',pos:'adjective'},
+    {w:'monotonous',def:'Dull, tedious, and repetitious.',ex:'The monotonous lecture put students to sleep.',pos:'adjective'},
+    {w:'narrative',def:'A spoken or written account of events.',ex:'The narrative described the journey in detail.',pos:'noun'},
+    {w:'obscure',def:'Not discovered or known; unclear.',ex:'The meaning was obscure without context.',pos:'adjective'},
+    {w:'perseverance',def:'Continued effort despite difficulty.',ex:'Her perseverance led to success.',pos:'noun'},
+  ],
+  7: [
+    {w:'abolish',def:'To formally put an end to a system or practice.',ex:'The law abolished slavery.',pos:'verb'},
+    {w:'abundance',def:'A very large quantity of something.',ex:'The harvest produced an abundance of fruit.',pos:'noun'},
+    {w:'accelerate',def:'To begin to move more quickly; increase in rate.',ex:'The car accelerated onto the highway.',pos:'verb'},
+    {w:'belligerent',def:'Hostile and aggressive.',ex:'The belligerent student was sent to the office.',pos:'adjective'},
+    {w:'benevolent',def:'Well-meaning and kindly.',ex:'The benevolent king cared for his people.',pos:'adjective'},
+    {w:'collaborate',def:'To work jointly with others on a project.',ex:'The scientists collaborated on the research.',pos:'verb'},
+    {w:'compromise',def:'An agreement reached by each side making concessions.',ex:'They reached a compromise after long talks.',pos:'noun'},
+    {w:'connotation',def:'An idea or feeling a word invokes beyond its literal meaning.',ex:'"Home" has warm connotations.',pos:'noun'},
+    {w:'decipher',def:'To succeed in understanding something obscure.',ex:'She deciphered the ancient code.',pos:'verb'},
+    {w:'eloquent',def:'Fluent or persuasive in speaking or writing.',ex:'His eloquent speech moved the audience.',pos:'adjective'},
+    {w:'empathy',def:'The ability to understand and share the feelings of another.',ex:'She showed great empathy for her friend.',pos:'noun'},
+    {w:'flourish',def:'To grow or develop in a healthy way; to thrive.',ex:'The business began to flourish.',pos:'verb'},
+    {w:'formidable',def:'Inspiring fear or respect through being impressively large or capable.',ex:'She was a formidable opponent in chess.',pos:'adjective'},
+    {w:'gregarious',def:'Fond of company; sociable.',ex:'He was gregarious and loved parties.',pos:'adjective'},
+    {w:'hierarchy',def:'A system in which members are ranked according to status.',ex:'The company had a strict hierarchy.',pos:'noun'},
+  ],
+  8: [
+    {w:'adversity',def:'Difficulties or misfortune.',ex:'She overcame great adversity to succeed.',pos:'noun'},
+    {w:'allegory',def:'A story with a hidden symbolic meaning.',ex:'Animal Farm is an allegory about communism.',pos:'noun'},
+    {w:'ambivalent',def:'Having mixed feelings about something.',ex:'She felt ambivalent about moving abroad.',pos:'adjective'},
+    {w:'condescending',def:'Having a sense of superiority; patronizing.',ex:'His condescending tone annoyed everyone.',pos:'adjective'},
+    {w:'cynical',def:'Believing that people are motivated only by self-interest.',ex:'Years of disappointment made him cynical.',pos:'adjective'},
+    {w:'denounce',def:'To publicly declare something to be wrong.',ex:'The senator denounced the policy.',pos:'verb'},
+    {w:'dilemma',def:'A situation requiring a choice between two equally undesirable options.',ex:'She faced a difficult dilemma.',pos:'noun'},
+    {w:'disparity',def:'A great difference; inequality.',ex:'There is a disparity in pay between genders.',pos:'noun'},
+    {w:'ephemeral',def:'Lasting for a very short time.',ex:'Fame can be ephemeral.',pos:'adjective'},
+    {w:'foreshadow',def:'To be a warning or indication of a future event.',ex:'The dark clouds foreshadowed the storm.',pos:'verb'},
+    {w:'infer',def:'To deduce or conclude from evidence.',ex:'We can infer his guilt from the clues.',pos:'verb'},
+    {w:'juxtapose',def:'To place two things close together for contrasting effect.',ex:'The author juxtaposed wealth and poverty.',pos:'verb'},
+    {w:'meticulous',def:'Showing great attention to detail.',ex:'She was meticulous in her research.',pos:'adjective'},
+    {w:'paradox',def:'A seemingly contradictory statement that may be true.',ex:'"Less is more" is a paradox.',pos:'noun'},
+    {w:'rhetoric',def:'Persuasive language used in speech or writing.',ex:'The politician used powerful rhetoric.',pos:'noun'},
+  ],
+  9: [
+    {w:'ambiguity',def:'The quality of being open to more than one interpretation.',ex:'The poem's ambiguity allowed multiple readings.',pos:'noun'},
+    {w:'anachronism',def:'Something out of its proper time period.',ex:'The knight using a smartphone was an anachronism.',pos:'noun'},
+    {w:'anthropology',def:'The study of human societies and cultures.',ex:'She majored in anthropology.',pos:'noun'},
+    {w:'arbitrary',def:'Based on random choice rather than reason.',ex:'The decision seemed arbitrary.',pos:'adjective'},
+    {w:'categorical',def:'Unambiguously explicit and direct.',ex:'He gave a categorical denial.',pos:'adjective'},
+    {w:'circumlocution',def:'Using many words where fewer would do.',ex:'His circumlocution confused the audience.',pos:'noun'},
+    {w:'cohesion',def:'The action or fact of forming a united whole.',ex:'The essay lacked cohesion.',pos:'noun'},
+    {w:'conjecture',def:'An opinion formed without proof.',ex:'That is mere conjecture without evidence.',pos:'noun'},
+    {w:'demagogue',def:'A political leader who appeals to popular desires over rational argument.',ex:'History is full of dangerous demagogues.',pos:'noun'},
+    {w:'empirical',def:'Based on observation or experience rather than theory.',ex:'We need empirical evidence.',pos:'adjective'},
+    {w:'hubris',def:'Excessive pride or self-confidence.',ex:'His hubris led to his downfall.',pos:'noun'},
+    {w:'insinuate',def:'To suggest something in an indirect way.',ex:'She insinuated he was lying.',pos:'verb'},
+    {w:'juxtaposition',def:'Placing two things together for contrast or comparison.',ex:'The juxtaposition of colors created drama.',pos:'noun'},
+    {w:'magnanimous',def:'Very generous or forgiving.',ex:'The magnanimous winner congratulated the loser.',pos:'adjective'},
+    {w:'nuance',def:'A subtle difference in meaning or expression.',ex:'The translation missed the nuance of the poem.',pos:'noun'},
+  ],
+  10: [
+    {w:'acrimony',def:'Bitterness or ill feeling.',ex:'The divorce was filled with acrimony.',pos:'noun'},
+    {w:'ameliorate',def:'To make something bad better.',ex:'Medication can ameliorate the symptoms.',pos:'verb'},
+    {w:'antithesis',def:'A person or thing that is the direct opposite.',ex:'Sloppiness is the antithesis of precision.',pos:'noun'},
+    {w:'capitulate',def:'To cease to resist; give in.',ex:'The army finally capitulated.',pos:'verb'},
+    {w:'capricious',def:'Given to sudden changes of mood or behavior.',ex:'The capricious weather ruined our plans.',pos:'adjective'},
+    {w:'circuitous',def:'Longer than the most direct way.',ex:'They took a circuitous route home.',pos:'adjective'},
+    {w:'complacent',def:'Showing uncritical satisfaction with oneself.',ex:'He became complacent after early success.',pos:'adjective'},
+    {w:'contentious',def:'Causing or likely to cause controversy.',ex:'It was a contentious political debate.',pos:'adjective'},
+    {w:'corroborate',def:'To confirm or give support to a statement.',ex:'The witness corroborated his story.',pos:'verb'},
+    {w:'dearth',def:'A scarcity or lack of something.',ex:'There was a dearth of evidence.',pos:'noun'},
+    {w:'equivocate',def:'To use ambiguous language to conceal the truth.',ex:'The politician equivocated on every issue.',pos:'verb'},
+    {w:'esoteric',def:'Intended for or understood by a small group.',ex:'The topic was too esoteric for most people.',pos:'adjective'},
+    {w:'exacerbate',def:'To make a problem worse.',ex:'Stress can exacerbate health problems.',pos:'verb'},
+    {w:'facetious',def:'Treating serious issues with inappropriate humor.',ex:'His facetious remarks offended everyone.',pos:'adjective'},
+    {w:'ignominious',def:'Deserving or causing public disgrace.',ex:'The team suffered an ignominious defeat.',pos:'adjective'},
+  ],
+  11: [
+    {w:'abstruse',def:'Difficult to understand; obscure.',ex:'The abstruse theory confused even experts.',pos:'adjective'},
+    {w:'alacrity',def:'Brisk and cheerful readiness.',ex:'She accepted the offer with alacrity.',pos:'noun'},
+    {w:'anathema',def:'Something strongly disliked or disapproved of.',ex:'Corruption is anathema to democracy.',pos:'noun'},
+    {w:'apotheosis',def:'The highest point in development; the perfect example.',ex:'The novel is the apotheosis of the genre.',pos:'noun'},
+    {w:'byzantine',def:'Excessively complicated and detailed.',ex:'The tax code is byzantine in its complexity.',pos:'adjective'},
+    {w:'clandestine',def:'Kept secret or done secretively.',ex:'They held clandestine meetings.',pos:'adjective'},
+    {w:'deleterious',def:'Causing harm or damage.',ex:'Smoking has deleterious effects on health.',pos:'adjective'},
+    {w:'dilettante',def:'A person who cultivates an area superficially.',ex:'He was a dilettante in art, not a serious student.',pos:'noun'},
+    {w:'enervate',def:'To make someone feel drained of energy.',ex:'The heat enervated all the hikers.',pos:'verb'},
+    {w:'ephemeron',def:'Something that exists for only a short time.',ex:'Fashion trends are mere ephemerons.',pos:'noun'},
+    {w:'hegemony',def:'Leadership or dominance of one country over others.',ex:'The empire sought hegemony over the region.',pos:'noun'},
+    {w:'iconoclast',def:'A person who attacks cherished beliefs.',ex:'The scientist was an iconoclast who challenged dogma.',pos:'noun'},
+    {w:'loquacious',def:'Tending to talk a great deal.',ex:'The loquacious host dominated the conversation.',pos:'adjective'},
+    {w:'obfuscate',def:'To make unclear or confusing.',ex:'His answer only served to obfuscate the matter.',pos:'verb'},
+    {w:'sycophant',def:'A person who acts obsequiously to gain favor.',ex:'The king surrounded himself with sycophants.',pos:'noun'},
+  ],
+  12: [
+    {w:'abstemious',def:'Not self-indulgent, especially with food and drink.',ex:'He lived an abstemious lifestyle.',pos:'adjective'},
+    {w:'adumbrate',def:'To outline or indicate in a sketchy way; foreshadow.',ex:'The first chapter adumbrates the novel's themes.',pos:'verb'},
+    {w:'anachronistic',def:'Belonging to a period other than that being portrayed.',ex:'A feudal system would be anachronistic today.',pos:'adjective'},
+    {w:'antediluvian',def:'Extremely old-fashioned; of the time before the biblical flood.',ex:'His antediluvian views were out of touch.',pos:'adjective'},
+    {w:'assiduous',def:'Showing great care and perseverance.',ex:'She was assiduous in her preparation.',pos:'adjective'},
+    {w:'bifurcate',def:'To divide into two branches or forks.',ex:'The path bifurcated at the river.',pos:'verb'},
+    {w:'calumny',def:'The making of false statements to damage someone's reputation.',ex:'The candidate was a victim of calumny.',pos:'noun'},
+    {w:'chicanery',def:'The use of trickery to achieve goals.',ex:'The verdict exposed legal chicanery.',pos:'noun'},
+    {w:'didactic',def:'Intended to teach, particularly with a moral lesson.',ex:'The play had an overly didactic tone.',pos:'adjective'},
+    {w:'disingenuous',def:'Not candid or sincere; misleadingly frank.',ex:'His apology seemed disingenuous.',pos:'adjective'},
+    {w:'ebullient',def:'Cheerful and full of energy.',ex:'Her ebullient personality lit up the room.',pos:'adjective'},
+    {w:'effulgent',def:'Radiant; shining brightly.',ex:'The effulgent sunrise was breathtaking.',pos:'adjective'},
+    {w:'encomium',def:'A formal speech or piece of writing praising someone.',ex:'The eulogy was a moving encomium.',pos:'noun'},
+    {w:'ersatz',def:'Made or used as a substitute; not genuine.',ex:'Ersatz coffee became common during wartime.',pos:'adjective'},
+    {w:'persiflage',def:'Light and slightly contemptuous talk or writing.',ex:'The meeting devolved into persiflage.',pos:'noun'},
+  ]
+};
+
+const GRADE_INFO = {
+  6:{icon:'📗',label:'Grade 6',theme:'Foundation vocabulary for middle school'},
+  7:{icon:'📘',label:'Grade 7',theme:'Advanced middle school words'},
+  8:{icon:'📙',label:'Grade 8',theme:'Pre-high school vocabulary'},
+  9:{icon:'📕',label:'Grade 9',theme:'Freshman year core words'},
+  10:{icon:'📓',label:'Grade 10',theme:'SAT-level vocabulary'},
+  11:{icon:'📔',label:'Grade 11',theme:'Advanced academic vocabulary'},
+  12:{icon:'📒',label:'Grade 12',theme:'College-level & AP vocabulary'},
+};
+
+let state = {screen:'home', grade:null, mode:null, words:[], idx:0, score:0, missed:[], answered:false};
+
+function getMastery(g) {
+  const d = JSON.parse(localStorage.getItem('spelling_mastery')||'{}');
+  return d[g] || 0;
+}
+function saveMastery(g, pct) {
+  const d = JSON.parse(localStorage.getItem('spelling_mastery')||'{}');
+  d[g] = Math.max(d[g]||0, pct);
+  localStorage.setItem('spelling_mastery', JSON.stringify(d));
+}
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.screen === 'home') app.innerHTML = renderHome();
+  else if (state.screen === 'mode') app.innerHTML = renderMode();
+  else if (state.screen === 'quiz') app.innerHTML = renderQuiz();
+  else if (state.screen === 'results') app.innerHTML = renderResults();
+}
+
+function renderHome() {
+  return `<div class="home-grid">${Object.entries(GRADE_INFO).map(([g,info])=>{
+    const m = getMastery(g);
+    return `<div class="grade-card" onclick="selectGrade(${g})">
+      <div class="grade-icon">${info.icon}</div>
+      <div class="grade-title">${info.label}</div>
+      <div class="grade-sub">${info.theme}</div>
+      <div class="grade-sub" style="margin-top:6px;color:var(--accent)">${WORDS[g].length} words</div>
+      <div class="mastery-bar"><div class="mastery-fill" style="width:${m}%"></div></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:4px">${m}% mastered</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function selectGrade(g) {
+  state.grade = g;
+  state.screen = 'mode';
+  render();
+}
+
+function renderMode() {
+  const info = GRADE_INFO[state.grade];
+  return `
+    <div style="text-align:center;margin-bottom:20px">
+      <button class="back-btn" onclick="state.screen='home';render()">← Back</button>
+      <h2 style="margin-top:12px;font-size:1.3rem">${info.icon} ${info.label} — Choose Quiz Mode</h2>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:6px">${WORDS[state.grade].length} words · Pick your challenge</p>
+    </div>
+    <div class="mode-row">
+      <div class="mode-btn" onclick="startQuiz('spell')">
+        <span class="mode-icon">✍️</span>
+        <strong>Spell It</strong><br>
+        <span style="font-size:.75rem;color:var(--muted)">Type the word from its definition</span>
+      </div>
+      <div class="mode-btn" onclick="startQuiz('define')">
+        <span class="mode-icon">📖</span>
+        <strong>Define It</strong><br>
+        <span style="font-size:.75rem;color:var(--muted)">Pick the correct definition (4 choices)</span>
+      </div>
+      <div class="mode-btn" onclick="startQuiz('fillin')">
+        <span class="mode-icon">🔡</span>
+        <strong>Fill in the Blank</strong><br>
+        <span style="font-size:.75rem;color:var(--muted)">Complete the sentence with the right word</span>
+      </div>
+      <div class="mode-btn" onclick="startQuiz('match')">
+        <span class="mode-icon">🔤</span>
+        <strong>Word → Definition</strong><br>
+        <span style="font-size:.75rem;color:var(--muted)">See the word, pick its meaning</span>
+      </div>
+    </div>`;
+}
+
+function startQuiz(mode) {
+  state.mode = mode;
+  state.words = shuffle([...WORDS[state.grade]]).slice(0, 10);
+  state.idx = 0; state.score = 0; state.missed = []; state.answered = false;
+  state.screen = 'quiz';
+  render();
+}
+
+function shuffle(a) {
+  for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function renderQuiz() {
+  const word = state.words[state.idx];
+  const pct = Math.round((state.idx / state.words.length) * 100);
+  let body = '';
+
+  if (state.mode === 'spell') {
+    body = `
+      <div class="word-display">
+        <div class="word-def">${word.def}</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:4px">Part of speech: <em>${word.pos}</em></div>
+        <button class="speak-btn" onclick="speak('${word.def}')">🔊 Hear Definition</button>
+      </div>
+      <div class="spell-input-wrap">
+        <input class="spell-input" id="spellInput" type="text" placeholder="Type the word..." autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkSpell()"/>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn btn-primary" onclick="checkSpell()">✓ Check</button>`;
+  } else if (state.mode === 'define') {
+    const choices = makeChoices(word, 'def');
+    body = `
+      <div class="word-display">
+        <div class="big-word">${word.w}</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:8px">(${word.pos})</div>
+        <button class="speak-btn" onclick="speak('${word.w}')">🔊 Hear Word</button>
+      </div>
+      <div class="choices" id="choiceGrid">
+        ${choices.map((c,i)=>`<button class="choice-btn" id="ch${i}" onclick="checkMC(this,'${c.w===word.w?'correct':'wrong'}','${word.w}')" ${state.answered?'disabled':''}>${c.def}</button>`).join('')}
+      </div>
+      <div class="feedback" id="feedback"></div>
+      ${state.answered?`<button class="btn btn-primary" style="margin-top:8px" onclick="nextWord()">Next →</button>`:''}`;
+  } else if (state.mode === 'fillin') {
+    const blank = word.ex.replace(new RegExp(word.w,'i'), '_____');
+    const choices = makeChoices(word, 'w');
+    body = `
+      <div class="word-display">
+        <div class="word-def" style="font-size:1.1rem;font-weight:600;">"${blank}"</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:8px">Hint: ${word.def}</div>
+      </div>
+      <div class="choices" id="choiceGrid">
+        ${choices.map((c,i)=>`<button class="choice-btn" id="ch${i}" onclick="checkMC(this,'${c.w===word.w?'correct':'wrong'}','${word.w}')" ${state.answered?'disabled':''}>${c.w}</button>`).join('')}
+      </div>
+      <div class="feedback" id="feedback"></div>
+      ${state.answered?`<button class="btn btn-primary" style="margin-top:8px" onclick="nextWord()">Next →</button>`:''}`;
+  } else { // match
+    const choices = makeChoices(word, 'def');
+    body = `
+      <div class="word-display">
+        <div class="big-word">${word.w}</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:8px">(${word.pos})</div>
+        <button class="speak-btn" onclick="speak('${word.w}')">🔊 Hear Word</button>
+      </div>
+      <div class="choices" id="choiceGrid">
+        ${choices.map((c,i)=>`<button class="choice-btn" id="ch${i}" onclick="checkMC(this,'${c.w===word.w?'correct':'wrong'}','${word.w}')" ${state.answered?'disabled':''}>${c.def}</button>`).join('')}
+      </div>
+      <div class="feedback" id="feedback"></div>
+      ${state.answered?`<button class="btn btn-primary" style="margin-top:8px" onclick="nextWord()">Next →</button>`:''}`;
+  }
+
+  return `<div class="quiz-card">
+    <div class="q-header">
+      <button class="back-btn" onclick="state.screen='mode';render()">← Back</button>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="progress-text">${state.idx+1} of ${state.words.length} · Score: ${state.score}</div>
+      </div>
+    </div>
+    ${body}
+  </div>`;
+}
+
+function makeChoices(word, field) {
+  const all = WORDS[state.grade].filter(w => w.w !== word.w);
+  const wrong = shuffle(all).slice(0, 3);
+  return shuffle([word, ...wrong]);
+}
+
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.85;
+    speechSynthesis.speak(u);
+  }
+}
+
+function checkSpell() {
+  if (state.answered) return;
+  const inp = document.getElementById('spellInput');
+  const word = state.words[state.idx];
+  const val = inp.value.trim().toLowerCase();
+  const correct = word.w.toLowerCase();
+  const fb = document.getElementById('feedback');
+  if (val === correct) {
+    inp.classList.add('correct');
+    fb.className = 'feedback correct-fb show';
+    fb.innerHTML = `✅ Correct! <em>${word.w}</em> — ${word.def}`;
+    state.score++;
+  } else {
+    inp.classList.add('wrong');
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `❌ The correct spelling is <strong>${word.w}</strong>`;
+    state.missed.push(word);
+  }
+  state.answered = true;
+  inp.disabled = true;
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn btn-primary';
+  nextBtn.style.marginTop = '12px';
+  nextBtn.textContent = state.idx < state.words.length - 1 ? 'Next →' : 'See Results';
+  nextBtn.onclick = nextWord;
+  document.querySelector('.quiz-card').appendChild(nextBtn);
+}
+
+function checkMC(btn, result, correctWord) {
+  if (state.answered) return;
+  state.answered = true;
+  const word = state.words[state.idx];
+  const fb = document.getElementById('feedback');
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+  if (result === 'correct') {
+    btn.classList.add('correct');
+    fb.className = 'feedback correct-fb show';
+    fb.innerHTML = `✅ Correct! <em>${word.ex}</em>`;
+    state.score++;
+  } else {
+    btn.classList.add('wrong');
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `❌ Correct answer: <strong>${correctWord}</strong> — ${word.def}`;
+    state.missed.push(word);
+    // highlight correct
+    document.querySelectorAll('.choice-btn').forEach(b => {
+      if (b.textContent.trim() === word.def || b.textContent.trim() === word.w) b.classList.add('correct');
+    });
+  }
+  render(); // re-render to show Next button
+}
+
+function nextWord() {
+  state.idx++;
+  state.answered = false;
+  if (state.idx >= state.words.length) {
+    const pct = Math.round((state.score / state.words.length) * 100);
+    saveMastery(state.grade, pct);
+    state.screen = 'results';
+  }
+  render();
+  if (state.screen === 'quiz' && state.mode === 'spell') {
+    setTimeout(() => { const inp = document.getElementById('spellInput'); if(inp) inp.focus(); }, 50);
+  }
+}
+
+function renderResults() {
+  const total = state.words.length;
+  const pct = Math.round((state.score / total) * 100);
+  const grade = pct >= 90 ? '🏆 Excellent!' : pct >= 75 ? '⭐ Great Job!' : pct >= 60 ? '✅ Good Effort' : '📚 Keep Practicing';
+  return `<div class="results-card">
+    <div class="score-big">${pct}%</div>
+    <div class="score-label">${grade}</div>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num" style="color:var(--green)">${state.score}</div><div class="stat-name">Correct</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--red)">${total - state.score}</div><div class="stat-name">Missed</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--accent)">${total}</div><div class="stat-name">Total</div></div>
+    </div>
+    ${state.missed.length ? `<div class="missed-list"><div style="font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:8px">Words to Review:</div>
+      ${state.missed.map(w=>`<div class="missed-item"><strong>${w.w}</strong> — ${w.def}</div>`).join('')}</div>` : '<p style="color:var(--green);font-weight:700;margin-bottom:16px">Perfect score! 🎉</p>'}
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="startQuiz(state.mode)" style="flex:1">🔄 Retry</button>
+      <button class="btn btn-outline" onclick="state.screen='mode';render()" style="flex:1">← Change Mode</button>
+      <button class="btn btn-outline" onclick="state.screen='home';render()" style="flex:1">🏠 Home</button>
+    </div>
+  </div>`;
+}
+
+render();
+</script>
+</body>
+</html>

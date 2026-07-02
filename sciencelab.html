@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Science Lab Simulator — aceAcademy</title>
+<style>
+:root{--bg:#0b1120;--surface:#1a2540;--surface2:#0f1a2e;--accent:#6366f1;--accent2:#8b5cf6;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--text:#e2e8f0;--muted:#94a3b8;--border:#2d3748}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav::-webkit-scrollbar{display:none}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:var(--surface2);border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--surface)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:36px 20px 22px;background:linear-gradient(135deg,#1a1040,#0b1120)}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.hero p{color:var(--muted);max-width:540px;margin:0 auto}
+.container{max-width:1000px;margin:0 auto;padding:20px}
+/* Subject tabs */
+.subject-tabs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;justify-content:center}
+.stab{padding:10px 22px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-size:.9rem;font-weight:600;transition:.15s}
+.stab.active{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,.1)}
+/* Lab grid */
+.lab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:24px}
+.lab-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:.2s}
+.lab-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.lab-icon{font-size:2.2rem;margin-bottom:10px}
+.lab-title{font-size:1rem;font-weight:700;margin-bottom:6px}
+.lab-desc{font-size:.82rem;color:var(--muted);line-height:1.5}
+.lab-badge{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:8px}
+.badge-bio{background:rgba(16,185,129,.15);color:#10b981}
+.badge-chem{background:rgba(59,130,246,.15);color:#3b82f6}
+.badge-phys{background:rgba(245,158,11,.15);color:#f59e0b}
+/* Lab screen */
+.lab-screen{display:none;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:28px}
+.lab-screen.active{display:block}
+.lab-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.back-btn{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:.85rem}
+.back-btn:hover{border-color:var(--accent);color:var(--accent)}
+.lab-name{font-size:1.2rem;font-weight:800}
+/* Canvas lab area */
+.lab-area{display:grid;grid-template-columns:1fr 320px;gap:20px}
+@media(max-width:700px){.lab-area{grid-template-columns:1fr}}
+.canvas-wrap{background:var(--surface2);border-radius:12px;border:1px solid var(--border);padding:16px;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+canvas{border-radius:8px;max-width:100%}
+.controls-panel{display:flex;flex-direction:column;gap:12px}
+.ctrl-group{background:var(--surface2);border-radius:10px;padding:14px;border:1px solid var(--border)}
+.ctrl-group label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px}
+.ctrl-group input[type=range]{width:100%;accent-color:var(--accent)}
+.ctrl-group select{width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.85rem}
+.val-display{font-size:.9rem;font-weight:700;color:var(--accent);margin-top:4px}
+.btn{padding:10px 20px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;transition:.15s;width:100%}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#059669}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#dc2626}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:#4f46e5}
+.btn-reset{background:var(--surface);color:var(--muted);border:1.5px solid var(--border)}.btn-reset:hover{border-color:var(--accent);color:var(--accent)}
+/* Observation log */
+.obs-log{background:var(--surface2);border-radius:10px;padding:14px;border:1px solid var(--border);margin-top:16px;max-height:160px;overflow-y:auto}
+.obs-log h4{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.obs-entry{font-size:.82rem;color:var(--text);padding:5px 0;border-bottom:1px solid var(--border);line-height:1.4}
+.obs-entry:last-child{border-bottom:none}
+.obs-entry .ts{color:var(--accent);font-weight:700;margin-right:6px}
+/* Results */
+.result-box{background:rgba(16,185,129,.08);border:1px solid var(--green);border-radius:10px;padding:14px;margin-top:12px;font-size:.88rem;display:none}
+.result-box.show{display:block}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="assign.html" class="nav-link">📋 Assign</a>
+  <a href="essay.html" class="nav-link">✍ Essay</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+  <a href="sciencelab.html" class="nav-link active">🔬 Lab</a>
+  <a href="spellingquiz.html" class="nav-link">🔤 Spelling</a>
+</nav>
+
+<div class="hero">
+  <h1>🔬 Science Lab Simulator</h1>
+  <p>Interactive virtual experiments for Biology, Chemistry, and Physics — no lab coat required.</p>
+</div>
+
+<div class="container">
+  <!-- Subject tabs -->
+  <div class="subject-tabs">
+    <button class="stab active" onclick="filterLabs('all')">🧪 All Labs</button>
+    <button class="stab" onclick="filterLabs('bio')">🧬 Biology</button>
+    <button class="stab" onclick="filterLabs('chem')">⚗️ Chemistry</button>
+    <button class="stab" onclick="filterLabs('phys')">⚡ Physics</button>
+  </div>
+
+  <!-- Lab cards -->
+  <div class="lab-grid" id="labGrid"></div>
+
+  <!-- Individual lab screens -->
+  <div id="labScreen"></div>
+</div>
+
+<script>
+const LABS = [
+  {id:'punnett',subj:'bio',icon:'🧬',title:'Punnett Square',desc:'Explore dominant/recessive trait inheritance between two parents.'},
+  {id:'osmosis',subj:'bio',icon:'💧',title:'Osmosis & Diffusion',desc:'See how water moves across a semipermeable membrane based on solute concentration.'},
+  {id:'mitosis',subj:'bio',icon:'🔬',title:'Cell Division (Mitosis)',desc:'Animate the stages of mitosis from interphase through cytokinesis.'},
+  {id:'titration',subj:'chem',icon:'⚗️',title:'Acid-Base Titration',desc:'Add base to acid and watch the pH change with a color-indicating solution.'},
+  {id:'periodic',subj:'chem',icon:'⚛️',title:'Electron Configuration',desc:'Build electron shells for any element and see its configuration.'},
+  {id:'reactions',subj:'chem',icon:'🔥',title:'Chemical Reactions',desc:'Combine reactants and observe exothermic or endothermic reactions.'},
+  {id:'pendulum',subj:'phys',icon:'🕰️',title:'Pendulum Motion',desc:'Adjust length and gravity to explore period and frequency of a pendulum.'},
+  {id:'projectile',subj:'phys',icon:'🚀',title:'Projectile Motion',desc:'Launch a projectile and trace its parabolic path with real physics.'},
+  {id:'ohm',subj:'phys',icon:'⚡',title:"Ohm's Law Circuit",desc:'Build a simple circuit and see how voltage, current, and resistance relate.'},
+];
+
+function filterLabs(subj) {
+  document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderCards(subj);
+}
+
+function renderCards(filter='all') {
+  const grid = document.getElementById('labGrid');
+  const labs = filter === 'all' ? LABS : LABS.filter(l => l.subj === filter);
+  const badgeClass = {bio:'badge-bio',chem:'badge-chem',phys:'badge-phys'};
+  const subjLabel = {bio:'Biology',chem:'Chemistry',phys:'Physics'};
+  grid.innerHTML = labs.map(l => `
+    <div class="lab-card" onclick="openLab('${l.id}')">
+      <div class="lab-icon">${l.icon}</div>
+      <div class="lab-title">${l.title}</div>
+      <div class="lab-desc">${l.desc}</div>
+      <span class="lab-badge ${badgeClass[l.subj]}">${subjLabel[l.subj]}</span>
+    </div>`).join('');
+}
+
+let animFrame = null;
+let observations = [];
+
+function log(msg) {
+  observations.push({t: new Date().toLocaleTimeString(), m: msg});
+  const log = document.getElementById('obsLog');
+  if (log) {
+    log.innerHTML = '<h4>📋 Observation Log</h4>' +
+      observations.slice(-8).reverse().map(o => `<div class="obs-entry"><span class="ts">${o.t}</span>${o.m}</div>`).join('');
+  }
+}
+
+function openLab(id) {
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+  observations = [];
+  document.getElementById('labGrid').style.display = 'none';
+  document.querySelector('.subject-tabs').style.display = 'none';
+  const screen = document.getElementById('labScreen');
+  screen.innerHTML = buildLab(id);
+  initLab(id);
+}
+
+function closeLab() {
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+  observations = [];
+  document.getElementById('labGrid').style.display = 'grid';
+  document.querySelector('.subject-tabs').style.display = 'flex';
+  document.getElementById('labScreen').innerHTML = '';
+}
+
+function buildLab(id) {
+  const lab = LABS.find(l => l.id === id);
+  const badgeClass = {bio:'badge-bio',chem:'badge-chem',phys:'badge-phys'};
+  const subjLabel = {bio:'Biology',chem:'Chemistry',phys:'Physics'};
+  return `<div class="lab-screen active">
+    <div class="lab-header">
+      <button class="back-btn" onclick="closeLab()">← Back to Labs</button>
+      <div class="lab-name">${lab.icon} ${lab.title}</div>
+      <span class="lab-badge ${badgeClass[lab.subj]}">${subjLabel[lab.subj]}</span>
+    </div>
+    <div class="lab-area">
+      <div>
+        <div class="canvas-wrap"><canvas id="labCanvas" width="480" height="320"></canvas></div>
+        <div class="obs-log" id="obsLog"><h4>📋 Observation Log</h4><div class="obs-entry" style="color:var(--muted)">Start the experiment to see observations.</div></div>
+        <div class="result-box" id="resultBox"></div>
+      </div>
+      <div class="controls-panel" id="controlsPanel"></div>
+    </div>
+  </div>`;
+}
+
+// ── LAB INITIALIZERS ─────────────────────────────────────
+function initLab(id) {
+  const fns = {punnett:initPunnett,osmosis:initOsmosis,mitosis:initMitosis,
+    titration:initTitration,periodic:initPeriodic,reactions:initReactions,
+    pendulum:initPendulum,projectile:initProjectile,ohm:initOhm};
+  if (fns[id]) fns[id]();
+}
+
+// ── PUNNETT SQUARE ────────────────────────────────────────
+function initPunnett() {
+  const panel = document.getElementById('controlsPanel');
+  panel.innerHTML = `
+    <div class="ctrl-group">
+      <label>Parent 1 Genotype</label>
+      <select id="p1" onchange="drawPunnett()">
+        <option value="Aa">Aa (heterozygous)</option>
+        <option value="AA">AA (homozygous dominant)</option>
+        <option value="aa">aa (homozygous recessive)</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <label>Parent 2 Genotype</label>
+      <select id="p2" onchange="drawPunnett()">
+        <option value="Aa">Aa (heterozygous)</option>
+        <option value="AA">AA (homozygous dominant)</option>
+        <option value="aa">aa (homozygous recessive)</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <label>Trait Example</label>
+      <select id="trait" onchange="drawPunnett()">
+        <option value="eye">Eye Color (B=brown, b=blue)</option>
+        <option value="hair">Hair Color (D=dark, d=light)</option>
+        <option value="height">Height (T=tall, t=short)</option>
+      </select>
+    </div>
+    <button class="btn btn-accent" onclick="drawPunnett()">🔬 Run Cross</button>`;
+  drawPunnett();
+}
+
+function drawPunnett() {
+  const c = document.getElementById('labCanvas');
+  const ctx = c.getContext('2d');
+  const p1 = document.getElementById('p1').value;
+  const p2 = document.getElementById('p2').value;
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle = '#0f1a2e';
+  ctx.fillRect(0,0,c.width,c.height);
+  const g1 = [p1[0], p1[1]];
+  const g2 = [p2[0], p2[1]];
+  const combos = [];
+  for (let a of g1) for (let b of g2) combos.push(a+b);
+  // sort each combo
+  const sorted = combos.map(c => c.split('').sort((a,b)=>a.toLowerCase()<b.toLowerCase()?-1:a===b?0:a<b?-1:1).join(''));
+  const sx=80,sy=60,cw=90,ch=70;
+  // headers
+  ctx.font='bold 18px Segoe UI';
+  ctx.fillStyle='#6366f1';
+  ctx.fillText(g1[0],sx+cw*.3,sy-10);
+  ctx.fillText(g1[1],sx+cw*1.3,sy-10);
+  ctx.fillText(g2[0],sx-30,sy+ch*.5+4);
+  ctx.fillText(g2[1],sx-30,sy+ch*1.5+4);
+  const colors=['#10b981','#3b82f6','#f59e0b','#8b5cf6'];
+  sorted.forEach((g,i) => {
+    const r=Math.floor(i/2),col=i%2;
+    const x=sx+col*cw, y=sy+r*ch;
+    ctx.strokeStyle='#2d3748'; ctx.lineWidth=1.5;
+    ctx.strokeRect(x,y,cw,ch);
+    const isDom = g[0]===g[0].toUpperCase() || g[1]===g[1].toUpperCase();
+    ctx.fillStyle=isDom?'rgba(16,185,129,.18)':'rgba(239,68,68,.18)';
+    ctx.fillRect(x,y,cw,ch);
+    ctx.font='bold 20px Segoe UI';
+    ctx.fillStyle=colors[i];
+    ctx.fillText(g, x+cw/2-12, y+ch/2+7);
+  });
+  const dom = sorted.filter(g=>g[0]===g[0].toUpperCase()||g[1]===g[1].toUpperCase()).length;
+  const rec = 4-dom;
+  log(`Cross ${p1} × ${p2}: ${dom} dominant, ${rec} recessive offspring (${dom*25}% : ${rec*25}%)`);
+  const rb = document.getElementById('resultBox');
+  rb.className='result-box show';
+  rb.innerHTML=`<strong>Results:</strong> ${dom}/4 show dominant trait (${dom*25}%) · ${rec}/4 show recessive trait (${rec*25}%)<br><em>Genotype ratio: ${[...new Set(sorted)].join(' : ')}</em>`;
+}
+
+// ── OSMOSIS ───────────────────────────────────────────────
+let osmosisAnim = null, osmP = {outside:20, inside:60, running:false, t:0};
+function initOsmosis() {
+  const panel = document.getElementById('controlsPanel');
+  panel.innerHTML=`
+    <div class="ctrl-group">
+      <label>Outside Solute Concentration: <span class="val-display" id="outsideVal">20%</span></label>
+      <input type="range" id="outsideConc" min="0" max="100" value="20" oninput="document.getElementById('outsideVal').textContent=this.value+'%';osmP.outside=+this.value">
+    </div>
+    <div class="ctrl-group">
+      <label>Inside Solute Concentration: <span class="val-display" id="insideVal">60%</span></label>
+      <input type="range" id="insideConc" min="0" max="100" value="60" oninput="document.getElementById('insideVal').textContent=this.value+'%';osmP.inside=+this.value">
+    </div>
+    <button class="btn btn-green" onclick="startOsmosis()">▶ Start</button>
+    <button class="btn btn-reset" onclick="resetOsmosis()">↺ Reset</button>`;
+  drawOsmosis(0);
+}
+
+function drawOsmosis(t) {
+  const c=document.getElementById('labCanvas');
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+  const diff = osmP.outside - osmP.inside;
+  const flow = Math.tanh(t * diff / 300);
+  const leftW = c.width/2 + flow*60;
+  // left chamber
+  ctx.fillStyle=`rgba(59,130,246,${0.1+osmP.outside/200})`;
+  ctx.fillRect(20,50,leftW-20,c.height-100);
+  // right chamber
+  ctx.fillStyle=`rgba(16,185,129,${0.1+osmP.inside/200})`;
+  ctx.fillRect(leftW,50,c.width-leftW-20,c.height-100);
+  // membrane
+  ctx.strokeStyle='#f59e0b'; ctx.lineWidth=4;
+  ctx.setLineDash([8,4]);
+  ctx.beginPath(); ctx.moveTo(leftW,40); ctx.lineTo(leftW,c.height-40); ctx.stroke();
+  ctx.setLineDash([]);
+  // labels
+  ctx.font='bold 14px Segoe UI';
+  ctx.fillStyle='#3b82f6'; ctx.fillText(`Outside`,30,35);
+  ctx.fillStyle='#3b82f6'; ctx.fillText(`${Math.round(osmP.outside + flow*20)}%`,30,52);
+  ctx.fillStyle='#10b981'; ctx.fillText(`Inside`,c.width-90,35);
+  ctx.fillStyle='#10b981'; ctx.fillText(`${Math.round(osmP.inside - flow*20)}%`,c.width-70,52);
+  ctx.fillStyle='#f59e0b'; ctx.font='11px Segoe UI'; ctx.fillText('membrane',leftW-36,30);
+  // water molecules (dots)
+  const seed = t*0.1;
+  for(let i=0;i<15;i++){
+    const x=25+Math.abs((Math.sin(i*7.3+seed)*0.5+0.5))*(leftW-45);
+    const y=60+Math.abs((Math.sin(i*3.7+seed*0.7)*0.5+0.5))*(c.height-140);
+    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle='rgba(147,197,253,0.7)'; ctx.fill();
+  }
+  // arrow showing net flow
+  if(Math.abs(diff)>5){
+    const dir = diff>0?1:-1;
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.setLineDash([]);
+    ctx.beginPath();
+    const ax=leftW+(dir>0?-40:40), ay=c.height/2;
+    ctx.moveTo(ax,ay); ctx.lineTo(ax+dir*30,ay);
+    ctx.lineTo(ax+dir*20,ay-10); ctx.moveTo(ax+dir*30,ay); ctx.lineTo(ax+dir*20,ay+10);
+    ctx.stroke();
+    ctx.fillStyle='#fff'; ctx.font='11px Segoe UI';
+    ctx.fillText('H₂O',ax+dir*5-10,ay-14);
+  }
+}
+
+function startOsmosis() {
+  osmP.running=true; osmP.t=0;
+  const diff = osmP.outside-osmP.inside;
+  const type = diff>0?'hypotonic (water flows in)':diff<0?'hypertonic (water flows out)':'isotonic (no net flow)';
+  log(`Starting: outside=${osmP.outside}%, inside=${osmP.inside}% → ${type}`);
+  function step(){
+    osmP.t+=1;
+    drawOsmosis(osmP.t);
+    if(osmP.t<120) animFrame=requestAnimationFrame(step);
+    else { log('Equilibrium reached'); const rb=document.getElementById('resultBox'); rb.className='result-box show'; rb.innerHTML=`<strong>Equilibrium:</strong> Net water movement stops when concentrations equalize. Type: <em>${type}</em>`; }
+  }
+  animFrame=requestAnimationFrame(step);
+}
+
+function resetOsmosis(){ if(animFrame)cancelAnimationFrame(animFrame); osmP.t=0; drawOsmosis(0); }
+
+// ── MITOSIS ───────────────────────────────────────────────
+const mitoPhases=['Interphase','Prophase','Metaphase','Anaphase','Telophase','Cytokinesis'];
+let mitoIdx=0;
+function initMitosis(){
+  const panel=document.getElementById('controlsPanel');
+  panel.innerHTML=`
+    <div class="ctrl-group"><label>Current Phase</label><div class="val-display" id="phaseLabel" style="font-size:1.1rem">Interphase</div></div>
+    <div class="ctrl-group"><label>Phase Description</label><div id="phaseDesc" style="font-size:.82rem;color:var(--muted);line-height:1.5">Cell grows and DNA replicates in preparation for division.</div></div>
+    <button class="btn btn-accent" onclick="nextPhase()">→ Next Phase</button>
+    <button class="btn btn-reset" onclick="resetMitosis()">↺ Reset</button>`;
+  mitoIdx=0; drawMitosis(0);
+}
+
+const phaseDescs=['Cell grows and DNA replicates in preparation for division.','Chromatin condenses into chromosomes. Spindle fibers begin to form.','Chromosomes align at the cell's equator (metaphase plate).','Sister chromatids are pulled apart to opposite poles.','Nuclear envelopes reform around each set of chromosomes.','Cell divides into two identical daughter cells.'];
+
+function drawMitosis(idx){
+  const c=document.getElementById('labCanvas');
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+  const cx=c.width/2, cy=c.height/2, r=110;
+  if(idx===0){// Interphase
+    ctx.strokeStyle='#10b981'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(16,185,129,.08)'; ctx.fill();
+    // nucleus
+    ctx.strokeStyle='#6366f1'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(cx,cy,45,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(99,102,241,.15)'; ctx.fill();
+    // chromatin
+    for(let i=0;i<6;i++){const a=i/6*Math.PI*2;ctx.strokeStyle='#8b5cf6';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx+Math.cos(a)*20,cy+Math.sin(a)*20,8,0,Math.PI*2);ctx.stroke();}
+  } else if(idx===1){// Prophase
+    ctx.strokeStyle='#10b981'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(16,185,129,.08)'; ctx.fill();
+    // condensed chromosomes
+    const chrColors=['#ef4444','#3b82f6','#f59e0b','#8b5cf6'];
+    for(let i=0;i<4;i++){const a=i/4*Math.PI*2+0.3;const x=cx+Math.cos(a)*35,y=cy+Math.sin(a)*35;ctx.fillStyle=chrColors[i];ctx.fillRect(x-8,y-14,8,28);ctx.fillRect(x+2,y-14,8,28);}
+  } else if(idx===2){// Metaphase
+    ctx.strokeStyle='#10b981'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(16,185,129,.08)'; ctx.fill();
+    // spindle
+    ctx.strokeStyle='rgba(147,197,253,.4)'; ctx.lineWidth=1;
+    for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.lineTo(cx+(i-1.5)*28,cy);ctx.stroke();ctx.beginPath();ctx.moveTo(cx+r,cy);ctx.lineTo(cx+(i-1.5)*28,cy);ctx.stroke();}
+    // chromosomes on plate
+    const chrColors=['#ef4444','#3b82f6','#f59e0b','#8b5cf6'];
+    for(let i=0;i<4;i++){ctx.fillStyle=chrColors[i];ctx.fillRect(cx+(i-1.5)*28-4,cy-14,8,28);ctx.fillRect(cx+(i-1.5)*28+6,cy-14,8,28);}
+  } else if(idx===3){// Anaphase
+    ctx.strokeStyle='#10b981'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.ellipse(cx,cy,r+20,r-20,0,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(16,185,129,.06)'; ctx.fill();
+    const chrColors=['#ef4444','#3b82f6','#f59e0b','#8b5cf6'];
+    for(let i=0;i<4;i++){ctx.fillStyle=chrColors[i];ctx.fillRect(cx+(i-1.5)*26-4,cy-55,8,22);ctx.fillRect(cx+(i-1.5)*26-4,cy+35,8,22);}
+  } else if(idx===4){// Telophase
+    // two forming nuclei
+    for(let s of[-1,1]){ctx.strokeStyle='#6366f1';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy+s*55,38,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(99,102,241,.1)';ctx.fill();}
+    ctx.strokeStyle='#10b981'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.ellipse(cx,cy,r+10,r+10,0,0,Math.PI*2); ctx.stroke();
+    // cleavage furrow forming
+    ctx.strokeStyle='#f59e0b'; ctx.lineWidth=2; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(cx-r,cy); ctx.lineTo(cx+r,cy); ctx.stroke(); ctx.setLineDash([]);
+  } else {// Cytokinesis
+    for(let s of[-1,1]){ctx.strokeStyle='#10b981';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy+s*65,r*.55,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(16,185,129,.08)';ctx.fill();ctx.strokeStyle='#6366f1';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy+s*65,25,0,Math.PI*2);ctx.stroke();}
+    ctx.font='bold 13px Segoe UI'; ctx.fillStyle='#10b981';
+    ctx.fillText('Daughter Cell 1',cx-55,cy-110);
+    ctx.fillText('Daughter Cell 2',cx-55,cy+125);
+  }
+  ctx.font='bold 16px Segoe UI'; ctx.fillStyle='var(--accent)';
+  ctx.fillStyle='#6366f1'; ctx.fillText(mitoPhases[idx], 10, 24);
+  document.getElementById('phaseLabel').textContent=mitoPhases[idx];
+  document.getElementById('phaseDesc').textContent=phaseDescs[idx];
+  log(`Phase: ${mitoPhases[idx]} — ${phaseDescs[idx].substring(0,60)}...`);
+}
+
+function nextPhase(){ mitoIdx=(mitoIdx+1)%6; drawMitosis(mitoIdx); }
+function resetMitosis(){ mitoIdx=0; drawMitosis(0); }
+
+// ── TITRATION ─────────────────────────────────────────────
+let titrVol=0, titrRunning=false;
+function initTitration(){
+  const panel=document.getElementById('controlsPanel');
+  panel.innerHTML=`
+    <div class="ctrl-group"><label>Acid: HCl (Strong Acid)</label><div style="font-size:.82rem;color:var(--muted)">50 mL in beaker</div></div>
+    <div class="ctrl-group"><label>Base Added (NaOH): <span class="val-display" id="volDisplay">0 mL</span></label><input type="range" id="volSlider" min="0" max="100" value="0" oninput="updateTitration(+this.value)"></div>
+    <div class="ctrl-group"><label>pH</label><div class="val-display" id="phDisplay" style="font-size:1.5rem">1.0</div></div>
+    <button class="btn btn-accent" onclick="updateTitration(+document.getElementById('volSlider').value)">🧪 Update</button>
+    <button class="btn btn-reset" onclick="resetTitration()">↺ Reset</button>`;
+  drawTitration(0);
+}
+
+function calcPH(vol){
+  if(vol<50) return +(1+Math.log10(50/(50-vol+0.001))).toFixed(1);
+  if(vol===50) return 7.0;
+  return +(13-Math.log10(50/(vol-50+0.001))).toFixed(1);
+}
+
+function phColor(ph){
+  if(ph<4)return '#ef4444';
+  if(ph<6)return'#f97316';
+  if(ph<7.5)return'#84cc16';
+  if(ph<9)return'#06b6d4';
+  return'#8b5cf6';
+}
+
+function drawTitration(vol){
+  const c=document.getElementById('labCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+  const ph=calcPH(vol);
+  const col=phColor(ph);
+  // burette
+  ctx.fillStyle='rgba(147,197,253,.2)'; ctx.strokeStyle='#94a3b8'; ctx.lineWidth=2;
+  ctx.fillRect(c.width/2-12,20,24,160); ctx.strokeRect(c.width/2-12,20,24,160);
+  const filled=(100-vol)/100*140;
+  ctx.fillStyle='rgba(147,197,253,.5)'; ctx.fillRect(c.width/2-10,22,20,filled);
+  ctx.fillStyle='#94a3b8'; ctx.font='11px Segoe UI'; ctx.fillText('NaOH',c.width/2-18,15);
+  // drip
+  if(vol>0){ctx.fillStyle='rgba(147,197,253,.8)';ctx.beginPath();ctx.arc(c.width/2,185,5,0,Math.PI*2);ctx.fill();}
+  // beaker
+  const bx=c.width/2-70,by=200,bw=140,bh=100;
+  ctx.fillStyle=col+'33'; ctx.fillRect(bx,by,bw,bh);
+  ctx.strokeStyle='#94a3b8'; ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(bx-10,by-10);ctx.lineTo(bx,by);ctx.lineTo(bx,by+bh);ctx.lineTo(bx+bw,by+bh);ctx.lineTo(bx+bw,by);ctx.lineTo(bx+bw+10,by-10);ctx.stroke();
+  // solution color
+  ctx.fillStyle=col; ctx.font='bold 14px Segoe UI';
+  ctx.fillText(`pH ${ph}`,bx+bw/2-20,by+bh/2+5);
+  // equivalence marker
+  ctx.strokeStyle='#f59e0b'; ctx.setLineDash([4,4]); ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(20,by-10);ctx.lineTo(c.width-20,by-10);ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#f59e0b'; ctx.font='11px Segoe UI'; ctx.fillText('equivalence point (50mL)',20,by-14);
+  document.getElementById('phDisplay').textContent=ph;
+  document.getElementById('phDisplay').style.color=col;
+  log(`Added ${vol}mL NaOH → pH ${ph} (${ph<7?'acidic':ph===7?'neutral':'basic'})`);
+  const rb=document.getElementById('resultBox');
+  if(Math.abs(ph-7)<0.5){rb.className='result-box show';rb.innerHTML='<strong>Equivalence Point Reached!</strong> HCl + NaOH → NaCl + H₂O. Solution is now neutral.';}
+}
+
+function updateTitration(v){titrVol=v;document.getElementById('volDisplay').textContent=v+' mL';drawTitration(v);}
+function resetTitration(){document.getElementById('volSlider').value=0;updateTitration(0);}
+
+// ── ELECTRON CONFIG ───────────────────────────────────────
+function initPeriodic(){
+  const elements=[['H',1],['He',2],['Li',3],['Be',4],['B',5],['C',6],['N',7],['O',8],['F',9],['Ne',10],['Na',11],['Mg',12],['Al',13],['Si',14],['P',15],['S',16],['Cl',17],['Ar',18],['K',19],['Ca',20]];
+  const panel=document.getElementById('controlsPanel');
+  panel.innerHTML=`
+    <div class="ctrl-group"><label>Element</label>
+    <select id="elemSel" onchange="drawElectron()">${elements.map(e=>`<option value="${e[1]}">${e[0]} (Z=${e[1]})</option>`).join('')}</select></div>
+    <div class="ctrl-group"><label>Atomic Number</label><div class="val-display" id="zDisplay">1</div></div>
+    <div class="ctrl-group"><label>Configuration</label><div id="configDisplay" style="font-size:.9rem;color:var(--accent);font-family:monospace"></div></div>
+    <button class="btn btn-accent" onclick="drawElectron()">⚛️ Show</button>`;
+  drawElectron();
+}
+
+function drawElectron(){
+  const z=+document.getElementById('elemSel').value;
+  document.getElementById('zDisplay').textContent=z;
+  const shells=[2,8,8,2];
+  let remaining=z, config=[];
+  const filled=[];
+  for(let s=0;s<shells.length;s++){const n=Math.min(remaining,shells[s]);filled.push(n);config.push(n);remaining-=n;if(remaining<=0)break;}
+  document.getElementById('configDisplay').textContent=config.map((n,i)=>`Shell ${i+1}: ${n}e⁻`).join('  ');
+  const c=document.getElementById('labCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+  const cx=c.width/2,cy=c.height/2;
+  // nucleus
+  ctx.fillStyle='#ef4444'; ctx.beginPath(); ctx.arc(cx,cy,22,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#fff'; ctx.font='bold 14px Segoe UI'; ctx.fillText(z,cx-6,cy+5);
+  const radii=[55,90,125,155];
+  const shellColors=['#3b82f6','#10b981','#f59e0b','#8b5cf6'];
+  filled.forEach((n,s)=>{
+    ctx.strokeStyle=shellColors[s]+'66'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(cx,cy,radii[s],0,Math.PI*2); ctx.stroke();
+    for(let i=0;i<n;i++){
+      const a=(i/n)*Math.PI*2;
+      const ex=cx+Math.cos(a)*radii[s],ey=cy+Math.sin(a)*radii[s];
+      ctx.fillStyle=shellColors[s]; ctx.beginPath(); ctx.arc(ex,ey,5,0,Math.PI*2); ctx.fill();
+    }
+    ctx.fillStyle=shellColors[s]; ctx.font='11px Segoe UI';
+    ctx.fillText(`n=${s+1}`,cx+radii[s]+4,cy-4);
+  });
+  log(`Z=${z}: ${filled.map((n,i)=>`shell ${i+1}=${n}`).join(', ')}`);
+}
+
+// ── CHEMICAL REACTIONS ────────────────────────────────────
+function initReactions(){
+  const panel=document.getElementById('controlsPanel');
+  panel.innerHTML=`
+    <div class="ctrl-group"><label>Reaction Type</label>
+    <select id="rxnType" onchange="drawReaction()">
+      <option value="exo">Combustion (Exothermic): CH₄ + 2O₂ → CO₂ + 2H₂O</option>
+      <option value="endo">Photosynthesis (Endothermic): 6CO₂+6H₂O → C₆H₁₂O₆+6O₂</option>
+      <option value="acid">Neutralization: HCl + NaOH → NaCl + H₂O</option>
+    </select></div>
+    <button class="btn btn-green" onclick="animateReaction()">🔥 React!</button>
+    <button class="btn btn-reset" onclick="drawReaction()">↺ Reset</button>`;
+  drawReaction();
+}
+
+let rxnAnim=null,rxnT=0;
+function drawReaction(t=0){
+  const c=document.getElementById('labCanvas'),ctx=c.getContext('2d');
+  const type=document.getElementById('rxnType')?.value||'exo';
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+  // Energy diagram
+  const sx=40,ex=c.width-40,mid=c.height/2;
+  if(type==='exo'){
+    const peak=mid-80*(Math.min(t,50)/50);
+    const end=mid+60*(Math.min(Math.max(t-50,0),50)/50);
+    ctx.strokeStyle='#ef4444'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(sx,mid); ctx.quadraticCurveTo(c.width/2,t>0?mid-100:mid,ex,t>50?mid+60:mid); ctx.stroke();
+    ctx.fillStyle='#ef4444'; ctx.font='12px Segoe UI';
+    ctx.fillText('Reactants',sx,mid-10);
+    ctx.fillStyle='#10b981'; ctx.fillText('Products (lower energy)',ex-160,mid+80);
+    ctx.fillStyle='#f59e0b'; ctx.fillText('Activation Energy →',c.width/2-60,mid-110);
+    if(t>30){ctx.fillStyle='#ef4444'; for(let i=0;i<8;i++){const x=c.width/2+(Math.random()-0.5)*60,y=mid-20-Math.random()*50;ctx.font='16px Segoe UI';ctx.fillText('🔥',x,y);}}
+  } else if(type==='endo'){
+    ctx.strokeStyle='#3b82f6'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(sx,mid+40); ctx.quadraticCurveTo(c.width/2,t>0?mid+120:mid+40,ex,t>50?mid-60:mid+40); ctx.stroke();
+    ctx.fillStyle='#3b82f6'; ctx.fillText('Reactants',sx,mid+35);
+    ctx.fillStyle='#10b981'; ctx.fillText('Products (higher energy)',ex-170,mid-70);
+    ctx.fillStyle='#f59e0b'; ctx.fillText('☀️ Energy Absorbed',c.width/2-60,mid+120);
+  } else {
+    ctx.strokeStyle='#10b981'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(sx,mid); ctx.lineTo(ex,t>50?mid-10:mid); ctx.stroke();
+    ctx.fillStyle='#3b82f6'; ctx.fillText('HCl',sx+10,mid-10);
+    ctx.fillStyle='#ef4444'; ctx.fillText('NaOH',sx+10,mid+20);
+    ctx.fillStyle='#10b981'; ctx.fillText('NaCl + H₂O',ex-100,mid-10);
+    if(t>40){ctx.font='20px Segoe UI';ctx.fillText('💧',c.width/2,mid-30);}
+  }
+  ctx.strokeStyle='#2d3748'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(sx,20); ctx.lineTo(sx,c.height-20); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx,c.height-20); ctx.lineTo(ex,c.height-20); ctx.stroke();
+  ctx.fillStyle='#94a3b8'; ctx.font='11px Segoe UI';
+  ctx.fillText('Energy',sx+4,16); ctx.fillText('Reaction Progress →',c.width/2-60,c.height-5);
+}
+
+function animateReaction(){
+  rxnT=0;
+  const type=document.getElementById('rxnType').value;
+  log(`Starting ${type==='exo'?'exothermic':type==='endo'?'endothermic':'neutralization'} reaction`);
+  function step(){rxnT+=2;drawReaction(rxnT);if(rxnT<100)animFrame=requestAnimationFrame(step);else{const rb=document.getElementById('resultBox');rb.className='result-box show';rb.innerHTML=type==='exo'?'<strong>Exothermic:</strong> Energy is released as heat/light. Products have less energy than reactants.':type==='endo'?'<strong>Endothermic:</strong> Energy is absorbed from surroundings. Products have more energy than reactants.':'<strong>Neutralization:</strong> Acid + Base → Salt + Water. pH moves toward neutral.';log('Reaction complete!');}}
+  animFrame=requestAnimationFrame(step);
+}
+
+// ── PENDULUM ──────────────────────────────────────────────
+let pendState={angle:0.5,vel:0,len:120,g:9.8,running:false,t:0};
+function initPendulum(){
+  const panel=document.getElementById('controlsPanel');
+  panel.innerHTML=`
+    <div class="ctrl-group"><label>String Length: <span class="val-display" id="lenVal">120 cm</span></label>
+    <input type="range" id="lenSlider" min="40" max="200" value="120" oninput="pendState.len=+this.value;document.getElementById('lenVal').textContent=this.value+' cm';calcPeriod()"></div>
+    <div class="ctrl-group"><label>Gravity: <span class="val-display" id="gVal">9.8 m/s²</span></label>
+    <select id="gSel" onchange="pendState.g=+this.value;document.getElementById('gVal').textContent=this.value+' m/s²';calcPeriod()">
+      <option value="9.8">Earth (9.8)</option>
+      <option value="1.6">Moon (1.6)</option>
+      <option value="3.7">Mars (3.7)</option>
+      <option value="24.8">Jupiter (24.8)</option>
+    </select></div>
+    <div class="ctrl-group"><label>Period</label><div class="val-display" id="periodDisplay">2.20 s</div></div>
+    <button class="btn btn-green" id="pendBtn" onclick="togglePendulum()">▶ Start</button>
+    <button class="btn btn-reset" onclick="resetPendulum()">↺ Reset</button>`;
+  drawPendulum(pendState.angle);
+  calcPeriod();
+}
+
+function calcPeriod(){
+  const T=(2*Math.PI*Math.sqrt(pendState.len/100/pendState.g)).toFixed(2);
+  document.getElementById('periodDisplay').textContent=T+' s';
+  log(`Period T = 2π√(L/g) = ${T}s with L=${pendState.len}cm, g=${pendState.g}m/s²`);
+}
+
+function drawPendulum(angle){
+  const c=document.getElementById('labCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+  const px=c.width/2,py=30,scale=pendState.len/120;
+  const bx=px+Math.sin(angle)*pendState.len*scale*0.9;
+  const by=py+Math.cos(angle)*pendState.len*scale*0.9;
+  ctx.strokeStyle='#94a3b8'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(bx,by); ctx.stroke();
+  ctx.fillStyle='#6366f1'; ctx.beginPath(); ctx.arc(bx,by,16,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#4f46e5'; ctx.lineWidth=2; ctx.stroke();
+  ctx.strokeStyle='#2d3748'; ctx.setLineDash([6,4]); ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px,py+pendState.len*scale*0.9+20); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#94a3b8'; ctx.fillRect(px-50,py-10,100,10);
+  ctx.fillStyle='#6366f1'; ctx.font='12px Segoe UI'; ctx.fillText(`θ = ${(angle*180/Math.PI).toFixed(1)}°`,10,20);
+}
+
+function togglePendulum(){
+  pendState.running=!pendState.running;
+  document.getElementById('pendBtn').textContent=pendState.running?'⏸ Pause':'▶ Start';
+  if(pendState.running){
+    const dt=0.03;
+    function step(){
+      if(!pendState.running)return;
+      pendState.vel+=(-pendState.g/((pendState.len/100))*Math.sin(pendState.angle))*dt;
+      pendState.vel*=0.999;
+      pendState.angle+=pendState.vel*dt;
+      drawPendulum(pendState.angle);
+      animFrame=requestAnimationFrame(step);
+    }
+    animFrame=requestAnimationFrame(step);
+  }
+}
+
+function resetPendulum(){
+  pendState.running=false;pendState.angle=0.5;pendState.vel=0;
+  document.getElementById('pendBtn').textContent='▶ Start';
+  if(animFrame)cancelAnimationFrame(animFrame);
+  drawPendulum(0.5);
+}
+
+// ── PROJECTILE ────────────────────────────────────────────
+let projState={angle:45,v0:30,running:false};
+function initProjectile(){
+  const panel=document.getElementById('controlsPanel');
+  panel.innerHTML=`
+    <div class="ctrl-group"><label>Launch Angle: <span class="val-display" id="angVal">45°</span></label>
+    <input type="range" id="angSlider" min="5" max="85" value="45" oninput="projState.angle=+this.value;document.getElementById('angVal').textContent=this.value+'°'"></div>
+    <div class="ctrl-group"><label>Initial Speed: <span class="val-display" id="v0Val">30 m/s</span></label>
+    <input type="range" id="v0Slider" min="10" max="60" value="30" oninput="projState.v0=+this.value;document.getElementById('v0Val').textContent=this.value+' m/s'"></div>
+    <button class="btn btn-green" onclick="launchProjectile()">🚀 Launch!</button>
+    <button class="btn btn-reset" onclick="resetProjectile()">↺ Reset</button>`;
+  drawProjectileSetup();
+}
+
+function drawProjectileSetup(){
+  const c=document.getElementById('labCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+  ctx.fillStyle='#1e3a2e'; ctx.fillRect(0,c.height-30,c.width,30);
+  ctx.fillStyle='#10b981'; ctx.font='14px Segoe UI'; ctx.fillText('Set angle and speed, then Launch!',c.width/2-120,c.height/2);
+  ctx.fillStyle='#6366f1'; ctx.beginPath(); ctx.arc(30,c.height-30,12,0,Math.PI*2); ctx.fill();
+}
+
+function launchProjectile(){
+  const a=projState.angle*Math.PI/180,v0=projState.v0;
+  const g=9.8,vx=v0*Math.cos(a),vy=v0*Math.sin(a);
+  const T=2*vy/g, R=vx*T, H=vy*vy/(2*g);
+  log(`Launch: ${projState.angle}° at ${v0}m/s → Range=${R.toFixed(1)}m, Max Height=${H.toFixed(1)}m, Time=${T.toFixed(1)}s`);
+  const c=document.getElementById('labCanvas'),ctx=c.getContext('2d');
+  const scaleX=(c.width-60)/Math.max(R,10), scaleY=(c.height-60)/Math.max(H,5);
+  const scale=Math.min(scaleX,scaleY)*0.85;
+  let t=0,trail=[];
+  function step(){
+    t+=0.05;
+    const x=30+vx*t*scale;
+    const y=(c.height-30)-((vy*t-0.5*g*t*t)*scale);
+    trail.push([x,y]);
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#1e3a2e'; ctx.fillRect(0,c.height-30,c.width,30);
+    // trail
+    ctx.strokeStyle='rgba(99,102,241,.5)'; ctx.lineWidth=2;
+    ctx.beginPath(); trail.forEach(([tx,ty],i)=>{i===0?ctx.moveTo(tx,ty):ctx.lineTo(tx,ty)}); ctx.stroke();
+    // ball
+    ctx.fillStyle='#ef4444'; ctx.beginPath(); ctx.arc(x,y,10,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#94a3b8'; ctx.font='11px Segoe UI';
+    ctx.fillText(`t=${t.toFixed(1)}s`,x+12,y-5);
+    if(t<T && y<c.height-30) animFrame=requestAnimationFrame(step);
+    else{const rb=document.getElementById('resultBox');rb.className='result-box show';rb.innerHTML=`<strong>Results:</strong> Range = ${R.toFixed(1)} m · Max Height = ${H.toFixed(1)} m · Air time = ${T.toFixed(1)} s`;}
+  }
+  if(animFrame)cancelAnimationFrame(animFrame);
+  animFrame=requestAnimationFrame(step);
+}
+function resetProjectile(){if(animFrame)cancelAnimationFrame(animFrame);drawProjectileSetup();}
+
+// ── OHM's LAW ─────────────────────────────────────────────
+function initOhm(){
+  const panel=document.getElementById('controlsPanel');
+  panel.innerHTML=`
+    <div class="ctrl-group"><label>Voltage (V): <span class="val-display" id="vVal">12 V</span></label>
+    <input type="range" id="vSlider" min="1" max="24" value="12" oninput="document.getElementById('vVal').textContent=this.value+' V';drawOhm()"></div>
+    <div class="ctrl-group"><label>Resistance (Ω): <span class="val-display" id="rVal">4 Ω</span></label>
+    <input type="range" id="rSlider" min="1" max="20" value="4" oninput="document.getElementById('rVal').textContent=this.value+' Ω';drawOhm()"></div>
+    <div class="ctrl-group"><label>Current (I = V/R)</label><div class="val-display" id="iDisplay" style="font-size:1.4rem">3.00 A</div></div>
+    <div class="ctrl-group"><label>Power (P = IV)</label><div class="val-display" id="pDisplay" style="font-size:1.1rem">36 W</div></div>`;
+  drawOhm();
+}
+
+let ohmt=0;
+function drawOhm(){
+  const V=+document.getElementById('vSlider').value,R=+document.getElementById('rSlider').value;
+  const I=V/R,P=I*V;
+  document.getElementById('iDisplay').textContent=I.toFixed(2)+' A';
+  document.getElementById('pDisplay').textContent=P.toFixed(1)+' W';
+  log(`V=${V}V, R=${R}Ω → I=${I.toFixed(2)}A, P=${P.toFixed(1)}W`);
+  const c=document.getElementById('labCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1a2e'; ctx.fillRect(0,0,c.width,c.height);
+  // Circuit diagram
+  const m=20;
+  ctx.strokeStyle='#6366f1'; ctx.lineWidth=3;
+  ctx.beginPath();
+  ctx.moveTo(m,m); ctx.lineTo(c.width-m,m);
+  ctx.lineTo(c.width-m,c.height-m);
+  ctx.lineTo(m,c.height-m);
+  ctx.lineTo(m,m);
+  ctx.stroke();
+  // Battery (left side)
+  const by=c.height/2;
+  ctx.strokeStyle='#f59e0b'; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.moveTo(m-8,by-20); ctx.lineTo(m+8,by-20); ctx.stroke();
+  ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(m-5,by-10); ctx.lineTo(m+5,by-10); ctx.stroke();
+  ctx.fillStyle='#f59e0b'; ctx.font='11px Segoe UI';
+  ctx.fillText(`${V}V`,m+12,by-10);
+  // Resistor (top)
+  const rx=c.width/2,ry=m;
+  ctx.strokeStyle='#ef4444'; ctx.lineWidth=3;
+  ctx.strokeRect(rx-30,ry-10,60,20);
+  ctx.fillStyle='#ef4444'; ctx.fillText(`${R}Ω`,rx-10,ry+5);
+  // Bulb (right side)
+  const lx=c.width-m,ly=c.height/2;
+  const bright=Math.min(1,P/50);
+  ctx.fillStyle=`rgba(251,191,36,${bright})`;
+  ctx.beginPath(); ctx.arc(lx,ly,18,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#fbbf24'; ctx.lineWidth=2; ctx.stroke();
+  ctx.fillStyle='#fff'; ctx.font='11px Segoe UI'; ctx.fillText('💡',lx-8,ly+5);
+  // Current arrows
+  ctx.fillStyle='rgba(99,102,241,.7)'; ctx.font='14px Segoe UI';
+  ctx.fillText('→',c.width/2+40,m-2);
+  ctx.fillText('→',c.width/2-60,m-2);
+  ctx.fillStyle='#6366f1'; ctx.font='12px Segoe UI';
+  ctx.fillText(`I = ${I.toFixed(2)} A`,c.width/2-30,c.height-m-8);
+  if(P>30){ctx.fillStyle='rgba(251,191,36,0.3)';for(let i=0;i<6;i++){const ax=lx+(Math.random()-.5)*50,ay=ly+(Math.random()-.5)*50;ctx.beginPath();ctx.arc(ax,ay,3,0,Math.PI*2);ctx.fill();}}
+}
+
+// ── INIT ──────────────────────────────────────────────────
+renderCards('all');
+</script>
+</body>
+</html>
