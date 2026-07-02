@@ -87,10 +87,10 @@ canvas{border-radius:8px;max-width:100%}
 <div class="container">
   <!-- Subject tabs -->
   <div class="subject-tabs">
-    <button class="stab active" onclick="filterLabs(this,'all')">🧪 All Labs</button>
-    <button class="stab" onclick="filterLabs(this,'bio')">🧬 Biology</button>
-    <button class="stab" onclick="filterLabs(this,'chem')">⚗️ Chemistry</button>
-    <button class="stab" onclick="filterLabs(this,'phys')">⚡ Physics</button>
+    <button class="stab active" data-subj="all">🧪 All Labs</button>
+    <button class="stab" data-subj="bio">🧬 Biology</button>
+    <button class="stab" data-subj="chem">⚗️ Chemistry</button>
+    <button class="stab" data-subj="phys">⚡ Physics</button>
   </div>
 
   <!-- Lab cards -->
@@ -1635,6 +1635,15 @@ function drawHooke(){
 
 // ── INIT ──────────────────────────────────────────────────
 renderCards('all');
+
+// Wire up filter tabs with addEventListener (reliable across all browsers)
+document.querySelectorAll('.stab').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.stab').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderCards(btn.dataset.subj);
+  });
+});
 </script>
 </body>
 </html>
