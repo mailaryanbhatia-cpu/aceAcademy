@@ -4483,6 +4483,10 @@ function render() {
         </div>
         <div class="unit-body">
           <ul>${topicMatch.map(t => `<li>${highlight(t)}</li>`).join('')}</ul>
+          <div style="margin:10px 0 6px;display:flex;gap:8px;flex-wrap:wrap">
+            <a href="https://www.khanacademy.org/search?referer=%2F&page_search_query=${encodeURIComponent(u.unit)}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;background:rgba(20,184,166,.15);color:#14b981;font-size:.78rem;font-weight:700;text-decoration:none;border:1px solid rgba(20,184,166,.3)">🟢 Khan Academy</a>
+            <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(u.unit + ' lesson ' + subj.label)}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;background:rgba(239,68,68,.12);color:#ef4444;font-size:.78rem;font-weight:700;text-decoration:none;border:1px solid rgba(239,68,68,.25)">🔴 YouTube</a>
+          </div>
           ${practiceHtml}
         </div>
       </div>`;
