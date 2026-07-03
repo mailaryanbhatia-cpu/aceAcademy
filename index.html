@@ -7100,7 +7100,8 @@ document.querySelectorAll('#gradeList a').forEach(a => {
 
 // Search
 let searchTimer;
-document.getElementById('searchInput').addEventListener('input', e => {
+const _searchInput = document.getElementById('searchInput');
+if (_searchInput) _searchInput.addEventListener('input', e => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
     searchQuery = e.target.value.trim().toLowerCase();
