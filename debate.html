@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Debate Practice - aceAcademy</title>
+<style>
+:root{--bg:#0b1120;--surface:#1a2540;--surface2:#0f1a2e;--accent:#6366f1;--accent2:#8b5cf6;--text:#e2e8f0;--muted:#94a3b8;--border:#2d3748;--green:#10b981;--yellow:#f59e0b;--red:#ef4444;--blue:#3b82f6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:var(--surface2);border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--surface)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:40px 20px 28px;background:linear-gradient(135deg,#1a1040,#0b1120)}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.hero p{color:var(--muted);max-width:560px;margin:0 auto}
+.container{max-width:900px;margin:0 auto;padding:24px 20px}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+.card-title{font-size:1rem;font-weight:800;margin-bottom:16px;color:var(--accent)}
+.topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:16px}
+.topic-card{padding:14px 16px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;transition:.15s}
+.topic-card:hover,.topic-card.selected{border-color:var(--accent);background:rgba(99,102,241,.08)}
+.topic-card .tlabel{font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.topic-card .ttitle{font-size:.88rem;font-weight:700}
+.cat-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.cat-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:.8rem;font-weight:600}
+.cat-btn.active,.cat-btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn{padding:11px 24px;border-radius:10px;border:none;cursor:pointer;font-size:.92rem;font-weight:700;transition:.15s}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:#4f46e5}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#059669}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#dc2626}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.debate-arena{display:none}
+.debate-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.debate-topic{font-size:1.1rem;font-weight:800;flex:1}
+.timer-display{font-size:2.5rem;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;min-width:80px;text-align:center}
+.timer-display.warning{color:var(--yellow)}
+.timer-display.danger{color:var(--red)}
+.sides{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:640px){.sides{grid-template-columns:1fr}}
+.side-card{border-radius:14px;padding:20px;border:2px solid}
+.side-pro{border-color:var(--green);background:rgba(16,185,129,.05)}
+.side-con{border-color:var(--red);background:rgba(239,68,68,.05)}
+.side-label{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.side-pro .side-label{color:var(--green)}
+.side-con .side-label{color:var(--red)}
+.side-title{font-size:.95rem;font-weight:700;margin-bottom:12px}
+.side-points{list-style:none;display:flex;flex-direction:column;gap:6px}
+.side-points li{font-size:.82rem;color:var(--muted);padding-left:16px;position:relative;line-height:1.5}
+.side-points li::before{content:"•";position:absolute;left:0;color:inherit}
+.side-pro .side-points li::before{color:var(--green)}
+.side-con .side-points li::before{color:var(--red)}
+.speech-area{margin-bottom:20px}
+.speech-label{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.speech-textarea{width:100%;min-height:140px;padding:14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:.9rem;resize:vertical;font-family:inherit;line-height:1.6}
+.speech-textarea:focus{outline:none;border-color:var(--accent)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.round-badge{padding:5px 12px;border-radius:20px;background:rgba(99,102,241,.15);color:var(--accent);font-size:.8rem;font-weight:700}
+.score-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.score-item{background:var(--surface2);border-radius:10px;padding:12px 18px;flex:1;min-width:120px;text-align:center}
+.score-item .score-num{font-size:1.8rem;font-weight:900;color:var(--accent)}
+.score-item .score-label{font-size:.75rem;color:var(--muted);font-weight:700;text-transform:uppercase}
+.rubric{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:16px}
+.rubric-item{background:var(--surface2);border-radius:10px;padding:12px}
+.rubric-item label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:6px}
+.rubric-item input[type=range]{width:100%;accent-color:var(--accent)}
+.rubric-item .rubric-val{font-size:.85rem;font-weight:700;color:var(--accent)}
+.feedback-box{background:rgba(99,102,241,.08);border:1px solid var(--accent);border-radius:12px;padding:18px;margin-top:16px;line-height:1.7;font-size:.88rem}
+.phase-indicator{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.phase-dot{width:10px;height:10px;border-radius:50%;background:var(--border)}
+.phase-dot.done{background:var(--green)}
+.phase-dot.active{background:var(--accent)}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="alltools.html" class="nav-link">All Tools</a>
+  <a href="essay.html" class="nav-link">Essay</a>
+  <a href="debate.html" class="nav-link active">Debate</a>
+  <a href="reading.html" class="nav-link">Reading</a>
+  <a href="tutor.html" class="nav-link">Tutor</a>
+</nav>
+
+<div class="hero">
+  <h1>🗣️ Debate Practice Tool</h1>
+  <p>Pick a topic, argue both sides with timed rounds, build critical thinking, and get scored on your arguments.</p>
+</div>
+
+<div class="container">
+  <!-- Topic Selection -->
+  <div id="topicScreen">
+    <div class="card">
+      <div class="card-title">📋 Choose a Debate Topic</div>
+      <div class="cat-filters" id="catFilters">
+        <button class="cat-btn active" data-cat="all">All</button>
+        <button class="cat-btn" data-cat="science">Science</button>
+        <button class="cat-btn" data-cat="society">Society</button>
+        <button class="cat-btn" data-cat="technology">Technology</button>
+        <button class="cat-btn" data-cat="environment">Environment</button>
+        <button class="cat-btn" data-cat="education">Education</button>
+        <button class="cat-btn" data-cat="ethics">Ethics</button>
+      </div>
+      <div class="topic-grid" id="topicGrid"></div>
+      <div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:.85rem;color:var(--muted)">Or type your own topic:</span>
+        <input type="text" id="customTopic" placeholder="e.g. Should school be year-round?" style="flex:1;min-width:200px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:.88rem"/>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚙️ Debate Settings</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+        <div>
+          <label style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:6px">Speech Time</label>
+          <select id="speechTime" style="width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text)">
+            <option value="60">1 minute</option>
+            <option value="120" selected>2 minutes</option>
+            <option value="180">3 minutes</option>
+            <option value="300">5 minutes</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:6px">Format</label>
+          <select id="formatSel" style="width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text)">
+            <option value="oxford">Oxford Style (Pro/Con rounds)</option>
+            <option value="lincoln">Lincoln-Douglas (Values focus)</option>
+            <option value="freestyle">Freestyle (No timer)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:6px">Your Side</label>
+          <select id="sideSel" style="width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text)">
+            <option value="pro">Pro (For)</option>
+            <option value="con">Con (Against)</option>
+            <option value="both">Practice Both Sides</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-accent" style="margin-top:20px;width:100%;font-size:1rem;padding:14px" onclick="startDebate()">🗣️ Start Debate</button>
+    </div>
+  </div>
+
+  <!-- Debate Arena -->
+  <div class="debate-arena" id="debateArena">
+    <div class="card">
+      <div class="debate-header">
+        <div>
+          <div style="font-size:.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px">Current Topic</div>
+          <div class="debate-topic" id="arenaTopicText"></div>
+        </div>
+        <div style="text-align:center">
+          <div class="timer-display" id="timerDisplay">2:00</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:2px" id="timerLabel">Opening Statement</div>
+        </div>
+      </div>
+
+      <div class="phase-indicator" id="phaseIndicator"></div>
+
+      <div class="sides" id="sidesPanel"></div>
+
+      <div class="speech-area">
+        <div class="speech-label" id="speechLabel">Your Opening Statement</div>
+        <textarea class="speech-textarea" id="speechText" placeholder="Type your argument here..."></textarea>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span style="font-size:.75rem;color:var(--muted)" id="wordCount">0 words</span>
+          <span style="font-size:.75rem;color:var(--muted)">Strong arguments use evidence, examples, and address counterpoints</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-green" id="timerBtn" onclick="toggleTimer()">▶ Start Timer</button>
+        <button class="btn btn-accent" onclick="nextRound()">Next Round →</button>
+        <button class="btn btn-outline" onclick="saveArgument()">💾 Save</button>
+        <button class="btn btn-outline" onclick="endDebate()">✕ End</button>
+        <span class="round-badge" id="roundBadge">Round 1 of 4</span>
+      </div>
+    </div>
+
+    <!-- Scoring -->
+    <div class="card" id="scoringCard" style="display:none">
+      <div class="card-title">⭐ Score Your Performance</div>
+      <div class="score-row" id="scoreRow"></div>
+      <div class="rubric" id="rubricPanel">
+        <div class="rubric-item">
+          <label>Evidence & Facts <span class="rubric-val" id="rv1">5</span>/10</label>
+          <input type="range" min="1" max="10" value="5" oninput="updateScore(0,this.value)" id="r1">
+        </div>
+        <div class="rubric-item">
+          <label>Logic & Reasoning <span class="rubric-val" id="rv2">5</span>/10</label>
+          <input type="range" min="1" max="10" value="5" oninput="updateScore(1,this.value)" id="r2">
+        </div>
+        <div class="rubric-item">
+          <label>Counterarguments <span class="rubric-val" id="rv3">5</span>/10</label>
+          <input type="range" min="1" max="10" value="5" oninput="updateScore(2,this.value)" id="r3">
+        </div>
+        <div class="rubric-item">
+          <label>Clarity & Style <span class="rubric-val" id="rv4">5</span>/10</label>
+          <input type="range" min="1" max="10" value="5" oninput="updateScore(3,this.value)" id="r4">
+        </div>
+        <div class="rubric-item">
+          <label>Word Count <span class="rubric-val" id="rv5">5</span>/10</label>
+          <input type="range" min="1" max="10" value="5" oninput="updateScore(4,this.value)" id="r5">
+        </div>
+      </div>
+      <div class="feedback-box" id="feedbackBox"></div>
+      <button class="btn btn-accent" style="margin-top:16px" onclick="location.reload()">🔄 New Debate</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOPICS = [
+  {cat:"society",title:"Should the voting age be lowered to 16?",pro:["Teenagers are affected by policy decisions","Many 16-year-olds are mature and informed","Encourages lifelong civic engagement"],con:["Brain development not complete until 25","Lack of life experience and independence","Could be influenced by parents"]},
+  {cat:"technology",title:"Should social media be banned for under-16s?",pro:["Protects mental health of minors","Reduces cyberbullying significantly","Improves focus and academic performance"],con:["Restricts free expression and communication","Hard to enforce effectively","Teens will find workarounds"]},
+  {cat:"education",title:"Should homework be abolished in schools?",pro:["Causes unnecessary stress and anxiety","Family time is equally educational","Quality over quantity in school hours"],con:["Reinforces learning and builds discipline","Prepares students for independent work","Essential for subjects needing practice"]},
+  {cat:"environment",title:"Should the US ban single-use plastics?",pro:["Reduces ocean pollution dramatically","Alternatives are widely available","Long-term cost savings for environment"],con:["Economic impact on industries","Alternatives can cost more energy to produce","Enforcement is complex nationally"]},
+  {cat:"science",title:"Should genetic engineering of humans be allowed?",pro:["Could eliminate hereditary diseases","Advances medicine and human health","Already used in agriculture safely"],con:["Ethical concerns about designer babies","Unforeseen long-term consequences","Deepens inequality between rich and poor"]},
+  {cat:"society",title:"Should the death penalty be abolished?",pro:["Risk of executing innocent people","Does not deter crime statistically","Costly compared to life imprisonment"],con:["Justice for the most heinous crimes","Closure for victims and families","Permanent removal of dangerous individuals"]},
+  {cat:"technology",title:"Should artificial intelligence replace teachers?",pro:["Personalized learning at scale","Available 24/7 and endlessly patient","Reduces cost of education globally"],con:["Human connection is vital to learning","AI lacks empathy and mentorship ability","Not all students have tech access"]},
+  {cat:"education",title:"Should college be free for all students?",pro:["Removes financial barrier to education","Boosts economy through skilled workforce","Other countries do it successfully"],con:["Extremely high cost for taxpayers","May reduce perceived value of degrees","Quality could decline without competition"]},
+  {cat:"ethics",title:"Should animals be used in medical research?",pro:["Led to life-saving vaccines and treatments","Strict regulations protect animal welfare","No viable alternative for complex biology"],con:["Animal suffering is ethically unjustifiable","Many results do not apply to humans","Technology offers better alternatives"]},
+  {cat:"environment",title:"Should nuclear energy be expanded?",pro:["Zero carbon emissions in operation","Most energy-dense power source available","Modern reactors are very safe"],con:["Radioactive waste storage unsolved","High construction cost and time","Public fear after accidents"],},
+  {cat:"society",title:"Should the school day start later?",pro:["Teenagers naturally have delayed sleep cycles","Better rest improves academic performance","Reduces mental health issues in students"],con:["Disrupts working parents schedules","After-school activities become harder","Buses and logistics are costly to change"]},
+  {cat:"technology",title:"Should self-driving cars be legal on all roads?",pro:["90% of crashes caused by human error","Increases mobility for elderly and disabled","Long-term traffic efficiency improvements"],con:["Software failures can be deadly","Liability is legally unclear","Job loss for millions of drivers"]},
+  {cat:"ethics",title:"Should zoos be abolished?",pro:["Animals deserve to live in natural habitats","Modern conservation can happen in wild","Many zoo animals show signs of stress"],con:["Critical for endangered species preservation","Education reaches millions of people","Funding supports wild conservation too"]},
+  {cat:"education",title:"Should phones be banned in classrooms?",pro:["Eliminates distraction and improves focus","Reduces social media anxiety during school","Teachers can use tech on their own terms"],con:["Phones are learning tools when used well","Prepares students for tech-integrated world","Students can still misuse other devices"]},
+  {cat:"science",title:"Should space exploration be prioritized over Earth problems?",pro:["Space tech has solved Earth problems too","Long-term survival requires multi-planet species","Inspires generations and drives innovation"],con:["Climate change and poverty need funding now","Space budgets could fund healthcare","Benefits are distant and uncertain"]},
+];
+
+const PHASES = ["Opening Statement","Rebuttal","Cross-Examination","Closing Statement"];
+let state = {topic:null, phase:0, timerSec:120, timerMax:120, running:false, interval:null, scores:[5,5,5,5,5], savedArgs:[]};
+
+function renderTopics(cat='all') {
+  const grid = document.getElementById('topicGrid');
+  const filtered = cat==='all' ? TOPICS : TOPICS.filter(t=>t.cat===cat);
+  grid.innerHTML = filtered.map((t,i)=>`
+    <div class="topic-card" onclick="selectTopic(${TOPICS.indexOf(t)})" id="tc${TOPICS.indexOf(t)}">
+      <div class="tlabel">${t.cat}</div>
+      <div class="ttitle">${t.title}</div>
+    </div>`).join('');
+}
+
+function selectTopic(idx) {
+  document.querySelectorAll('.topic-card').forEach(c=>c.classList.remove('selected'));
+  const el = document.getElementById('tc'+idx);
+  if(el) el.classList.add('selected');
+  state.topic = TOPICS[idx];
+}
+
+document.querySelectorAll('.cat-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTopics(btn.dataset.cat);
+  });
+});
+
+function startDebate() {
+  const custom = document.getElementById('customTopic').value.trim();
+  if(custom) {
+    state.topic = {title:custom, pro:['Research and present your own evidence','Consider economic impacts','Think about affected populations'], con:['Consider opposing viewpoints','Research counterarguments','Think about unintended consequences']};
+  }
+  if(!state.topic){alert('Please select or type a topic first!');return;}
+  state.timerMax = +document.getElementById('speechTime').value;
+  state.timerSec = state.timerMax;
+  state.phase = 0;
+  document.getElementById('topicScreen').style.display='none';
+  document.getElementById('debateArena').style.display='block';
+  document.getElementById('arenaTopicText').textContent = state.topic.title;
+  renderPhaseIndicator();
+  renderSides();
+  updateTimerDisplay();
+  updateRoundBadge();
+  updateSpeechLabel();
+}
+
+function renderPhaseIndicator() {
+  document.getElementById('phaseIndicator').innerHTML = PHASES.map((p,i)=>`
+    <div class="phase-dot ${i<state.phase?'done':i===state.phase?'active':''}" title="${p}"></div>
+    <span style="font-size:.72rem;color:${i===state.phase?'var(--accent)':'var(--muted)'};margin-right:8px">${p}</span>
+  `).join('');
+}
+
+function renderSides() {
+  const side = document.getElementById('sideSel').value;
+  document.getElementById('sidesPanel').innerHTML = `
+    <div class="side-card side-pro">
+      <div class="side-label">✅ Pro (For)</div>
+      <div class="side-title">Arguments in favor</div>
+      <ul class="side-points">${state.topic.pro.map(p=>`<li>${p}</li>`).join('')}</ul>
+    </div>
+    <div class="side-card side-con">
+      <div class="side-label">❌ Con (Against)</div>
+      <div class="side-title">Arguments against</div>
+      <ul class="side-points">${state.topic.con.map(c=>`<li>${c}</li>`).join('')}</ul>
+    </div>`;
+}
+
+function updateTimerDisplay() {
+  const m=Math.floor(state.timerSec/60), s=state.timerSec%60;
+  const el=document.getElementById('timerDisplay');
+  el.textContent=m+':'+(s<10?'0':'')+s;
+  const pct=state.timerSec/state.timerMax;
+  el.className='timer-display'+(pct<0.2?' danger':pct<0.4?' warning':'');
+  document.getElementById('timerLabel').textContent=PHASES[state.phase];
+}
+
+function toggleTimer() {
+  const btn=document.getElementById('timerBtn');
+  if(state.running){
+    clearInterval(state.interval);state.running=false;btn.textContent='▶ Resume Timer';
+  } else {
+    state.running=true;btn.textContent='⏸ Pause Timer';
+    state.interval=setInterval(()=>{
+      state.timerSec--;updateTimerDisplay();
+      if(state.timerSec<=0){clearInterval(state.interval);state.running=false;btn.textContent='▶ Start Timer';alert('Time is up! Move to the next round.');}
+    },1000);
+  }
+}
+
+function nextRound() {
+  saveArgument();
+  if(state.phase>=PHASES.length-1){showScoring();return;}
+  state.phase++;
+  state.timerSec=state.timerMax;
+  clearInterval(state.interval);state.running=false;
+  document.getElementById('timerBtn').textContent='▶ Start Timer';
+  document.getElementById('speechText').value='';
+  document.getElementById('wordCount').textContent='0 words';
+  renderPhaseIndicator();updateTimerDisplay();updateRoundBadge();updateSpeechLabel();
+}
+
+function updateRoundBadge(){document.getElementById('roundBadge').textContent='Round '+(state.phase+1)+' of '+PHASES.length;}
+function updateSpeechLabel(){document.getElementById('speechLabel').textContent='Your '+PHASES[state.phase];}
+
+function saveArgument(){
+  const txt=document.getElementById('speechText').value.trim();
+  if(txt)state.savedArgs.push({phase:PHASES[state.phase],text:txt});
+}
+
+document.getElementById('speechText').addEventListener('input',function(){
+  const words=this.value.trim().split(/\s+/).filter(w=>w).length;
+  document.getElementById('wordCount').textContent=words+' words';
+});
+
+function showScoring(){
+  document.getElementById('scoringCard').style.display='block';
+  renderScoreRow();generateFeedback();
+  document.getElementById('debateArena').querySelector('.card').scrollIntoView({behavior:'smooth'});
+}
+
+function renderScoreRow(){
+  const total=state.scores.reduce((a,b)=>a+b,0);
+  const max=state.scores.length*10;
+  const pct=Math.round(total/max*100);
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F';
+  document.getElementById('scoreRow').innerHTML=`
+    <div class="score-item"><div class="score-num">${total}/${max}</div><div class="score-label">Total Score</div></div>
+    <div class="score-item"><div class="score-num">${pct}%</div><div class="score-label">Percentage</div></div>
+    <div class="score-item"><div class="score-num">${grade}</div><div class="score-label">Grade</div></div>
+    <div class="score-item"><div class="score-num">${state.savedArgs.length}</div><div class="score-label">Rounds Completed</div></div>`;
+}
+
+function updateScore(idx,val){
+  state.scores[idx]=+val;
+  document.getElementById('rv'+(idx+1)).textContent=val;
+  renderScoreRow();generateFeedback();
+}
+
+function generateFeedback(){
+  const [ev,lg,ca,cl,wc]=state.scores;
+  const tips=[];
+  if(ev<6)tips.push('Add more specific evidence — statistics, studies, or historical examples strengthen your case.');
+  if(lg<6)tips.push('Work on logical flow — each claim should lead naturally to the next with clear reasoning.');
+  if(ca<6)tips.push('Address opposing views directly — acknowledge them then explain why your position is stronger.');
+  if(cl<6)tips.push('Use clearer, more concise language — avoid filler words and stick to your strongest points.');
+  if(wc<6)tips.push('Aim for more substantive arguments — develop each point with explanation and examples.');
+  const avg=state.scores.reduce((a,b)=>a+b,0)/state.scores.length;
+  const msg=avg>=8?'Excellent debate performance! Your arguments were well-structured and persuasive.':avg>=6?'Good effort! With more evidence and counterargument practice, you'll be very strong.':'Keep practicing! Focus on building structured arguments with clear evidence.';
+  document.getElementById('feedbackBox').innerHTML='<strong>Feedback:</strong> '+msg+(tips.length?'<br><br><strong>Tips to improve:</strong><ul style="margin-top:8px;padding-left:18px">'+tips.map(t=>`<li style="margin-bottom:4px">${t}</li>`).join('')+'</ul>':'');
+}
+
+function endDebate(){if(confirm('End this debate session?')){location.reload();}}
+
+renderTopics();
+</script>
+</body>
+</html>
