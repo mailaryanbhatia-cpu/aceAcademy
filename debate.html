@@ -377,7 +377,7 @@ function generateFeedback(){
   if(cl<6)tips.push('Use clearer, more concise language — avoid filler words and stick to your strongest points.');
   if(wc<6)tips.push('Aim for more substantive arguments — develop each point with explanation and examples.');
   const avg=state.scores.reduce((a,b)=>a+b,0)/state.scores.length;
-  const msg=avg>=8?'Excellent debate performance! Your arguments were well-structured and persuasive.':avg>=6?'Good effort! With more evidence and counterargument practice, you'll be very strong.':'Keep practicing! Focus on building structured arguments with clear evidence.';
+  const msg=avg>=8?'Excellent debate performance! Your arguments were well-structured and persuasive.':avg>=6?'Good effort! With more evidence and counterargument practice, you\'ll be very strong.':'Keep practicing! Focus on building structured arguments with clear evidence.';
   document.getElementById('feedbackBox').innerHTML='<strong>Feedback:</strong> '+msg+(tips.length?'<br><br><strong>Tips to improve:</strong><ul style="margin-top:8px;padding-left:18px">'+tips.map(t=>`<li style="margin-bottom:4px">${t}</li>`).join('')+'</ul>':'');
 }
 

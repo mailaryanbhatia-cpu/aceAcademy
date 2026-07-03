@@ -226,7 +226,7 @@ function gradeEssay(){
 
   // ── Style ───────────────────────────────────────────────────────────────────
   const avgSentLen = words / Math.max(sentences.length,1);
-  const informalKws = ["i'm","you're","it's","don't","can't","won't","gonna","wanna","stuff","things","a lot","get","got","pretty","really","very","just","like,"];
+  const informalKws = ["i\'m","you\'re","it\'s","don\'t","can\'t","won\'t","gonna","wanna","stuff","things","a lot","get","got","pretty","really","very","just","like,"];
   const informalCount = informalKws.reduce((n,k)=>n+(text.toLowerCase().split(k).length-1),0);
   const passiveKws = ['was written','were found','is known','are used','were made','was given','is believed','was considered'];
   const passiveCount = passiveKws.reduce((n,k)=>n+(text.toLowerCase().split(k).length-1),0);
@@ -237,7 +237,7 @@ function gradeEssay(){
   if(avgSentLen < 8){ styleScore -= 3; styleFb.push({type:'warn',text:'Sentences are very short on average. Vary sentence length for a more sophisticated style.'}); }
   else if(avgSentLen > 35){ styleScore -= 2; styleFb.push({type:'warn',text:'Some sentences may be too long. Break up complex sentences for clarity.'}); }
   else { styleFb.push({type:'good',text:'Good average sentence length — clear and readable.'}); }
-  if(passiveCount > 2){ styleScore -= 2; styleFb.push({type:'warn',text('Too much passive voice detected. Prefer active voice for stronger writing.')}); }
+  if(passiveCount > 2){ styleScore -= 2; styleFb.push({type:'warn',text:'Too much passive voice detected. Prefer active voice for stronger writing.'}); }
 
   // ── Argumentation (for argumentative/analytical only) ───────────────────────
   const argKws = ['counterargument','counter-argument','critics','opponents','some argue','others believe','although','while some','despite','nevertheless'];
@@ -249,7 +249,7 @@ function gradeEssay(){
     else { argFb.push({type:'good',text:`Good — found ${argCount} counterargument/concession signal(s). This shows critical thinking.`}); }
     const rebKws = ['however','but','yet','nevertheless','nonetheless','in contrast','on the contrary'];
     const rebCount = rebKws.reduce((n,k)=>n+(text.toLowerCase().split(k).length-1),0);
-    if(rebCount < 1 && argCount > 0){ argScore -= 5; argFb.push({type:'warn',text:'Make sure to rebut the counterargument — don't just acknowledge it.'}); }
+    if(rebCount < 1 && argCount > 0){ argScore -= 5; argFb.push({type:'warn',text:'Make sure to rebut the counterargument — don\'t just acknowledge it.'}); }
     if(argCount > 0 && rebCount > 0) argFb.push({type:'good',text:'Counterargument followed by a rebuttal — excellent argumentative structure.'});
   } else if(essayType === 'narrative'){
     argScore = 25;
