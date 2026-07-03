@@ -108,6 +108,7 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 
 
 <script src="auth-guard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -318,6 +319,18 @@ function render(){
     <div class="stat-card purple"><div class="num">${streak}</div><div class="lbl">Day Streak 🔥</div></div>
   </div>
 
+  <!-- SCORE OVER TIME CHART -->
+  ${history.length >= 2 ? `<div class="section">
+    <div class="section-title">📈 Score Over Time</div>
+    <div style="position:relative;height:220px"><canvas id="historyChart"></canvas></div>
+  </div>` : ''}
+
+  <!-- SUBJECT BAR CHART -->
+  <div class="section">
+    <div class="section-title">📊 Subject Scores (Chart)</div>
+    <div style="position:relative;height:200px"><canvas id="subjectChart"></canvas></div>
+  </div>
+
   <!-- SUBJECT BREAKDOWN -->
   <div class="section">
     <div class="section-title">📚 Score by Subject</div>
@@ -404,9 +417,77 @@ function render(){
   // Animate bars
   setTimeout(()=>{
     document.querySelectorAll('.bar-fill').forEach(b=>{
-      b.style.width = b.style.width; // trigger reflow-based CSS transition
+      b.style.width = b.style.width;
     });
   }, 50);
+
+  // ── Draw Charts ──────────────────────────────────────────
+  const chartDefaults = { font:{family:"'Segoe UI',sans-serif"}, color:'#94a3b8' };
+  Chart.defaults.color = '#94a3b8';
+  Chart.defaults.font.family = "'Segoe UI',sans-serif";
+
+  // Score over time (line chart)
+  const hCtx = document.getElementById('historyChart');
+  if(hCtx && history.length >= 2){
+    const sorted = [...history].reverse().slice(-30);
+    new Chart(hCtx, {
+      type:'line',
+      data:{
+        labels: sorted.map((s,i)=>{
+          const d=new Date(s.ts); return `${d.getMonth()+1}/${d.getDate()}`;
+        }),
+        datasets:[{
+          label:'Score %',
+          data: sorted.map(s=>Math.round(s.correct/s.total*100)),
+          borderColor:'#6366f1',
+          backgroundColor:'rgba(99,102,241,.15)',
+          fill:true,
+          tension:0.35,
+          pointBackgroundColor:'#6366f1',
+          pointRadius:4,
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          y:{min:0,max:100,grid:{color:'rgba(255,255,255,.07)'},ticks:{callback:v=>v+'%'}},
+          x:{grid:{color:'rgba(255,255,255,.07)'}}
+        }
+      }
+    });
+  }
+
+  // Subject bar chart
+  const sCtx = document.getElementById('subjectChart');
+  if(sCtx){
+    const subjKeys = Object.keys(SUBJECTS).filter(k=>bySubj[k]&&bySubj[k].count);
+    if(subjKeys.length){
+      new Chart(sCtx, {
+        type:'bar',
+        data:{
+          labels: subjKeys.map(k=>SUBJECTS[k].label),
+          datasets:[{
+            label:'Avg %',
+            data: subjKeys.map(k=>Math.round(bySubj[k].correct/bySubj[k].total*100)),
+            backgroundColor: subjKeys.map(k=>SUBJECTS[k].color+'cc'),
+            borderColor: subjKeys.map(k=>SUBJECTS[k].color),
+            borderWidth:2, borderRadius:6,
+          }]
+        },
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          plugins:{legend:{display:false}},
+          scales:{
+            y:{min:0,max:100,grid:{color:'rgba(255,255,255,.07)'},ticks:{callback:v=>v+'%'}},
+            x:{grid:{display:false}}
+          }
+        }
+      });
+    } else {
+      sCtx.parentElement.innerHTML='<p style="color:var(--muted);font-size:.85rem;padding:8px 0">Take tests in multiple subjects to see the chart.</p>';
+    }
+  }
 }
 
 function calcStreak(history){

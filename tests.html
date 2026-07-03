@@ -126,6 +126,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .score-bars{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
 .score-bar-item{text-align:center;font-size:.8rem;color:var(--muted)}
 .score-bar-item strong{display:block;font-size:1.1rem;font-weight:800;color:var(--text)}
+.score-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.score-actions button{padding:10px 22px;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;border:2px solid var(--accent);transition:all .15s}
+.score-actions .btn-primary{background:var(--accent);color:#fff}
+.score-actions .btn-primary:hover{background:var(--accent2)}
+.score-actions .btn-outline{background:transparent;color:var(--accent)}
+.score-actions .btn-outline:hover{background:rgba(99,102,241,.1)}
+/* Timer display */
+.test-timer{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:8px;padding:4px 12px;font-size:.82rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.test-timer.warning{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:var(--red)}
+/* Review mistakes mode */
+.q-card.correct.hidden-correct{display:none}
+.review-banner{background:rgba(239,68,68,.1);border:1.5px solid var(--red);border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:.85rem;color:var(--red);font-weight:600;display:flex;align-items:center;gap:8px}
+/* Mobile sidebar toggle */
+.sidebar-toggle{display:none;background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;margin:10px 16px}
+@media(max-width:700px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);max-height:0;overflow:hidden;padding:0;transition:max-height .3s ease}
+  .sidebar.open{max-height:60vh;overflow-y:auto;padding:16px 0}
+  .sidebar-toggle{display:block}
+  .main{padding:16px}
+  .test-wrap{max-width:100%}
+  .grade-bar{padding:8px 12px;gap:6px}
+  .grade-btn{padding:5px 10px;font-size:.75rem}
+  .score-ring{font-size:2.2rem}
+  .submit-row{flex-direction:column;align-items:stretch}
+  .submit-btn,.retake-btn{width:100%;text-align:center}
+}
 .progress-bar-outer{height:8px;background:var(--border);border-radius:4px;margin-top:12px;overflow:hidden}
 .progress-bar-inner{height:100%;border-radius:4px;background:var(--accent);transition:width .6s ease}
 </style>
@@ -206,6 +233,7 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 </div>
 
 <div class="layout">
+  <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ Units</button>
   <div class="sidebar" id="sidebar"></div>
   <div class="main" id="main">
     <div class="empty-state" id="emptyState">
@@ -383,6 +411,22 @@ function showUnitOptions(grade,subj,unitIdx){
     </div>`;
 }
 
+// ── TEST TIMER ──────────────────────────────────────────────
+let testStartTime = null, testTimerInterval = null;
+function startTestTimer(){
+  testStartTime = Date.now();
+  if(testTimerInterval) clearInterval(testTimerInterval);
+  testTimerInterval = setInterval(()=>{
+    const el = document.getElementById('testTimerDisplay');
+    if(!el){ clearInterval(testTimerInterval); return; }
+    const s = Math.floor((Date.now()-testStartTime)/1000);
+    const m = Math.floor(s/60), sec = s%60;
+    el.textContent = `⏱ ${m}:${sec<10?'0':''}${sec}`;
+    el.className = 'test-timer' + (s > 1800 ? ' warning' : '');
+  }, 1000);
+}
+function stopTestTimer(){ clearInterval(testTimerInterval); return testStartTime ? Math.floor((Date.now()-testStartTime)/1000) : 0; }
+
 function openTest(grade,subj,unitIdx,part){
   document.querySelectorAll('.unit-item').forEach(e=>e.classList.remove('active'));
   const el = document.getElementById(`ui-${grade}-${subj}-${unitIdx}`);
@@ -488,13 +532,15 @@ function renderTest(grade,subj,unitIdx,unit,part){
   }
 
   qNum = 0;
+  startTestTimer();
   let html = `<div class="test-header">
     <div class="test-breadcrumb">Grade ${grade} &rsaquo; <span>${meta.label}</span></div>
     <div class="test-title">${unit.title}</div>
     <div class="test-meta">
       <span class="tag">Grade ${grade}</span>
       <span class="tag">${meta.icon} ${meta.label}</span>
-      <span class="tag">20 Questions</span>
+      <span class="tag">${currentQuestions.length} Questions</span>
+      <span class="test-timer" id="testTimerDisplay">⏱ 0:00</span>
     </div>
     <div class="progress-bar-outer" style="margin-top:12px">
       <div class="progress-bar-inner" id="progressBar" style="width:0%"></div>
@@ -606,45 +652,49 @@ function gradeTest(){
     if(isCorrect) correct++;
   });
 
+  // Stop timer and get elapsed
+  const elapsed = stopTestTimer();
+  const elapsedMin = Math.floor(elapsed/60), elapsedSec = elapsed%60;
+  const timeStr = `${elapsedMin}:${elapsedSec<10?'0':''}${elapsedSec}`;
+
+  // Previous best
+  let prevBest = null;
+  try{ const prev = JSON.parse(localStorage.getItem('aceTestScore_'+scoreKey(grade,subj,unitIdx))||'null'); if(prev) prevBest = Math.round(prev.correct/prev.total*100); }catch(e){}
+
   // Score card
   const pct = Math.round(correct/total*100);
+  const wrongCount = total - correct;
   let grade_letter = pct>=90?'a':pct>=80?'b':pct>=70?'c':'d';
   let emoji = pct>=90?'🏆':pct>=80?'⭐':pct>=70?'👍':'📖';
-  let msg = pct>=90?'Excellent work!':pct>=80?'Great job!':pct>=70?'Good effort — review the red questions.':'Keep studying — you\'ll get it!';
+  let msg = pct>=90?'Excellent work!':pct>=80?'Great job!':pct>=70?'Good effort — review the mistakes below.':'Keep studying — use the review below!';
+  const prevNote = prevBest !== null ? (pct > prevBest ? `↑ Improved from ${prevBest}%` : pct === prevBest ? `Same as last time (${prevBest}%)` : `↓ Previous best: ${prevBest}%`) : 'First attempt!';
 
   const sc = document.getElementById('scoreCard');
   sc.style.display='block';
-  const backBtn = (grade === 'ap')
-    ? `<button onclick="showUnitOptions('${grade}','${subj}',${unitIdx})" style="margin-top:14px;padding:10px 22px;border-radius:10px;border:1.5px solid var(--accent);background:rgba(99,102,241,.1);color:var(--accent);font-size:.85rem;font-weight:700;cursor:pointer">← Back to Unit Options</button>`
-    : '';
 
   sc.innerHTML = `<div class="score-card">
     <div class="score-ring ${grade_letter}">${emoji} ${pct}%</div>
     <div class="score-label">${correct} / ${total} correct — ${msg}</div>
     <div class="score-bars">
       <div class="score-bar-item"><strong>${correct}</strong>Correct</div>
-      <div class="score-bar-item"><strong>${total-correct}</strong>Incorrect</div>
+      <div class="score-bar-item"><strong>${wrongCount}</strong>Incorrect</div>
       <div class="score-bar-item"><strong>${pct}%</strong>Score</div>
+      <div class="score-bar-item"><strong>${timeStr}</strong>Time</div>
+      <div class="score-bar-item"><strong style="font-size:.85rem;color:${pct>=(prevBest||0)?'var(--green)':'var(--red)'}">${prevNote}</strong>vs. Previous</div>
     </div>
-    ${backBtn}
+    <div class="score-actions">
+      <button class="btn-primary" onclick="openTest('${grade}','${subj}',${unitIdx})">🔄 Retake Test</button>
+      ${wrongCount > 0 ? `<button class="btn-outline" onclick="reviewMistakes()">📋 Review ${wrongCount} Mistake${wrongCount>1?'s':''}</button>` : ''}
+      ${grade==='ap' ? `<button class="btn-outline" onclick="showUnitOptions('${grade}','${subj}',${unitIdx})">← Back to Options</button>` : ''}
+    </div>
   </div>`;
   sc.scrollIntoView({behavior:'smooth', block:'start'});
 
-  // Update progress bar to 100% and record score
+  // Update progress bar to 100%
   const bar = document.getElementById('progressBar');
   if(bar){ bar.style.width='100%'; bar.style.background = pct>=70?'var(--green)':'var(--red)'; }
   document.getElementById('submitBtn').innerHTML = `✅ Submitted — ${pct}%`;
   document.getElementById('submitBtn').disabled = true;
-
-  // Add retake button
-  const row = document.querySelector('.submit-row');
-  if(row){
-    const rb = document.createElement('button');
-    rb.className = 'retake-btn';
-    rb.textContent = '🔄 Retake Test';
-    rb.onclick = ()=> openTest(currentTest.grade, currentTest.subj, currentTest.unitIdx);
-    row.appendChild(rb);
-  }
 
   // Store score & refresh sidebar badge
   const {part} = currentTest;
@@ -661,6 +711,21 @@ function gradeTest(){
   }catch(e){}
   buildSidebar(grade);
   document.getElementById(`ui-${grade}-${subj}-${unitIdx}`)?.classList.add('active');
+}
+
+function reviewMistakes(){
+  // Hide all correct cards, show only wrong ones
+  const wrap = document.getElementById('testWrap');
+  const alreadyReviewing = wrap.querySelector('.review-banner');
+  if(alreadyReviewing){ alreadyReviewing.remove(); document.querySelectorAll('.q-card.correct').forEach(c=>c.classList.remove('hidden-correct')); return; }
+  const wrongCards = [...document.querySelectorAll('.q-card.wrong')];
+  if(!wrongCards.length){ alert('No mistakes to review!'); return; }
+  document.querySelectorAll('.q-card.correct').forEach(c=>c.classList.add('hidden-correct'));
+  const banner = document.createElement('div');
+  banner.className='review-banner';
+  banner.innerHTML=`📋 Reviewing ${wrongCards.length} mistake${wrongCards.length>1?'s':''} only &nbsp;<button onclick="reviewMistakes()" style="margin-left:auto;background:none;border:1px solid var(--red);color:var(--red);padding:3px 10px;border-radius:6px;cursor:pointer;font-size:.8rem">✕ Show All</button>`;
+  wrap.insertBefore(banner, wrap.querySelector('.section-label')||wrap.firstChild);
+  wrongCards[0].scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 function clearTest(){
