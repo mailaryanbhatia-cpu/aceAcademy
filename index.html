@@ -7578,6 +7578,27 @@ if (localStorage.getItem('focus-mode') === '1') {
   if (btn) { btn.textContent = '🔓 Exit Focus Mode'; btn.classList.add('on'); }
 }
 updateSidebarSubjectBtns();
+// ══ UNIT COMPLETION RING ═════════════════════════════════════
+function unitRingSvg(grade, subjId, unitIdx, topics) {
+  if (!topics || !topics.length) return '';
+  let score = 0;
+  topics.forEach((t, ti) => {
+    try { score += (parseInt(localStorage.getItem('m-'+grade+'-'+subjId+'-'+unitIdx+'-'+ti)||'0')||0); } catch(e) {}
+  });
+  const max = topics.length * 3;
+  const pct = max ? score / max : 0;
+  const r = 11, circ = 2 * Math.PI * r;
+  const dash = circ * pct;
+  const color = pct >= 0.8 ? '#22c55e' : pct >= 0.4 ? '#3b82f6' : pct > 0 ? '#f59e0b' : 'var(--border)';
+  const pctText = Math.round(pct * 100);
+  return '<svg width="26" height="26" viewBox="0 0 26 26" style="flex-shrink:0">'
+    + '<circle cx="13" cy="13" r="'+r+'" fill="none" stroke="var(--border)" stroke-width="2.5"/>'
+    + '<circle cx="13" cy="13" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="2.5"'
+    + ' stroke-dasharray="'+dash.toFixed(1)+' '+circ.toFixed(1)+'"'
+    + ' stroke-linecap="round" transform="rotate(-90 13 13)"/>'
+    + '<text x="13" y="13" dominant-baseline="middle" text-anchor="middle" font-size="6" fill="var(--muted)">'+pctText+'%</text>'
+    + '</svg>';
+}
 render();
 dcSidebarInit();
 if (document.readyState === 'loading') {
@@ -8432,27 +8453,7 @@ function toggleTheme() {
   } catch(e) {}
 })();
 
-// ══ UNIT COMPLETION RING ═════════════════════════════════════
-function unitRingSvg(grade, subjId, unitIdx, topics) {
-  if (!topics || !topics.length) return '';
-  let score = 0;
-  topics.forEach((t, ti) => {
-    try { score += (parseInt(localStorage.getItem('m-'+grade+'-'+subjId+'-'+unitIdx+'-'+ti)||'0')||0); } catch(e) {}
-  });
-  const max = topics.length * 3;
-  const pct = max ? score / max : 0;
-  const r = 11, circ = 2 * Math.PI * r;
-  const dash = circ * pct;
-  const color = pct >= 0.8 ? '#22c55e' : pct >= 0.4 ? '#3b82f6' : pct > 0 ? '#f59e0b' : 'var(--border)';
-  const pctText = Math.round(pct * 100);
-  return '<svg width="26" height="26" viewBox="0 0 26 26" style="flex-shrink:0">'
-    + '<circle cx="13" cy="13" r="'+r+'" fill="none" stroke="var(--border)" stroke-width="2.5"/>'
-    + '<circle cx="13" cy="13" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="2.5"'
-    + ' stroke-dasharray="'+dash.toFixed(1)+' '+circ.toFixed(1)+'"'
-    + ' stroke-linecap="round" transform="rotate(-90 13 13)"/>'
-    + '<text x="13" y="13" dominant-baseline="middle" text-anchor="middle" font-size="6" fill="var(--muted)">'+pctText+'%</text>'
-    + '</svg>';
-}
+
 
 // ══ TOPIC NOTES ══════════════════════════════════════════════
 function toggleTopicNote(key) {
