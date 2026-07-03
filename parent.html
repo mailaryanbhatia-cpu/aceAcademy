@@ -419,15 +419,12 @@ function renderInsights(d) {
 
 function exportCSV() {
   const d = collectAllData();
-  let csv = 'Type,Subject,Score,Date
-';
+  let csv = `Type,Subject,Score,Date\n`;
   d.testScores.forEach(t => {
-    csv += `Test,"${t.subject||'General'}",${t.pct||t.score||0}%,"${t.date?new Date(t.date).toLocaleDateString():''}"
-`;
+    csv += `Test,"${t.subject||'General'}",${t.pct||t.score||0}%,"${t.date?new Date(t.date).toLocaleDateString():''}"\n`;
   });
   d.satAttempts.forEach((a,i) => {
-    csv += `SAT/ACT Practice,Test ${i+1},${a.score||'--'},"${a.date?new Date(a.date).toLocaleDateString():''}"
-`;
+    csv += `SAT/ACT Practice,Test ${i+1},${a.score||'--'},"${a.date?new Date(a.date).toLocaleDateString():''}"\n`;
   });
   const blob = new Blob([csv], {type:'text/csv'});
   const url = URL.createObjectURL(blob);
