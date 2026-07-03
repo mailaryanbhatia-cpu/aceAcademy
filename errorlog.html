@@ -60,13 +60,21 @@ textarea{resize:vertical;min-height:70px}
 .weak-bar-wrap{flex:1;background:#e5e7eb;border-radius:99px;height:7px;overflow:hidden}
 .weak-bar{height:100%;border-radius:99px;background:var(--red)}
 .empty{text-align:center;padding:32px;color:var(--muted);font-size:.9rem}
-@media(prefers-color-scheme:dark){
-  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
-  input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
-  .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}
-  .log-item{background:#12121f}
-}
+[data-theme="dark"]{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
+[data-theme="dark"] .topnav{background:#12121f;border-color:var(--border)}
+[data-theme="dark"] .btn-sm{background:#1a1a2e}
+[data-theme="dark"] .log-item{background:#12121f}
+[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+.theme-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:.85rem;color:var(--muted);margin-left:auto}
+.import-banner{background:#dbeafe;border:1.5px solid #93c5fd;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.85rem;color:#1e40af;display:flex;align-items:center;gap:10px}
+[data-theme="dark"] .import-banner{background:#1e3a5f;border-color:#2d5a8e;color:#93c5fd}
+.pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:4px}
+.pattern-box{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.pattern-box .pn{font-size:1.4rem;font-weight:800;color:var(--red)}
+.pattern-box .pl{font-size:.73rem;color:var(--muted);margin-top:3px}
 </style>
+<script src="theme.js"></script>
 </head>
 <body>
 <nav class="topnav">
@@ -77,6 +85,7 @@ textarea{resize:vertical;min-height:70px}
   <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
   <a href="goals.html" class="nav-link">🎯 Goals</a>
   <a href="errorlog.html" class="nav-link active">❌ Error Log</a>
+  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button>
   <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
   <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
   <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
@@ -100,6 +109,19 @@ textarea{resize:vertical;min-height:70px}
   <p>Track every question you got wrong and why — turn mistakes into your biggest study advantage.</p>
 </div>
 <div class="container">
+  <!-- Import from tests -->
+  <div class="import-banner" id="importBanner" style="display:none">
+    <span id="importMsg"></span>
+    <button class="btn-sm" onclick="importFromTests()">Import Now</button>
+    <button class="btn-sm" onclick="document.getElementById('importBanner').style.display='none'">✕</button>
+  </div>
+
+  <!-- Patterns card -->
+  <div class="card" id="patternsCard" style="display:none;margin-bottom:20px">
+    <h2>📊 Error Patterns</h2>
+    <div class="pattern-grid" id="patternGrid"></div>
+  </div>
+
   <!-- Stats -->
   <div class="stat-row" id="statRow">
     <div class="stat"><div class="num" id="s-total" style="color:var(--red)">0</div><div class="lbl">Errors Logged</div></div>
@@ -190,6 +212,81 @@ textarea{resize:vertical;min-height:70px}
 
 <script>
 let errors = JSON.parse(localStorage.getItem('ace_errors')||'[]');
+
+function checkImportBanner(){
+  try{
+    const hist = JSON.parse(localStorage.getItem('aceTestHistory')||'[]');
+    const lowTests = hist.filter(t => {
+      const pct = t.correct != null && t.total ? Math.round(t.correct/t.total*100) : (t.pct||100);
+      return pct < 70;
+    });
+    if(!lowTests.length) return;
+    const banner = document.getElementById('importBanner');
+    document.getElementById('importMsg').textContent =
+      '🔍 Found '+lowTests.length+' low-scoring test(s) in your history (below 70%). Import them as error entries?';
+    banner.style.display='flex';
+  }catch(e){}
+}
+
+function importFromTests(){
+  try{
+    const hist = JSON.parse(localStorage.getItem('aceTestHistory')||'[]');
+    const lowTests = hist.filter(t => {
+      const pct = t.correct != null && t.total ? Math.round(t.correct/t.total*100) : (t.pct||100);
+      return pct < 70;
+    });
+    let added = 0;
+    lowTests.forEach(t => {
+      const subj = (t.subj||'General').replace(/_/g,' ');
+      const pct = t.correct != null && t.total ? Math.round(t.correct/t.total*100) : (t.pct||0);
+      const alreadyImported = errors.some(e => e.importedTs === t.ts);
+      if(alreadyImported) return;
+      errors.unshift({
+        id: Date.now()+Math.random(),
+        grade: t.grade||'General',
+        subj: subj,
+        type: 'Low test score',
+        topic: (t.unitIdx||'').replace(/_/g,' '),
+        question: '',
+        wrong: '',
+        correct: '',
+        notes: 'Scored '+pct+'% on this unit ('+t.correct+'/'+t.total+' correct). Review the unit in Tests.',
+        mastered: false,
+        ts: t.ts||Date.now(),
+        importedTs: t.ts,
+        autoImported: true,
+      });
+      added++;
+    });
+    save(); renderAll();
+    document.getElementById('importBanner').style.display='none';
+    alert('Imported '+added+' entries from test history.');
+  }catch(e){ alert('Import failed: '+e.message); }
+}
+
+function renderPatterns(){
+  const card = document.getElementById('patternsCard');
+  const grid = document.getElementById('patternGrid');
+  if(!errors.length){ card.style.display='none'; return; }
+  // Count by subject (unmastered only)
+  const bySub={}, byType={}, byGrade={};
+  errors.filter(e=>!e.mastered).forEach(e=>{
+    bySub[e.subj]=(bySub[e.subj]||0)+1;
+    byType[e.type]=(byType[e.type]||0)+1;
+    byGrade[e.grade]=(byGrade[e.grade]||0)+1;
+  });
+  const topSub = Object.entries(bySub).sort((a,b)=>b[1]-a[1])[0];
+  const topType = Object.entries(byType).sort((a,b)=>b[1]-a[1])[0];
+  const topGrade = Object.entries(byGrade).sort((a,b)=>b[1]-a[1])[0];
+  const masteredPct = errors.length ? Math.round(errors.filter(e=>e.mastered).length/errors.length*100) : 0;
+  card.style.display='block';
+  grid.innerHTML = [
+    {n: topSub?topSub[0]:'—', l:'Most Errors In'},
+    {n: topType?topType[0].split(' ').slice(0,2).join(' '):'—', l:'Top Error Type'},
+    {n: errors.filter(e=>!e.mastered).length, l:'Still Reviewing'},
+    {n: masteredPct+'%', l:'Mastery Rate'},
+  ].map(p=>'<div class="pattern-box"><div class="pn">'+p.n+'</div><div class="pl">'+p.l+'</div></div>').join('');
+}
 
 function save(){ localStorage.setItem('ace_errors', JSON.stringify(errors)); }
 
@@ -295,8 +392,9 @@ function renderLog(){
     </div>`).join('');
 }
 
-function renderAll(){ renderStats(); renderWeakSpots(); populateFilter(); renderLog(); }
+function renderAll(){ renderStats(); renderWeakSpots(); renderPatterns(); populateFilter(); renderLog(); }
 renderAll();
+checkImportBanner();
 </script>
 </body>
 </html>

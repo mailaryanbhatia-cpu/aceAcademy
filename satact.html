@@ -89,7 +89,25 @@ h1{font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:4px}
 @media(max-width:600px){
   .attempts-grid{grid-template-columns:1fr}
 }
+
+[data-theme="dark"]{--bg:#0b1120;--card:#1a2540;--text:#e8edf5;--muted:#7a8fa8;--border:#2a3a55;--surface:#111827}
+[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+[data-theme="dark"] .topnav,[data-theme="dark"] nav.topnav{background:#0f1a2e;border-color:var(--border)}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#1a2540;color:var(--text);border-color:var(--border)}
+[data-theme="dark"] .card,[data-theme="dark"] .add-form{background:#1a2540;border-color:var(--border)}
+[data-theme="dark"] .card-face{background:#1a2540;border-color:var(--border)}
+[data-theme="dark"] .modal,[data-theme="dark"] .drawer{background:#1a2540}
+[data-theme="dark"] .deck-btn{background:#1a2540;color:var(--muted);border-color:var(--border)}
+[data-theme="dark"] .tab.active{background:#111827}
+[data-theme="dark"] .school-table,[data-theme="dark"] .school-table th{background:#0f1a2e;color:var(--text)}
+[data-theme="dark"] .school-table td{border-color:var(--border)}
+.theme-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:.85rem;color:var(--muted);margin-left:auto;flex-shrink:0}
+.stat{background:var(--surface,#f3f4f6);border-radius:12px;border:1px solid var(--border);padding:14px;text-align:center}
+.stat .num{font-size:1.7rem;font-weight:900;line-height:1}
+.stat .lbl{font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
 </style>
+<script src="theme.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 <nav class="topnav">
@@ -104,7 +122,8 @@ h1{font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:4px}
   <a href="tutor.html" class="nav-link">🤖 Tutor</a>
   <a href="mathgen.html" class="nav-link">🔢 Math</a>
   <a href="wordwall.html" class="nav-link">📖 Vocab</a>
-</nav>
+
+  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button></nav>
 
 <main>
   <!-- HOME -->
@@ -432,6 +451,131 @@ function backHome() {
 
 // ── Init ───────────────────────────────────────────────
 renderHome();
+
+let trendChartInst=null, sectionChartInst=null;
+
+function renderSATCharts(){
+  const r = getResults();
+  const entries = Object.values(r).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(!entries.length){
+    document.getElementById('satSummarySection').style.display='none'; return;
+  }
+  document.getElementById('satSummarySection').style.display='';
+
+  // Stats
+  const sats = entries.map(e=>e.sat||0).filter(Boolean);
+  const acts = entries.map(e=>e.act||0).filter(Boolean);
+  const bestSAT = sats.length ? Math.max(...sats) : null;
+  const bestACT = acts.length ? Math.max(...acts) : null;
+  const latestMath = entries[entries.length-1]?.math||0;
+  const latestELA = entries[entries.length-1]?.ela||0;
+  document.getElementById('satStatGrid').innerHTML = [
+    {n: entries.length, l:'Tests Taken', c:'#6366f1'},
+    {n: bestSAT||'—', l:'Best SAT', c:'#10b981'},
+    {n: bestACT||'—', l:'Best ACT', c:'#f59e0b'},
+    {n: latestMath+'%', l:'Last Math', c:'#3b82f6'},
+    {n: latestELA+'%', l:'Last ELA/RW', c:'#8b5cf6'},
+  ].map(s=>'<div class="stat"><div class="num" style="color:'+s.c+'">'+s.n+'</div><div class="lbl">'+s.l+'</div></div>').join('');
+
+  // Trend chart
+  if(trendChartInst) trendChartInst.destroy();
+  const trendCtx = document.getElementById('trendChart').getContext('2d');
+  trendChartInst = new Chart(trendCtx, {
+    type:'line',
+    data:{
+      labels: entries.map((_,i)=>'Test '+(i+1)),
+      datasets:[
+        {label:'SAT',data:entries.map(e=>e.sat||null),borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,.1)',fill:true,tension:.35,pointRadius:4},
+        {label:'ACT×44',data:entries.map(e=>e.act?e.act*44:null),borderColor:'#10b981',tension:.35,pointRadius:4,fill:false},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw}}},
+      scales:{y:{min:400,max:1600,ticks:{color:'#94a3b8'},grid:{color:'rgba(255,255,255,.05)'}},x:{ticks:{color:'#94a3b8'},grid:{color:'rgba(255,255,255,.05)'}}}
+    }
+  });
+
+  // Section chart (latest test)
+  if(sectionChartInst) sectionChartInst.destroy();
+  const secCtx = document.getElementById('sectionChart').getContext('2d');
+  sectionChartInst = new Chart(secCtx, {
+    type:'bar',
+    data:{
+      labels:['Math %','ELA/RW %'],
+      datasets:[{
+        data:[latestMath, latestELA],
+        backgroundColor:['rgba(99,102,241,.7)','rgba(139,92,246,.7)'],
+        borderColor:['#6366f1','#8b5cf6'],
+        borderWidth:2, borderRadius:6
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'%'}}},
+      scales:{y:{min:0,max:100,ticks:{color:'#94a3b8',callback:v=>v+'%'},grid:{color:'rgba(255,255,255,.05)'}},x:{ticks:{color:'#94a3b8'},grid:{display:false}}}
+    }
+  });
+
+  // Target
+  renderTarget();
+}
+
+function renderTarget(){
+  const r = getResults();
+  const entries = Object.values(r);
+  if(!entries.length) return;
+  const sats = entries.map(e=>e.sat||0).filter(Boolean);
+  const acts = entries.map(e=>e.act||0).filter(Boolean);
+  const bestSAT = sats.length ? Math.max(...sats) : 0;
+  const bestACT = acts.length ? Math.max(...acts) : 0;
+  const satTarget = parseInt(document.getElementById('satTarget')?.value||0);
+  const actTarget = parseInt(document.getElementById('actTarget')?.value||0);
+  let msg = '';
+  if(satTarget && bestSAT){
+    const gap = satTarget - bestSAT;
+    if(gap <= 0) msg += '🎉 <strong>SAT goal reached!</strong> Your best ('+bestSAT+') already meets your target of '+satTarget+'.<br>';
+    else msg += '📈 <strong>SAT gap: '+gap+' points</strong> (best '+bestSAT+' → target '+satTarget+'). '+(gap<=50?'Almost there — focus on your weakest section.':gap<=150?'A few months of targeted practice should close this gap.':'Consider a structured prep course alongside daily practice.')+'<br>';
+  }
+  if(actTarget && bestACT){
+    const gap = actTarget - bestACT;
+    if(gap <= 0) msg += '🎉 <strong>ACT goal reached!</strong> Your best ('+bestACT+') meets your target of '+actTarget+'.<br>';
+    else msg += '📈 <strong>ACT gap: '+gap+' points</strong> (best '+bestACT+' → target '+actTarget+'). '+(gap<=2?'You\'re very close — targeted section practice will get you there.':gap<=5?'Focus on your weakest ACT section with timed practice.':'Consistent daily practice for 2-3 months can realistically close this gap.')+'<br>';
+  }
+  if(!msg) msg = '<span style="color:var(--muted)">Enter a target SAT or ACT score above to see your gap analysis.</span>';
+  const el = document.getElementById('targetMsg');
+  if(el) el.innerHTML = msg;
+}
+
+// Auto-render charts on load
+try{ renderSATCharts(); }catch(e){}
 </script>
 </body>
-</html>
+</html
+<!-- Score trend + target -->
+<div id="satSummarySection" style="display:none">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px" id="satStatGrid"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+    <div class="card" style="margin-bottom:0">
+      <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">📈 Score Trend</h3>
+      <div style="position:relative;height:180px"><canvas id="trendChart"></canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">🎯 Section Breakdown</h3>
+      <div style="position:relative;height:180px"><canvas id="sectionChart"></canvas></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:18px">
+    <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">🏹 Target Score Projection</h3>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <label style="font-size:.82rem;color:var(--muted)">My SAT target:</label>
+      <input type="number" id="satTarget" min="400" max="1600" step="10" placeholder="e.g. 1400"
+        style="width:110px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem"
+        oninput="renderTarget()">
+      <label style="font-size:.82rem;color:var(--muted)">ACT target:</label>
+      <input type="number" id="actTarget" min="1" max="36" step="1" placeholder="e.g. 30"
+        style="width:90px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem"
+        oninput="renderTarget()">
+    </div>
+    <div id="targetMsg" style="margin-top:12px;font-size:.88rem;line-height:1.7"></div>
+  </div>
+</div>
+>

@@ -184,6 +184,65 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let currentSubj = 'any', chatStarted = false, isTyping = false;
+
+// ── Conversation History ──────────────────────────────────────────
+const HIST_KEY = 'ace_tutor_history';
+function saveHistory(subj, msgs){
+  try{
+    const h = JSON.parse(localStorage.getItem(HIST_KEY)||'{}');
+    h[subj] = msgs.slice(-40); // keep last 40 messages per subject
+    localStorage.setItem(HIST_KEY, JSON.stringify(h));
+  }catch(e){}
+}
+function loadHistory(subj){
+  try{
+    const h = JSON.parse(localStorage.getItem(HIST_KEY)||'{}');
+    return h[subj] || [];
+  }catch(e){ return []; }
+}
+function clearHistory(){
+  if(!confirm('Clear all conversation history?')) return;
+  localStorage.removeItem(HIST_KEY);
+  const wrap = document.getElementById('chatWrap');
+  if(wrap) wrap.innerHTML = '';
+  chatStarted = false;
+}
+
+// ── Subject system prompts ────────────────────────────────────────
+const SUBJ_PROMPTS = {
+  math: '🔢 Math mode: I\'ll walk through every problem step by step with explanations.',
+  science: '🔬 Science mode: I\'ll connect concepts to real-world phenomena and experiments.',
+  ela: '📖 ELA mode: I\'ll help with reading comprehension, essay structure, and grammar.',
+  history: '🌍 History mode: I\'ll explain events in context — causes, effects, and significance.',
+  cs: '💻 CS mode: I\'ll explain coding concepts and debug problems line by line.',
+  ap: '🎓 AP mode: I\'ll use College Board frameworks and FRQ-style explanations.',
+  any: '🤖 General mode: Ask me anything across all subjects!',
+};
+
+const CURRICULUM_LINKS = {
+  math: [{label:'Math Curriculum', url:'curriculum.html#math'},{label:'Math Practice', url:'mathgen.html'}],
+  science: [{label:'Science Curriculum', url:'curriculum.html#science'}],
+  ela: [{label:'ELA Curriculum', url:'curriculum.html#ela'},{label:'Essay Grader', url:'essay.html'}],
+  history: [{label:'History Curriculum', url:'curriculum.html#history'},{label:'Timeline', url:'timeline.html'}],
+  cs: [{label:'CS Curriculum', url:'curriculum.html#cs'}],
+  ap: [{label:'AP Countdown', url:'apcountdown.html'},{label:'FRQ Practice', url:'frq.html'}],
+};
+
+function showSubjectBanner(subj){
+  const prompt = SUBJ_PROMPTS[subj] || SUBJ_PROMPTS.any;
+  const links = CURRICULUM_LINKS[subj] || [];
+  let banner = document.getElementById('subjectBanner');
+  if(!banner){
+    banner = document.createElement('div');
+    banner.id = 'subjectBanner';
+    banner.style.cssText = 'background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.84rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap';
+    const chatWrap = document.getElementById('chatWrap');
+    if(chatWrap) chatWrap.parentNode.insertBefore(banner, chatWrap);
+  }
+  const linkHtml = links.map(l=>'<a href="'+l.url+'" style="color:#6366f1;font-weight:700;text-decoration:none;font-size:.78rem;padding:2px 8px;border:1px solid #6366f1;border-radius:12px">'+l.label+'</a>').join(' ');
+  banner.innerHTML = '<span>'+prompt+'</span>' + (linkHtml ? '<span style="margin-left:auto">'+linkHtml+'</span>' : '') +
+    '<button onclick="clearHistory()" style="background:none;border:none;cursor:pointer;font-size:.75rem;color:#94a3b8;white-space:nowrap">🗑 Clear history</button>';
+}
 let lastTopicId = null;
 const variantIdx = {};
 let guided = null; // Socratic guided problem state
@@ -1644,6 +1703,10 @@ window.onload = () => {
   const tp=document.getElementById('timerBtn');
   if(tp) tp.style.bottom='24px';
 })();
+
+document.addEventListener('DOMContentLoaded', function(){
+  try{ showSubjectBanner(currentSubj); }catch(e){}
+});
 </script>
 <!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
 

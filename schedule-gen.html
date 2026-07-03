@@ -51,7 +51,21 @@ input:focus,select:focus{border-color:var(--accent)}
   input,select{background:#1a1a2e;color:var(--text);border-color:var(--border)}
   .subj-tag{background:#1a1a2e}.topnav{background:#12121f;border-color:var(--border)}
 }
+
+[data-theme="dark"]{--bg:#0b1120;--card:#1a2540;--text:#e8edf5;--muted:#7a8fa8;--border:#2a3a55;--surface:#111827}
+[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+[data-theme="dark"] .topnav,[data-theme="dark"] nav.topnav{background:#0f1a2e;border-color:var(--border)}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#1a2540;color:var(--text);border-color:var(--border)}
+[data-theme="dark"] .card,[data-theme="dark"] .add-form{background:#1a2540;border-color:var(--border)}
+[data-theme="dark"] .card-face{background:#1a2540;border-color:var(--border)}
+[data-theme="dark"] .modal,[data-theme="dark"] .drawer{background:#1a2540}
+[data-theme="dark"] .deck-btn{background:#1a2540;color:var(--muted);border-color:var(--border)}
+[data-theme="dark"] .tab.active{background:#111827}
+[data-theme="dark"] .school-table,[data-theme="dark"] .school-table th{background:#0f1a2e;color:var(--text)}
+[data-theme="dark"] .school-table td{border-color:var(--border)}
+.theme-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:.85rem;color:var(--muted);margin-left:auto;flex-shrink:0}
 </style>
+<script src="theme.js"></script>
 </head>
 <body>
 <nav class="topnav">
@@ -72,7 +86,8 @@ input:focus,select:focus{border-color:var(--accent)}
   <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
   <a href="reading.html" class="nav-link">📄 Passages</a>
   <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-</nav>
+
+  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button></nav>
 
 <div class="hero">
   <h1>📅 Study Schedule Generator</h1>
@@ -129,6 +144,10 @@ input:focus,select:focus{border-color:var(--accent)}
           <div class="subj-tag" onclick="toggleSubj(this,'AP English')">✍️ AP English</div>
           <div class="subj-tag" onclick="toggleSubj(this,'Languages')">🗣️ Languages</div>
         </div>
+      </div>
+      <div class="field full" id="apImportRow">
+        <label>Import from AP Countdown <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(auto-fills exam date & subjects)</span></label>
+        <div id="apExamList" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
       </div>
       <div class="field full">
         <label>Student Name (optional)</label>
@@ -290,6 +309,33 @@ function generateSchedule(){
   document.getElementById('scheduleWrap').style.display = 'block';
   document.getElementById('scheduleWrap').scrollIntoView({behavior:'smooth',block:'start'});
 }
+
+function loadAPExams(){
+  try{
+    const exams = JSON.parse(localStorage.getItem('ace_ap_exams')||'[]');
+    const el = document.getElementById('apExamList');
+    if(!exams.length){ el.innerHTML='<span style="font-size:.82rem;color:var(--muted)">No AP exams found in AP Countdown.</span>'; return; }
+    el.innerHTML = exams.map(e=>{
+      const daysLeft = Math.ceil((new Date(e.date)-new Date())/86400000);
+      const urgency = daysLeft < 30 ? 'background:#fef2f2;border-color:#fca5a5;color:#b91c1c' : daysLeft < 90 ? 'background:#fef3c7;border-color:#fde68a;color:#b45309' : 'background:#dbeafe;border-color:#93c5fd;color:#1e40af';
+            return `<button style="padding:6px 14px;border-radius:20px;border:1.5px solid;cursor:pointer;font-size:.82rem;font-weight:700;${urgency}" onclick="useAPExam('${e.subj.replace(/'/g,'')}','${e.date}')">${e.subj} · ${daysLeft}d</button>`;
+    }).join('');
+  }catch(e){}
+}
+
+function useAPExam(subj, date){
+  document.getElementById('examDate').value = date;
+  // Try to select the matching subject tag
+  document.querySelectorAll('.subj-tag').forEach(tag=>{
+    if(tag.textContent.toLowerCase().includes(subj.toLowerCase())){
+      tag.classList.add('selected');
+    }
+  });
+  // Scroll to generate
+  document.getElementById('examDate').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+loadAPExams();
 </script>
 </body>
 </html>

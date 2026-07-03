@@ -77,7 +77,21 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
   input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
   .topnav{background:#12121f;border-color:var(--border)}.tabs{background:#12121f}.btn-sm{background:#1a1a2e}
 }
+
+[data-theme="dark"]{--bg:#0b1120;--card:#1a2540;--text:#e8edf5;--muted:#7a8fa8;--border:#2a3a55;--surface:#111827}
+[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+[data-theme="dark"] .topnav,[data-theme="dark"] nav.topnav{background:#0f1a2e;border-color:var(--border)}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#1a2540;color:var(--text);border-color:var(--border)}
+[data-theme="dark"] .card,[data-theme="dark"] .add-form{background:#1a2540;border-color:var(--border)}
+[data-theme="dark"] .card-face{background:#1a2540;border-color:var(--border)}
+[data-theme="dark"] .modal,[data-theme="dark"] .drawer{background:#1a2540}
+[data-theme="dark"] .deck-btn{background:#1a2540;color:var(--muted);border-color:var(--border)}
+[data-theme="dark"] .tab.active{background:#111827}
+[data-theme="dark"] .school-table,[data-theme="dark"] .school-table th{background:#0f1a2e;color:var(--text)}
+[data-theme="dark"] .school-table td{border-color:var(--border)}
+.theme-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:.85rem;color:var(--muted);margin-left:auto;flex-shrink:0}
 </style>
+<script src="theme.js"></script>
 </head>
 <body>
 <nav class="topnav">
@@ -90,7 +104,8 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
   <a href="flashcards.html" class="nav-link">🃏 Flashcards</a>
   <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
   <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-</nav>
+
+  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button></nav>
 <div class="hero">
   <h1>📖 Vocabulary Word Wall</h1>
   <p>Build your vocabulary — add words, study definitions, and quiz yourself for mastery.</p>
@@ -152,6 +167,7 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
       <h2>🚀 Quick-Add Common SAT/ACT Words</h2>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px" id="quickAddTags"></div>
       <button class="btn btn-outline" onclick="addAllFeatured()">Add All Featured Words</button>
+    <button class="btn" style="background:#059669;color:#fff;margin-left:8px" onclick="sendToFlashcards()">🃏 Send to Flashcards</button>
     </div>
   </div>
 
@@ -384,6 +400,34 @@ function showTab(id, el){
 }
 
 renderStats(); populateFilter(); renderWall();
+
+function sendToFlashcards(){
+  const sel = words.filter(w => w.selected);
+  const toSend = sel.length ? sel : words;
+  if(!toSend.length){ alert('No words to send.'); return; }
+  try{
+    let fc = JSON.parse(localStorage.getItem('ace_flashcards_v2')||'null') ||
+      {decks:['General','SAT Vocab','AP Biology','AP History'], activeDeck:'General', cards:[]};
+    const deckName = 'Vocabulary';
+    if(!fc.decks.includes(deckName)) fc.decks.push(deckName);
+    let added = 0;
+    toSend.forEach(w => {
+      const exists = fc.cards.some(c => c.q === w.word && c.deck === deckName);
+      if(exists) return;
+      fc.cards.push({
+        id: Date.now()+Math.random(),
+        deck: deckName,
+        tag: w.subj||'Vocabulary',
+        q: w.word + (w.pos ? ' ('+w.pos+')' : ''),
+        a: w.def + (w.example ? '\n\nEx: '+w.example : ''),
+        reps: 0, nextReview: null, easeFactor: 2.5
+      });
+      added++;
+    });
+    localStorage.setItem('ace_flashcards_v2', JSON.stringify(fc));
+    alert('Sent '+added+' word'+(added!==1?'s':'')+' to Flashcards → Vocabulary deck!\nOpen Flashcards to study them.');
+  }catch(e){ alert('Error: '+e.message); }
+}
 </script>
 </body>
 </html>
