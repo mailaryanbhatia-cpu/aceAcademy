@@ -1,1621 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>aceAcademy — Flashcards</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flashcards — aceAcademy</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#f4f6fb;--surface:#fff;--border:#e2e8f0;--text:#1a1a2e;--muted:#64748b;
-  --accent:#7c3aed;--accent-light:#f5f3ff;--green:#059669;--red:#ef4444;
-  --radius:12px;--font:'Segoe UI',system-ui,sans-serif;
+:root{--bg:#f7f8fa;--card:#fff;--accent:#6366f1;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706;--surface:#f3f4f6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
+.hero{text-align:center;padding:32px 20px 20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.hero h1{font-size:1.85rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.88;font-size:.95rem;max-width:500px;margin:0 auto}
+.container{max-width:860px;margin:0 auto;padding:24px 20px}
+.deck-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
+.deck-btn{padding:8px 18px;border-radius:20px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:.85rem;font-weight:700;color:var(--muted);transition:all .15s}
+.deck-btn:hover{border-color:var(--accent);color:var(--accent)}
+.deck-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.deck-btn .cnt{font-size:.72rem;opacity:.7;margin-left:4px}
+.add-deck-btn{padding:7px 14px;border-radius:20px;border:2px dashed var(--border);background:transparent;cursor:pointer;font-size:.82rem;color:var(--muted)}
+.add-deck-btn:hover{border-color:var(--accent);color:var(--accent)}
+.controls{display:flex;gap:8px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.btn{padding:8px 18px;border-radius:9px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#4f46e5}
+.btn-outline{background:#fff;border:1.5px solid var(--border);color:var(--text)}.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.progress-bar{flex:1;min-width:120px;height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.progress-label{font-size:.78rem;color:var(--muted);white-space:nowrap}
+.card-area{perspective:1000px;width:100%;max-width:560px;margin:0 auto 24px;cursor:pointer}
+.card-inner{position:relative;width:100%;height:260px;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;border:2px solid var(--border);background:#fff;box-shadow:0 4px 24px rgba(99,102,241,.08)}
+.card-face.back{transform:rotateY(180deg);background:linear-gradient(135deg,#f5f3ff,#ede9fe)}
+.card-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.card-text{font-size:1.15rem;font-weight:600;text-align:center;line-height:1.5;color:var(--text)}
+.card-hint{margin-top:10px;font-size:.8rem;color:var(--muted);text-align:center}
+.flip-hint{text-align:center;font-size:.78rem;color:var(--muted);margin-bottom:16px}
+.rating-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.rate-btn{flex:1;min-width:90px;max-width:130px;padding:11px 8px;border-radius:12px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.rate-btn .sub{font-size:.68rem;opacity:.7;font-weight:500}
+.rate-again{background:#fee2e2;color:#b91c1c}.rate-again:hover{background:#fca5a5}
+.rate-hard{background:#fef3c7;color:#b45309}.rate-hard:hover{background:#fde68a}
+.rate-good{background:#d1fae5;color:#065f46}.rate-good:hover{background:#6ee7b7}
+.rate-easy{background:#dbeafe;color:#1e40af}.rate-easy:hover{background:#93c5fd}
+.rating-row.hidden{display:none}
+.add-form{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px;margin-bottom:20px}
+.add-form h3{font-size:.95rem;font-weight:700;margin-bottom:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:70px}
+.card-list{display:flex;flex-direction:column;gap:8px}
+.card-row{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:12px}
+.card-row .q{flex:1;font-size:.88rem;font-weight:600}
+.card-row .a{flex:1;font-size:.85rem;color:var(--muted)}
+.card-row .del{border:none;background:none;cursor:pointer;color:#d1d5db;font-size:1.1rem;padding:0 4px}.card-row .del:hover{color:var(--red)}
+.sr-badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;white-space:nowrap}
+.sr-new{background:#ede9fe;color:#7c3aed}.sr-due{background:#fef3c7;color:#b45309}.sr-ok{background:#d1fae5;color:#065f46}
+.session-done{text-align:center;padding:40px 20px;display:none}
+.session-done.show{display:block}
+.session-done .big{font-size:3rem;margin-bottom:12px}
+.session-done h2{font-size:1.4rem;font-weight:800;margin-bottom:8px}
+.session-done p{color:var(--muted);margin-bottom:20px}
+.stats-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.stat-box{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 22px;text-align:center}
+.stat-box .n{font-size:1.5rem;font-weight:800;color:var(--accent)}
+.stat-box .l{font-size:.75rem;color:var(--muted);margin-top:2px}
+.tabs{display:flex;gap:2px;background:var(--surface);border-radius:10px;padding:3px;margin-bottom:24px;width:fit-content}
+.tab{padding:7px 18px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--muted);transition:all .15s}
+.tab.active{background:#fff;color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;width:90%;max-width:400px}
+.modal h3{font-size:1rem;font-weight:800;margin-bottom:16px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+@media(max-width:700px){
+  .container{padding:14px 10px}
+  .card-inner{height:220px}
+  .card-text{font-size:1rem}
+  .form-row{grid-template-columns:1fr}
+  .rate-btn{min-width:70px;font-size:.78rem}
+  .topnav{padding:0 8px!important}
+  .topnav a.nav-link{padding:5px 7px!important;font-size:.7rem!important}
+  .card-row{flex-direction:column;gap:6px}
 }
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;}
-.logo{font-size:1.15rem;font-weight:800;color:#7c3aed;}
-.nav-links{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap;}
-.nav-link{text-decoration:none;padding:6px 12px;border-radius:8px;font-weight:600;font-size:.8rem;white-space:nowrap;}
-
-/* ── LAYOUT ── */
-.page-body{display:flex;flex:1;min-height:0;overflow:hidden;}
-
-/* ── SIDEBAR ── */
-.fc-sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);
-  overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;}
-.fc-sidebar-head{padding:14px 14px 8px;font-size:.68rem;font-weight:700;color:var(--muted);
-  letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);}
-.fc-subj-item{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;
-  border-left:3px solid transparent;transition:background .12s;}
-.fc-subj-item:hover{background:#faf5ff;}
-.fc-subj-item.active{background:var(--accent-light);border-left-color:var(--accent);}
-.fc-subj-item.active .fc-subj-name{color:var(--accent);font-weight:700;}
-.fc-subj-icon{font-size:1rem;width:20px;text-align:center;}
-.fc-subj-name{font-size:.84rem;font-weight:600;}
-.fc-subj-count{margin-left:auto;font-size:.68rem;background:#ede9fe;color:var(--accent);
-  padding:1px 6px;border-radius:10px;font-weight:700;}
-.grade-filter{padding:10px 14px 6px;border-top:1px solid var(--border);}
-.grade-filter-label{font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.06em;
-  text-transform:uppercase;margin-bottom:6px;}
-.grade-btns{display:flex;flex-wrap:wrap;gap:4px;}
-.grade-btn{padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:#1a2540;
-  font-size:.72rem;font-weight:700;cursor:pointer;color:var(--muted);transition:all .13s;}
-.grade-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-
-/* ── MAIN STUDY AREA ── */
-.fc-main{flex:1;display:flex;flex-direction:column;align-items:center;padding:32px 20px;overflow-y:auto;}
-
-/* progress bar */
-.fc-progress-row{width:100%;max-width:600px;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
-.fc-prog-track{flex:1;height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;}
-.fc-prog-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s;}
-.fc-prog-label{font-size:.78rem;font-weight:700;color:var(--muted);white-space:nowrap;}
-
-/* stats row */
-.fc-stats{display:flex;gap:12px;margin-bottom:24px;}
-.fc-stat{padding:8px 18px;border-radius:99px;font-size:.78rem;font-weight:700;}
-.fc-stat.know{background:#d1fae5;color:var(--green);}
-.fc-stat.learn{background:#fee2e2;color:var(--red);}
-.fc-stat.total{background:#ede9fe;color:var(--accent);}
-
-/* CARD */
-.fc-card-wrap{perspective:1000px;width:100%;max-width:580px;height:320px;cursor:pointer;margin-bottom:24px;}
-.fc-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;
-  transition:transform .5s cubic-bezier(.4,0,.2,1);}
-.fc-card.flipped{transform:rotateY(180deg);}
-.fc-face{position:absolute;inset:0;border-radius:20px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:32px;backface-visibility:hidden;
-  box-shadow:0 8px 40px rgba(124,58,237,.12);border:2px solid transparent;}
-.fc-front{background:var(--surface);border-color:var(--border);}
-.fc-back{background:linear-gradient(135deg,#7c3aed,#6d28d9);transform:rotateY(180deg);}
-.fc-face-label{font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-  margin-bottom:16px;opacity:.5;}
-.fc-front .fc-face-label{color:var(--accent);}
-.fc-back .fc-face-label{color:rgba(255,255,255,.7);}
-.fc-term{font-size:1.6rem;font-weight:800;text-align:center;line-height:1.3;color:var(--text);}
-.fc-back .fc-term{color:#fff;font-size:1.15rem;font-weight:600;line-height:1.6;}
-.fc-hint{font-size:.75rem;color:var(--muted);margin-top:14px;}
-.fc-back .fc-hint{color:rgba(255,255,255,.6);}
-.fc-subject-tag{position:absolute;top:14px;right:16px;font-size:.65rem;font-weight:700;
-  padding:2px 8px;border-radius:8px;background:var(--accent-light);color:var(--accent);}
-.fc-back .fc-subject-tag{background:rgba(255,255,255,.2);color:#fff;}
-
-/* controls */
-.fc-controls{display:flex;gap:12px;margin-bottom:20px;}
-.fc-ctrl-btn{padding:11px 28px;border-radius:12px;border:none;font-weight:700;
-  font-size:.88rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;}
-.fc-ctrl-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.12);}
-.btn-know{background:#d1fae5;color:#065f46;}
-.btn-know:hover{background:#a7f3d0;}
-.btn-learn{background:#fee2e2;color:#991b1b;}
-.btn-learn:hover{background:#fecaca;}
-.btn-flip{background:var(--accent);color:#fff;}
-.btn-flip:hover{background:#6d28d9;}
-
-/* nav row */
-.fc-nav-row{display:flex;gap:10px;align-items:center;}
-.fc-nav-btn{padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:#1a2540;
-  cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted);transition:all .13s;}
-.fc-nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
-.fc-nav-btn:disabled{opacity:.35;cursor:default;}
-.fc-counter{font-size:.85rem;font-weight:700;color:var(--muted);padding:0 8px;}
-
-/* mode btns */
-.fc-mode-row{display:flex;gap:8px;margin-bottom:20px;}
-.fc-mode-btn{padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:#1a2540;
-  cursor:pointer;font-size:.75rem;font-weight:700;color:var(--muted);transition:all .13s;}
-.fc-mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-
-/* empty */
-.fc-empty{text-align:center;padding:60px 20px;color:var(--muted);}
-.fc-empty .big{font-size:3rem;margin-bottom:14px;}
-
-/* done screen */
-.fc-done{text-align:center;padding:40px 20px;max-width:500px;}
-.fc-done .big{font-size:3.5rem;margin-bottom:16px;}
-.fc-done h2{font-size:1.4rem;font-weight:800;margin-bottom:8px;}
-.fc-done p{color:var(--muted);margin-bottom:24px;}
-.fc-done-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.fc-done-btn{padding:10px 22px;border-radius:10px;border:none;font-weight:700;
-  font-size:.88rem;cursor:pointer;transition:all .15s;}
-.fc-done-btn.primary{background:var(--accent);color:#fff;}
-.fc-done-btn.secondary{background:#0b1120;color:#7a8fa8;}
-
-.btn-again{background:#fee2e2!important;color:#dc2626!important;border-color:#fca5a5!important}
-.btn-hard{background:#fef3c7!important;color:#d97706!important;border-color:#fcd34d!important}
-.btn-good{background:#dbeafe!important;color:#2563eb!important;border-color:#93c5fd!important}
-.btn-easy{background:#d1fae5!important;color:#059669!important;border-color:#6ee7b7!important}
 </style>
-  <link rel="stylesheet" href="ace-theme.css">
-
-<style id="ace-nav-css">
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-body{font-family:'Inter','Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
-nav.topnav{background:#080e1c!important;border-bottom:1px solid #2a3a55!important;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5)!important;padding:0 20px!important;height:60px!important;display:flex!important;align-items:center!important;gap:2px!important;position:sticky!important;top:0!important;z-index:500!important;overflow-x:auto!important;}
-nav.topnav::-webkit-scrollbar{display:none;}
-nav.topnav .logo,nav.topnav a.logo{font-size:1.1rem!important;font-weight:800!important;color:#fff!important;text-decoration:none!important;margin-right:10px!important;white-space:nowrap!important;flex-shrink:0!important;display:flex!important;align-items:center!important;gap:6px!important;}
-nav.topnav .logo span,nav.topnav a.logo span{color:#a5b4fc!important;}
-nav.topnav a.nav-link,nav.topnav a.back-link{display:inline-flex!important;align-items:center!important;gap:3px!important;text-decoration:none!important;padding:6px 9px!important;border-radius:7px!important;font-size:.76rem!important;font-weight:600!important;white-space:nowrap!important;color:#7a8fa8!important;transition:background .15s,color .15s!important;font-family:inherit!important;}
-nav.topnav a.nav-link:hover,nav.topnav a.back-link:hover{background:rgba(255,255,255,.07)!important;color:#e8edf5!important;}
-nav.topnav a.nav-link.active{background:rgba(99,102,241,.18)!important;color:#a5b4fc!important;}
-nav.topnav .spacer,nav.topnav h1.nav-title{flex:1!important;color:#7a8fa8!important;font-size:.8rem!important;font-weight:500!important;}
-nav.topnav input,nav.topnav select{background:#111827!important;border:1px solid #2a3a55!important;color:#e8edf5!important;border-radius:6px!important;padding:5px 10px!important;font-size:.78rem!important;font-family:inherit!important;outline:none!important;}
-:root{--bg:#0b1120;--surface:#1a2540;--border:#2a3a55;--text:#e8edf5;--muted:#7a8fa8;--accent:#6366f1;--accent-light:rgba(99,102,241,0.18);}
-body{background:var(--bg);color:var(--text);}
-footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid #2a3a55!important;}
-::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#334466;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#7a8fa8}
-</style>
-
-
-<script src="auth-guard.js"></script>
 </head>
 <body>
-
-<header>
-  <a href="curriculum.html" class="brand">
-    <span class="brand-icon">🎓</span>
-    <span class="brand-name">ace<span class="brand-accent">Academy</span></span>
-  </a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-
-  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
-  <a href="goals.html" class="nav-link">🎯 Goals</a>
-  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
-  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
-  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
-  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
-  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
-  <a href="outline.html" class="nav-link">🗂 Outline</a>
-  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
-  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
-  <a href="reading.html" class="nav-link">📄 Passages</a>
-    <a href="essay.html" class="nav-link">📝 Essay</a>
-  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
-  <a href="citation.html" class="nav-link">📖 Citations</a>
-  <a href="tools.html" class="nav-link">🔬 Tools</a>
-  <a href="assign.html" class="nav-link">📋 Assignments</a>
-  <a href="parent.html" class="nav-link">👪 Parent View</a>
-  <div class="nav-spacer"></div>
-  <nav class="nav-links">
-  <a href="curriculum.html" class="nav-link" data-color="#4f46e5">📚 Curriculum</a>
-  <a href="worksheets.html" class="nav-link" data-color="#0284c7">📄 Worksheets</a>
-  <a href="tests.html" class="nav-link" data-color="#059669">✏️ Tests</a>
-  <a href="language.html" class="nav-link" data-color="#0891b2">🌏 Languages</a>
-  <a href="flashcards.html" class="nav-link active" data-color="#7c3aed">🃏 Flashcards</a>
-  <a href="notebook.html" class="nav-link" data-color="#d97706">📁 Notebook</a>
-  <a href="calendar.html" class="nav-link" data-color="#0ea5e9">📅 Calendar</a>
-  <a href="progress.html" class="nav-link" data-color="#059669">📊 Progress</a>
-  <a href="tutor.html" class="nav-link" data-color="#6366f1">🎓 AI Tutor</a>
-  
-  <a href="frq.html" class="nav-link">📝 FRQ</a>
-  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
-  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
-  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
-  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
-  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
-  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="alltools.html" class="nav-link">All Tools</a>
+  <a href="tests.html" class="nav-link">Tests</a>
+  <a href="progress.html" class="nav-link">Progress</a>
+  <a href="flashcards.html" class="nav-link active">Flashcards</a>
+  <a href="goals.html" class="nav-link">Goals</a>
+  <a href="wordwall.html" class="nav-link">Word Wall</a>
 </nav>
-</header>
+<div class="hero">
+  <h1>Flashcards</h1>
+  <p>Spaced repetition — rate cards Again / Hard / Good / Easy and due cards surface automatically.</p>
+</div>
+<div class="container">
+  <div class="deck-row" id="deckRow"></div>
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('study')" id="tab-study">Study</button>
+    <button class="tab" onclick="setTab('add')" id="tab-add">+ Add Card</button>
+    <button class="tab" onclick="setTab('manage')" id="tab-manage">Manage</button>
+  </div>
 
-<div class="page-body">
-  <!-- SIDEBAR -->
-  <div class="fc-sidebar">
-    <div class="fc-sidebar-head">Subjects</div>
-    <div id="fcSubjectList"></div>
-    <div class="grade-filter">
-      <div class="grade-filter-label">Grade</div>
-      <div class="grade-btns" id="gradeFilterBtns"></div>
+  <!-- STUDY -->
+  <div id="panel-study">
+    <div class="controls">
+      <button class="btn btn-primary" onclick="startSession()">Start Session</button>
+      <button class="btn btn-outline" onclick="startSession(true)">All Cards</button>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="progress-label" id="progressLabel">0 / 0</span>
+    </div>
+    <div class="card-area" id="cardArea" onclick="flipCard()" style="display:none">
+      <div class="card-inner" id="cardInner">
+        <div class="card-face front">
+          <div class="card-label" id="cardDeckLabel"></div>
+          <div class="card-text" id="cardFront"></div>
+          <div class="card-hint">tap to reveal answer</div>
+        </div>
+        <div class="card-face back">
+          <div class="card-label">Answer</div>
+          <div class="card-text" id="cardBack"></div>
+        </div>
+      </div>
+    </div>
+    <p class="flip-hint" id="flipHint" style="display:none">Tap card to flip &nbsp;·&nbsp; Keyboard: Space=flip, 1=Again, 2=Hard, 3=Good, 4=Easy</p>
+    <div class="rating-row hidden" id="ratingRow">
+      <button class="rate-btn rate-again" onclick="rate(0)">Again<span class="sub">&lt;1 min</span></button>
+      <button class="rate-btn rate-hard" onclick="rate(1)">Hard<span class="sub">~10 min</span></button>
+      <button class="rate-btn rate-good" onclick="rate(2)">Good<span class="sub">tomorrow</span></button>
+      <button class="rate-btn rate-easy" onclick="rate(3)">Easy<span class="sub">4 days</span></button>
+    </div>
+    <div class="session-done" id="sessionDone">
+      <div class="big">🎉</div>
+      <h2>Session Complete!</h2>
+      <p>Great work reviewing your cards.</p>
+      <div class="stats-row" id="sessionStats"></div>
+      <button class="btn btn-primary" onclick="startSession()">Study Due Cards</button>
+      &nbsp;
+      <button class="btn btn-outline" onclick="startSession(true)">Review All</button>
+    </div>
+    <div id="emptyState" style="text-align:center;padding:50px 20px;color:var(--muted);display:none">
+      <div style="font-size:2.5rem;margin-bottom:10px">🎉</div>
+      <div style="font-weight:700;margin-bottom:6px">No cards due!</div>
+      <div style="font-size:.88rem">All caught up. Add cards or click "All Cards" to review.</div>
     </div>
   </div>
 
-  <!-- STUDY AREA -->
-  <div class="fc-main" id="fcMain">
-    <div class="fc-empty"><div class="big">🃏</div>Pick a subject to start studying!</div>
+  <!-- ADD -->
+  <div id="panel-add" style="display:none">
+    <div class="add-form">
+      <h3>Add a New Card</h3>
+      <div class="form-row">
+        <div class="field"><label>Deck</label><select id="newCardDeck"></select></div>
+        <div class="field"><label>Tag (optional)</label><input type="text" id="newCardTag" placeholder="e.g. Biology"></div>
+        <div class="field full"><label>Question / Front</label><textarea id="newCardQ" placeholder="What is osmosis?"></textarea></div>
+        <div class="field full"><label>Answer / Back</label><textarea id="newCardA" placeholder="Movement of water across a semipermeable membrane..."></textarea></div>
+      </div>
+      <button class="btn btn-primary" id="addBtn" onclick="addCard()">Add Card</button>
+    </div>
+    <div class="add-form">
+      <h3>Bulk Import &nbsp;<span style="font-size:.78rem;font-weight:400;color:var(--muted)">one card per line: Question | Answer</span></h3>
+      <div class="field full" style="margin-bottom:12px"><label>Deck</label><select id="bulkDeck"></select></div>
+      <div class="field full" style="margin-bottom:12px">
+        <label>Cards</label>
+        <textarea id="bulkInput" rows="6" placeholder="What is photosynthesis? | Process plants use to make food from sunlight&#10;Define mitosis | Cell division producing two identical daughter cells"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="bulkImport()">Import Cards</button>
+    </div>
+  </div>
+
+  <!-- MANAGE -->
+  <div id="panel-manage" style="display:none">
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="openDeckModal()">+ New Deck</button>
+      <button class="btn btn-outline" style="color:var(--red);border-color:#fca5a5" onclick="clearDeck()">Clear Deck</button>
+    </div>
+    <div class="card-list" id="cardList"></div>
   </div>
 </div>
 
-<script>
-// ── CARD DATA ─────────────────────────────────────────────────────────────────
-const CARDS = {
-  math: [
-    // Grade 6
-    {g:6,term:'Variable',def:'A letter used to represent an unknown value in an expression or equation.'},
-    {g:6,term:'Coefficient',def:'The number multiplied by a variable in an algebraic term. In 3x, the coefficient is 3.'},
-    {g:6,term:'Expression',def:'A math phrase with numbers, variables, and operations but NO equals sign.'},
-    {g:6,term:'Equation',def:'A math statement saying two expressions are EQUAL, using an = sign.'},
-    {g:6,term:'Integer',def:'Whole numbers and their negatives: …-3, -2, -1, 0, 1, 2, 3…'},
-    {g:6,term:'Ratio',def:'A comparison of two quantities by division, written as a:b or a/b.'},
-    {g:6,term:'Proportion',def:'An equation stating that two ratios are equal. a/b = c/d.'},
-    {g:6,term:'Percent',def:'A ratio out of 100. 45% means 45 out of every 100.'},
-    {g:6,term:'Mean',def:'The average of a data set — add all values then divide by the count.'},
-    {g:6,term:'Median',def:'The middle value of a data set when ordered least to greatest.'},
-    {g:6,term:'Mode',def:'The value that appears most often in a data set.'},
-    {g:6,term:'Range',def:'The difference between the greatest and least values in a data set.'},
-    // Grade 7
-    {g:7,term:'Absolute Value',def:'The distance a number is from zero on a number line. |−5| = 5.'},
-    {g:7,term:'Like Terms',def:'Terms with the same variable(s) raised to the same power. 3x and 7x are like terms.'},
-    {g:7,term:'Distributive Property',def:'a(b + c) = ab + ac. Multiply outside by each term inside parentheses.'},
-    {g:7,term:'Inequality',def:'A statement that two expressions are NOT equal, using <, >, ≤, or ≥.'},
-    {g:7,term:'Scale Factor',def:'The ratio between corresponding dimensions of similar figures.'},
-    {g:7,term:'Unit Rate',def:'A rate with a denominator of 1. E.g., 60 miles per 1 hour.'},
-    {g:7,term:'Supplementary Angles',def:'Two angles that add up to 180°.'},
-    {g:7,term:'Complementary Angles',def:'Two angles that add up to 90°.'},
-    {g:7,term:'Probability',def:'The likelihood of an event occurring. P = favorable outcomes / total outcomes.'},
-    {g:7,term:'Simple Interest',def:'I = P × r × t. Principal × rate × time.'},
-    // Grade 8
-    {g:8,term:'Slope',def:'The steepness of a line. Rise over Run = (y₂−y₁)/(x₂−x₁).'},
-    {g:8,term:'Y-intercept',def:'The point where a line crosses the y-axis (when x = 0).'},
-    {g:8,term:'Linear Function',def:'A function whose graph is a straight line. Form: y = mx + b.'},
-    {g:8,term:'Pythagorean Theorem',def:'In a right triangle: a² + b² = c², where c is the hypotenuse.'},
-    {g:8,term:'Exponent',def:'The power a base is raised to. In 2³, 3 is the exponent; means 2×2×2=8.'},
-    {g:8,term:'Scientific Notation',def:'A number written as a × 10ⁿ where 1 ≤ a < 10. E.g., 3.2 × 10⁴.'},
-    {g:8,term:'System of Equations',def:'A set of two or more equations with the same variables, solved together.'},
-    {g:8,term:'Irrational Number',def:'A number that cannot be expressed as a fraction. Examples: π, √2.'},
-    {g:8,term:'Congruent',def:'Figures that have the same size and shape (all sides and angles equal).'},
-    {g:8,term:'Transformation',def:'A change in position, size, or shape: translation, rotation, reflection, dilation.'},
-    // Grade 9
-    {g:9,term:'Quadratic Equation',def:'An equation in the form ax² + bx + c = 0.'},
-    {g:9,term:'Discriminant',def:'b² − 4ac in the quadratic formula. Tells you how many real solutions exist.'},
-    {g:9,term:'Factoring',def:'Rewriting an expression as a product of its factors. x²+5x+6 = (x+2)(x+3).'},
-    {g:9,term:'Domain',def:'All possible input values (x-values) for a function.'},
-    {g:9,term:'Range (functions)',def:'All possible output values (y-values) for a function.'},
-    {g:9,term:'Function',def:'A rule where each input has exactly one output. Passes the vertical line test.'},
-    {g:9,term:'Arithmetic Sequence',def:'A sequence where each term increases by a constant difference. 2,5,8,11…'},
-    {g:9,term:'Geometric Sequence',def:'A sequence where each term is multiplied by a constant ratio. 2,6,18,54…'},
-    // Grade 10
-    {g:10,term:'SOHCAHTOA',def:'Sine=Opp/Hyp, Cosine=Adj/Hyp, Tangent=Opp/Adj. Memory aid for trig.'},
-    {g:10,term:'Cosine Rule',def:'c² = a² + b² − 2ab·cos(C). Used for non-right triangles.'},
-    {g:10,term:'Permutation',def:'An arrangement where ORDER matters. nPr = n!/(n−r)!'},
-    {g:10,term:'Combination',def:'A selection where order does NOT matter. nCr = n!/[r!(n−r)!]'},
-    {g:10,term:'Vertex Form',def:'y = a(x − h)² + k, where (h, k) is the vertex of the parabola.'},
-    {g:10,term:'Asymptote',def:'A line that a curve approaches but never quite reaches.'},
-    // Grade 11
-    {g:11,term:'Logarithm',def:'The exponent needed to raise a base to get a number. log₂(8)=3 because 2³=8.'},
-    {g:11,term:'Natural Log (ln)',def:'A logarithm with base e (≈2.718). ln(x) = logₑ(x).'},
-    {g:11,term:'Radian',def:'Unit of angle measure. 360° = 2π radians. 1 radian ≈ 57.3°.'},
-    {g:11,term:'Unit Circle',def:'A circle of radius 1 centered at the origin. Used to define trig functions.'},
-    {g:11,term:'Derivative',def:'Measures the instantaneous rate of change (slope) of a function at a point.'},
-    {g:11,term:'Standard Deviation',def:'Measures how spread out values are from the mean.'},
-    // Grade 12
-    {g:12,term:'Integral',def:'The area under a curve; the reverse of differentiation.'},
-    {g:12,term:'Limit',def:'The value a function approaches as input approaches a certain value.'},
-    {g:12,term:'Matrix',def:'A rectangular array of numbers arranged in rows and columns.'},
-    {g:12,term:'Determinant',def:'A scalar value from a square matrix. Used to solve systems and check invertibility.'},
-    {g:12,term:'Vector',def:'A quantity with both magnitude and direction, represented as an arrow.'},
-    {g:12,term:'Binomial Theorem',def:'Expansion of (a+b)ⁿ using binomial coefficients from Pascal\'s Triangle.'},
-  ,
-    {g:6,term:"Factor",def:"A number that divides evenly into another. Factors of 12: 1,2,3,4,6,12."},
-    {g:6,term:"Multiple",def:"The result of multiplying a number by any whole number. Multiples of 4: 4,8,12,16…"},
-    {g:6,term:"Prime Number",def:"A whole number greater than 1 with exactly two factors: 1 and itself."},
-    {g:6,term:"Composite Number",def:"A whole number with more than two factors. 12 is composite (factors: 1,2,3,4,6,12)."},
-    {g:6,term:"GCF (Greatest Common Factor)",def:"The largest factor shared by two or more numbers. GCF of 12 and 18 = 6."},
-    {g:6,term:"LCM (Least Common Multiple)",def:"The smallest multiple shared by two or more numbers. LCM of 4 and 6 = 12."},
-    {g:6,term:"Numerator",def:"The top number of a fraction — how many parts you have."},
-    {g:6,term:"Denominator",def:"The bottom number of a fraction — how many equal parts the whole is divided into."},
-    {g:6,term:"Improper Fraction",def:"A fraction where the numerator is greater than the denominator. E.g., 7/4."},
-    {g:6,term:"Mixed Number",def:"A whole number combined with a proper fraction. E.g., 1¾."},
-    {g:6,term:"Equivalent Fractions",def:"Fractions that represent the same value. ½ = 2/4 = 3/6."},
-    {g:6,term:"Place Value",def:"The value of a digit based on its position. In 3,472: 3 is thousands, 4 hundreds, 7 tens, 2 ones."},
-    {g:6,term:"Coordinate Plane",def:"A flat surface with x-axis and y-axis used to plot ordered pairs."},
-    {g:6,term:"Ordered Pair",def:"A pair of numbers (x, y) used to locate a point on a coordinate plane."},
-    {g:6,term:"Quadrant",def:"One of four sections of the coordinate plane, numbered I–IV counter-clockwise."},
-    {g:6,term:"Perimeter",def:"The total distance around a polygon. P = sum of all sides."},
-    {g:6,term:"Area",def:"The amount of surface inside a shape. Measured in square units."},
-    {g:6,term:"Volume",def:"The amount of 3D space inside a solid. Measured in cubic units."},
-    {g:6,term:"Net (Geometry)",def:"A flat pattern that can be folded to form a 3D solid."},
-    {g:6,term:"Histogram",def:"A bar graph showing the frequency of data within equal intervals."},
-    {g:6,term:"Dot Plot",def:"A graph where each data point is shown as a dot above a number line."},
-    {g:6,term:"Interquartile Range (IQR)",def:"The range of the middle 50% of data. IQR = Q3 − Q1."},
-    {g:6,term:"Quartile",def:"Values that split a data set into four equal parts: Q1, Q2 (median), Q3."},
-    {g:6,term:"Box Plot",def:"A graph showing the five-number summary: min, Q1, median, Q3, max."},
-    {g:7,term:"Percent Change",def:"How much something increased or decreased relative to the original. % Change = (change/original) × 100."},
-    {g:7,term:"Markup",def:"The amount added to the cost price to get the selling price."},
-    {g:7,term:"Discount",def:"A reduction in price, usually shown as a percent off."},
-    {g:7,term:"Rational Number",def:"Any number that can be written as a fraction p/q where q ≠ 0. Includes integers, fractions, repeating decimals."},
-    {g:7,term:"Adjacent Angles",def:"Two angles that share a common side and vertex but don\'t overlap."},
-    {g:7,term:"Vertical Angles",def:"Opposite angles formed by two intersecting lines. They are always equal."},
-    {g:7,term:"Circumference",def:"The perimeter of a circle. C = 2πr or C = πd."},
-    {g:7,term:"Pi (π)",def:"The ratio of a circle\'s circumference to its diameter ≈ 3.14159. An irrational number."},
-    {g:7,term:"Constant of Proportionality",def:"The value k in a proportional relationship y = kx. Also called the unit rate."},
-    {g:7,term:"Two-Step Equation",def:"An equation requiring two operations to isolate the variable. E.g., 2x + 3 = 11."},
-    {g:7,term:"Cross Product",def:"In a proportion a/b = c/d, the cross products are ad and bc. They are equal."},
-    {g:7,term:"Random Sample",def:"A sample where every member of the population has an equal chance of being chosen."},
-    {g:7,term:"Surface Area",def:"The total area of all faces of a 3D solid. Measured in square units."},
-    {g:8,term:"Rate of Change",def:"How much one quantity changes relative to another. In y=mx+b, rate of change = slope m."},
-    {g:8,term:"X-intercept",def:"The point where a line crosses the x-axis (when y = 0)."},
-    {g:8,term:"Parallel Lines",def:"Lines in the same plane that never intersect; they have equal slopes."},
-    {g:8,term:"Perpendicular Lines",def:"Lines that intersect at a 90° angle; their slopes are negative reciprocals."},
-    {g:8,term:"Transversal",def:"A line that crosses two or more other lines, creating multiple angle pairs."},
-    {g:8,term:"Alternate Interior Angles",def:"Angles formed between two parallel lines on opposite sides of a transversal. They are equal."},
-    {g:8,term:"Corresponding Angles",def:"Angles in matching positions when a transversal crosses parallel lines. They are equal."},
-    {g:8,term:"Scatter Plot",def:"A graph plotting paired data as points to show the relationship between two variables."},
-    {g:8,term:"Line of Best Fit",def:"A straight line drawn through a scatter plot that best represents the trend in the data."},
-    {g:8,term:"Correlation",def:"The relationship between two variables. Positive, negative, or no correlation."},
-    {g:8,term:"Volume of a Cylinder",def:"V = πr²h. Pi times radius squared times height."},
-    {g:8,term:"Volume of a Cone",def:"V = ⅓πr²h. One-third the volume of a cylinder with the same base and height."},
-    {g:8,term:"Volume of a Sphere",def:"V = (4/3)πr³. Four-thirds times pi times radius cubed."},
-    {g:8,term:"Square Root",def:"A value that, when multiplied by itself, gives the original number. √25 = 5."},
-    {g:8,term:"Perfect Square",def:"A number that is the square of a whole number. 1, 4, 9, 16, 25… are perfect squares."},
-    {g:9,term:"Monomial",def:"An algebraic expression with exactly one term. E.g., 5x², −3, 7xy."},
-    {g:9,term:"Binomial",def:"An algebraic expression with exactly two terms. E.g., x + 4, 3x² − 7."},
-    {g:9,term:"Trinomial",def:"An algebraic expression with exactly three terms. E.g., x² + 5x + 6."},
-    {g:9,term:"Polynomial",def:"An expression with one or more terms with non-negative exponents."},
-    {g:9,term:"FOIL Method",def:"Multiply two binomials: First, Outer, Inner, Last. (x+2)(x+3) = x²+3x+2x+6 = x²+5x+6."},
-    {g:9,term:"Zero Product Property",def:"If a × b = 0, then a = 0 or b = 0. Used to solve factored equations."},
-    {g:9,term:"Roots / Zeros",def:"The x-values where a function equals zero (where the graph crosses the x-axis)."},
-    {g:9,term:"Vertex",def:"The highest or lowest point of a parabola. At x = −b/(2a) in f(x) = ax²+bx+c."},
-    {g:9,term:"Parabola",def:"The U-shaped graph of a quadratic function."},
-    {g:9,term:"Axis of Symmetry",def:"The vertical line through the vertex of a parabola. x = −b/(2a)."},
-    {g:9,term:"Completing the Square",def:"Rewriting ax²+bx+c by creating a perfect square trinomial. Used to solve quadratics."},
-    {g:9,term:"Direct Variation",def:"A relationship y = kx where y is proportional to x. Graph is a line through the origin."},
-    {g:9,term:"Inverse Variation",def:"A relationship y = k/x where y decreases as x increases."},
-    {g:9,term:"Interval Notation",def:"A way to express a set of numbers using brackets [ ] and parentheses ( ). [2,5) means 2 ≤ x < 5."},
-    {g:9,term:"Absolute Value Equation",def:"An equation containing |x|. |x| = 5 has two solutions: x = 5 and x = −5."},
-    {g:9,term:"Piecewise Function",def:"A function defined by different rules for different parts of the domain."},
-    {g:9,term:"Parent Function",def:"The simplest form of a function family. E.g., f(x) = x² is the parent quadratic."},
-    {g:10,term:"Theorem",def:"A mathematical statement that has been proved to be true."},
-    {g:10,term:"Postulate",def:"A statement accepted as true without proof, used as a starting point in geometry."},
-    {g:10,term:"SSS Congruence",def:"Side-Side-Side: if all three sides of two triangles are equal, the triangles are congruent."},
-    {g:10,term:"SAS Congruence",def:"Side-Angle-Side: two sides and the included angle are equal → triangles are congruent."},
-    {g:10,term:"ASA Congruence",def:"Angle-Side-Angle: two angles and the included side are equal → triangles are congruent."},
-    {g:10,term:"Similar Triangles",def:"Triangles with the same shape but different size. Corresponding angles equal, sides proportional."},
-    {g:10,term:"Midpoint Formula",def:"The midpoint of (x₁,y₁) and (x₂,y₂) is ((x₁+x₂)/2, (y₁+y₂)/2)."},
-    {g:10,term:"Distance Formula",def:"d = √[(x₂−x₁)² + (y₂−y₁)²]. The straight-line distance between two points."},
-    {g:10,term:"Chord",def:"A line segment connecting two points on a circle, not necessarily through the center."},
-    {g:10,term:"Arc",def:"A portion of the circumference of a circle."},
-    {g:10,term:"Central Angle",def:"An angle whose vertex is the center of a circle. Equals the arc it intercepts."},
-    {g:10,term:"Inscribed Angle",def:"An angle formed by two chords with the vertex on the circle. Half the intercepted arc."},
-    {g:10,term:"Tangent Line (circle)",def:"A line that touches a circle at exactly one point. Perpendicular to the radius at that point."},
-    {g:10,term:"Sector",def:"A pie-slice region of a circle bounded by two radii and an arc."},
-    {g:10,term:"Law of Sines",def:"a/sin A = b/sin B = c/sin C. Used to solve non-right triangles."},
-    {g:10,term:"Imaginary Number",def:"The square root of a negative number. i = √−1, i² = −1."},
-    {g:10,term:"Complex Number",def:"A number in the form a + bi, where a is real and bi is imaginary."},
-    {g:10,term:"Rational Exponent",def:"An exponent that is a fraction. x^(m/n) = the nth root of x^m."},
-    {g:10,term:"Synthetic Division",def:"A shortcut method for dividing a polynomial by a linear binomial."},
-    {g:11,term:"Amplitude",def:"Half the vertical distance between the max and min of a trig function. In y = A sin x, amplitude = |A|."},
-    {g:11,term:"Period",def:"The horizontal length of one complete cycle of a trig function. Period of sin/cos = 2π."},
-    {g:11,term:"Phase Shift",def:"A horizontal shift of a trig function left or right."},
-    {g:11,term:"Inverse Trig Function",def:"A function that undoes a trig function. sin⁻¹(x), cos⁻¹(x), tan⁻¹(x)."},
-    {g:11,term:"Series",def:"The sum of the terms of a sequence. Σ notation is used."},
-    {g:11,term:"Sigma Notation (Σ)",def:"A compact way to write the sum of a sequence. Σᵢ₌₁ⁿ aᵢ = a₁+a₂+…+aₙ."},
-    {g:11,term:"Infinite Geometric Series",def:"S = a/(1−r) when |r| < 1. The sum of infinitely many terms of a geometric sequence."},
-    {g:11,term:"Normal Distribution",def:"A bell-shaped probability distribution symmetric about the mean."},
-    {g:11,term:"Z-Score",def:"The number of standard deviations a value is from the mean. z = (x − μ)/σ."},
-    {g:11,term:"Confidence Interval",def:"A range of values likely to contain a population parameter, e.g., 95% CI."},
-    {g:11,term:"Correlation Coefficient (r)",def:"A value from −1 to 1 measuring strength and direction of a linear relationship."},
-    {g:11,term:"Polynomial Long Division",def:"Dividing one polynomial by another using a process similar to numeric long division."},
-    {g:11,term:"Rational Function",def:"A function that is the ratio of two polynomials. f(x) = p(x)/q(x)."},
-    {g:11,term:"End Behavior",def:"What a function does as x → ∞ or x → −∞. Determined by leading term."},
-    {g:12,term:"Limit",def:"The value a function approaches as the input approaches a specific value. lim(x→a) f(x)."},
-    {g:12,term:"Continuity",def:"A function is continuous if its graph has no holes, jumps, or vertical asymptotes."},
-    {g:12,term:"Product Rule",def:"d/dx[f(x)g(x)] = f\'(x)g(x) + f(x)g\'(x). Rule for differentiating products."},
-    {g:12,term:"Quotient Rule",def:"d/dx[f/g] = (f\'g − fg\')/g². Rule for differentiating quotients."},
-    {g:12,term:"Chain Rule",def:"d/dx[f(g(x))] = f\'(g(x)) · g\'(x). Rule for differentiating composite functions."},
-    {g:12,term:"Critical Point",def:"A point where the derivative equals zero or is undefined. Potential max, min, or inflection."},
-    {g:12,term:"Concavity",def:"Whether a graph curves upward (concave up, f\'\'>0) or downward (concave down, f\'\'<0)."},
-    {g:12,term:"Inflection Point",def:"A point where a function changes concavity."},
-    {g:12,term:"Riemann Sum",def:"An approximation of the area under a curve using rectangles."},
-    {g:12,term:"Fundamental Theorem of Calculus",def:"Connects differentiation and integration: ∫ₐᵇ f(x)dx = F(b) − F(a)."},
-    {g:12,term:"Antiderivative",def:"A function F whose derivative is f. ∫f(x)dx = F(x) + C."},
-    {g:12,term:"Dot Product",def:"a · b = |a||b|cos θ. A scalar result from multiplying two vectors."},
-    {g:12,term:"Eigenvalue",def:"A scalar λ such that Av = λv for a matrix A and non-zero vector v."},
-    {g:12,term:"Convergent Series",def:"An infinite series whose sum approaches a finite number."},
-    {g:12,term:"Divergent Series",def:"An infinite series whose partial sums grow without bound — no finite sum."}
-  ,
-    {g:'ap',term:"Limit",def:"The value a function approaches as the input approaches a given point. Written as lim(x\u2192a) f(x)."},
-    {g:'ap',term:"Derivative",def:"The instantaneous rate of change of a function; the slope of the tangent line at a point. Notation: f\u2032(x) or dy/dx."},
-    {g:'ap',term:"Integral",def:"The area under a curve; the reverse of differentiation. Definite integrals give numerical values; indefinite give functions."},
-    {g:'ap',term:"Fundamental Theorem of Calculus",def:"Links differentiation and integration: \u222b[a,b] f(x)dx = F(b)\u2212F(a), where F is an antiderivative of f."},
-    {g:'ap',term:"Chain Rule",def:"For composite functions: d/dx[f(g(x))] = f\u2032(g(x))\u00b7g\u2032(x). Differentiate the outside then multiply by derivative of inside."},
-    {g:'ap',term:"p-value",def:"The probability of obtaining a test statistic as extreme as observed, assuming H\u2080 is true. Small p-value (< \u03b1) \u2192 reject H\u2080."},
-    {g:'ap',term:"Standard Deviation",def:"A measure of spread: the average distance of data values from the mean. Square of SD = variance."},
-    {g:'ap',term:"Normal Distribution",def:"A symmetric, bell-shaped distribution characterized by mean \u03bc and standard deviation \u03c3. ~68-95-99.7% rule applies."},
-    {g:'ap',term:"Confidence Interval",def:"A range of values constructed from sample data that is likely to contain the true population parameter."},
-    {g:'ap',term:"Regression Line",def:"The least-squares line \u0177 = a + bx that minimizes the sum of squared residuals; used to predict y from x."}
-  ],
-  science: [
-    {g:6,term:'Cell',def:'The basic structural and functional unit of all living organisms.'},
-    {g:6,term:'Photosynthesis',def:'Process where plants use sunlight, CO₂, and water to produce glucose and oxygen.'},
-    {g:6,term:'Atom',def:'The smallest unit of matter that has the properties of an element.'},
-    {g:6,term:'Element',def:'A pure substance made of only one type of atom. Listed on the periodic table.'},
-    {g:6,term:'Compound',def:'Two or more elements chemically bonded together. Water (H₂O) is a compound.'},
-    {g:6,term:'Ecosystem',def:'All living organisms in an area plus the non-living environment around them.'},
-    {g:7,term:'DNA',def:'Deoxyribonucleic acid — the molecule that carries genetic information in all living things.'},
-    {g:7,term:'Gene',def:'A segment of DNA that codes for a specific trait or protein.'},
-    {g:7,term:'Mitosis',def:'Cell division that produces two identical daughter cells (for growth/repair).'},
-    {g:7,term:'Meiosis',def:'Cell division that produces four sex cells (gametes) with half the chromosomes.'},
-    {g:7,term:'Natural Selection',def:'The process where organisms best adapted to environment survive and reproduce.'},
-    {g:7,term:'Adaptation',def:'A trait that helps an organism survive in its environment.'},
-    {g:8,term:'Newton\'s 1st Law',def:'An object at rest stays at rest; in motion stays in motion — unless acted on by force.'},
-    {g:8,term:'Newton\'s 2nd Law',def:'F = ma. Force equals mass times acceleration.'},
-    {g:8,term:'Newton\'s 3rd Law',def:'For every action, there is an equal and opposite reaction.'},
-    {g:8,term:'Kinetic Energy',def:'Energy of motion. KE = ½mv². Depends on mass and velocity.'},
-    {g:8,term:'Potential Energy',def:'Stored energy based on position or state. PE = mgh for gravitational.'},
-    {g:8,term:'Wave',def:'A disturbance that transfers energy through matter or space without moving matter.'},
-    {g:9,term:'pH Scale',def:'Measures acidity/basicity from 0–14. 7=neutral, <7=acid, >7=base.'},
-    {g:9,term:'Chemical Bond',def:'An attractive force holding atoms together. Types: ionic, covalent, metallic.'},
-    {g:9,term:'Ionic Bond',def:'Bond formed by transfer of electrons between a metal and nonmetal.'},
-    {g:9,term:'Covalent Bond',def:'Bond formed by sharing of electrons between nonmetal atoms.'},
-    {g:9,term:'Mole',def:'A unit for counting atoms/molecules. 1 mole = 6.022 × 10²³ particles.'},
-    {g:9,term:'Catalyst',def:'A substance that speeds up a chemical reaction without being consumed.'},
-    {g:10,term:'Homeostasis',def:'The ability of an organism to maintain stable internal conditions.'},
-    {g:10,term:'Mitochondria',def:'The "powerhouse" of the cell — produces ATP through cellular respiration.'},
-    {g:10,term:'Chromosome',def:'Structure in the cell nucleus made of DNA and protein that carries genes.'},
-    {g:10,term:'Dominant Allele',def:'An allele whose trait is expressed even when only one copy is present.'},
-    {g:10,term:'Recessive Allele',def:'An allele whose trait is only expressed when two copies are present.'},
-    {g:11,term:'Entropy',def:'A measure of disorder or randomness in a system. Tends to increase.'},
-    {g:11,term:'Electromagnetic Spectrum',def:'The range of all types of radiation: radio, microwave, IR, visible, UV, X-ray, gamma.'},
-    {g:11,term:'Half-Life',def:'Time for half of a radioactive substance to decay.'},
-    {g:12,term:'Activation Energy',def:'The minimum energy needed to start a chemical reaction.'},
-    {g:12,term:'Endothermic',def:'A reaction that absorbs heat energy from surroundings (feels cold).'},
-    {g:12,term:'Exothermic',def:'A reaction that releases heat energy to surroundings (feels warm).'},
-    {g:12,term:'Ecosystem Services',def:'Benefits humans get from ecosystems: clean water, oxygen, pollination, climate regulation.'},
-  ,
-    {g:6,term:"Organism",def:"Any living thing. Must carry out life processes: grow, reproduce, respond to environment."},
-    {g:6,term:"Biotic Factor",def:"Living parts of an ecosystem: plants, animals, bacteria, fungi."},
-    {g:6,term:"Abiotic Factor",def:"Non-living parts of an ecosystem: sunlight, water, temperature, soil, air."},
-    {g:6,term:"Food Chain",def:"A linear sequence showing how energy passes from one organism to the next."},
-    {g:6,term:"Food Web",def:"A complex network of interconnected food chains in an ecosystem."},
-    {g:6,term:"Producer",def:"An organism (usually a plant) that makes its own food through photosynthesis."},
-    {g:6,term:"Consumer",def:"An organism that gets energy by eating other organisms."},
-    {g:6,term:"Decomposer",def:"An organism (fungi, bacteria) that breaks down dead matter and recycles nutrients."},
-    {g:6,term:"Predator",def:"An organism that hunts and eats another organism."},
-    {g:6,term:"Prey",def:"An organism that is hunted and eaten by a predator."},
-    {g:6,term:"Habitat",def:"The natural environment where an organism lives and finds what it needs to survive."},
-    {g:6,term:"Population",def:"All members of the same species living in the same area at the same time."},
-    {g:6,term:"Community",def:"All populations of different species living together in an area."},
-    {g:6,term:"Nucleus",def:"The control center of a cell that contains DNA and directs cell activities."},
-    {g:6,term:"Cell Membrane",def:"The flexible boundary surrounding all cells; controls what enters and exits."},
-    {g:6,term:"Cell Wall",def:"A rigid outer layer found in plant cells, fungi, and bacteria — not in animal cells."},
-    {g:6,term:"Chloroplast",def:"Organelle in plant cells where photosynthesis occurs. Contains chlorophyll."},
-    {g:6,term:"Vacuole",def:"Storage organelle. Plant cells have one large central vacuole; animal cells have small ones."},
-    {g:6,term:"Cytoplasm",def:"The jelly-like fluid filling a cell, in which organelles are suspended."},
-    {g:6,term:"Matter",def:"Anything that has mass and takes up space."},
-    {g:6,term:"Physical Change",def:"A change in matter that does NOT alter its chemical composition. Cutting, melting."},
-    {g:6,term:"Chemical Change",def:"A change that creates a new substance with different properties. Burning, rusting."},
-    {g:6,term:"Density",def:"Mass per unit volume. D = m/v. Determines if an object sinks or floats."},
-    {g:6,term:"Mixture",def:"A combination of two or more substances that are NOT chemically combined."},
-    {g:6,term:"Solution",def:"A homogeneous mixture where one substance dissolves evenly in another."},
-    {g:6,term:"Solute",def:"The substance that dissolves in a solution (the lesser component). Salt in saltwater."},
-    {g:6,term:"Solvent",def:"The substance that does the dissolving (the greater component). Water in saltwater."},
-    {g:6,term:"Rock Cycle",def:"The continuous process by which rocks transform between igneous, sedimentary, and metamorphic."},
-    {g:6,term:"Weathering",def:"The breaking down of rocks at Earth's surface by physical or chemical processes."},
-    {g:6,term:"Erosion",def:"The movement of weathered rock and sediment by water, wind, or ice."},
-    {g:7,term:"Prokaryote",def:"A cell without a membrane-bound nucleus. Bacteria and archaea are prokaryotes."},
-    {g:7,term:"Eukaryote",def:"A cell with a membrane-bound nucleus. Plants, animals, fungi, and protists are eukaryotes."},
-    {g:7,term:"Organelle",def:"A specialized structure within a cell that performs a specific function."},
-    {g:7,term:"Ribosome",def:"Organelle where protein synthesis occurs. Found in all cells."},
-    {g:7,term:"Endoplasmic Reticulum",def:"Network of membranes in cells. Rough ER (with ribosomes) makes proteins; smooth ER makes lipids."},
-    {g:7,term:"Golgi Apparatus",def:"The cell's \"post office\" — packages and ships proteins made by the ER."},
-    {g:7,term:"Chromosome",def:"Structure made of DNA and protein that carries genes. Humans have 46 (23 pairs)."},
-    {g:7,term:"Genotype",def:"The genetic makeup of an organism — the specific alleles it carries (e.g., Bb)."},
-    {g:7,term:"Phenotype",def:"The observable traits of an organism resulting from its genotype and environment."},
-    {g:7,term:"Heredity",def:"The passing of traits from parents to offspring through genes."},
-    {g:7,term:"Mutation",def:"A change in the DNA sequence. Can be beneficial, harmful, or neutral."},
-    {g:7,term:"Fossil",def:"Preserved remains or traces of organisms that lived in the past."},
-    {g:7,term:"Species",def:"A group of organisms that can interbreed and produce fertile offspring."},
-    {g:7,term:"Classification",def:"Organizing living things into groups based on shared characteristics (taxonomy)."},
-    {g:7,term:"Kingdom",def:"The broadest level of biological classification: Animalia, Plantae, Fungi, Protista, Monera."},
-    {g:7,term:"Vertebrate",def:"An animal with a backbone (spinal column). Fish, amphibians, reptiles, birds, mammals."},
-    {g:7,term:"Invertebrate",def:"An animal without a backbone. About 95% of all animal species are invertebrates."},
-    {g:7,term:"Photosynthesis Equation",def:"6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂. Plants make glucose from CO₂ and water."},
-    {g:7,term:"Cellular Respiration",def:"C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP. Cells release energy from glucose."},
-    {g:7,term:"ATP",def:"Adenosine Triphosphate — the energy currency of the cell. Powers all cellular work."},
-    {g:8,term:"Force",def:"A push or pull on an object. Measured in newtons (N). Can change speed or direction."},
-    {g:8,term:"Net Force",def:"The overall force on an object after all forces are combined. Determines acceleration."},
-    {g:8,term:"Friction",def:"A force opposing motion between two surfaces in contact."},
-    {g:8,term:"Gravity",def:"A force of attraction between any two objects with mass. Increases with mass, decreases with distance."},
-    {g:8,term:"Inertia",def:"An object's tendency to resist changes in motion. More mass = more inertia."},
-    {g:8,term:"Acceleration",def:"The rate of change in velocity. a = (v_f − v_i)/t. Can be speeding up, slowing, or turning."},
-    {g:8,term:"Momentum",def:"The product of mass and velocity. p = mv. A heavy, fast object has large momentum."},
-    {g:8,term:"Work",def:"Force applied over a distance in the direction of motion. W = F × d. Measured in joules."},
-    {g:8,term:"Power",def:"The rate of doing work. P = W/t. Measured in watts."},
-    {g:8,term:"Thermal Energy",def:"The total kinetic energy of all particles in a substance (related to temperature)."},
-    {g:8,term:"Conduction",def:"Transfer of heat through direct contact between objects or particles."},
-    {g:8,term:"Convection",def:"Transfer of heat through movement of a fluid (liquid or gas)."},
-    {g:8,term:"Radiation",def:"Transfer of energy through electromagnetic waves; doesn't need matter."},
-    {g:8,term:"Electromagnetic Wave",def:"A wave made of electric and magnetic fields that can travel through a vacuum."},
-    {g:8,term:"Frequency",def:"The number of wave cycles per second. Measured in hertz (Hz)."},
-    {g:8,term:"Wavelength",def:"The distance between two consecutive peaks (or troughs) of a wave."},
-    {g:8,term:"Amplitude (wave)",def:"The height of a wave from rest position to crest. Related to energy of the wave."},
-    {g:8,term:"Reflection",def:"Bouncing of a wave off a surface."},
-    {g:8,term:"Refraction",def:"Bending of a wave as it passes from one medium to another at an angle."},
-    {g:8,term:"Ohm's Law",def:"V = IR. Voltage equals current times resistance. Fundamental law of electricity."},
-    {g:8,term:"Electric Circuit",def:"A closed path through which electric current flows."},
-    {g:8,term:"Series Circuit",def:"A circuit with only one path for current to flow. One break stops all flow."},
-    {g:8,term:"Parallel Circuit",def:"A circuit with multiple paths for current. One break doesn't stop all flow."},
-    {g:9,term:"Periodic Table",def:"A chart organizing elements by atomic number and chemical properties into periods and groups."},
-    {g:9,term:"Atomic Number",def:"The number of protons in an atom's nucleus. Defines the element."},
-    {g:9,term:"Atomic Mass",def:"The average mass of an element's atoms, measured in atomic mass units (amu)."},
-    {g:9,term:"Proton",def:"A positively charged particle in the nucleus. Number of protons = atomic number."},
-    {g:9,term:"Neutron",def:"A neutral (no charge) particle in the nucleus. Protons + neutrons = mass number."},
-    {g:9,term:"Electron",def:"A negatively charged particle orbiting the nucleus in energy levels (shells)."},
-    {g:9,term:"Isotope",def:"Atoms of the same element with different numbers of neutrons (same protons, different mass)."},
-    {g:9,term:"Ion",def:"An atom or molecule that has gained or lost electrons, giving it a charge."},
-    {g:9,term:"Valence Electrons",def:"Electrons in the outermost energy level. Determine how an atom bonds."},
-    {g:9,term:"Electronegativity",def:"An atom's ability to attract electrons in a chemical bond."},
-    {g:9,term:"Oxidation",def:"Loss of electrons in a chemical reaction. \"OIL\" — Oxidation Is Loss."},
-    {g:9,term:"Reduction",def:"Gain of electrons in a chemical reaction. \"RIG\" — Reduction Is Gain."},
-    {g:9,term:"Reactant",def:"A starting substance in a chemical reaction (left side of equation)."},
-    {g:9,term:"Product",def:"A substance formed as a result of a chemical reaction (right side of equation)."},
-    {g:9,term:"Law of Conservation of Mass",def:"Matter cannot be created or destroyed — atoms are rearranged in reactions."},
-    {g:9,term:"Stoichiometry",def:"Calculating the quantities of reactants and products in chemical reactions."},
-    {g:9,term:"Molarity",def:"Concentration of a solution: moles of solute per liter of solution. M = mol/L."},
-    {g:9,term:"Acid",def:"A substance that donates H⁺ ions in solution. pH < 7. Tastes sour, reacts with metals."},
-    {g:9,term:"Base",def:"A substance that accepts H⁺ ions (donates OH⁻). pH > 7. Tastes bitter, feels slippery."},
-    {g:9,term:"Neutralization",def:"A reaction between an acid and a base producing water and a salt."},
-    {g:10,term:"Protein Synthesis",def:"The two-step process (transcription + translation) by which DNA directs protein production."},
-    {g:10,term:"Transcription",def:"DNA is read and copied into mRNA in the nucleus."},
-    {g:10,term:"Translation",def:"mRNA is read by ribosomes to assemble a protein from amino acids."},
-    {g:10,term:"Codon",def:"A three-base sequence on mRNA that codes for a specific amino acid."},
-    {g:10,term:"Punnett Square",def:"A diagram predicting the probability of offspring genotypes from a genetic cross."},
-    {g:10,term:"Incomplete Dominance",def:"Neither allele is fully dominant; heterozygotes show a blended phenotype. Red + white = pink."},
-    {g:10,term:"Codominance",def:"Both alleles are fully expressed in a heterozygote. AB blood type."},
-    {g:10,term:"Sex-Linked Trait",def:"A trait controlled by a gene on the X or Y chromosome. Color-blindness is X-linked."},
-    {g:10,term:"Karyotype",def:"An image of an organism's complete set of chromosomes arranged in pairs."},
-    {g:10,term:"Evolution",def:"Change in the genetic makeup of a population over time."},
-    {g:10,term:"Speciation",def:"The formation of a new species from existing populations, usually through reproductive isolation."},
-    {g:10,term:"Homologous Structures",def:"Body parts with similar underlying structure in different species, suggesting common ancestry."},
-    {g:10,term:"Vestigial Structures",def:"Body parts that have lost their original function through evolution (e.g., human tailbone)."},
-    {g:10,term:"Carrying Capacity",def:"The maximum population size an environment can sustainably support."},
-    {g:10,term:"Ecological Succession",def:"The gradual change in an ecosystem over time from one community to another."},
-    {g:11,term:"Coulomb's Law",def:"The force between charges: F = kq₁q₂/r². Like charges repel; opposite charges attract."},
-    {g:11,term:"Magnetic Field",def:"A region around a magnet where magnetic forces act on other magnets or moving charges."},
-    {g:11,term:"Faraday's Law",def:"A changing magnetic field induces an electric current. Basis of generators."},
-    {g:11,term:"Thermodynamics",def:"The study of heat, work, and energy transformations. Based on 4 laws."},
-    {g:11,term:"First Law of Thermodynamics",def:"Energy cannot be created or destroyed — only converted. (Conservation of energy)."},
-    {g:11,term:"Second Law of Thermodynamics",def:"Entropy of a closed system always increases. Heat flows from hot to cold."},
-    {g:11,term:"Wave-Particle Duality",def:"Light and matter can behave as both waves and particles (quantum physics)."},
-    {g:11,term:"Photoelectric Effect",def:"Light ejects electrons from a metal surface. Proved light is made of photons."},
-    {g:11,term:"Equilibrium (chemistry)",def:"A state where the rates of forward and reverse reactions are equal."},
-    {g:11,term:"Le Chatelier's Principle",def:"A system at equilibrium will shift to counteract any stress placed on it."},
-    {g:11,term:"Hess's Law",def:"The total enthalpy change of a reaction is the same regardless of the path taken."},
-    {g:11,term:"Colligative Property",def:"A property depending on the NUMBER of solute particles (boiling point elevation, freezing point depression)."},
-    {g:12,term:"Quantum Mechanics",def:"The branch of physics describing behavior of matter and energy at atomic/subatomic scales."},
-    {g:12,term:"Nuclear Fission",def:"Splitting a heavy nucleus into lighter nuclei, releasing enormous energy. Used in nuclear power."},
-    {g:12,term:"Nuclear Fusion",def:"Combining light nuclei into a heavier one, releasing even more energy. Powers the Sun."},
-    {g:12,term:"CRISPR",def:"A gene-editing technology allowing scientists to precisely modify DNA sequences."},
-    {g:12,term:"Stem Cell",def:"An undifferentiated cell capable of developing into many different cell types."},
-    {g:12,term:"Epigenetics",def:"The study of heritable changes in gene expression that don't involve changes to DNA sequence."},
-    {g:12,term:"Trophic Level",def:"The position an organism occupies in a food chain. Producers = level 1; primary consumers = level 2."},
-    {g:12,term:"Carbon Cycle",def:"The movement of carbon through the atmosphere, oceans, soil, and living things."},
-    {g:12,term:"Greenhouse Effect",def:"The trapping of heat in Earth's atmosphere by gases like CO₂, methane, and water vapor."},
-    {g:12,term:"Biogeochemical Cycle",def:"The cycling of chemical elements through biotic and abiotic components of an ecosystem."}
-  ,
-    {g:'ap',term:"Activation Energy",def:"The minimum energy required to initiate a chemical reaction. Enzymes lower activation energy without being consumed."},
-    {g:'ap',term:"Mitosis",def:"Cell division producing two genetically identical daughter cells. Phases: prophase, metaphase, anaphase, telophase."},
-    {g:'ap',term:"Natural Selection",def:"The process by which heritable traits that increase reproductive success become more common in a population over generations."},
-    {g:'ap',term:"Entropy",def:"A measure of disorder or randomness in a system (S). The Second Law states entropy of an isolated system tends to increase."},
-    {g:'ap',term:"Le Chatelier's Principle",def:"If a system at equilibrium is disturbed, it shifts to counteract the disturbance and restore equilibrium."},
-    {g:'ap',term:"Electromagnetic Spectrum",def:"The range of all types of EM radiation, from gamma rays (shortest wavelength) to radio waves (longest)."},
-    {g:'ap',term:"Hardy-Weinberg Equilibrium",def:"A principle stating allele frequencies remain constant in a large, randomly mating population with no evolutionary forces."},
-    {g:'ap',term:"pH",def:"A logarithmic scale measuring hydrogen ion concentration. pH < 7 = acidic; pH = 7 = neutral; pH > 7 = basic."},
-    {g:'ap',term:"Electronegativity",def:"An atom's ability to attract shared electrons in a bond. Fluorine is most electronegative (3.98 on Pauling scale)."},
-    {g:'ap',term:"Newton's Second Law",def:"F = ma. Net force equals mass times acceleration. Force is measured in Newtons (kg\u00b7m/s\u00b2)."}
-  ],
-  ela: [
-    {g:6,term:'Theme',def:'The central message or lesson of a text. Not the same as topic.'},
-    {g:6,term:'Inference',def:'A logical conclusion drawn from evidence in the text plus your own knowledge.'},
-    {g:6,term:'Figurative Language',def:'Words used in a non-literal way: metaphor, simile, personification, etc.'},
-    {g:6,term:'Simile',def:'A comparison using "like" or "as". "Her smile was like sunshine."'},
-    {g:6,term:'Metaphor',def:'A direct comparison without "like" or "as". "He is a lion in battle."'},
-    {g:6,term:'Narrator',def:'The voice telling the story. Can be 1st person (I), 2nd (you), or 3rd (he/she/they).'},
-    {g:6,term:'Protagonist',def:'The main character of a story — often the hero facing the central conflict.'},
-    {g:7,term:'Antagonist',def:'The character or force opposing the protagonist.'},
-    {g:7,term:'Foreshadowing',def:'Hints or clues that suggest future events in the plot.'},
-    {g:7,term:'Flashback',def:'An interruption in the story that returns to an earlier time.'},
-    {g:7,term:'Alliteration',def:'Repetition of the same consonant sound at the start of nearby words.'},
-    {g:7,term:'Irony',def:'A contrast between expectation and reality. Verbal, situational, or dramatic.'},
-    {g:7,term:'Connotation',def:'The emotional feeling or association a word carries beyond its literal meaning.'},
-    {g:7,term:'Denotation',def:'The literal dictionary definition of a word.'},
-    {g:8,term:'Thesis Statement',def:'A sentence stating the main argument of an essay, usually at the end of the intro.'},
-    {g:8,term:'Claim',def:'A statement or argument that requires evidence to support it.'},
-    {g:8,term:'Evidence',def:'Facts, quotes, data, or examples used to support a claim.'},
-    {g:8,term:'Counterclaim',def:'An argument opposing the writer\'s main claim, acknowledged and refuted.'},
-    {g:8,term:'Rhetoric',def:'The art of using language effectively to persuade or inform an audience.'},
-    {g:8,term:'Ethos',def:'An appeal to the author\'s credibility or character (trust me, I\'m an expert).'},
-    {g:9,term:'Logos',def:'An appeal to logic and reason — using facts, statistics, and evidence.'},
-    {g:9,term:'Pathos',def:'An appeal to emotion — making the audience feel something.'},
-    {g:9,term:'Soliloquy',def:'A speech where a character reveals inner thoughts while alone on stage.'},
-    {g:9,term:'Iambic Pentameter',def:'A rhythmic pattern of 10 syllables per line (da-DUM × 5). Used by Shakespeare.'},
-    {g:9,term:'Sonnet',def:'A 14-line poem usually written in iambic pentameter with a specific rhyme scheme.'},
-    {g:10,term:'Allegory',def:'A story where characters and events represent abstract ideas or moral qualities.'},
-    {g:10,term:'Satire',def:'Using humor, exaggeration, or irony to criticize society or human behavior.'},
-    {g:10,term:'Motif',def:'A recurring element (image, symbol, idea) that helps develop a theme.'},
-    {g:11,term:'Stream of Consciousness',def:'Writing style that mimics the flow of a character\'s thoughts without structure.'},
-    {g:11,term:'Epistolary',def:'A work told through letters, diary entries, or documents.'},
-    {g:11,term:'Unreliable Narrator',def:'A narrator whose account is biased, mistaken, or dishonest.'},
-    {g:12,term:'Synthesis',def:'Combining information from multiple sources to form a new, unified argument.'},
-    {g:12,term:'Deconstruction',def:'Analyzing a text to reveal hidden contradictions or assumptions.'},
-    {g:12,term:'Archetype',def:'A universal character type or story pattern found across cultures (the hero, the mentor).'},
-  ,
-    {g:6,term:"Noun",def:"A word naming a person, place, thing, or idea. Can be common (dog) or proper (Fluffy)."},
-    {g:6,term:"Verb",def:"A word expressing action (run, write) or state of being (is, seems)."},
-    {g:6,term:"Adjective",def:"A word that modifies (describes) a noun or pronoun. \"The tall building.\""},
-    {g:6,term:"Adverb",def:"A word that modifies a verb, adjective, or other adverb. Often ends in -ly."},
-    {g:6,term:"Pronoun",def:"A word that replaces a noun. I, you, he, she, it, we, they, me, him, her, them."},
-    {g:6,term:"Preposition",def:"A word showing relationship between a noun and another word. In, on, under, with, between."},
-    {g:6,term:"Conjunction",def:"A word joining words, phrases, or clauses. Coordinating: for, and, nor, but, or, yet, so (FANBOYS)."},
-    {g:6,term:"Interjection",def:"A word or phrase expressing emotion, not grammatically connected. Wow! Ouch! Oh no!"},
-    {g:6,term:"Subject",def:"The noun or pronoun a sentence is about — who or what does the action."},
-    {g:6,term:"Predicate",def:"The part of a sentence containing the verb that tells what the subject does or is."},
-    {g:6,term:"Sentence Fragment",def:"An incomplete sentence missing a subject, verb, or complete thought."},
-    {g:6,term:"Run-On Sentence",def:"Two or more independent clauses incorrectly joined without proper punctuation."},
-    {g:6,term:"Plot",def:"The sequence of events in a story: exposition, rising action, climax, falling action, resolution."},
-    {g:6,term:"Setting",def:"The time and place where a story occurs."},
-    {g:6,term:"Conflict",def:"The central struggle in a story. Can be internal (within a character) or external (against forces outside)."},
-    {g:6,term:"Rising Action",def:"The series of events that build tension and lead to the climax."},
-    {g:6,term:"Climax",def:"The turning point — the moment of highest tension in a story."},
-    {g:6,term:"Falling Action",def:"Events after the climax that lead toward resolution."},
-    {g:6,term:"Resolution",def:"The conclusion of the story where conflicts are resolved."},
-    {g:6,term:"Exposition",def:"The opening of a story introducing characters, setting, and situation."},
-    {g:6,term:"Dialogue",def:"Conversation between characters, indicated by quotation marks."},
-    {g:6,term:"Imagery",def:"Descriptive language that appeals to the five senses to create vivid pictures."},
-    {g:6,term:"Personification",def:"Giving human qualities to non-human things. \"The wind whispered through the trees.\""},
-    {g:6,term:"Hyperbole",def:"An extreme exaggeration not meant to be taken literally. \"I have a million things to do.\""},
-    {g:6,term:"Onomatopoeia",def:"Words that imitate the sound they describe. Buzz, crash, hiss, sizzle."},
-    {g:7,term:"Independent Clause",def:"A group of words with a subject and verb that forms a complete sentence."},
-    {g:7,term:"Dependent Clause",def:"A clause with a subject and verb that CANNOT stand alone as a sentence."},
-    {g:7,term:"Compound Sentence",def:"Two independent clauses joined by a coordinating conjunction or semicolon."},
-    {g:7,term:"Complex Sentence",def:"An independent clause joined with one or more dependent clauses."},
-    {g:7,term:"Active Voice",def:"The subject performs the action. \"The dog bit the man.\" Clear and direct."},
-    {g:7,term:"Passive Voice",def:"The subject receives the action. \"The man was bitten by the dog.\""},
-    {g:7,term:"Tone",def:"The author\'s attitude toward the subject or audience (e.g., serious, humorous, bitter)."},
-    {g:7,term:"Mood",def:"The feeling or atmosphere a text creates in the reader."},
-    {g:7,term:"Symbolism",def:"Using an object, person, or event to represent a larger idea or concept."},
-    {g:7,term:"Static Character",def:"A character who does not change significantly over the course of the story."},
-    {g:7,term:"Dynamic Character",def:"A character who undergoes significant internal change during the story."},
-    {g:7,term:"Flat Character",def:"A simple character with only one or two traits; not fully developed."},
-    {g:7,term:"Round Character",def:"A complex, fully developed character with multiple traits and motivations."},
-    {g:7,term:"Foil",def:"A character who contrasts with another character to highlight certain qualities."},
-    {g:7,term:"Oxymoron",def:"A figure of speech combining two contradictory terms. \"Deafening silence,\" \"living death.\""},
-    {g:7,term:"Paradox",def:"A statement that seems contradictory but reveals a deeper truth. \"Less is more.\""},
-    {g:7,term:"Allusion",def:"An indirect reference to a person, event, place, or work of art. \"He was a real Romeo.\""},
-    {g:7,term:"Assonance",def:"Repetition of vowel sounds in nearby words. \"The rain in Spain stays mainly in the plain.\""},
-    {g:7,term:"Consonance",def:"Repetition of consonant sounds in nearby words, especially at the end. \"He strikes a bright, white light.\""},
-    {g:7,term:"Anaphora",def:"Repetition of a word or phrase at the beginning of successive clauses. \"I have a dream…\""},
-    {g:7,term:"Apostrophe (literary)",def:"Addressing an absent person or abstract idea directly. \"O Death, where is thy sting?\""},
-    {g:8,term:"Topic Sentence",def:"The sentence that states the main idea of a paragraph, usually the first sentence."},
-    {g:8,term:"Transition",def:"Words or phrases that connect ideas within and between paragraphs. (However, Therefore, In addition)."},
-    {g:8,term:"Paraphrase",def:"Restating someone else\'s ideas in your own words. Must still be cited."},
-    {g:8,term:"Summarize",def:"Briefly restating only the main points of a text in your own words."},
-    {g:8,term:"Annotate",def:"Making notes, questions, or marks in the margins of a text while reading."},
-    {g:8,term:"Plagiarism",def:"Using someone else\'s words or ideas without giving proper credit."},
-    {g:8,term:"Diction",def:"An author\'s word choice. Formal diction vs. colloquial diction shape tone and meaning."},
-    {g:8,term:"Syntax",def:"The arrangement of words and phrases to create sentences. Short vs. long sentences create different effects."},
-    {g:8,term:"Juxtaposition",def:"Placing two contrasting ideas side by side to highlight their differences."},
-    {g:8,term:"Euphemism",def:"A mild or indirect word used in place of one that might be harsh. \"Passed away\" instead of \"died.\""},
-    {g:8,term:"Antithesis",def:"Placing opposite ideas in parallel structure for contrast. \"To be or not to be.\""},
-    {g:8,term:"Chiasmus",def:"A reversal of grammatical structure in successive clauses. \"Ask not what your country can do for you…\""},
-    {g:9,term:"Stanza",def:"A group of lines in a poem, similar to a paragraph in prose."},
-    {g:9,term:"Couplet",def:"A stanza of two lines, usually rhyming."},
-    {g:9,term:"Quatrain",def:"A stanza of four lines, often with a rhyme scheme like ABAB or ABBA."},
-    {g:9,term:"Free Verse",def:"Poetry without a regular rhyme scheme or meter."},
-    {g:9,term:"Blank Verse",def:"Unrhymed poetry written in iambic pentameter. Used by Shakespeare."},
-    {g:9,term:"Rhyme Scheme",def:"The pattern of end rhymes in a poem, labeled with letters (ABAB, AABB, etc.)."},
-    {g:9,term:"Meter",def:"The rhythmic pattern of stressed and unstressed syllables in poetry."},
-    {g:9,term:"Ode",def:"A lyric poem expressing admiration or praise for a person, place, or thing."},
-    {g:9,term:"Elegy",def:"A sad poem lamenting the death of someone or mourning a loss."},
-    {g:9,term:"Ballad",def:"A narrative poem meant to be sung, often telling a dramatic story with repeated refrains."},
-    {g:9,term:"Epic",def:"A long narrative poem celebrating a heroic figure. Examples: The Iliad, The Odyssey."},
-    {g:9,term:"Haiku",def:"A Japanese poem with three lines of 5, 7, and 5 syllables."},
-    {g:9,term:"Tragic Flaw (Hamartia)",def:"A weakness or error in judgment that leads to a tragic hero\'s downfall."},
-    {g:9,term:"Catharsis",def:"The emotional release or purification an audience feels at the end of a tragedy."},
-    {g:9,term:"Hubris",def:"Excessive pride or arrogance that leads to a character\'s ruin in a tragedy."},
-    {g:10,term:"Motif",def:"A recurring element — image, phrase, or symbol — that develops the work\'s theme."},
-    {g:10,term:"Satire",def:"Using humor, irony, or exaggeration to criticize society or human behavior."},
-    {g:10,term:"Allegory",def:"A narrative where characters and events represent abstract ideas or morals."},
-    {g:10,term:"Ambiguity",def:"When a text can be interpreted in more than one way, intentionally or not."},
-    {g:10,term:"Subtext",def:"The underlying meaning beneath the surface of dialogue or action."},
-    {g:10,term:"Archetype",def:"A universal pattern or character type found across cultures. The Hero, the Mentor, the Shadow."},
-    {g:10,term:"Gothic Literature",def:"A genre featuring dark settings, mystery, death, and the supernatural."},
-    {g:10,term:"Dystopia",def:"An imaginary society characterized by oppression, suffering, and totalitarian control."},
-    {g:10,term:"Utopia",def:"An ideally perfect society — or a satire of the impossible dream of perfection."},
-    {g:10,term:"Frame Narrative",def:"A story within a story. An outer narrative frames an inner one (e.g., Canterbury Tales)."},
-    {g:10,term:"In Media Res",def:"Beginning a narrative in the middle of the action, then filling in backstory."},
-    {g:10,term:"Denouement",def:"The final part of a play or narrative in which the strands of the plot are resolved."},
-    {g:11,term:"Modernism",def:"Early 20th-century movement rejecting traditional forms in favor of experimentation."},
-    {g:11,term:"Stream of Consciousness",def:"Writing mirroring a character\'s flowing, unfiltered thoughts. Used by Virginia Woolf, James Joyce."},
-    {g:11,term:"Epistolary Novel",def:"A novel told through letters, diary entries, or other documents."},
-    {g:11,term:"Unreliable Narrator",def:"A narrator whose credibility is compromised — biased, mistaken, or deceptive."},
-    {g:11,term:"Bildungsroman",def:"A coming-of-age novel following a protagonist\'s moral and psychological growth. (Great Expectations, Jane Eyre)."},
-    {g:11,term:"Magical Realism",def:"A style blending realistic narrative with magical elements, treated as normal. (Gabriel García Márquez)."},
-    {g:11,term:"Intertextuality",def:"The relationship between texts — how one text references, echoes, or transforms another."},
-    {g:11,term:"Primary Source",def:"A first-hand account or original document from the period being studied."},
-    {g:11,term:"Secondary Source",def:"An interpretation or analysis of primary sources, written after the fact."},
-    {g:11,term:"MLA Citation",def:"A standardized format for crediting sources in academic writing (Modern Language Association)."},
-    {g:12,term:"Postmodernism",def:"A literary movement questioning grand narratives, using irony, self-reference, and fragmentation."},
-    {g:12,term:"Deconstruction",def:"A critical approach revealing hidden contradictions and assumptions in a text."},
-    {g:12,term:"Synthesis",def:"Combining ideas from multiple sources to build a new, unified argument."},
-    {g:12,term:"Hegemony",def:"Dominance of one group over others through cultural influence rather than force."},
-    {g:12,term:"Feminist Literary Criticism",def:"Analyzing texts through the lens of gender roles, power, and women\'s representation."},
-    {g:12,term:"New Historicism",def:"Interpreting a text by placing it within the historical context of its time."},
-    {g:12,term:"Ambivalence",def:"Having mixed or contradictory feelings about something — often a theme in literature."},
-    {g:12,term:"Polyphony",def:"Multiple independent voices or perspectives within a single narrative."},
-    {g:12,term:"Tragic Hero",def:"A protagonist of high status brought down by a combination of hubris and fate."},
-    {g:12,term:"Peripeteia",def:"A sudden reversal of fortune, especially in a tragedy."},
-    {g:12,term:"Anagnorisis",def:"The moment a character makes a critical discovery, often their own identity or true situation."}
-  ,
-    {g:'ap',term:"Rhetorical Situation",def:"The context of a communication act: speaker/writer, audience, purpose, occasion/context, and the message itself."},
-    {g:'ap',term:"Ethos",def:"An appeal to credibility or character. Convincing an audience by demonstrating expertise or trustworthiness."},
-    {g:'ap',term:"Pathos",def:"An appeal to the audience's emotions\u2014fear, sympathy, joy, anger\u2014to persuade or engage."},
-    {g:'ap',term:"Logos",def:"An appeal to logic, reason, and evidence\u2014statistics, facts, expert testimony\u2014to support an argument."},
-    {g:'ap',term:"Anaphora",def:"Repetition of a word or phrase at the beginning of successive clauses (e.g., MLK's 'I have a dream...')."},
-    {g:'ap',term:"Chiasmus",def:"A rhetorical figure in which grammatical structures are reversed: 'Ask not what your country can do for you...'"},
-    {g:'ap',term:"Synthesis Essay",def:"An AP Lang essay type requiring students to develop an argument drawing on multiple provided source documents."},
-    {g:'ap',term:"Bildungsroman",def:"A coming-of-age novel tracing a protagonist's moral and psychological growth from youth to maturity."},
-    {g:'ap',term:"Volta",def:"A turn or shift in argument, emotion, or perspective\u2014especially significant in sonnets (often at line 9 or 13)."},
-    {g:'ap',term:"Unreliable Narrator",def:"A narrator whose credibility is compromised by bias, limited knowledge, or psychological instability."}
-  ],
-  history: [
-    {g:6,term:'City-State',def:'An independent self-governing city and surrounding territory. E.g., Athens, Sparta.'},
-    {g:6,term:'Civilization',def:'A complex society with cities, government, specialization, and writing.'},
-    {g:6,term:'Democracy',def:'A system of government where citizens hold power. From Greek "demos" (people).'},
-    {g:6,term:'Monarchy',def:'A government ruled by a single person — a king or queen.'},
-    {g:6,term:'Feudalism',def:'Medieval system where lords owned land and peasants (serfs) worked it for protection.'},
-    {g:6,term:'Primary Source',def:'An original first-hand document or artifact from the time period being studied.'},
-    {g:7,term:'Secondary Source',def:'An account of historical events written after the fact by someone not present.'},
-    {g:7,term:'Renaissance',def:'14th–17th century European cultural rebirth focused on art, science, and humanism.'},
-    {g:7,term:'Reformation',def:'16th-century religious movement challenging the Catholic Church. Led by Luther.'},
-    {g:7,term:'Imperialism',def:'A policy of extending a nation\'s power by conquering or controlling other territories.'},
-    {g:7,term:'Colonialism',def:'Establishing and maintaining colonies in a foreign territory for political and economic control.'},
-    {g:8,term:'Manifest Destiny',def:'19th-century belief that US expansion across North America was inevitable and justified.'},
-    {g:8,term:'Checks and Balances',def:'The system where each branch of government limits the power of the other two.'},
-    {g:8,term:'Federalism',def:'A system dividing power between national and state governments.'},
-    {g:8,term:'Abolitionism',def:'The movement to end slavery in the United States.'},
-    {g:9,term:'Nationalism',def:'Strong pride in one\'s nation; belief that it should be independent and self-governing.'},
-    {g:9,term:'Totalitarianism',def:'A political system where the state has total control over all aspects of life.'},
-    {g:9,term:'Propaganda',def:'Information, often biased, used to promote a political cause or point of view.'},
-    {g:9,term:'Cold War',def:'1947–1991 ideological conflict between the US (capitalism) and USSR (communism).'},
-    {g:10,term:'Genocide',def:'The deliberate mass killing of a racial, ethnic, or national group.'},
-    {g:10,term:'Diplomacy',def:'Managing international relations through negotiation rather than war.'},
-    {g:10,term:'Capitalism',def:'Economic system with private ownership, free markets, and profit motive.'},
-    {g:10,term:'Communism',def:'Economic/political system with collective ownership and no private property.'},
-    {g:11,term:'Civil Rights Movement',def:'1950s–60s US movement to end racial segregation and discrimination.'},
-    {g:11,term:'New Deal',def:'FDR\'s 1930s programs to end the Great Depression through government intervention.'},
-    {g:12,term:'Globalization',def:'Increasing interconnection of the world\'s economies, cultures, and populations.'},
-    {g:12,term:'Sovereignty',def:'A state\'s right to govern itself without outside interference.'},
-    {g:12,term:'Decolonization',def:'The process by which colonies gained independence from European powers (mainly post-WWII).'},
-  ,
-    {g:6,term:"Artifact",def:"An object made or used by humans in the past; studied by archaeologists."},
-    {g:6,term:"Archaeology",def:"The scientific study of past human cultures through material remains and artifacts."},
-    {g:6,term:"Mesopotamia",def:"Region between the Tigris and Euphrates rivers; site of some of the world's first civilizations."},
-    {g:6,term:"Cuneiform",def:"One of the earliest writing systems, developed in Mesopotamia around 3200 BCE."},
-    {g:6,term:"Hieroglyphics",def:"Ancient Egyptian writing system using pictorial symbols."},
-    {g:6,term:"Pharaoh",def:"The ruler of ancient Egypt, considered both a king and a god."},
-    {g:6,term:"Dynasty",def:"A series of rulers from the same family who pass power from one generation to the next."},
-    {g:6,term:"Republic",def:"A government in which citizens elect representatives to make decisions on their behalf."},
-    {g:6,term:"Senate",def:"A governing body of elected representatives. Rome's Senate was central to the Republic."},
-    {g:6,term:"Tyrant",def:"In ancient Greece, a ruler who seized power without legal authority. Not necessarily cruel."},
-    {g:6,term:"Oligarchy",def:"Government by a small group of wealthy or powerful people."},
-    {g:6,term:"Theocracy",def:"A government ruled by religious leaders or based on divine authority."},
-    {g:6,term:"Trade Route",def:"A path used by merchants to exchange goods between regions or civilizations."},
-    {g:6,term:"Silk Road",def:"Ancient network of trade routes connecting China to the Mediterranean world."},
-    {g:6,term:"Monotheism",def:"Belief in one god. Judaism, Christianity, and Islam are monotheistic religions."},
-    {g:6,term:"Polytheism",def:"Belief in multiple gods. Ancient Greek, Roman, Egyptian, and Hindu religions."},
-    {g:6,term:"Caste System",def:"A rigid social hierarchy based on birth, especially associated with ancient and traditional India."},
-    {g:6,term:"Mandate of Heaven",def:"Chinese concept that emperors ruled with divine approval; losing it justified rebellion."},
-    {g:7,term:"Magna Carta",def:"1215 English document limiting royal power and establishing that the king must obey the law."},
-    {g:7,term:"Crusades",def:"A series of religious wars (1096–1291) by European Christians to reclaim the Holy Land."},
-    {g:7,term:"Black Death",def:"Bubonic plague pandemic (1347–1351) that killed ~1/3 of Europe's population."},
-    {g:7,term:"Gutenberg's Press",def:"The printing press (c. 1440) that made books affordable and spread literacy across Europe."},
-    {g:7,term:"Humanism",def:"An intellectual movement placing human potential and reason at the center, rather than religion."},
-    {g:7,term:"Scientific Revolution",def:"16th–17th century transformation in scientific thought: Copernicus, Galileo, Newton."},
-    {g:7,term:"Heliocentric Model",def:"Copernicus's theory that the Earth and planets orbit the Sun (not Earth-centered)."},
-    {g:7,term:"Absolute Monarchy",def:"A system where a ruler has unlimited, unchecked power over government and subjects."},
-    {g:7,term:"Divine Right of Kings",def:"The doctrine that monarchs derive their authority directly from God."},
-    {g:7,term:"Mercantilism",def:"Economic theory that wealth = gold/silver; colonies exist to enrich the mother country."},
-    {g:7,term:"Triangular Trade",def:"The three-legged trade route linking Europe, Africa, and the Americas; central to the slave trade."},
-    {g:7,term:"Middle Passage",def:"The brutal ocean crossing that enslaved Africans were forced to endure to the Americas."},
-    {g:7,term:"Encomienda",def:"Spanish colonial system granting colonizers the labor of indigenous peoples."},
-    {g:8,term:"Declaration of Independence",def:"1776 document declaring the 13 colonies independent from Britain, authored by Jefferson."},
-    {g:8,term:"Constitution",def:"The supreme law of the United States (1787), establishing the framework of government."},
-    {g:8,term:"Bill of Rights",def:"The first 10 amendments to the U.S. Constitution, protecting individual freedoms."},
-    {g:8,term:"Separation of Powers",def:"Dividing government into three branches (legislative, executive, judicial) to prevent tyranny."},
-    {g:8,term:"Amendment",def:"A formal change or addition to the U.S. Constitution. There are 27 amendments."},
-    {g:8,term:"Popular Sovereignty",def:"The principle that government authority comes from the people."},
-    {g:8,term:"Judicial Review",def:"The Supreme Court's power to declare laws unconstitutional (established in Marbury v. Madison)."},
-    {g:8,term:"Louisiana Purchase",def:"1803 deal where the U.S. bought ~828,000 square miles from France for $15 million."},
-    {g:8,term:"Industrial Revolution",def:"Late 18th–19th century shift from hand production to machine manufacturing."},
-    {g:8,term:"Sectionalism",def:"Excessive loyalty to the interests of one's region over the nation as a whole."},
-    {g:8,term:"Emancipation Proclamation",def:"Lincoln's 1863 executive order declaring enslaved people in Confederate states free."},
-    {g:8,term:"Reconstruction",def:"1865–1877 federal program to reintegrate Confederate states and protect newly freed people."},
-    {g:8,term:"Jim Crow Laws",def:"State and local laws enforcing racial segregation in the South after Reconstruction."},
-    {g:8,term:"Gilded Age",def:"Late 19th century U.S. era of rapid industrialization, massive inequality, and political corruption."},
-    {g:9,term:"Imperialism",def:"Policy of extending a nation's power through colonization, military force, or economic dominance."},
-    {g:9,term:"Alliance System",def:"Network of mutual-defense treaties among European powers; a cause of WWI escalation."},
-    {g:9,term:"Trench Warfare",def:"WWI military tactic of fighting from dug trenches; led to stalemate and massive casualties."},
-    {g:9,term:"Armistice",def:"An agreement to stop fighting; WWI ended with the Armistice of November 11, 1918."},
-    {g:9,term:"Treaty of Versailles",def:"1919 peace treaty ending WWI; blamed Germany, demanded reparations, redrew borders."},
-    {g:9,term:"Fascism",def:"Far-right authoritarian nationalism emphasizing the state over the individual; Mussolini, Hitler."},
-    {g:9,term:"Holocaust",def:"The systematic genocide of 6 million Jews and millions of others by Nazi Germany."},
-    {g:9,term:"Blitzkrieg",def:"German \"lightning war\" strategy using fast, combined-arms attacks to overwhelm opponents."},
-    {g:9,term:"D-Day",def:"June 6, 1944 — Allied invasion of Normandy, France; largest seaborne invasion in history."},
-    {g:9,term:"United Nations",def:"International organization founded 1945 to maintain peace and promote cooperation."},
-    {g:9,term:"Marshall Plan",def:"U.S. program (1948–1952) providing economic aid to rebuild war-torn Western Europe."},
-    {g:9,term:"Iron Curtain",def:"Churchill's term for the ideological/physical boundary dividing Cold War Europe."},
-    {g:9,term:"Containment",def:"U.S. Cold War policy of preventing the spread of Soviet communism beyond existing borders."},
-    {g:9,term:"Proxy War",def:"A conflict where competing powers support opposing sides without directly fighting each other."},
-    {g:10,term:"Apartheid",def:"South Africa's system of institutionalized racial segregation (1948–1991)."},
-    {g:10,term:"Colonialism",def:"Establishing colonies in foreign territories to exploit resources and extend political control."},
-    {g:10,term:"Partition of India",def:"1947 division of British India into independent Hindu-majority India and Muslim-majority Pakistan."},
-    {g:10,term:"Korean War",def:"1950–1953 conflict between North Korea (Soviet-backed) and South Korea (US-backed); ended in stalemate."},
-    {g:10,term:"Cuban Missile Crisis",def:"1962 thirteen-day standoff between U.S. and USSR over Soviet missiles in Cuba."},
-    {g:10,term:"Vietnam War",def:"1955–1975 conflict in Southeast Asia between North Vietnam (communist) and South Vietnam (U.S.-backed)."},
-    {g:10,term:"Space Race",def:"Cold War competition between the U.S. and USSR to achieve superiority in space exploration."},
-    {g:10,term:"Détente",def:"A period of reduced Cold War tensions in the 1970s through diplomacy and arms-control agreements."},
-    {g:10,term:"Glasnost",def:"Gorbachev's policy of \"openness\" in the USSR allowing greater political transparency."},
-    {g:10,term:"Perestroika",def:"Gorbachev's policy of \"restructuring\" to reform the Soviet economic and political system."},
-    {g:10,term:"Nonviolent Resistance",def:"Achieving political change through peaceful means; used by Gandhi and Martin Luther King Jr."},
-    {g:10,term:"Palestinian-Israeli Conflict",def:"Ongoing territorial and political struggle over land and self-determination in the Middle East."},
-    {g:11,term:"Progressive Era",def:"1890s–1920s reform period addressing industrialization's ills: child labor, corruption, suffrage."},
-    {g:11,term:"Muckraker",def:"Investigative journalist exposing corruption and social problems during the Progressive Era."},
-    {g:11,term:"19th Amendment",def:"1920 constitutional amendment granting women the right to vote."},
-    {g:11,term:"Great Migration",def:"1910–1970 movement of ~6 million Black Americans from the South to Northern cities."},
-    {g:11,term:"Harlem Renaissance",def:"1920s–30s flourishing of African American art, literature, and music centered in Harlem, NYC."},
-    {g:11,term:"Dust Bowl",def:"1930s environmental disaster of severe drought and dust storms devastating the Great Plains."},
-    {g:11,term:"McCarthyism",def:"1950s anti-communist hysteria led by Senator McCarthy; accused many without evidence."},
-    {g:11,term:"Brown v. Board of Education",def:"1954 Supreme Court ruling that racial segregation in public schools was unconstitutional."},
-    {g:11,term:"Great Society",def:"LBJ's 1960s domestic programs creating Medicare, Medicaid, and expanding civil rights."},
-    {g:11,term:"Watergate Scandal",def:"1972–74 political scandal leading to Nixon's resignation over a cover-up of a break-in."},
-    {g:12,term:"Genocide Convention",def:"1948 international treaty defining and prohibiting genocide."},
-    {g:12,term:"Universal Declaration of Human Rights",def:"1948 UN document listing fundamental rights of all people regardless of nationality."},
-    {g:12,term:"Neoliberalism",def:"Economic policy emphasizing free markets, deregulation, privatization, and reduced government spending."},
-    {g:12,term:"Climate Change",def:"Long-term shifts in global temperatures and weather patterns, significantly accelerated by human activity."},
-    {g:12,term:"Terrorism",def:"The use of violence and intimidation against civilians to achieve political or ideological goals."},
-    {g:12,term:"Arab Spring",def:"2010–2012 wave of pro-democracy uprisings across the Arab world."},
-    {g:12,term:"Cybersecurity",def:"Protecting computer systems and networks from theft, damage, or unauthorized access."},
-    {g:12,term:"International Law",def:"A body of rules and principles governing relations between nations."},
-    {g:12,term:"Supranational Organization",def:"A body with authority over member nations (e.g., EU, UN, WTO)."},
-    {g:12,term:"Refugee",def:"A person forced to flee their country due to war, persecution, or natural disaster."}
-  ,
-    {g:'ap',term:"Manifest Destiny",def:"19th-century belief that the United States was destined to expand across the North American continent."},
-    {g:'ap',term:"Checks and Balances",def:"Constitutional system in which each branch of government can limit the powers of the other branches."},
-    {g:'ap',term:"Columbian Exchange",def:"The transfer of plants, animals, diseases, and ideas between the Americas and the Old World after 1492."},
-    {g:'ap',term:"Mercantilism",def:"An economic theory holding that a nation's wealth depends on accumulating bullion through favorable trade; colonies exist to serve the mother country."},
-    {g:'ap',term:"Judicial Review",def:"The Supreme Court's power to declare laws unconstitutional; established in Marbury v. Madison (1803)."},
-    {g:'ap',term:"Cold War",def:"A period of geopolitical tension (1947\u20131991) between the US/NATO and USSR/Warsaw Pact, characterized by proxy wars and arms race without direct military conflict."},
-    {g:'ap',term:"Cognitive Dissonance",def:"(AP Psych) Mental discomfort from holding contradictory beliefs or behaviors, motivating attitude change to restore consistency."},
-    {g:'ap',term:"Operant Conditioning",def:"(AP Psych) B.F. Skinner's learning model: behavior is shaped by consequences\u2014reinforcement increases and punishment decreases behaviors."},
-    {g:'ap',term:"Federalism",def:"A system dividing sovereignty between national and state governments, each having authority in defined areas."},
-    {g:'ap',term:"Silk Road",def:"Ancient trade networks linking East Asia, Central Asia, South Asia, the Middle East, and Europe, facilitating exchange of goods, culture, and disease."}
-  ],
-  cs: [
-    {g:6,term:'Algorithm',def:'A step-by-step set of instructions to solve a problem.'},
-    {g:6,term:'Bug',def:'An error in code that causes a program to behave unexpectedly.'},
-    {g:6,term:'Loop',def:'A programming structure that repeats a block of code while a condition is true.'},
-    {g:6,term:'Conditional',def:'An "if/else" statement that executes code only when certain conditions are met.'},
-    {g:6,term:'Variable (CS)',def:'A named storage location in memory that holds a value.'},
-    {g:7,term:'Function',def:'A reusable named block of code that performs a specific task.'},
-    {g:7,term:'Parameter',def:'A variable passed into a function to customize its behavior.'},
-    {g:7,term:'Return Value',def:'The value a function sends back after completing its task.'},
-    {g:7,term:'Data Type',def:'The kind of data a variable holds: integer, float, string, boolean, list, etc.'},
-    {g:7,term:'Boolean',def:'A data type with only two values: True or False.'},
-    {g:8,term:'Array / List',def:'An ordered collection of items stored in a single variable.'},
-    {g:8,term:'Index',def:'The position of an element in a list/array. Usually starts at 0.'},
-    {g:8,term:'String',def:'A sequence of characters (text) stored in a variable.'},
-    {g:8,term:'Recursion',def:'When a function calls itself to solve a smaller version of the same problem.'},
-    {g:9,term:'Object',def:'An instance of a class that bundles related data (attributes) and behavior (methods).'},
-    {g:9,term:'Class',def:'A blueprint for creating objects with shared attributes and methods.'},
-    {g:9,term:'Inheritance',def:'When a class derives properties and behavior from a parent class.'},
-    {g:9,term:'Debugging',def:'The process of finding and fixing errors (bugs) in code.'},
-    {g:10,term:'Binary',def:'Base-2 number system using only 0s and 1s. Computers operate in binary.'},
-    {g:10,term:'Bit',def:'The smallest unit of data — a single 0 or 1.'},
-    {g:10,term:'Byte',def:'8 bits. The basic unit of memory storage.'},
-    {g:10,term:'API',def:'Application Programming Interface — rules for how software components interact.'},
-    {g:11,term:'Time Complexity',def:'How runtime grows as input size grows. O(n) = linear, O(1) = constant, etc.'},
-    {g:11,term:'Database',def:'An organized collection of structured data stored electronically.'},
-    {g:11,term:'SQL',def:'Structured Query Language — used to create, read, update, and delete database records.'},
-    {g:12,term:'Machine Learning',def:'A type of AI where algorithms learn patterns from data without explicit programming.'},
-    {g:12,term:'Encryption',def:'Converting data into a code to prevent unauthorized access.'},
-    {g:12,term:'Version Control',def:'A system tracking code changes over time. Git is the most widely used.'},
-  ,
-    {g:6,term:"Hardware",def:"The physical components of a computer: CPU, RAM, hard drive, keyboard, monitor."},
-    {g:6,term:"Software",def:"Programs and operating systems that run on a computer."},
-    {g:6,term:"Input Device",def:"Hardware that sends data TO the computer: keyboard, mouse, microphone, camera."},
-    {g:6,term:"Output Device",def:"Hardware that receives data FROM the computer: monitor, speakers, printer."},
-    {g:6,term:"CPU (Central Processing Unit)",def:"The \"brain\" of the computer that carries out instructions."},
-    {g:6,term:"RAM (Random Access Memory)",def:"Short-term memory the CPU uses for active tasks. Cleared when power off."},
-    {g:6,term:"Storage",def:"Long-term memory (hard drive, SSD, USB). Persists when power is off."},
-    {g:6,term:"Operating System",def:"Software that manages hardware and runs other programs. Windows, macOS, Linux."},
-    {g:6,term:"Network",def:"A group of computers connected to share resources and communicate."},
-    {g:6,term:"Internet",def:"A global network of networks connected by standardized protocols."},
-    {g:6,term:"Decomposition",def:"Breaking a complex problem into smaller, more manageable sub-problems."},
-    {g:6,term:"Pattern Recognition",def:"Identifying similarities or patterns within problems to solve them more efficiently."},
-    {g:6,term:"Abstraction",def:"Focusing on essential information while ignoring irrelevant details."},
-    {g:6,term:"Flowchart",def:"A diagram using shapes and arrows to map the steps of an algorithm or process."},
-    {g:6,term:"Pseudocode",def:"Plain-language description of an algorithm's steps — not actual code, but code-like."},
-    {g:6,term:"Debugging",def:"Finding and fixing errors (bugs) in code."},
-    {g:7,term:"Syntax (CS)",def:"The set of rules governing how code must be written in a programming language."},
-    {g:7,term:"Runtime Error",def:"An error that occurs while a program is executing, causing it to crash."},
-    {g:7,term:"Logic Error",def:"A bug where code runs without crashing but produces incorrect output."},
-    {g:7,term:"Compile",def:"To translate source code into machine code that a computer can execute."},
-    {g:7,term:"Interpreter",def:"A program that executes code line by line without compiling the whole program first."},
-    {g:7,term:"Constant",def:"A named value that CANNOT change during program execution."},
-    {g:7,term:"Operator",def:"A symbol performing an operation: arithmetic (+,-,*,/), comparison (==,<,>), logical (and, or, not)."},
-    {g:7,term:"Concatenation",def:"Joining two or more strings together. \"Hello\" + \" World\" = \"Hello World\"."},
-    {g:7,term:"Nested Loop",def:"A loop inside another loop. The inner loop completes all iterations for each outer iteration."},
-    {g:7,term:"Scope",def:"The region of code where a variable is accessible (local vs. global scope)."},
-    {g:7,term:"Global Variable",def:"A variable accessible throughout the entire program."},
-    {g:7,term:"Local Variable",def:"A variable only accessible within the function or block where it was defined."},
-    {g:7,term:"Import / Library",def:"Pre-written code that adds functionality to your program. import math, import random."},
-    {g:8,term:"Stack",def:"A data structure where the last item added is the first removed (LIFO — Last In, First Out)."},
-    {g:8,term:"Queue",def:"A data structure where the first item added is the first removed (FIFO — First In, First Out)."},
-    {g:8,term:"Dictionary / Hash Map",def:"A data structure storing key-value pairs for fast lookup. {\"name\":\"Dee\",\"age\":14}."},
-    {g:8,term:"Linear Search",def:"Checking each element one by one until the target is found. O(n) time."},
-    {g:8,term:"Binary Search",def:"Efficiently finding a target in a sorted list by halving the search space each step. O(log n)."},
-    {g:8,term:"Bubble Sort",def:"Simple sorting algorithm that repeatedly swaps adjacent elements if out of order. O(n²)."},
-    {g:8,term:"Merge Sort",def:"Efficient divide-and-conquer sorting algorithm. Splits, sorts, then merges. O(n log n)."},
-    {g:8,term:"Iteration",def:"Repeating a set of instructions a certain number of times or until a condition is met."},
-    {g:8,term:"Modulo (%)",def:"The remainder after division. 17 % 5 = 2. Used to check divisibility and wrap values."},
-    {g:8,term:"Boolean Logic",def:"Logic using AND, OR, NOT to combine true/false conditions."},
-    {g:8,term:"Truthy / Falsy",def:"In Python/JS, values treated as True or False in conditionals (e.g., 0, \"\", None are falsy)."},
-    {g:9,term:"Encapsulation",def:"Bundling data (attributes) and methods together in a class, hiding internal details."},
-    {g:9,term:"Polymorphism",def:"The ability of different classes to be treated as the same type via shared interfaces."},
-    {g:9,term:"Abstraction (OOP)",def:"Hiding complex implementation details and exposing only what is necessary."},
-    {g:9,term:"Constructor",def:"A special method that runs when an object is created, setting initial attribute values."},
-    {g:9,term:"Method",def:"A function defined inside a class that operates on the object's data."},
-    {g:9,term:"Instance",def:"A specific object created from a class. Each instance has its own attribute values."},
-    {g:9,term:"Attribute",def:"A variable belonging to a class or object, storing its properties/state."},
-    {g:9,term:"Super() / Parent Class",def:"Calling a method from the parent class in an inherited child class."},
-    {g:9,term:"Interface",def:"A contract specifying methods a class must implement, without providing the code."},
-    {g:9,term:"Design Pattern",def:"A reusable solution to a common software design problem (e.g., Singleton, Observer)."},
-    {g:9,term:"UML Diagram",def:"Unified Modeling Language diagram — a visual blueprint for software design."},
-    {g:9,term:"Agile Development",def:"An iterative software development approach focusing on collaboration and rapid delivery."},
-    {g:10,term:"HTML",def:"HyperText Markup Language — the structure/skeleton of web pages."},
-    {g:10,term:"CSS",def:"Cascading Style Sheets — controls the visual appearance of HTML elements."},
-    {g:10,term:"JavaScript",def:"A programming language running in browsers, making web pages interactive."},
-    {g:10,term:"DOM (Document Object Model)",def:"A tree representation of an HTML document that JavaScript can manipulate."},
-    {g:10,term:"HTTP/HTTPS",def:"Protocols for transferring data on the web. HTTPS adds encryption for security."},
-    {g:10,term:"IP Address",def:"A unique numerical label identifying a device on a network (e.g., 192.168.1.1)."},
-    {g:10,term:"DNS (Domain Name System)",def:"Translates human-readable domain names (google.com) into IP addresses."},
-    {g:10,term:"Client-Server Model",def:"Architecture where clients request resources from servers that respond with data."},
-    {g:10,term:"Packet",def:"A small unit of data transmitted over a network. Large files are split into packets."},
-    {g:10,term:"Firewall",def:"A security system that monitors and controls incoming/outgoing network traffic."},
-    {g:10,term:"Hexadecimal",def:"Base-16 number system using 0-9 and A-F. Used in color codes (#FF5733) and memory addresses."},
-    {g:10,term:"ASCII",def:"American Standard Code for Information Interchange — encodes characters as numbers (A=65, a=97)."},
-    {g:10,term:"Unicode",def:"A universal character encoding standard supporting virtually all writing systems."},
-    {g:11,term:"Big O Notation",def:"A way to describe algorithm efficiency as input grows: O(1), O(log n), O(n), O(n²)."},
-    {g:11,term:"Space Complexity",def:"How much memory an algorithm uses relative to input size."},
-    {g:11,term:"Graph (Data Structure)",def:"A collection of nodes (vertices) connected by edges. Used for networks, maps, social connections."},
-    {g:11,term:"Tree (Data Structure)",def:"A hierarchical data structure with a root node and child nodes. Binary trees, search trees."},
-    {g:11,term:"Linked List",def:"A chain of nodes, each storing data and a pointer to the next node."},
-    {g:11,term:"Hashing",def:"Converting data to a fixed-size value (hash) for fast retrieval in hash tables."},
-    {g:11,term:"Dynamic Programming",def:"Optimizing algorithms by storing results of sub-problems to avoid redundant computation."},
-    {g:11,term:"Greedy Algorithm",def:"Making locally optimal choices at each step, hoping for a global optimum."},
-    {g:11,term:"Regular Expression",def:"A sequence of characters defining a search pattern, used for text matching."},
-    {g:11,term:"REST API",def:"An architectural style for web APIs using HTTP methods (GET, POST, PUT, DELETE)."},
-    {g:11,term:"JSON",def:"JavaScript Object Notation — a lightweight data format for transmitting data between systems."},
-    {g:11,term:"Cloud Computing",def:"Delivering computing services (servers, storage, databases) over the internet."},
-    {g:12,term:"Neural Network",def:"A machine learning model inspired by the brain, made of layers of interconnected nodes."},
-    {g:12,term:"Training Data",def:"The dataset used to teach a machine learning model to recognize patterns."},
-    {g:12,term:"Overfitting",def:"When a model learns training data too well and performs poorly on new data."},
-    {g:12,term:"Natural Language Processing",def:"AI that enables computers to understand, interpret, and generate human language."},
-    {g:12,term:"Blockchain",def:"A distributed, decentralized ledger recording transactions across many computers."},
-    {g:12,term:"Public Key Cryptography",def:"Encryption using a public key to encrypt and a private key to decrypt data."},
-    {g:12,term:"Two-Factor Authentication",def:"Security requiring two verification methods: something you know + something you have."},
-    {g:12,term:"Digital Footprint",def:"The trail of data you leave when using the internet — both active and passive."},
-    {g:12,term:"Net Neutrality",def:"The principle that ISPs must treat all internet traffic equally, without throttling."},
-    {g:12,term:"Moore's Law",def:"Observation that transistor count on chips doubles ~every 2 years, increasing computing power."}
-  ,
-    {g:'ap',term:"Algorithm",def:"A step-by-step set of instructions for solving a problem or completing a task, with a defined input and output."},
-    {g:'ap',term:"Binary",def:"A base-2 number system using only 0 and 1. Computers use binary at the hardware level to represent all data."},
-    {g:'ap',term:"Object-Oriented Programming",def:"A programming paradigm organizing code into objects (instances of classes) that have properties and methods."},
-    {g:'ap',term:"Polymorphism",def:"OOP concept allowing objects of different classes to be treated as objects of a common superclass; methods behave differently per class."},
-    {g:'ap',term:"Recursion",def:"A function that calls itself with a modified input until a base case is reached, solving problems by breaking them into subproblems."},
-    {g:'ap',term:"Time Complexity",def:"A measure of how runtime grows with input size, expressed in Big-O notation (e.g., O(n), O(n\u00b2), O(log n))."},
-    {g:'ap',term:"Encryption",def:"The process of encoding data so only authorized parties can read it. Public-key encryption uses key pairs."},
-    {g:'ap',term:"Abstraction",def:"Hiding implementation details to reduce complexity, allowing programmers to use interfaces without knowing internals."},
-    {g:'ap',term:"Boolean Logic",def:"Logic using true/false values and operators AND, OR, NOT. The basis for all computer circuit design and conditionals."},
-    {g:'ap',term:"Inheritance",def:"An OOP mechanism where a subclass acquires properties and methods of a superclass using 'extends'."}
-  ],
-  health: [
-    {g:6,term:'Nutrient',def:'A substance in food the body uses for energy, growth, and repair.'},
-    {g:6,term:'Carbohydrate',def:'The body\'s main energy source. Found in grains, fruits, vegetables.'},
-    {g:6,term:'Protein',def:'Nutrient that builds and repairs tissues. Made of amino acids.'},
-    {g:6,term:'Metabolism',def:'All chemical processes keeping the body alive and functioning.'},
-    {g:6,term:'Hygiene',def:'Practices that maintain health and prevent disease, such as handwashing.'},
-    {g:7,term:'Immune System',def:'The body\'s defense network that identifies and destroys pathogens.'},
-    {g:7,term:'Pathogen',def:'A microorganism (bacteria, virus, fungus) that causes disease.'},
-    {g:7,term:'Vaccine',def:'A substance that trains the immune system to fight a specific disease.'},
-    {g:7,term:'Puberty',def:'Period of physical development from child to adult driven by hormones.'},
-    {g:8,term:'Cardiovascular System',def:'Heart and blood vessels that pump and circulate blood through the body.'},
-    {g:8,term:'Aerobic Exercise',def:'Exercise that requires oxygen and strengthens heart and lungs. E.g., running.'},
-    {g:8,term:'Body Mass Index',def:'BMI = weight(kg) / height(m)². Used to estimate body fat.'},
-    {g:8,term:'Stress',def:'The body\'s physical and mental response to a challenging or threatening situation.'},
-    {g:9,term:'Mental Health',def:'Emotional, psychological, and social well-being affecting thoughts and behavior.'},
-    {g:9,term:'Anxiety',def:'A feeling of worry and unease, often about uncertain outcomes.'},
-    {g:9,term:'Depression',def:'A mood disorder causing persistent sadness and loss of interest.'},
-    {g:9,term:'Addiction',def:'A condition of being physically or psychologically dependent on a substance.'},
-    {g:10,term:'Homeostasis (health)',def:'The body\'s ability to maintain stable conditions like temperature and blood sugar.'},
-    {g:10,term:'Chronic Disease',def:'A long-lasting condition that generally cannot be cured but can be managed.'},
-    {g:10,term:'Communicable Disease',def:'A disease that can be spread from person to person (infectious disease).'},
-    {g:11,term:'Epidemiology',def:'The study of how diseases spread, affect populations, and can be controlled.'},
-    {g:11,term:'First Aid',def:'Immediate help given to an injured or ill person before professional care arrives.'},
-    {g:12,term:'Public Health',def:'The science of protecting and improving the health of entire communities.'},
-    {g:12,term:'Caloric Deficit',def:'Consuming fewer calories than the body burns; leads to weight loss over time.'},
-  ,
-    {g:6,term:"Fat",def:"A nutrient providing energy (9 cal/g), insulation, and vitamin absorption. Saturated vs. unsaturated."},
-    {g:6,term:"Vitamin",def:"Organic compounds needed in small amounts for normal body function. A, B, C, D, E, K."},
-    {g:6,term:"Mineral",def:"Inorganic nutrients essential for body processes. Calcium (bones), iron (blood), potassium."},
-    {g:6,term:"Water",def:"Essential nutrient making up ~60% of body weight. Involved in almost every body process."},
-    {g:6,term:"Calorie",def:"A unit of energy from food. The body needs calories to fuel all functions."},
-    {g:6,term:"Digestive System",def:"Organ system that breaks down food into nutrients: mouth, esophagus, stomach, intestines."},
-    {g:6,term:"Respiratory System",def:"Organ system bringing oxygen in and expelling CO₂: nose, trachea, lungs, diaphragm."},
-    {g:6,term:"Skeletal System",def:"The 206 bones of the body providing structure, protection, and blood cell production."},
-    {g:6,term:"Muscular System",def:"Three types of muscle: skeletal (voluntary), smooth (involuntary), cardiac (heart)."},
-    {g:6,term:"Nervous System",def:"The brain, spinal cord, and nerves that control and coordinate body functions."},
-    {g:6,term:"Endocrine System",def:"Glands that produce hormones regulating growth, metabolism, and reproduction."},
-    {g:6,term:"Hormone",def:"A chemical messenger produced by endocrine glands that travels through the bloodstream."},
-    {g:6,term:"Physical Fitness",def:"The ability to carry out daily tasks with energy and without fatigue. 5 components."},
-    {g:6,term:"Flexibility",def:"The range of motion around a joint. Improved by stretching and yoga."},
-    {g:6,term:"Muscular Strength",def:"The maximum force a muscle can exert in a single effort."},
-    {g:6,term:"Muscular Endurance",def:"The ability of a muscle to sustain repeated contractions over time."},
-    {g:6,term:"Cardiorespiratory Endurance",def:"The ability of the heart and lungs to supply oxygen during sustained exercise."},
-    {g:7,term:"Bacteria",def:"Single-celled prokaryotic microorganisms. Most are harmless; some cause disease."},
-    {g:7,term:"Virus",def:"A non-living pathogen that invades cells and uses them to reproduce. Cannot be treated with antibiotics."},
-    {g:7,term:"Antibiotic",def:"A medicine that kills or slows bacterial growth. Does NOT work against viruses."},
-    {g:7,term:"Antibody",def:"A protein made by the immune system that specifically neutralizes a pathogen."},
-    {g:7,term:"Antigen",def:"A foreign substance (on a pathogen) that triggers the immune system to produce antibodies."},
-    {g:7,term:"Inflammation",def:"The immune system's response to injury or infection: redness, swelling, heat, pain."},
-    {g:7,term:"White Blood Cells",def:"Immune cells that detect and destroy pathogens. Also called leukocytes."},
-    {g:7,term:"Lymphatic System",def:"A network of vessels and nodes filtering fluid and fighting infection. Works with immunity."},
-    {g:7,term:"Non-Communicable Disease",def:"A disease that cannot spread person to person. Heart disease, cancer, diabetes."},
-    {g:7,term:"Risk Factor",def:"Something that increases the likelihood of developing a disease or injury."},
-    {g:7,term:"Preventive Health",def:"Actions taken to prevent illness before it occurs: exercise, diet, vaccines, screenings."},
-    {g:7,term:"Screenings",def:"Medical tests to detect diseases early, before symptoms appear."},
-    {g:7,term:"Reproductive Health",def:"Health related to the reproductive system and sexual development."},
-    {g:8,term:"Emotional Intelligence",def:"The ability to recognize, understand, and manage your own and others' emotions."},
-    {g:8,term:"Coping Strategy",def:"A method used to manage stress and difficult emotions in a healthy way."},
-    {g:8,term:"Resilience",def:"The ability to recover from setbacks, adapt to challenges, and keep going."},
-    {g:8,term:"Self-Esteem",def:"How a person feels about their own worth and value."},
-    {g:8,term:"Body Image",def:"How a person perceives and feels about their own physical appearance."},
-    {g:8,term:"Eating Disorder",def:"A serious mental health condition involving distorted eating behaviors (anorexia, bulimia, binge eating)."},
-    {g:8,term:"Peer Pressure",def:"Social influence from peers to behave in a certain way, which may be positive or negative."},
-    {g:8,term:"Refusal Skills",def:"Strategies for saying no to risky behaviors while maintaining relationships."},
-    {g:8,term:"Conflict Resolution",def:"Peaceful strategies for resolving disagreements: communication, compromise, mediation."},
-    {g:8,term:"Cyberbullying",def:"Using technology to harass, threaten, or humiliate someone."},
-    {g:8,term:"Healthy Relationship",def:"A relationship built on mutual respect, trust, honesty, and support."},
-    {g:8,term:"Abuse",def:"Mistreatment of a person; can be physical, emotional, verbal, or sexual."},
-    {g:9,term:"Stimulant",def:"A drug that speeds up the central nervous system. Caffeine, nicotine, amphetamines, cocaine."},
-    {g:9,term:"Depressant",def:"A drug that slows the central nervous system. Alcohol, benzodiazepines."},
-    {g:9,term:"Hallucinogen",def:"A drug causing altered perceptions of reality. LSD, psilocybin, mescaline."},
-    {g:9,term:"Nicotine",def:"An addictive stimulant in tobacco. Causes physical dependence and cardiovascular damage."},
-    {g:9,term:"Alcohol",def:"A legal depressant drug affecting coordination, judgment, and reaction time."},
-    {g:9,term:"Blood Alcohol Content (BAC)",def:"Percentage of alcohol in the bloodstream. 0.08% is the legal driving limit in most U.S. states."},
-    {g:9,term:"Withdrawal",def:"Physical and mental symptoms when stopping a substance the body has become dependent on."},
-    {g:9,term:"Gateway Drug",def:"A substance whose use is thought to lead to using harder drugs."},
-    {g:9,term:"Harm Reduction",def:"Strategies to minimize the negative effects of risky behaviors."},
-    {g:9,term:"Abstinence",def:"Choosing not to engage in a behavior (substance use, sexual activity) to avoid associated risks."},
-    {g:9,term:"Decision-Making Model",def:"A step-by-step process for making thoughtful choices: identify options, consider consequences, decide."},
-    {g:10,term:"Puberty",def:"The period of physical maturation driven by hormones; leads to reproductive capability."},
-    {g:10,term:"Menstrual Cycle",def:"The monthly cycle (~28 days) preparing the female body for possible pregnancy."},
-    {g:10,term:"Fertilization",def:"The union of a sperm cell and an egg cell to form a zygote."},
-    {g:10,term:"STI (Sexually Transmitted Infection)",def:"An infection spread through sexual contact. Examples: chlamydia, HIV, HPV."},
-    {g:10,term:"HIV/AIDS",def:"HIV is the virus that attacks immune cells; AIDS is the advanced stage of HIV infection."},
-    {g:10,term:"Contraception",def:"Methods used to prevent pregnancy. Examples: condoms, birth control pills, IUDs."},
-    {g:10,term:"Prenatal Care",def:"Medical care during pregnancy to monitor the health of mother and developing baby."},
-    {g:10,term:"Infant Mortality Rate",def:"The number of infant deaths per 1,000 live births. An indicator of public health quality."},
-    {g:10,term:"Life Expectancy",def:"The average number of years a person is expected to live based on current mortality rates."},
-    {g:11,term:"Chronic Pain",def:"Long-lasting pain persisting beyond the expected period of healing."},
-    {g:11,term:"Post-Traumatic Stress Disorder (PTSD)",def:"A mental health condition triggered by experiencing or witnessing a traumatic event."},
-    {g:11,term:"Schizophrenia",def:"A serious mental disorder affecting perception of reality, including hallucinations and delusions."},
-    {g:11,term:"Bipolar Disorder",def:"A mental health condition with extreme mood swings between mania and depression."},
-    {g:11,term:"CBT (Cognitive Behavioral Therapy)",def:"A therapy changing negative thought patterns to improve emotional regulation and behavior."},
-    {g:11,term:"Mindfulness",def:"Focusing attention on the present moment, without judgment. Reduces stress and anxiety."},
-    {g:11,term:"Nutritional Label",def:"FDA-required label on food showing serving size, calories, nutrients, and % daily values."},
-    {g:11,term:"Glycemic Index",def:"A measure of how quickly a food raises blood sugar levels."},
-    {g:11,term:"Saturated Fat",def:"Solid at room temperature; linked to increased LDL (bad) cholesterol. Found in meat and dairy."},
-    {g:11,term:"Unsaturated Fat",def:"Liquid at room temperature; beneficial for heart health. Found in nuts, olive oil, fish."},
-    {g:11,term:"Trans Fat",def:"Artificially hydrogenated fat; raises LDL and lowers HDL. Banned in many countries."},
-    {g:11,term:"Cardiovascular Disease",def:"Conditions affecting the heart and blood vessels; leading cause of death globally."},
-    {g:11,term:"Type 2 Diabetes",def:"A condition where the body doesn't use insulin properly, leading to high blood sugar."},
-    {g:12,term:"Social Determinants of Health",def:"Non-medical factors (income, education, environment) that shape health outcomes."},
-    {g:12,term:"Health Equity",def:"The state in which every person has a fair opportunity to be as healthy as possible."},
-    {g:12,term:"Pandemic",def:"An epidemic that has spread across a large region, multiple countries, or worldwide."},
-    {g:12,term:"Herd Immunity",def:"When enough of a population is immune to a disease that its spread is significantly slowed."},
-    {g:12,term:"Morbidity",def:"The rate of disease in a population."},
-    {g:12,term:"Mortality",def:"The rate of death in a population."},
-    {g:12,term:"Hospice Care",def:"Compassionate care for people in the final phase of a terminal illness, focusing on comfort."},
-    {g:12,term:"Advance Directive",def:"A legal document stating a person's wishes for medical treatment if they cannot speak for themselves."},
-    {g:12,term:"Organ Donation",def:"Consenting to have organs/tissues removed after death for transplantation to save others' lives."},
-    {g:12,term:"Health Insurance",def:"A contract providing financial coverage for medical expenses."},
-    {g:12,term:"Opioid Crisis",def:"The widespread misuse of prescription and illegal opioids in the U.S., causing record overdose deaths."}
-  ],
-};
-
-const SUBJECTS = {
-  math:    {icon:'➕',label:'Math'},
-  science: {icon:'🔬',label:'Science'},
-  ela:     {icon:'📖',label:'ELA'},
-  history: {icon:'🌍',label:'History'},
-  cs:      {icon:'💻',label:'CS'},
-  health:  {icon:'❤️',label:'Health'},
-};
-
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let activeSubj = 'math';
-let activeGrade = 'all';
-let deck = [];
-let deckIdx = 0;
-let flipped = false;
-let knowSet = new Set();
-let learnSet = new Set();
-let mode = 'all'; // 'all' | 'learn' | 'know'
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-function buildSidebar(){
-  const list = document.getElementById('fcSubjectList');
-  list.innerHTML = Object.entries(SUBJECTS).map(([key,info])=>{
-    const count = CARDS[key]?.length || 0;
-    return `<div class="fc-subj-item${key===activeSubj?' active':''}" onclick="selectSubj('${key}')">
-      <span class="fc-subj-icon">${info.icon}</span>
-      <span class="fc-subj-name">${info.label}</span>
-      <span class="fc-subj-count">${count}</span>
-    </div>`;
-  }).join('');
-
-  // Grade filter
-  const gb = document.getElementById('gradeFilterBtns');
-  gb.innerHTML = `<button class="grade-btn${activeGrade==='all'?' active':''}" onclick="setGrade('all')">All</button>`+
-    [6,7,8,9,10,11,12,'ap'].map(g=>
-      `<button class="grade-btn${activeGrade==g?' active':''}" onclick="setGrade('${g}')">${g==='ap'?'AP':g}</button>`
-    ).join('');
-}
-
-function selectSubj(key){
-  activeSubj = key;
-  knowSet.clear(); learnSet.clear();
-  buildDeck();
-  buildSidebar();
-}
-
-function setGrade(g){
-  activeGrade = g;
-  knowSet.clear(); learnSet.clear();
-  buildDeck();
-  buildSidebar();
-}
-
-function buildDeck(){
-  let cards = CARDS[activeSubj] || [];
-  if(activeGrade !== 'all') cards = cards.filter(c=>c.g == activeGrade);
-  if(mode==='learn') cards = cards.filter((_,i)=>learnSet.has(i));
-  if(mode==='know')  cards = cards.filter((_,i)=>knowSet.has(i));
-  // Shuffle
-  deck = [...cards].map((c,i)=>({...c,_origIdx:i}));
-  for(let i=deck.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [deck[i],deck[j]]=[deck[j],deck[i]];
-  }
-  deckIdx = 0;
-  flipped = false;
-  renderStudyArea();
-}
-
-// ── RENDER ────────────────────────────────────────────────────────────────────
-function renderStudyArea(){
-  const main = document.getElementById('fcMain');
-  if(!deck.length){
-    main.innerHTML=`<div class="fc-empty"><div class="big">🔍</div>
-      No cards for this selection.<br><br>Try selecting <strong>All Grades</strong> or a different mode.</div>`;
-    return;
-  }
-
-  const info = SUBJECTS[activeSubj];
-  const card = deck[deckIdx];
-  const pct = Math.round((deckIdx/deck.length)*100);
-  const cardKey = activeSubj+'_'+card._origIdx;
-  const isKnow = knowSet.has(cardKey);
-  const isLearn = learnSet.has(cardKey);
-
-  main.innerHTML = `
-  <!-- Progress -->
-  <div class="fc-progress-row" style="width:100%;max-width:600px;">
-    <div class="fc-prog-track"><div class="fc-prog-fill" style="width:${pct}%"></div></div>
-    <span class="fc-prog-label">${deckIdx+1} / ${deck.length}</span>
-  </div>
-
-  <!-- Stats -->
-  <div class="fc-stats">
-    <span class="fc-stat know">✅ Know: ${knowSet.size}</span>
-    <span class="fc-stat learn">📌 Study: ${learnSet.size}</span>
-    <span class="fc-stat total">🃏 ${deck.length} cards</span>
-  </div>
-
-  <!-- Mode buttons -->
-  <div class="fc-mode-row">
-    <button class="fc-mode-btn${mode==='all'?' active':''}" onclick="setMode('all')">📚 All Cards</button>
-    <button class="fc-mode-btn${mode==='learn'?' active':''}" onclick="setMode('learn')">📌 Study Again (${learnSet.size})</button>
-    <button class="fc-mode-btn${mode==='know'?' active':''}" onclick="setMode('know')">✅ I Know These (${knowSet.size})</button>
-  </div>
-
-  <!-- Card -->
-  <div class="fc-card-wrap" onclick="flipCard()">
-    <div class="fc-card${flipped?' flipped':''}" id="fcCard">
-      <div class="fc-face fc-front">
-        <span class="fc-subject-tag">Grade ${card.g} · ${info.icon} ${info.label}</span>
-        <div class="fc-face-label">Term</div>
-        <div class="fc-term">${esc(card.term)}</div>
-        <div class="fc-hint">Click to reveal definition</div>
-      </div>
-      <div class="fc-face fc-back">
-        <span class="fc-subject-tag">Grade ${card.g} · ${info.icon} ${info.label}</span>
-        <div class="fc-face-label">Definition</div>
-        <div class="fc-term">${esc(card.def)}</div>
-        <div class="fc-hint">Click to flip back</div>
-      </div>
+<div class="modal-bg" id="deckModal">
+  <div class="modal">
+    <h3>Create New Deck</h3>
+    <div class="field"><label>Deck Name</label><input type="text" id="deckNameInput" placeholder="e.g. AP Chemistry"></div>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeDeckModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="createDeck()">Create</button>
     </div>
-  </div>
-
-  <!-- SM-2 Spaced Repetition Buttons -->
-  <div class="fc-controls">
-    ${flipped ? `
-    <button class="fc-ctrl-btn btn-again" onclick="markCard(1)" title="Again — see soon">🔁 Again</button>
-    <button class="fc-ctrl-btn btn-hard" onclick="markCard(2)" title="Hard — 1 day">😓 Hard</button>
-    <button class="fc-ctrl-btn btn-good" onclick="markCard(3)" title="Good — spaced">👍 Good</button>
-    <button class="fc-ctrl-btn btn-easy" onclick="markCard(4)" title="Easy — long interval">⚡ Easy</button>
-    ` : `
-    <button class="fc-ctrl-btn btn-learn${isLearn?' ':''}" onclick="markCard(1)">📌 Study Again</button>
-    <button class="fc-ctrl-btn btn-flip" onclick="flipCard()">🔄 Flip Card</button>
-    <button class="fc-ctrl-btn btn-know${isKnow?' ':''}" onclick="markCard(4)">✅ I Know It!</button>
-    `}
-  </div>
-  ${flipped ? '<div style="text-align:center;font-size:.75rem;color:#94a3b8;margin-top:6px">Rate how well you knew it — spaced repetition will schedule your next review</div>' : ''}
-
-  <!-- Prev / Next -->
-  <div class="fc-nav-row">
-    <button class="fc-nav-btn" onclick="prevCard()" ${deckIdx===0?'disabled':''}>← Prev</button>
-    <span class="fc-counter">${deckIdx+1} of ${deck.length}</span>
-    <button class="fc-nav-btn" onclick="nextCard()" ${deckIdx===deck.length-1?'disabled':''}>Next →</button>
-    <button class="fc-nav-btn" onclick="shuffleDeck()" style="margin-left:8px;">🔀 Shuffle</button>
-  </div>
-  `;
-}
-
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function renderDone(){
-  const main = document.getElementById('fcMain');
-  const total = CARDS[activeSubj]?.length||0;
-  main.innerHTML=`<div class="fc-done">
-    <div class="big">🎉</div>
-    <h2>Deck Complete!</h2>
-    <p>You went through all ${deck.length} cards.<br>
-    ✅ Know: <strong>${knowSet.size}</strong> &nbsp;·&nbsp; 📌 Study Again: <strong>${learnSet.size}</strong></p>
-    <div class="fc-done-btns">
-      ${learnSet.size?`<button class="fc-done-btn primary" onclick="setMode('learn')">📌 Review Study Again Cards</button>`:''}
-      <button class="fc-done-btn secondary" onclick="shuffleDeck()">🔀 Shuffle & Restart</button>
-    </div>
-  </div>`;
-}
-
-// ── ACTIONS ───────────────────────────────────────────────────────────────────
-function flipCard(){
-  flipped = !flipped;
-  const card = document.getElementById('fcCard');
-  if(card) card.classList.toggle('flipped', flipped);
-}
-
-function nextCard(){
-  if(deckIdx >= deck.length-1){ renderDone(); return; }
-  deckIdx++;
-  flipped = false;
-  renderStudyArea();
-}
-
-function prevCard(){
-  if(deckIdx <= 0) return;
-  deckIdx--;
-  flipped = false;
-  renderStudyArea();
-}
-
-function getSRSKey(card){ return `srs_${activeSubj}_${card._origIdx}`; }
-
-function getSRSData(card){
-  try{ const d=JSON.parse(localStorage.getItem(getSRSKey(card))||'null'); if(d) return d; }catch(e){}
-  return {interval:0, rep:0, ef:2.5, due:0};
-}
-
-function saveSRSData(card, d){
-  try{ localStorage.setItem(getSRSKey(card), JSON.stringify(d)); }catch(e){}
-}
-
-function markCard(rating){
-  // rating: 1=Again, 2=Hard, 3=Good, 4=Easy
-  const card = deck[deckIdx];
-  const key = activeSubj+'_'+card._origIdx;
-  
-  // Update know/learn sets
-  if(rating >= 3){ knowSet.add(key); learnSet.delete(key); }
-  else { learnSet.add(key); knowSet.delete(key); }
-
-  // SM-2 algorithm
-  const d = getSRSData(card);
-  const now = Date.now();
-  const q = rating; // 1-4 mapped to quality
-  let {interval, rep, ef} = d;
-
-  // Update EF (Easiness Factor)
-  ef = Math.max(1.3, ef + 0.1 - (5-q*1.25)*(0.08+(5-q*1.25)*0.02));
-
-  if(q < 2){ // Again
-    rep=0; interval=1;
-  } else if(rep===0){ interval=1; rep=1; }
-  else if(rep===1){ interval=6; rep=2; }
-  else { interval=Math.round(interval*ef); rep++; }
-
-  const due = now + interval*24*60*60*1000;
-  saveSRSData(card, {interval, rep, ef, due});
-  
-  // Auto-advance
-  setTimeout(nextCard, 300);
-}
-
-function shuffleDeck(){
-  for(let i=deck.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [deck[i],deck[j]]=[deck[j],deck[i]];
-  }
-  deckIdx=0; flipped=false;
-  renderStudyArea();
-}
-
-function setMode(m){
-  mode=m;
-  buildDeck();
-}
-
-// Keyboard shortcuts
-document.addEventListener('keydown', e=>{
-  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
-  if(e.key===' '||e.key==='Enter'){ e.preventDefault(); flipCard(); }
-  if(e.key==='ArrowRight') nextCard();
-  if(e.key==='ArrowLeft')  prevCard();
-  if(e.key==='g'||e.key==='G') markCard('know');
-  if(e.key==='s'||e.key==='S') markCard('learn');
-});
-
-// ── BOOT ──────────────────────────────────────────────────────────────────────
-buildSidebar();
-buildDeck();
-</script>
-
-<!-- ══ STUDY TIMER WIDGET ══════════════════════════════════════════════ -->
-<style>
-#timerBtn{position:fixed;bottom:84px;right:24px;width:52px;height:52px;border-radius:50%;
-  background:#059669;color:#fff;border:none;font-size:1.3rem;cursor:pointer;
-  box-shadow:0 4px 18px rgba(0,0,0,.22);z-index:9997;display:flex;align-items:center;
-  justify-content:center;transition:transform .15s,box-shadow .15s;}
-#timerBtn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.3);}
-#timerBtn.running{animation:timerPulse 2s ease-in-out infinite;}
-@keyframes timerPulse{0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,.5);}50%{box-shadow:0 0 0 10px rgba(5,150,105,0);}}
-#timerPanel{position:fixed;bottom:148px;right:24px;width:300px;background:#1a2540;
-  border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.22);z-index:9998;
-  display:flex;flex-direction:column;opacity:0;pointer-events:none;
-  transform:translateY(14px);transition:opacity .2s,transform .2s;overflow:hidden;}
-#timerPanel.open{opacity:1;pointer-events:auto;transform:translateY(0);}
-.tp-head{background:#059669;color:#fff;padding:13px 16px;
-  display:flex;align-items:center;justify-content:space-between;}
-.tp-head h3{margin:0;font-size:.95rem;font-weight:700;}
-.tp-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;
-  padding:3px 9px;cursor:pointer;font-size:.85rem;}
-.tp-close:hover{background:rgba(255,255,255,.35);}
-.tp-mode-row{display:flex;border-bottom:1px solid #e2e8f0;background:#1e2d45;}
-.tp-mode-btn{flex:1;padding:8px;border:none;background:none;cursor:pointer;font-size:.72rem;
-  font-weight:700;color:#94a3b8;letter-spacing:.04em;transition:all .15s;}
-.tp-mode-btn.active{color:#059669;border-bottom:2px solid #059669;background:#1a2540;}
-.tp-circle-wrap{display:flex;justify-content:center;align-items:center;padding:22px 0 14px;}
-.tp-svg{transform:rotate(-90deg);}
-.tp-circle-bg{fill:none;stroke:#e2e8f0;stroke-width:8;}
-.tp-circle-fg{fill:none;stroke:#059669;stroke-width:8;stroke-linecap:round;
-  stroke-dasharray:283;stroke-dashoffset:0;transition:stroke-dashoffset .5s linear,stroke .3s;}
-.tp-time-text{position:absolute;font-size:1.8rem;font-weight:800;color:#ffffff;letter-spacing:-.02em;}
-.tp-session-label{position:absolute;top:68px;font-size:.65rem;font-weight:700;
-  color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;}
-.tp-circle-center{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.tp-controls{display:flex;justify-content:center;gap:10px;padding:0 16px 16px;}
-.tp-ctrl-btn{padding:9px 22px;border-radius:10px;border:none;font-weight:700;
-  font-size:.85rem;cursor:pointer;transition:all .15s;}
-.tp-start{background:#059669;color:#fff;}
-.tp-start:hover{background:#047857;}
-.tp-reset{background:#0b1120;color:#7a8fa8;}
-.tp-reset:hover{background:#e2e8f0;}
-.tp-footer{background:#1e2d45;border-top:1px solid #e2e8f0;padding:10px 16px;
-  display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:#7a8fa8;}
-.tp-sessions{font-weight:700;color:#059669;}
-.tp-settings-row{display:flex;gap:8px;padding:0 16px 12px;align-items:center;}
-.tp-settings-row label{font-size:.72rem;color:#7a8fa8;font-weight:600;}
-.tp-num{width:52px;padding:5px 6px;border:1px solid #2a3a55;border-radius:7px;
-  font-size:.82rem;font-weight:700;text-align:center;outline:none;}
-.tp-num:focus{border-color:#059669;}
-</style>
-
-<button id="timerBtn" onclick="toggleTimer()" title="Study Timer">⏱</button>
-
-<div id="timerPanel">
-  <div class="tp-head">
-    <h3>⏱ Study Timer</h3>
-    <button class="tp-close" onclick="toggleTimer()">✕</button>
-  </div>
-  <div class="tp-mode-row">
-    <button class="tp-mode-btn active" id="tmWork"  onclick="setTimerMode('work')">FOCUS</button>
-    <button class="tp-mode-btn"        id="tmShort" onclick="setTimerMode('short')">SHORT BREAK</button>
-    <button class="tp-mode-btn"        id="tmLong"  onclick="setTimerMode('long')">LONG BREAK</button>
-  </div>
-  <div class="tp-circle-wrap">
-    <svg class="tp-svg" width="120" height="120" viewBox="0 0 100 100">
-      <circle class="tp-circle-bg" cx="50" cy="50" r="45"/>
-      <circle class="tp-circle-fg" id="timerArc" cx="50" cy="50" r="45"/>
-    </svg>
-    <div class="tp-circle-center" style="position:absolute;">
-      <div class="tp-time-text" id="timerDisplay">25:00</div>
-      <div class="tp-session-label" id="timerModeLabel">Focus Time</div>
-    </div>
-  </div>
-  <div class="tp-settings-row">
-    <label>Focus</label>
-    <input class="tp-num" id="tpFocusMin" type="number" min="1" max="99" value="25" onchange="updateTimerSettings()"/>
-    <label>min &nbsp; Short</label>
-    <input class="tp-num" id="tpShortMin" type="number" min="1" max="30" value="5" onchange="updateTimerSettings()"/>
-    <label>min</label>
-  </div>
-  <div class="tp-controls">
-    <button class="tp-ctrl-btn tp-start" id="timerStartBtn" onclick="toggleTimerRun()">▶ Start</button>
-    <button class="tp-ctrl-btn tp-reset" onclick="resetTimer()">↺ Reset</button>
-  </div>
-  <div class="tp-footer">
-    <span>Sessions today: <span class="tp-sessions" id="tpSessionCount">0</span></span>
-    <span id="tpStatusText" style="color:#94a3b8;">Ready</span>
   </div>
 </div>
 
+<script src="auth-guard.js"></script>
 <script>
-(function(){
-  const MODES = {
-    work:  {label:'Focus Time',  color:'#059669'},
-    short: {label:'Short Break', color:'#0891b2'},
-    long:  {label:'Long Break',  color:'#7c3aed'},
-  };
-  let mode='work', running=false, remaining=25*60, total=25*60;
-  let intervalId=null, sessions=0, longBreakMin=15;
+const STORE = 'ace_flashcards_v2';
+function load(){ return JSON.parse(localStorage.getItem(STORE)||'null') || {decks:['General','SAT Vocab','AP Biology','AP History'],activeDeck:'General',cards:[]}; }
+function save(d){ localStorage.setItem(STORE, JSON.stringify(d)); }
+const INTERVALS = [0.0007, 0.007, 1, 4];
+function isDue(c){ return !c.nextReview || Date.now() >= c.nextReview; }
+function applyRating(c, r){ c.reps=(c.reps||0)+1; c.nextReview=Date.now()+INTERVALS[r]*86400000; c.easeFactor=Math.max(1.3,(c.easeFactor||2.5)+(0.1-(3-r)*(0.08+(3-r)*0.02))); c.lastRating=r; }
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  function getFocusMin(){ return Math.max(1,parseInt(document.getElementById('tpFocusMin')?.value||25)); }
-  function getShortMin(){ return Math.max(1,parseInt(document.getElementById('tpShortMin')?.value||5)); }
+let data=load(), sessionQueue=[], sessionIdx=0, sessionFlipped=false, sessionCounts={again:0,hard:0,good:0,easy:0};
 
-  function modeSeconds(m){
-    if(m==='work')  return getFocusMin()*60;
-    if(m==='short') return getShortMin()*60;
-    return longBreakMin*60;
-  }
+renderDecks(); renderCardList(); populateDeckSelects();
 
-  window.updateTimerSettings = function(){
-    if(!running){ total=modeSeconds(mode); remaining=total; updateDisplay(); }
-  };
-
-  window.setTimerMode = function(m){
-    if(running) stopTimer();
-    mode=m;
-    total=modeSeconds(m);
-    remaining=total;
-    document.querySelectorAll('.tp-mode-btn').forEach(b=>b.classList.remove('active'));
-    const ids={work:'tmWork',short:'tmShort',long:'tmLong'};
-    document.getElementById(ids[m])?.classList.add('active');
-    document.getElementById('timerArc').style.stroke=MODES[m].color;
-    document.getElementById('timerBtn').style.background=MODES[m].color;
-    document.getElementById('timerModeLabel').textContent=MODES[m].label;
-    updateDisplay();
-    document.getElementById('tpStatusText').textContent='Ready';
-  };
-
-  window.toggleTimer = function(){
-    const p=document.getElementById('timerPanel');
-    p.classList.toggle('open');
-  };
-
-  window.toggleTimerRun = function(){
-    running ? stopTimer() : startTimer();
-  };
-
-  function startTimer(){
-    if(remaining<=0) resetTimer();
-    running=true;
-    intervalId=setInterval(tick,1000);
-    document.getElementById('timerStartBtn').textContent='⏸ Pause';
-    document.getElementById('timerBtn').classList.add('running');
-    document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
-  }
-
-  function stopTimer(){
-    running=false;
-    clearInterval(intervalId);
-    document.getElementById('timerStartBtn').textContent='▶ Start';
-    document.getElementById('timerBtn').classList.remove('running');
-    document.getElementById('tpStatusText').textContent='Paused';
-  }
-
-  window.resetTimer = function(){
-    stopTimer();
-    remaining=total=modeSeconds(mode);
-    updateDisplay();
-    document.getElementById('tpStatusText').textContent='Ready';
-  };
-
-  function tick(){
-    remaining--;
-    if(remaining<=0){
-      remaining=0;
-      updateDisplay();
-      stopTimer();
-      playBell();
-      if(mode==='work'){
-        sessions++;
-        document.getElementById('tpSessionCount').textContent=sessions;
-        // auto-switch to break
-        const nextMode = sessions%4===0?'long':'short';
-        setTimeout(()=>{ setTimerMode(nextMode); playBell(); },500);
-        document.getElementById('tpStatusText').textContent='Session done! 🎉';
-      } else {
-        setTimeout(()=>{ setTimerMode('work'); },500);
-        document.getElementById('tpStatusText').textContent='Break over!';
-      }
-      // open panel so user sees the notification
-      document.getElementById('timerPanel').classList.add('open');
-      return;
-    }
-    updateDisplay();
-  }
-
-  function updateDisplay(){
-    const m=Math.floor(remaining/60), s=remaining%60;
-    document.getElementById('timerDisplay').textContent =
-      String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    const arc=document.getElementById('timerArc');
-    if(arc){
-      const pct = total>0 ? remaining/total : 1;
-      arc.style.strokeDashoffset = String(Math.round(283*(1-pct)));
-    }
-    // Update page title while running
-    if(running){
-      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — aceAcademy';
-    } else {
-      document.title = document.title.replace(/^⏱.*?—\s*/,'');
-    }
-  }
-
-  function playBell(){
-    try{
-      const ctx=new(window.AudioContext||window.webkitAudioContext)();
-      [0,0.15,0.3].forEach((delay,i)=>{
-        const osc=ctx.createOscillator(), gain=ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.frequency.value=i===0?880:i===1?1046:1318;
-        gain.gain.setValueAtTime(0.3,ctx.currentTime+delay);
-        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+0.6);
-        osc.start(ctx.currentTime+delay);
-        osc.stop(ctx.currentTime+delay+0.7);
-      });
-    }catch(e){}
-  }
-
-  // Close on outside click (avoid conflicting with notes panel)
-  document.addEventListener('click',function(e){
-    const p=document.getElementById('timerPanel');
-    const b=document.getElementById('timerBtn');
-    if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!b.contains(e.target)){
-      p.classList.remove('open');
-    }
+function renderDecks(){
+  const row=document.getElementById('deckRow'); row.innerHTML='';
+  data.decks.forEach(d=>{
+    const cnt=data.cards.filter(c=>c.deck===d).length;
+    const due=data.cards.filter(c=>c.deck===d&&isDue(c)).length;
+    const btn=document.createElement('button');
+    btn.className='deck-btn'+(d===data.activeDeck?' active':'');
+    btn.innerHTML=d+'<span class="cnt">'+due+'/'+cnt+'</span>';
+    btn.onclick=()=>{data.activeDeck=d;save(data);renderDecks();renderCardList();resetStudyUI();};
+    row.appendChild(btn);
   });
+  const add=document.createElement('button');
+  add.className='add-deck-btn'; add.textContent='+ Deck'; add.onclick=openDeckModal;
+  row.appendChild(add);
+}
 
-  // Shift notes button up so they don't overlap
-  const nb=document.getElementById('notesBtn');
-  if(nb) nb.style.bottom='84px';
-  const tp=document.getElementById('timerBtn');
-  if(tp) tp.style.bottom='24px';
-})();
+function openDeckModal(){document.getElementById('deckModal').classList.add('show');setTimeout(()=>document.getElementById('deckNameInput').focus(),50);}
+function closeDeckModal(){document.getElementById('deckModal').classList.remove('show');document.getElementById('deckNameInput').value='';}
+function createDeck(){
+  const name=document.getElementById('deckNameInput').value.trim();
+  if(!name) return;
+  if(!data.decks.includes(name)) data.decks.push(name);
+  data.activeDeck=name; save(data); closeDeckModal(); renderDecks(); renderCardList(); populateDeckSelects();
+}
+document.getElementById('deckNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')createDeck();});
+
+function clearDeck(){
+  if(!confirm('Delete all cards in "'+data.activeDeck+'"?')) return;
+  data.cards=data.cards.filter(c=>c.deck!==data.activeDeck); save(data); renderDecks(); renderCardList(); resetStudyUI();
+}
+
+function setTab(t){
+  ['study','add','manage'].forEach(x=>{
+    document.getElementById('panel-'+x).style.display=x===t?'':'none';
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='add') populateDeckSelects();
+  if(t==='manage') renderCardList();
+}
+
+function populateDeckSelects(){
+  ['newCardDeck','bulkDeck'].forEach(id=>{
+    const sel=document.getElementById(id); if(!sel) return;
+    sel.innerHTML=data.decks.map(d=>'<option value="'+d+'"'+(d===data.activeDeck?' selected':'')+'>'+d+'</option>').join('');
+  });
+}
+
+function addCard(){
+  const q=document.getElementById('newCardQ').value.trim();
+  const a=document.getElementById('newCardA').value.trim();
+  const deck=document.getElementById('newCardDeck').value;
+  const tag=document.getElementById('newCardTag').value.trim();
+  if(!q||!a){alert('Fill in both question and answer.'); return;}
+  data.cards.push({id:Date.now()+Math.random(),deck,tag,q,a,reps:0,nextReview:null,easeFactor:2.5});
+  save(data); renderDecks();
+  document.getElementById('newCardQ').value=''; document.getElementById('newCardA').value='';
+  const btn=document.getElementById('addBtn'); btn.textContent='Added!'; btn.style.background='#059669';
+  setTimeout(()=>{btn.textContent='Add Card';btn.style.background='';},1300);
+}
+
+function bulkImport(){
+  const deck=document.getElementById('bulkDeck').value;
+  const lines=document.getElementById('bulkInput').value.trim().split('\n');
+  let added=0;
+  lines.forEach(line=>{
+    const sep=line.includes(' | ')?' | ':'|';
+    const parts=line.split(sep); const q=parts[0].trim(); const a=parts.slice(1).join(sep).trim();
+    if(q&&a){data.cards.push({id:Date.now()+Math.random(),deck,q,a,reps:0,nextReview:null,easeFactor:2.5}); added++;}
+  });
+  save(data); document.getElementById('bulkInput').value=''; renderDecks(); renderCardList();
+  alert('Imported '+added+' cards into "'+deck+'"');
+}
+
+function renderCardList(){
+  const list=document.getElementById('cardList');
+  const cards=data.cards.filter(c=>c.deck===data.activeDeck);
+  if(!cards.length){list.innerHTML='<div style="color:var(--muted);text-align:center;padding:30px">No cards in this deck yet.</div>';return;}
+  list.innerHTML=cards.map(c=>{
+    const s=!c.nextReview?'new':isDue(c)?'due':'ok';
+    const badge=s==='new'?'<span class="sr-badge sr-new">New</span>':s==='due'?'<span class="sr-badge sr-due">Due</span>':'<span class="sr-badge sr-ok">Done</span>';
+    return '<div class="card-row"><div class="q">'+escHtml(c.q)+'</div><div class="a">'+escHtml(c.a)+'</div>'+badge+'<button class="del" onclick="deleteCard(\''+c.id+'\')">&#x2715;</button></div>';
+  }).join('');
+}
+
+function deleteCard(id){
+  data.cards=data.cards.filter(c=>String(c.id)!==String(id)); save(data); renderDecks(); renderCardList();
+}
+
+function startSession(all){
+  const cards=data.cards.filter(c=>c.deck===data.activeDeck&&(all||isDue(c)));
+  if(!cards.length){showEmpty();return;}
+  sessionQueue=cards.sort(()=>Math.random()-.5); sessionIdx=0;
+  sessionCounts={again:0,hard:0,good:0,easy:0};
+  document.getElementById('sessionDone').classList.remove('show');
+  document.getElementById('emptyState').style.display='none';
+  showCard();
+}
+
+function resetStudyUI(){
+  document.getElementById('cardArea').style.display='none';
+  document.getElementById('flipHint').style.display='none';
+  document.getElementById('ratingRow').classList.add('hidden');
+  document.getElementById('sessionDone').classList.remove('show');
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('progressLabel').textContent='0 / 0';
+  document.getElementById('progressFill').style.width='0%';
+}
+
+function showEmpty(){
+  document.getElementById('cardArea').style.display='none';
+  document.getElementById('flipHint').style.display='none';
+  document.getElementById('ratingRow').classList.add('hidden');
+  document.getElementById('emptyState').style.display='';
+}
+
+function showCard(){
+  if(sessionIdx>=sessionQueue.length){endSession();return;}
+  const card=sessionQueue[sessionIdx]; sessionFlipped=false;
+  document.getElementById('cardFront').textContent=card.q;
+  document.getElementById('cardBack').textContent=card.a;
+  document.getElementById('cardDeckLabel').textContent=card.tag||card.deck;
+  document.getElementById('cardInner').classList.remove('flipped');
+  document.getElementById('ratingRow').classList.add('hidden');
+  document.getElementById('cardArea').style.display='';
+  document.getElementById('flipHint').style.display='';
+  document.getElementById('sessionDone').classList.remove('show');
+  document.getElementById('emptyState').style.display='none';
+  const pct=Math.round(sessionIdx/sessionQueue.length*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressLabel').textContent=sessionIdx+' / '+sessionQueue.length;
+}
+
+function flipCard(){
+  if(sessionFlipped) return;
+  sessionFlipped=true;
+  document.getElementById('cardInner').classList.add('flipped');
+  document.getElementById('ratingRow').classList.remove('hidden');
+  document.getElementById('flipHint').style.display='none';
+}
+
+function rate(r){
+  const labels=['again','hard','good','easy']; sessionCounts[labels[r]]++;
+  const card=sessionQueue[sessionIdx];
+  const orig=data.cards.find(c=>String(c.id)===String(card.id));
+  if(orig) applyRating(orig,r);
+  save(data);
+  if(r===0) sessionQueue.push(Object.assign({},card));
+  sessionIdx++; showCard();
+}
+
+function endSession(){
+  document.getElementById('cardArea').style.display='none';
+  document.getElementById('flipHint').style.display='none';
+  document.getElementById('ratingRow').classList.add('hidden');
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('progressLabel').textContent=sessionQueue.length+' / '+sessionQueue.length;
+  document.getElementById('sessionDone').classList.add('show');
+  const c=sessionCounts;
+  document.getElementById('sessionStats').innerHTML=
+    '<div class="stat-box"><div class="n" style="color:#b91c1c">'+c.again+'</div><div class="l">Again</div></div>'+
+    '<div class="stat-box"><div class="n" style="color:#b45309">'+c.hard+'</div><div class="l">Hard</div></div>'+
+    '<div class="stat-box"><div class="n" style="color:#065f46">'+c.good+'</div><div class="l">Good</div></div>'+
+    '<div class="stat-box"><div class="n" style="color:#1e40af">'+c.easy+'</div><div class="l">Easy</div></div>';
+  renderDecks();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key===' '||e.key==='f'){e.preventDefault();flipCard();}
+  if(e.key==='1') rate(0); if(e.key==='2') rate(1); if(e.key==='3') rate(2); if(e.key==='4') rate(3);
+});
 </script>
-<!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
-
 </body>
 </html>
