@@ -4408,6 +4408,7 @@ let currentGrade = 6;
 let activeSubject = 'all';
 let searchQuery = '';
 
+const _pendingVideos = {};
 const VIDEO_MAP = {
   'Ratios & Proportional Relationships': { ka: 'https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-ratios-prop-topic', yt: 'https://www.youtube.com/watch?v=bIKmw0aTmYc' },
   'The Number System': { ka: 'https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-factors-and-multiples', yt: 'https://www.youtube.com/watch?v=f3ySpxX9oeM' },
@@ -4647,7 +4648,7 @@ function render() {
         <div class="unit-body">
           <ul>${topicMatch.map(t => `<li>${highlight(t)}</li>`).join('')}</ul>
           <div style="margin:10px 0 6px;display:flex;gap:8px;flex-wrap:wrap">
-            ${ (function(){ var _v=VIDEO_MAP[u.unit]||{}; var _ka=_v.ka||('https://www.khanacademy.org/search?page_search_query='+encodeURIComponent(u.unit)); var _yt=_v.yt||('https://www.youtube.com/@khanacademy/search?query='+encodeURIComponent(u.unit)); return '<a href="'+_ka+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;background:rgba(20,184,166,.15);color:#14b981;font-size:.78rem;font-weight:700;text-decoration:none;border:1px solid rgba(20,184,166,.3)">🟢 Khan Academy</a><a href="'+_yt+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;background:rgba(239,68,68,.12);color:#ef4444;font-size:.78rem;font-weight:700;text-decoration:none;border:1px solid rgba(239,68,68,.25)">🔴 YouTube</a>'; })() }
+            ${ (function(){ var _v=VIDEO_MAP[u.unit]||{}; var _ka=_v.ka||('https://www.khanacademy.org/search?page_search_query='+encodeURIComponent(u.unit)); var _yt=_v.yt||('https://www.youtube.com/@khanacademy/search?query='+encodeURIComponent(u.unit)); var _eid='vid-'+(Math.random()*1e9|0); _pendingVideos[_eid]={yt:_yt,unit:u.unit}; return '<a href="'+_ka+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;background:rgba(20,184,166,.15);color:#14b981;font-size:.78rem;font-weight:700;text-decoration:none;border:1px solid rgba(20,184,166,.3)">🟢 Khan Academy</a><button data-vid="'+_eid+'" onclick="var d=_pendingVideos[this.dataset.vid];if(d)openVideo(d.yt,d.unit);" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;background:rgba(239,68,68,.12);color:#ef4444;font-size:.78rem;font-weight:700;border:1px solid rgba(239,68,68,.25);cursor:pointer">&#9654; Watch Video</button>'; })() }
           </div>
           ${practiceHtml}
         </div>
@@ -4995,6 +4996,17 @@ render();
 .tp-num{width:52px;padding:5px 6px;border:1px solid #2a3a55;border-radius:7px;
   font-size:.82rem;font-weight:700;text-align:center;outline:none;}
 .tp-num:focus{border-color:#059669;}
+
+.vid-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;align-items:center;justify-content:center;padding:20px}
+.vid-modal-bg.open{display:flex}
+.vid-modal{background:#0f1a2e;border-radius:16px;overflow:hidden;width:100%;max-width:860px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.vid-modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#1a2540}
+.vid-modal-title{font-size:.9rem;font-weight:700;color:#e8edf5}
+.vid-modal-close{background:none;border:none;color:#94a3b8;font-size:1.4rem;cursor:pointer;padding:0 4px;line-height:1}
+.vid-modal-close:hover{color:#fff}
+.vid-iframe-wrap{position:relative;padding-bottom:56.25%;height:0}
+.vid-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+@media(max-width:600px){.vid-modal{border-radius:10px}}
 </style>
 
 <button id="timerBtn" onclick="toggleTimer()" title="Study Timer">⏱</button>
@@ -5179,8 +5191,41 @@ render();
   const tp=document.getElementById('timerBtn');
   if(tp) tp.style.bottom='24px';
 })();
+
+function openVideo(ytUrl, unitName){
+  // Extract video ID from watch?v= or youtu.be/ URL
+  let vid = '';
+  const m1 = ytUrl.match(/[?&]v=([^&]+)/);
+  const m2 = ytUrl.match(/youtu\.be\/([^?]+)/);
+  if(m1) vid = m1[1]; else if(m2) vid = m2[1];
+  if(!vid){ window.open(ytUrl,'_blank'); return; }
+  const embedUrl = 'https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0';
+  document.getElementById('vidIframe').src = embedUrl;
+  document.getElementById('vidModalTitle').textContent = unitName || 'Video Lesson';
+  document.getElementById('vidModalBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeVidModal(e){
+  if(e && e.target !== document.getElementById('vidModalBg') && e.type === 'click' && e.currentTarget === document.getElementById('vidModalBg')) return;
+  document.getElementById('vidIframe').src = '';
+  document.getElementById('vidModalBg').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeVidModal(); });
 </script>
 <!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
 
+
+<div class="vid-modal-bg" id="vidModalBg" onclick="closeVidModal(event)">
+  <div class="vid-modal">
+    <div class="vid-modal-header">
+      <span class="vid-modal-title" id="vidModalTitle">Video Lesson</span>
+      <button class="vid-modal-close" onclick="closeVidModal()">&#x2715;</button>
+    </div>
+    <div class="vid-iframe-wrap">
+      <iframe id="vidIframe" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+    </div>
+  </div>
+</div>
 </body>
 </html>
