@@ -801,6 +801,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   <script src="/aceAcademy/coins.js"></script>
   <script src="/aceAcademy/nav-profile.js"></script>
   <script src="/aceAcademy/splash.js"></script>
+<script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
 
@@ -2321,112 +2322,15 @@ function updateMjWidget() {
   } catch(e) {}
 }
 
-// ══ TIMED PRACTICE — wall-clock based (keeps ticking when panel is hidden) ══
-const TP_KEY = 'ace_timer_state';
-let tpInterval = null;
-
-function tpSave(state) { try { localStorage.setItem(TP_KEY, JSON.stringify(state)); } catch(e){} }
-function tpLoad() { try { return JSON.parse(localStorage.getItem(TP_KEY)); } catch(e) { return null; } }
-function tpGetLeft(state) {
-  if (!state) return 600;
-  if (!state.running) return state.left;
-  const elapsed = Math.floor((Date.now() - state.startedAt) / 1000);
-  return Math.max(0, state.left - elapsed);
-}
-
+// ══ TIMED PRACTICE — delegated to timer.js ══
 function toggleTimerPanel() {
   const panel = document.getElementById('timerPanel');
   panel.classList.toggle('open');
-  if (panel.classList.contains('open')) tpRefreshDisplay();
 }
-
-function setTimerPreset(mins, btn) {
-  clearInterval(tpInterval); tpInterval = null;
-  const state = { total: mins * 60, left: mins * 60, running: false, startedAt: null };
-  tpSave(state);
-  document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  tpUpdateDisplay(mins * 60);
-  const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
-  const sb  = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Start';
-  const lb  = document.getElementById('timerLabel');    if (lb) lb.textContent = 'Set your focus time';
-}
-
-function startTimer() {
-  let state = tpLoad() || { total: 600, left: 600, running: false, startedAt: null };
-  const left = tpGetLeft(state);
-  if (state.running) {
-    clearInterval(tpInterval); tpInterval = null;
-    state.running = false; state.left = left; state.startedAt = null;
-    tpSave(state);
-    const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Resume';
-    const lb = document.getElementById('timerLabel');    if (lb) lb.textContent = 'Paused';
-    const fab = document.getElementById('timerFab');     if (fab) fab.classList.remove('running');
-  } else {
-    state.running = true; state.startedAt = Date.now(); state.left = left;
-    tpSave(state);
-    const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Pause';
-    const lb = document.getElementById('timerLabel');    if (lb) lb.textContent = 'Focus!';
-    const fab = document.getElementById('timerFab');     if (fab) fab.classList.add('running');
-    clearInterval(tpInterval);
-    tpInterval = setInterval(tpTick, 500);
-  }
-}
-
-function tpTick() {
-  const state = tpLoad();
-  const remaining = tpGetLeft(state);
-  tpUpdateDisplay(remaining);
-  if (remaining <= 0) {
-    clearInterval(tpInterval); tpInterval = null;
-    const s = tpLoad(); if (s) { s.running = false; s.left = 0; tpSave(s); }
-    const lb  = document.getElementById('timerLabel');    if (lb)  lb.textContent  = '⏰ Time\'s up!';
-    const fab = document.getElementById('timerFab');      if (fab) fab.classList.remove('running');
-    const sb  = document.getElementById('timerStartBtn'); if (sb)  sb.textContent  = 'Start';
-    if (window.AceSound) AceSound.sessionDone();
-  }
-}
-
-function resetTimer() {
-  clearInterval(tpInterval); tpInterval = null;
-  const state = tpLoad() || { total: 600 };
-  state.running = false; state.left = state.total || 600; state.startedAt = null;
-  tpSave(state);
-  tpUpdateDisplay(state.left);
-  const sb  = document.getElementById('timerStartBtn'); if (sb)  sb.textContent  = 'Start';
-  const lb  = document.getElementById('timerLabel');    if (lb)  lb.textContent  = 'Set your focus time';
-  const fab = document.getElementById('timerFab');      if (fab) fab.classList.remove('running');
-}
-
-function tpUpdateDisplay(secs) {
-  const m = Math.floor(secs / 60), s = secs % 60;
-  const txt = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  const el = document.getElementById('timerDisplay'); if (el) el.textContent = txt;
-  // Show live countdown on the dock button even when panel is closed
-  const fab = document.getElementById('timerFab');
-  if (fab) {
-    const lbl = fab.querySelector('.dock-label');
-    const state = tpLoad();
-    if (lbl) lbl.textContent = (state && state.running) ? txt : 'Timer';
-  }
-}
-
-function tpRefreshDisplay() {
-  const state = tpLoad();
-  const left = tpGetLeft(state);
-  tpUpdateDisplay(left);
-  if (state && state.running && !tpInterval) {
-    // Page was reloaded while timer was running — reconnect
-    const fab = document.getElementById('timerFab'); if (fab) fab.classList.add('running');
-    const sb  = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Pause';
-    const lb  = document.getElementById('timerLabel');    if (lb) lb.textContent = 'Focus!';
-    tpInterval = setInterval(tpTick, 500);
-  }
-}
-
-// Resume on page load
-(function(){ setTimeout(tpRefreshDisplay, 200); })();
-function updateTimerDisplay() { tpRefreshDisplay(); } // legacy alias
+function setTimerPreset(mins, btn) { if(window.AceTimer) AceTimer.setPreset(mins, btn); }
+function startTimer()  { if(window.AceTimer) AceTimer.start(); }
+function resetTimer()  { if(window.AceTimer) AceTimer.reset(); }
+function updateTimerDisplay() {} // handled by timer.js
 
 
 // ══ FORMULA REFERENCE ═══════════════════════════════════════
@@ -2636,7 +2540,8 @@ function exportSnapshot() {
       +'.sn{font-size:1.6rem;font-weight:700}.sl{font-size:.72rem;color:#64748b}'
       +'table{border-collapse:collapse;width:100%;margin-top:16px;font-size:.82rem}'
       +'th,td{border:1px solid #e2e8f0;padding:6px 10px;text-align:left}'
-      +'th{background:#f8fafc;font-weight:700}</style></head><body>'
+      +'th{background:#f8fafc;font-weight:700}</style><script src="/aceAcademy/timer.js"></script>
+</head><body>'
       +'<h1>📊 aceAcademy Progress Snapshot</h1>'
       +'<div class="sub">Generated: '+new Date().toLocaleDateString()+' · Overall score: '+pct+'%</div>'
       +'<div class="stats">'
@@ -3072,7 +2977,8 @@ function printCurriculum() {
   html += 'h1{font-size:1.5rem;margin-bottom:4px}h2{font-size:1rem;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}';
   html += 'ul{margin:4px 0 8px 18px}li{margin-bottom:2px}p{color:#666;font-size:.8rem;margin-bottom:14px}';
   html += '.check{display:inline-block;width:12px;height:12px;border:1px solid #999;border-radius:3px;margin-right:5px;vertical-align:middle}';
-  html += '</style></head><body>';
+  html += '</style><script src="/aceAcademy/timer.js"></script>
+</head><body>';
   html += '<h1>aceAcademy Curriculum — Grade ' + grade + '</h1>';
   html += '<p>Print this page and check off topics as you study them.</p>';
 
