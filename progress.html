@@ -79,6 +79,21 @@ h1{font-size:1.6rem;font-weight:800;margin-bottom:4px;}
 
 /* ── EMPTY ── */
 .empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
+.data-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.data-panel-left h3{font-size:.88rem;font-weight:700;margin-bottom:3px}
+.data-panel-left p{font-size:.78rem;color:var(--muted);line-height:1.5}
+.data-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn-export{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.82rem;font-weight:700;font-family:inherit;background:var(--accent);color:#fff;transition:.15s}
+.btn-export:hover{opacity:.85}
+.btn-import{padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;font-size:.82rem;font-weight:700;font-family:inherit;background:transparent;color:var(--muted);transition:.15s}
+.btn-import:hover{border-color:var(--accent);color:var(--accent)}
+.btn-clear{padding:8px 16px;border-radius:8px;border:1.5px solid #ef4444;cursor:pointer;font-size:.82rem;font-weight:700;font-family:inherit;background:transparent;color:#ef4444;transition:.15s}
+.btn-clear:hover{background:#ef4444;color:#fff}
+.import-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a2540;border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:.85rem;font-weight:600;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:9999;display:none;white-space:nowrap}
+.import-toast.show{display:block}
+.import-toast.ok{border-color:#34d399;color:#34d399}
+.import-toast.err{border-color:#f87171;color:#f87171}
+
 .empty-state .big{font-size:3rem;margin-bottom:12px;}
 .empty-state a{color:var(--accent);font-weight:600;}
 
@@ -161,6 +176,17 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 <div class="container">
   <h1>📊 My Progress</h1>
   <p class="subtitle">All your test results in one place — updated automatically every time you finish a test.</p>
+  <div class="data-panel">
+    <div class="data-panel-left">
+      <h3>💾 Your Data</h3>
+      <p>Export saves all your progress to a file. Import restores it on any device or browser.</p>
+    </div>
+    <div class="data-btns">
+      <button class="btn-export" onclick="exportData()">⬇ Export My Data</button>
+      <label class="btn-import" style="cursor:pointer">⬆ Import Data<input type="file" accept=".json" style="display:none" onchange="importData(this)"></label>
+      <button class="btn-clear" onclick="clearData()">🗑 Clear All</button>
+    </div>
+  </div>
   <div id="main"></div>
 </div>
 
@@ -764,8 +790,65 @@ render();
   const tp=document.getElementById('timerBtn');
   if(tp) tp.style.bottom='24px';
 })();
+
+// ── Export / Import / Clear ──────────────────────────────────
+function exportData(){
+  var data = { _version: 1, _exported: new Date().toISOString(), _app: 'aceAcademy' };
+  for(var i=0; i<localStorage.length; i++){
+    var k = localStorage.key(i);
+    data[k] = localStorage.getItem(k);
+  }
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  var d = new Date().toISOString().split('T')[0];
+  a.download = 'aceAcademy-backup-' + d + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('✅ Data exported! Keep this file safe.', 'ok');
+}
+
+function importData(input){
+  var file = input.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      var data = JSON.parse(e.target.result);
+      if(data._app !== 'aceAcademy') throw new Error('Not an aceAcademy backup file.');
+      var count = 0;
+      Object.keys(data).forEach(function(k){
+        if(k.startsWith('_')) return;
+        localStorage.setItem(k, data[k]);
+        count++;
+      });
+      showToast('✅ ' + count + ' items restored! Reloading…', 'ok');
+      setTimeout(function(){ location.reload(); }, 1500);
+    } catch(err) {
+      showToast('❌ Import failed: ' + err.message, 'err');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function clearData(){
+  if(!confirm('Clear ALL aceAcademy data? This cannot be undone.')) return;
+  if(!confirm('Are you sure? All test scores, flashcards, streaks, and goals will be deleted.')) return;
+  localStorage.clear();
+  showToast('🗑 All data cleared.', 'ok');
+  setTimeout(function(){ location.reload(); }, 1200);
+}
+
+function showToast(msg, type){
+  var t = document.getElementById('importToast');
+  t.textContent = msg;
+  t.className = 'import-toast show ' + (type||'');
+  setTimeout(function(){ t.className = 'import-toast'; }, 3500);
+}
 </script>
 <!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
 
+<div class="import-toast" id="importToast"></div>
 </body>
 </html>
