@@ -217,8 +217,10 @@ function loadProfile() {
   var readMins = sessions.reduce(function(a,s){ return a+(s.minutes||0); },0);
   var doneGoals = goals.filter(function(g){ return (g.progress||0)>=100; }).length;
 
+  var coins = parseInt(localStorage.getItem('ace_coins')||'0');
   var statsData = [
-    { num: streak.count||0,  label:'Day Streak 🔥', color:'#ef4444' },
+    { num: streak.count||0, label:'Day Streak 🔥', color:'#ef4444' },
+    { num: coins.toLocaleString()+' 🪙', label:'Study Coins', color:'#f59e0b' },
     { num: tests.length,     label:'Tests Taken',   color:'#6366f1' },
     { num: avgScore+'%',     label:'Avg Score',     color:'#10b981' },
     { num: mastered,         label:'Cards Mastered',color:'#f59e0b' },

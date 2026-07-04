@@ -198,7 +198,7 @@
       loadConfettiThen(function(){
         setTimeout(function(){
           fireConfetti();
-          setTimeout(function(){ showBadgeModal(newBadge); }, 600);
+          if(window.AceSound) AceSound.badgeEarned(); setTimeout(function(){ showBadgeModal(newBadge); }, 600);
         }, 300);
       });
     } else if (confettiMilestone) {
