@@ -389,7 +389,7 @@
   #ace-dock{
     position:fixed;right:14px;bottom:18px;
     display:flex;flex-direction:column-reverse;align-items:stretch;
-    gap:6px;z-index:9000;
+    gap:6px;z-index:800;
     background:rgba(10,16,28,.85);backdrop-filter:blur(12px);
     border:1px solid rgba(255,255,255,.07);border-radius:18px;
     padding:8px 6px;box-shadow:0 8px 32px rgba(0,0,0,.45);
@@ -418,7 +418,7 @@
     background:var(--accent); color:#fff; border:none; font-size:1.3rem; cursor:pointer;
     box-shadow:0 4px 16px rgba(99,102,241,.4); z-index:900; transition:transform .15s; }
   .vg-fab:hover { transform:scale(1.1); }
-  .vg-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000;
+  .vg-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:10000;
     align-items:center; justify-content:center; }
   .vg-overlay.open { display:flex; }
   .vg-modal { background:var(--surface); border-radius:14px; width:min(600px,96vw);
@@ -551,7 +551,7 @@
   .timer-fab:hover{transform:scale(1.08)}
   .timer-fab.running{background:linear-gradient(135deg,#ef4444,#f97316);animation:tpulse 1.5s infinite}
   @keyframes tpulse{0%,100%{box-shadow:0 4px 16px rgba(239,68,68,.4)}50%{box-shadow:0 4px 24px rgba(239,68,68,.7)}}
-  .timer-panel{position:fixed;bottom:200px;right:72px;width:215px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:14px;z-index:9100;display:none}
+  .timer-panel{position:fixed;bottom:200px;right:72px;width:215px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:14px;z-index:850;display:none}
   .timer-panel.open{display:block}
   .timer-presets{display:flex;gap:4px;justify-content:center;margin-bottom:8px}
   .timer-preset{padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-size:.7rem;cursor:pointer}
@@ -568,7 +568,7 @@
   /* ── FORMULA REFERENCE ───────────── */
   .formula-fab{position:fixed;bottom:80px;right:78px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:1.2rem;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;z-index:900;transition:transform .2s;font-family:monospace}
   .formula-fab:hover{transform:scale(1.08)}
-  .formula-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1100;display:none;align-items:center;justify-content:center}
+  .formula-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;display:none;align-items:center;justify-content:center}
   .formula-overlay.open{display:flex}
   .formula-modal{background:var(--surface);border-radius:18px;width:min(700px,95vw);max-height:82vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
   .formula-header{padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
@@ -587,7 +587,7 @@
 
   /* ── CONCEPT EXPLAINER ───────────── */
   .tip-btn{font-size:.62rem;background:none;border:1px solid var(--accent);border-radius:3px;color:var(--accent);cursor:pointer;padding:0 4px;line-height:1.4;margin-left:4px;vertical-align:middle;flex-shrink:0}
-  .tip-popup{position:fixed;z-index:2000;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.2);padding:10px 14px;max-width:280px;font-size:.75rem;line-height:1.5;color:var(--text);display:none}
+  .tip-popup{position:fixed;z-index:10000;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.2);padding:10px 14px;max-width:280px;font-size:.75rem;line-height:1.5;color:var(--text);display:none}
   .tip-popup.open{display:block}
   .tip-popup-close{float:right;background:none;border:none;cursor:pointer;font-size:.9rem;color:var(--muted);margin-left:8px}
 
@@ -639,7 +639,7 @@
   /* ── QUIZ MODE ───────────────────── */
   .quiz-fab { position:fixed; bottom:80px; right:136px; width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#7c3aed,#2563eb); color:#fff; font-size:1.2rem; border:none; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.2); display:flex; align-items:center; justify-content:center; z-index:900; transition:transform .2s; }
   .quiz-fab:hover { transform:scale(1.08); }
-  .quiz-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:1200; display:none; align-items:center; justify-content:center; }
+  .quiz-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:10000; display:none; align-items:center; justify-content:center; }
   .quiz-overlay.open { display:flex; }
   .quiz-modal { background:var(--surface); border-radius:18px; width:min(560px,95vw); max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.3); }
   .quiz-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
@@ -730,7 +730,7 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 .srch-wrap input:focus{width:260px;border-color:#6366f1}
 .srch-wrap input::placeholder{color:#7a8fa8}
 .srch-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:.75rem;pointer-events:none}
-.srch-drop{position:absolute;top:calc(100% + 6px);right:0;width:320px;background:#0f1a2e;border:1px solid #2a3a55;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.6);z-index:2000;display:none;max-height:380px;overflow-y:auto}
+.srch-drop{position:absolute;top:calc(100% + 6px);right:0;width:320px;background:#0f1a2e;border:1px solid #2a3a55;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.6);z-index:10000;display:none;max-height:380px;overflow-y:auto}
 .sr-item{display:flex;align-items:center;gap:10px;padding:9px 14px;text-decoration:none;color:#e8edf5;border-bottom:1px solid #1a2540;transition:background .1s}
 .sr-item:last-child{border-bottom:none}
 .sr-item:hover{background:rgba(99,102,241,.15)}
