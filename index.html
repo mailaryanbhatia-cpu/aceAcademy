@@ -762,6 +762,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   <meta name="apple-mobile-web-app-title" content="aceAcademy">
   <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
   <script src="/aceAcademy/streak.js"></script>
+  <script src="/aceAcademy/splash.js"></script>
 </head>
 <body>
 
@@ -2543,6 +2544,7 @@ function exportSnapshot() {
   <meta name="apple-mobile-web-app-title" content="aceAcademy">
   <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
   <script src="/aceAcademy/streak.js"></script>
+  <script src="/aceAcademy/splash.js"></script>
 </head><body>'
       +'<h1>📊 aceAcademy Progress Snapshot</h1>'
       +'<div class="sub">Generated: '+new Date().toLocaleDateString()+' · Overall score: '+pct+'%</div>'
@@ -2980,6 +2982,7 @@ function printCurriculum() {
   <meta name="apple-mobile-web-app-title" content="aceAcademy">
   <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
   <script src="/aceAcademy/streak.js"></script>
+  <script src="/aceAcademy/splash.js"></script>
 </head><body>';
   html += '<h1>aceAcademy Curriculum — Grade ' + grade + '</h1>';
   html += '<p>Print this page and check off topics as you study them.</p>';
@@ -3121,3 +3124,163 @@ function srchKey(e){
 
 </body>
 </html>
+
+<style>
+#ace-onboard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);animation:ob-fade-in .4s ease}
+@keyframes ob-fade-in{from{opacity:0}to{opacity:1}}
+.ob-modal{background:linear-gradient(135deg,#0f172a,#1e1b4b);border:1px solid #334155;border-radius:24px;padding:36px 40px;max-width:520px;width:92%;box-shadow:0 24px 80px rgba(0,0,0,.6);animation:ob-slide-in .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes ob-slide-in{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+.ob-step{display:none}.ob-step.active{display:block}
+.ob-header{text-align:center;margin-bottom:28px}
+.ob-emoji{font-size:3rem;line-height:1;margin-bottom:10px}
+.ob-title{font-size:1.4rem;font-weight:900;color:#e2e8f0;margin-bottom:6px}
+.ob-sub{font-size:.88rem;color:#64748b}
+.ob-dots{display:flex;justify-content:center;gap:7px;margin-bottom:22px}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:#1e293b;transition:background .3s}
+.ob-dot.on{background:#6366f1}
+.ob-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.ob-chip{padding:7px 14px;border-radius:99px;border:1.5px solid #334155;background:#0f172a;color:#94a3b8;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;user-select:none}
+.ob-chip.picked{border-color:#6366f1;background:rgba(99,102,241,.15);color:#a5b4fc}
+.ob-input{width:100%;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#e2e8f0;font-size:.9rem;padding:10px 14px;box-sizing:border-box;margin-bottom:10px;font-family:inherit}
+.ob-input:focus{outline:none;border-color:#6366f1}
+.ob-btn-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.ob-next{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:11px 28px;border-radius:99px;font-weight:800;font-size:.95rem;cursor:pointer;transition:opacity .2s}
+.ob-next:hover{opacity:.9}
+.ob-skip{background:none;border:none;color:#475569;font-size:.82rem;cursor:pointer;padding:8px}
+.ob-skip:hover{color:#94a3b8}
+</style>
+
+<div id="ace-onboard-overlay" style="display:none">
+  <div class="ob-modal">
+    <div class="ob-dots">
+      <div class="ob-dot on" id="ob-d0"></div>
+      <div class="ob-dot" id="ob-d1"></div>
+      <div class="ob-dot" id="ob-d2"></div>
+    </div>
+
+    <!-- Step 1: Subjects -->
+    <div class="ob-step active" id="ob-step-0">
+      <div class="ob-header">
+        <div class="ob-emoji">📚</div>
+        <div class="ob-title">Welcome to aceAcademy!</div>
+        <div class="ob-sub">Which AP classes are you taking? Pick all that apply.</div>
+      </div>
+      <div class="ob-chips" id="ob-subjects">
+        <div class="ob-chip" onclick="toggleChip(this)">AP Biology</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Chemistry</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Physics</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Calculus AB</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Calculus BC</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Statistics</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP US History</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP World History</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Gov & Politics</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP English Lang</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP English Lit</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Psychology</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Economics</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Computer Science</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Spanish</div>
+        <div class="ob-chip" onclick="toggleChip(this)">AP Art History</div>
+      </div>
+      <div class="ob-btn-row">
+        <button class="ob-skip" onclick="finishOnboard()">Skip setup</button>
+        <button class="ob-next" onclick="obNext(1)">Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Goal -->
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-header">
+        <div class="ob-emoji">🎯</div>
+        <div class="ob-title">Set Your Goal</div>
+        <div class="ob-sub">What are you aiming for? We'll track it for you.</div>
+      </div>
+      <input class="ob-input" id="ob-goal-text" placeholder="e.g. Score a 5 on AP Biology by May" maxlength="80"/>
+      <div class="ob-chips" style="margin-bottom:16px">
+        <div class="ob-chip" onclick="setGoalPreset(this,'Score a 5 on all my AP exams')">🏆 Score 5s</div>
+        <div class="ob-chip" onclick="setGoalPreset(this,'Improve SAT score by 100 points')">📈 SAT improvement</div>
+        <div class="ob-chip" onclick="setGoalPreset(this,'Study 1 hour every day')">⏱ Daily study habit</div>
+        <div class="ob-chip" onclick="setGoalPreset(this,'Master all flashcard decks before finals')">🃏 Flashcard mastery</div>
+      </div>
+      <div class="ob-btn-row">
+        <button class="ob-skip" onclick="obNext(2)">Skip</button>
+        <button class="ob-next" onclick="obSaveGoal()">Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Done -->
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-header">
+        <div class="ob-emoji">🚀</div>
+        <div class="ob-title">You're all set!</div>
+        <div class="ob-sub">Here's where to start:</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+        <a href="flashcards.html" style="display:flex;align-items:center;gap:12px;background:#0f172a;border:1px solid #334155;border-radius:12px;padding:13px 16px;text-decoration:none;color:#e2e8f0;transition:border-color .2s" onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#334155'">
+          <span style="font-size:1.5rem">🃏</span>
+          <div><div style="font-weight:700;font-size:.9rem">Create Flashcards</div><div style="font-size:.77rem;color:#64748b">Build your first deck to start studying</div></div>
+        </a>
+        <a href="curriculum.html" style="display:flex;align-items:center;gap:12px;background:#0f172a;border:1px solid #334155;border-radius:12px;padding:13px 16px;text-decoration:none;color:#e2e8f0;transition:border-color .2s" onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#334155'">
+          <span style="font-size:1.5rem">📖</span>
+          <div><div style="font-weight:700;font-size:.9rem">Browse Curriculum</div><div style="font-size:.77rem;color:#64748b">Find topics and watch video lessons</div></div>
+        </a>
+        <a href="tests.html" style="display:flex;align-items:center;gap:12px;background:#0f172a;border:1px solid #334155;border-radius:12px;padding:13px 16px;text-decoration:none;color:#e2e8f0;transition:border-color .2s" onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#334155'">
+          <span style="font-size:1.5rem">📝</span>
+          <div><div style="font-weight:700;font-size:.9rem">Take a Practice Test</div><div style="font-size:.77rem;color:#64748b">See where you stand right now</div></div>
+        </a>
+      </div>
+      <div style="text-align:center">
+        <button class="ob-next" onclick="finishOnboard()">Let's go! 🎉</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  if (localStorage.getItem('ace_onboarded')) return;
+  setTimeout(function(){ document.getElementById('ace-onboard-overlay').style.display='flex'; }, 800);
+})();
+
+var _obStep = 0;
+function obNext(step){
+  document.getElementById('ob-step-'+_obStep).classList.remove('active');
+  document.getElementById('ob-d'+_obStep).classList.remove('on');
+  _obStep = step;
+  document.getElementById('ob-step-'+step).classList.add('active');
+  document.getElementById('ob-d'+step).classList.add('on');
+}
+
+function toggleChip(el){ el.classList.toggle('picked'); }
+
+function setGoalPreset(el, text){
+  document.querySelectorAll('#ob-step-1 .ob-chip').forEach(function(c){ c.classList.remove('picked'); });
+  el.classList.add('picked');
+  document.getElementById('ob-goal-text').value = text;
+}
+
+function obSaveGoal(){
+  var text = document.getElementById('ob-goal-text').value.trim();
+  if (text) {
+    var goals = JSON.parse(localStorage.getItem('ace_goals') || '[]');
+    goals.push({ id: Date.now(), title: text, progress: 0, created: new Date().toISOString() });
+    localStorage.setItem('ace_goals', JSON.stringify(goals));
+  }
+  // Save subjects
+  var picked = Array.from(document.querySelectorAll('#ob-subjects .ob-chip.picked')).map(function(c){ return c.textContent; });
+  if (picked.length) localStorage.setItem('ace_subjects', JSON.stringify(picked));
+  obNext(2);
+}
+
+function finishOnboard(){
+  // Save subjects if on step 0
+  var picked = Array.from(document.querySelectorAll('#ob-subjects .ob-chip.picked')).map(function(c){ return c.textContent; });
+  if (picked.length) localStorage.setItem('ace_subjects', JSON.stringify(picked));
+  localStorage.setItem('ace_onboarded', '1');
+  var overlay = document.getElementById('ace-onboard-overlay');
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity .4s';
+  setTimeout(function(){ overlay.style.display='none'; }, 400);
+}
+</script>
