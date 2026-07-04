@@ -385,15 +385,15 @@
   .bm-remove { float:right; background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.7rem; }
 
   /* ── VOCAB GAME ── */
-/* ─── Ace Dock (bottom bar) ─── */
+/* ─── Ace Dock (right sidebar) ─── */
   #ace-dock{
-    position:fixed;bottom:0;left:0;right:0;
-    display:flex;flex-direction:row;align-items:center;justify-content:center;
+    position:fixed;right:12px;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;align-items:center;
     gap:6px;z-index:800;
-    background:rgba(10,16,28,.92);backdrop-filter:blur(14px);
-    border-top:1px solid rgba(255,255,255,.07);
-    padding:8px 16px;box-shadow:0 -4px 24px rgba(0,0,0,.4);
-    height:66px;
+    background:rgba(10,16,28,.88);backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.07);border-radius:20px;
+    padding:10px 7px;box-shadow:0 8px 32px rgba(0,0,0,.45);
+    width:60px;
   }
   .dock-btn{
     width:46px;height:46px;border-radius:12px;
@@ -406,14 +406,12 @@
   }
   .dock-btn:hover{transform:scale(1.06);border-color:#6366f1;background:rgba(99,102,241,.18)}
   .dock-btn.running{background:linear-gradient(135deg,#ef4444,#f97316)!important;border-color:#ef4444;animation:tpulse 1.5s infinite}
-  .dock-label{font-size:.45rem;font-weight:700;letter-spacing:.04em;color:#475569;text-transform:uppercase;line-height:1;margin-top:1px}
-  .dock-divider{width:1px;height:36px;background:rgba(255,255,255,.07);margin:0 4px;flex-shrink:0}
-  .dock-badge-slot{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .dock-label{font-size:.44rem;font-weight:700;letter-spacing:.04em;color:#475569;text-transform:uppercase;line-height:1;margin-top:1px}
+  .dock-divider{width:32px;height:1px;background:rgba(255,255,255,.08);margin:2px 0;flex-shrink:0}
+  .dock-badge-slot{width:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
   .dock-badge-slot:empty{display:none}
-  .dock-label-inner{font-size:.45rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1;margin-top:1px}
+  .dock-label-inner{font-size:.44rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1;margin-top:1px}
   #ace-streak-badge,#ace-coin-badge{position:static!important;bottom:auto!important;right:auto!important;top:auto!important;left:auto!important}
-  /* Push page content above the dock */
-  body{padding-bottom:74px}
 
   .vg-fab { position:fixed; bottom:24px; right:24px; width:48px; height:48px; border-radius:50%;
     background:var(--accent); color:#fff; border:none; font-size:1.3rem; cursor:pointer;
@@ -552,7 +550,7 @@
   .timer-fab:hover{transform:scale(1.08)}
   .timer-fab.running{background:linear-gradient(135deg,#ef4444,#f97316);animation:tpulse 1.5s infinite}
   @keyframes tpulse{0%,100%{box-shadow:0 4px 16px rgba(239,68,68,.4)}50%{box-shadow:0 4px 24px rgba(239,68,68,.7)}}
-  .timer-panel{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);width:215px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 -4px 32px rgba(0,0,0,.25);padding:14px;z-index:850;display:none}
+  .timer-panel{position:fixed;top:50%;right:80px;transform:translateY(-50%);width:215px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.25);padding:14px;z-index:850;display:none}
   .timer-panel.open{display:block}
   .timer-presets{display:flex;gap:4px;justify-content:center;margin-bottom:8px}
   .timer-preset{padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-size:.7rem;cursor:pointer}
@@ -2793,13 +2791,13 @@ window.addEventListener('online', () => { const b = document.getElementById('off
 
 <!-- VOCAB GAME -->
 <div id="ace-dock">
-  <div class="dock-badge-slot" id="dock-streak-slot"></div>
-  <div class="dock-badge-slot" id="dock-coins-slot"></div>
-  <div class="dock-divider"></div>
   <button class="dock-btn" onclick="openVocabGame()" title="Vocab Game">🎮<span class="dock-label">Vocab</span></button>
   <button class="dock-btn" onclick="openQuiz()" title="Quiz Mode">✏️<span class="dock-label">Quiz</span></button>
   <button class="dock-btn" onclick="openFormulas()" title="Formula Reference">∑<span class="dock-label">Formulas</span></button>
   <button class="dock-btn" id="timerFab" onclick="toggleTimerPanel()" title="Study Timer">⏱<span class="dock-label">Timer</span></button>
+  <div class="dock-divider"></div>
+  <div class="dock-badge-slot" id="dock-coins-slot"></div>
+  <div class="dock-badge-slot" id="dock-streak-slot"></div>
 </div>
 <div class="vg-overlay" id="vgOverlay" onclick="vgOverlayClick(event)">
   <div class="vg-modal">
