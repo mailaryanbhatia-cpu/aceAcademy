@@ -308,6 +308,17 @@ function generateSchedule(){
   document.getElementById('scheduleOut').innerHTML = html;
   document.getElementById('scheduleWrap').style.display = 'block';
   document.getElementById('scheduleWrap').scrollIntoView({behavior:'smooth',block:'start'});
+
+  // Persist inputs so the schedule survives a page refresh
+  localStorage.setItem('ace_schedule', JSON.stringify({
+    examDate,
+    hours: document.getElementById('dailyHours').value,
+    style: document.getElementById('studyStyle').value,
+    restDays: document.getElementById('restDays').value,
+    name: document.getElementById('studentName').value,
+    subjects: getSelectedSubjects(),
+    savedAt: Date.now()
+  }));
 }
 
 function loadAPExams(){
@@ -336,6 +347,42 @@ function useAPExam(subj, date){
 }
 
 loadAPExams();
+
+// Restore last generated schedule on page load
+(function(){
+  try {
+    var saved = JSON.parse(localStorage.getItem('ace_schedule')||'null');
+    if(!saved || !saved.examDate) return;
+
+    // Restore field values
+    document.getElementById('examDate').value = saved.examDate;
+    if(saved.hours) document.getElementById('dailyHours').value = saved.hours;
+    if(saved.style) document.getElementById('studyStyle').value = saved.style;
+    if(saved.restDays) document.getElementById('restDays').value = saved.restDays;
+    if(saved.name) document.getElementById('studentName').value = saved.name;
+
+    // Restore subject selections
+    if(saved.subjects && saved.subjects.length){
+      document.querySelectorAll('.subj-tag').forEach(function(tag){
+        tag.classList.remove('selected');
+        saved.subjects.forEach(function(s){
+          if(tag.textContent.includes(s)) tag.classList.add('selected');
+        });
+      });
+    }
+
+    // Re-generate the schedule silently
+    generateSchedule();
+
+    // Show a subtle restored notice
+    var notice = document.createElement('div');
+    notice.textContent = '↩ Schedule restored from last session';
+    notice.style.cssText = 'font-size:.75rem;color:var(--muted);text-align:center;margin-top:8px;padding:6px';
+    var wrap = document.getElementById('scheduleWrap');
+    if(wrap) wrap.insertAdjacentElement('afterend', notice);
+    setTimeout(function(){ notice.style.display='none'; }, 4000);
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>
