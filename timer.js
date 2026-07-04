@@ -133,10 +133,34 @@
     }
   };
 
-  // Boot: resume polling if a timer was running
+  // Boot: show badge on any page; on index.html also resume the circular timer
   document.addEventListener('DOMContentLoaded', function(){
     const s = load();
-    if(s && s.running) startPolling();
-    else tick(); // still update display once
+    if(s && s.running){
+      startPolling();
+      // If we're on index.html, resume the circular timer display
+      resumeCircularTimer(s);
+    } else {
+      tick();
+    }
   });
+
+  function resumeCircularTimer(s){
+    // Wait for the circular timer's JS to initialise, then patch remaining
+    setTimeout(function(){
+      const elapsed = Math.floor((Date.now() - (s.startedAt||Date.now())) / 1000);
+      const left = Math.max(0, (s.left||0) - elapsed);
+      // The circular timer uses `remaining` inside its closure; we can't reach it directly.
+      // Instead, if the timer is still running and the circular panel exists,
+      // auto-click Start to reconnect.
+      const startBtn = document.getElementById('timerStartBtn');
+      const statusEl = document.getElementById('tpStatusText');
+      if(startBtn && statusEl && s.running && left > 0){
+        // Circular timer starts paused on reload — resume it
+        if(startBtn.textContent.trim() === '▶ Start'){
+          startBtn.click();
+        }
+      }
+    }, 400);
+  }
 })();

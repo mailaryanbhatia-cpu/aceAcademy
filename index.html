@@ -2101,6 +2101,10 @@ if (document.readyState === 'loading') {
     document.getElementById('timerStartBtn').textContent='⏸ Pause';
     document.getElementById('timerBtn').classList.add('running');
     document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
+    // Persist to localStorage so timer.js badge stays in sync
+    try{ localStorage.setItem('ace_timer_state', JSON.stringify({
+      running:true, startedAt:Date.now(), left:remaining, total:total, mode:mode
+    })); }catch(e){}
   }
 
   function stopTimer(){
@@ -2109,6 +2113,9 @@ if (document.readyState === 'loading') {
     document.getElementById('timerStartBtn').textContent='▶ Start';
     document.getElementById('timerBtn').classList.remove('running');
     document.getElementById('tpStatusText').textContent='Paused';
+    try{ localStorage.setItem('ace_timer_state', JSON.stringify({
+      running:false, left:remaining, total:total, mode:mode
+    })); }catch(e){}
   }
 
   window.resetTimer = function(){
@@ -2116,10 +2123,18 @@ if (document.readyState === 'loading') {
     remaining=total=modeSeconds(mode);
     updateDisplay();
     document.getElementById('tpStatusText').textContent='Ready';
+    try{ localStorage.setItem('ace_timer_state', JSON.stringify({
+      running:false, left:remaining, total:total, mode:mode
+    })); }catch(e){}
   };
 
   function tick(){
     remaining--;
+    // Keep localStorage in sync so timer.js badge shows correct time
+    try{ const s=JSON.parse(localStorage.getItem('ace_timer_state')||'{}');
+      if(s.running) localStorage.setItem('ace_timer_state', JSON.stringify(
+        Object.assign(s,{left:remaining})
+      )); }catch(e){}
     if(remaining<=0){
       remaining=0;
       updateDisplay();
@@ -2795,22 +2810,7 @@ window.addEventListener('online', () => { const b = document.getElementById('off
   </div>
 </div>
 
-<!-- TIMED PRACTICE FAB -->
-
-<div class="timer-panel" id="timerPanel">
-  <div class="timer-presets">
-    <button class="timer-preset active" onclick="setTimerPreset(10,this)">10 min</button>
-    <button class="timer-preset" onclick="setTimerPreset(20,this)">20 min</button>
-    <button class="timer-preset" onclick="setTimerPreset(30,this)">30 min</button>
-  </div>
-  <div class="timer-display" id="timerDisplay">10:00</div>
-  <div class="timer-label" id="timerLabel">Set your focus time</div>
-  <div class="timer-controls">
-    <button class="timer-btn start" id="timerStartBtn" onclick="startTimer()">Start</button>
-    <button class="timer-btn reset" onclick="resetTimer()">Reset</button>
-  </div>
-  <div class="timer-stats" id="timerStats"></div>
-</div>
+<!-- duplicate timer panel removed -->
 
 <!-- FORMULA REFERENCE FAB -->
 
