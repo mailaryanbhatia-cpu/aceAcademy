@@ -4643,6 +4643,7 @@ function render() {
         <div class="unit-header" onclick="toggleUnit('${subj.id}-${i}')">
           <span class="unit-num">Unit ${i+1}</span>
           <span class="unit-name">${highlight(u.unit)}</span>
+          ${ (function(){ var _v2=VIDEO_MAP[u.unit]; if(!_v2||!_v2.yt) return ''; var _eid2='vid-'+(Math.random()*1e9|0); _pendingVideos[_eid2]={yt:_v2.yt,unit:u.unit}; return '<button data-vid="'+_eid2+'" onclick="event.stopPropagation();var d=_pendingVideos[this.dataset.vid];if(d)openVideo(d.yt,d.unit);" style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;background:rgba(239,68,68,.15);color:#ef4444;font-size:.72rem;font-weight:700;border:1px solid rgba(239,68,68,.3);cursor:pointer;flex-shrink:0;white-space:nowrap">&#9654; Video</button>'; })() }
           <span class="unit-toggle">▼</span>
         </div>
         <div class="unit-body">
@@ -5199,14 +5200,14 @@ function openVideo(ytUrl, unitName){
   const m2 = ytUrl.match(/youtu\.be\/([^?]+)/);
   if(m1) vid = m1[1]; else if(m2) vid = m2[1];
   if(!vid){ window.open(ytUrl,'_blank'); return; }
-  const embedUrl = 'https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0';
+  const embedUrl = 'https://www.youtube-nocookie.com/embed/'+vid+'?autoplay=1&rel=0';
   document.getElementById('vidIframe').src = embedUrl;
   document.getElementById('vidModalTitle').textContent = unitName || 'Video Lesson';
   document.getElementById('vidModalBg').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 function closeVidModal(e){
-  if(e && e.target !== document.getElementById('vidModalBg') && e.type === 'click' && e.currentTarget === document.getElementById('vidModalBg')) return;
+  if(e && e.target !== document.getElementById('vidModalBg')) return;
   document.getElementById('vidIframe').src = '';
   document.getElementById('vidModalBg').classList.remove('open');
   document.body.style.overflow = '';
