@@ -2062,6 +2062,22 @@ if (document.readyState === 'loading') {
   let mode='work', running=false, remaining=25*60, total=25*60;
   let intervalId=null, sessions=0, longBreakMin=15;
 
+  // ── Restore state from localStorage on page load (no auto-click needed) ──
+  (function(){
+    try {
+      const s = JSON.parse(localStorage.getItem('ace_timer_state')||'null');
+      if(!s) return;
+      total    = s.total || 25*60;
+      mode     = s.mode  || 'work';
+      if(s.running && s.left > 0){
+        const elapsed = Math.floor((Date.now() - (s.startedAt||Date.now())) / 1000);
+        remaining = Math.max(0, s.left - elapsed);
+      } else {
+        remaining = s.left || 25*60;
+      }
+    } catch(e) {}
+  })();
+
   function getFocusMin(){ return Math.max(1,parseInt(document.getElementById('tpFocusMin')?.value||25)); }
   function getShortMin(){ return Math.max(1,parseInt(document.getElementById('tpShortMin')?.value||5)); }
 
@@ -2100,24 +2116,18 @@ if (document.readyState === 'loading') {
   };
 
   function startTimer(){
-    // If resuming after navigation, timer.js sets _aceTimerResumeLeft with correct remaining
-    if(typeof window._aceTimerResumeLeft === 'number'){
-      remaining = window._aceTimerResumeLeft;
-    }
     if(remaining<=0) resetTimer();
-    if(intervalId){ clearInterval(intervalId); intervalId=null; } // prevent stacking intervals
+    if(intervalId){ clearInterval(intervalId); intervalId=null; } // prevent interval stacking
     running=true;
     intervalId=setInterval(tick,1000);
     document.getElementById('timerStartBtn').textContent='⏸ Pause';
     document.getElementById('timerBtn').classList.add('running');
     document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
     updateDisplay();
-    // Preserve original startedAt on resume so wall-clock stays accurate
     try{
       const prev = JSON.parse(localStorage.getItem('ace_timer_state')||'{}');
-      const startedAt = (window._aceTimerResumeStartedAt) ? window._aceTimerResumeStartedAt
-                        : (prev.running && prev.startedAt) ? prev.startedAt
-                        : Date.now();
+      // Preserve original startedAt so wall-clock is accurate across page loads
+      const startedAt = (prev.running && prev.startedAt) ? prev.startedAt : Date.now();
       localStorage.setItem('ace_timer_state', JSON.stringify({
         running:true, startedAt:startedAt, left:remaining, total:total, mode:mode
       }));
@@ -2781,6 +2791,20 @@ function showQuizScore() {
 // ══ OFFLINE DETECTION ════════════════════════════════════════
 window.addEventListener('offline', () => { const b = document.getElementById('offlineBanner'); if (b) b.classList.add('show'); });
 window.addEventListener('online', () => { const b = document.getElementById('offlineBanner'); if (b) b.classList.remove('show'); });
+
+// ── Auto-resume timer on page load (runs after DOM ready) ──────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  try {
+    const s = JSON.parse(localStorage.getItem('ace_timer_state')||'null');
+    if(s && s.running && remaining > 0){
+      // circular timer already set `remaining` from localStorage at init;
+      // now actually start the countdown interval
+      startTimer();
+    } else {
+      updateDisplay();
+    }
+  } catch(e){ updateDisplay(); }
+});
 
 </script>
 <!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->

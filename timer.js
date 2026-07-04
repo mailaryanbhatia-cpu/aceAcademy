@@ -132,38 +132,14 @@
     }
   };
 
-  // Boot: show badge on any page; on index.html also resume the circular timer
+  // Boot: show badge on any page when timer is running
   document.addEventListener('DOMContentLoaded', function(){
     const s = load();
     if(s && s.running){
       startPolling();
-      // If we're on index.html, resume the circular timer display
-      resumeCircularTimer(s);
     } else {
       tick();
     }
   });
 
-  function resumeCircularTimer(s){
-    // Expose the correct remaining time via a global so the circular timer
-    // closure can read it during its own init sequence.
-    const elapsed = Math.floor((Date.now() - (s.startedAt||Date.now())) / 1000);
-    const left = Math.max(0, (s.left||0) - elapsed);
-    // Store correct remaining so startTimer() reads it instead of its default
-    window._aceTimerResumeLeft = left;
-    window._aceTimerResumeStartedAt = s.startedAt; // preserve original startedAt
-
-    setTimeout(function(){
-      const startBtn = document.getElementById('timerStartBtn');
-      const statusEl = document.getElementById('tpStatusText');
-      if(startBtn && statusEl && s.running && left > 0){
-        if(startBtn.textContent.trim() === '▶ Start'){
-          startBtn.click();
-        }
-      }
-      // Clean up globals
-      delete window._aceTimerResumeLeft;
-      delete window._aceTimerResumeStartedAt;
-    }, 600);
-  }
 })();
