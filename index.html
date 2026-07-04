@@ -2338,14 +2338,8 @@ function updateMjWidget() {
 }
 
 // ══ TIMED PRACTICE — delegated to timer.js ══
-function toggleTimerPanel() {
-  const panel = document.getElementById('timerPanel');
-  panel.classList.toggle('open');
-}
-function setTimerPreset(mins, btn) { if(window.AceTimer) AceTimer.setPreset(mins, btn); }
-function startTimer()  { if(window.AceTimer) AceTimer.start(); }
-function resetTimer()  { if(window.AceTimer) AceTimer.reset(); }
-function updateTimerDisplay() {} // handled by timer.js
+// toggleTimerPanel, startTimer, resetTimer, setTimerPreset all defined in the
+// circular timer closure above as window.* — no duplicate wrappers needed.
 
 
 // ══ FORMULA REFERENCE ═══════════════════════════════════════
