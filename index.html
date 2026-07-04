@@ -1767,6 +1767,41 @@ function unitRingSvg(grade, subjId, unitIdx, topics) {
     + '<text x="13" y="13" dominant-baseline="middle" text-anchor="middle" font-size="6" fill="var(--muted)">'+pctText+'%</text>'
     + '</svg>';
 }
+// ── getTipBtn must be defined before render() is called ──
+const TIPS = {
+  fraction:'A fraction shows part of a whole. Numerator ÷ denominator. To add, find common denominators first.',
+  decimal:'A decimal is a number with a point separating the whole from the part. Move the point to multiply/divide by 10.',
+  percent:'Percent means "per 100." To convert: fraction × 100 = %. To find: part ÷ whole × 100.',
+  algebra:'Algebra uses letters for unknown numbers. Solve for x by doing the same operation to both sides of the equation.',
+  equation:'An equation says two things are equal. Solve by isolating the variable using inverse operations.',
+  geometry:'Geometry studies shapes, sizes, and positions. Key formulas: area = length × width; circumference = 2πr.',
+  theorem:'A theorem is a proven mathematical statement. E.g., Pythagorean: a² + b² = c² for right triangles.',
+  cell:'Cells are the basic unit of life. Prokaryotes have no nucleus; eukaryotes do. Organelles have specific jobs.',
+  photosynthesis:'Plants convert sunlight + CO₂ + water → glucose + O₂. Happens in the chloroplast.',
+  evolution:'Species change over time through natural selection. Traits that help survival are passed on more.',
+  atom:'Atoms are the smallest unit of an element. Protons + neutrons are in the nucleus; electrons orbit outside.',
+  force:'A push or pull on an object. F = ma (Newton's 2nd law). Net force determines acceleration direction.',
+  energy:'The ability to do work. Kinetic = motion energy; potential = stored energy. Energy is always conserved.',
+  grammar:'Grammar rules govern sentence structure. Subject + verb + object is the basic English pattern.',
+  metaphor:'A metaphor compares two things without "like" or "as." E.g., "Time is a thief."',
+  thesis:'A thesis statement is the main argument of an essay. It should be specific, debatable, and provable.',
+  narrative:'Narrative writing tells a story with characters, setting, conflict, rising action, climax, resolution.',
+  argument:'Argumentative writing takes a position and supports it with evidence, reasoning, and counterarguments.',
+  algorithm:'An algorithm is a step-by-step procedure for solving a problem. Specific, repeatable, like a recipe.',
+  binary:'Binary is base-2: only 0s and 1s. Computers use it because circuits are on (1) or off (0).',
+  loop:'A loop repeats code. "for" loops run a set number of times; "while" loops check a condition each time.',
+  democracy:'Government by the people. Direct = citizens vote on laws. Representative = elected officials vote.',
+  constitution:'The U.S. Constitution (1787) sets up 3 branches of government and guarantees rights via amendments.',
+  revolution:'A major, rapid change in government or society. Often driven by economic or political grievances.',
+  economics:'Studies how people make decisions about scarce resources. Supply and demand determine prices.',
+};
+function getTipBtn(topic) {
+  const tl = topic.toLowerCase();
+  for (const k in TIPS) { if (tl.includes(k)) return '<button class="tip-btn" data-topic="'+topic.replace(/"/g,'&quot;')+'" onclick="showTipFromBtn(this)">?</button>'; }
+  return '';
+}
+function showTipFromBtn(btn) { showTip(btn.dataset.topic, btn); }
+
 render();
 dcSidebarInit();
 if (document.readyState === 'loading') {
@@ -3006,7 +3041,7 @@ setTimeout(injectResourceLinks, 800);
 // Print curriculum view
 function printCurriculum() {
   const grade = window.currentGrade || '6';
-  let html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Curriculum — Grade ' + grade + '</title>';
+  let html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Curriculum - Grade ' + grade + '</title>';
   html += '<style>body{font-family:Georgia,serif;max-width:900px;margin:30px auto;color:#111;font-size:13px}';
   html += 'h1{font-size:1.5rem;margin-bottom:4px}h2{font-size:1rem;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}';
   html += 'ul{margin:4px 0 8px 18px}li{margin-bottom:2px}p{color:#666;font-size:.8rem;margin-bottom:14px}';
