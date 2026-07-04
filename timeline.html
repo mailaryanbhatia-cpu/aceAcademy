@@ -85,6 +85,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 .empty-tl-icon{font-size:2.5rem;margin-bottom:12px}
 </style>
 <script src="theme.js"></script>
+  <link rel="manifest" href="/aceAcademy/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="aceAcademy">
+  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
+  <script src="/aceAcademy/streak.js"></script>
 </head>
 <body>
 <nav class="topnav">
@@ -262,7 +269,14 @@ function exportTimeline(){
   const title = document.getElementById('tlTitle').value || 'Timeline';
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
   <style>body{font-family:Georgia,serif;max-width:760px;margin:40px auto;color:#111}h1{font-size:1.6rem;text-align:center;margin-bottom:4px}h2{font-size:.8rem;text-align:center;color:#666;margin-bottom:28px}.tl{position:relative;padding:0 20px}.line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#6366f1}.ev{display:flex;margin-bottom:20px;position:relative}.ev:nth-child(odd){flex-direction:row-reverse}.dot{position:absolute;left:50%;top:12px;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);border:3px solid #fff}.card{width:calc(50% - 32px);background:#f8f8f8;border-radius:10px;padding:12px 14px;font-size:.85rem}.ev:nth-child(odd) .card{margin-right:32px}.ev:nth-child(even) .card{margin-left:32px}.yr{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}.ti{font-weight:700;margin-bottom:3px}.de{color:#555;font-size:.78rem;line-height:1.5}.ct{font-size:.65rem;background:#eee;border-radius:20px;padding:2px 8px;margin-top:5px;display:inline-block}@media print{.line{display:none}}</style>
-  </head><body>
+    <link rel="manifest" href="/aceAcademy/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="aceAcademy">
+  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
+  <script src="/aceAcademy/streak.js"></script>
+</head><body>
   <h1>${title}</h1><h2>${events.length} events · ${events.map(e=>e.year).join(' · ')}</h2>
   <div class="tl"><div class="line"></div>
   ${events.map(e=>`<div class="ev"><div class="dot" style="background:${e.color}"></div><div class="card"><div class="yr" style="color:${e.color}">${e.year}</div><div class="ti">${e.title}</div>${e.desc?`<div class="de">${e.desc}</div>`:''}<span class="ct">${e.cat}</span></div></div>`).join('')}

@@ -84,6 +84,13 @@ table.data-table td input{border:none;background:transparent;color:#e8edf5;width
 .tab-content.active{display:block}
 </style>
 <script src="theme.js"></script>
+  <link rel="manifest" href="/aceAcademy/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="aceAcademy">
+  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
+  <script src="/aceAcademy/streak.js"></script>
 </head>
 <body>
 <nav class="topnav">
@@ -387,7 +394,14 @@ function printReport(){
   };
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${d.title||'Lab Report'}</title>
   <style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;color:#111;line-height:1.6}h1{font-size:1.5rem;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:4px}h2{font-size:1rem;color:#333;margin:20px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}p{margin-bottom:10px}table{width:100%;border-collapse:collapse;margin-bottom:12px}.meta{display:flex;gap:30px;flex-wrap:wrap;margin-bottom:20px;font-size:.9rem;color:#555}.meta span strong{color:#111}pre{white-space:pre-wrap;font-family:Georgia,serif;font-size:.9rem;margin-bottom:10px}@media print{body{margin:20px}}</style>
-  </head><body>
+    <link rel="manifest" href="/aceAcademy/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="aceAcademy">
+  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
+  <script src="/aceAcademy/streak.js"></script>
+</head><body>
   <h1>${d.title||'Lab Report'}</h1>
   <div class="meta">
     <span><strong>Name:</strong> ${d.name||'—'}</span>

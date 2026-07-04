@@ -755,6 +755,13 @@ main#mainContent{flex:1;padding:0 36px 36px;}
 <script src="curriculum-data.js"></script>
 <script src="auth-guard.js"></script>
 <script src="theme.js"></script>
+  <link rel="manifest" href="/aceAcademy/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="aceAcademy">
+  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
+  <script src="/aceAcademy/streak.js"></script>
 </head>
 <body>
 
@@ -2529,7 +2536,14 @@ function exportSnapshot() {
       +'.sn{font-size:1.6rem;font-weight:700}.sl{font-size:.72rem;color:#64748b}'
       +'table{border-collapse:collapse;width:100%;margin-top:16px;font-size:.82rem}'
       +'th,td{border:1px solid #e2e8f0;padding:6px 10px;text-align:left}'
-      +'th{background:#f8fafc;font-weight:700}</style></head><body>'
+      +'th{background:#f8fafc;font-weight:700}</style>  <link rel="manifest" href="/aceAcademy/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="aceAcademy">
+  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
+  <script src="/aceAcademy/streak.js"></script>
+</head><body>'
       +'<h1>📊 aceAcademy Progress Snapshot</h1>'
       +'<div class="sub">Generated: '+new Date().toLocaleDateString()+' · Overall score: '+pct+'%</div>'
       +'<div class="stats">'
@@ -2959,7 +2973,14 @@ function printCurriculum() {
   html += 'h1{font-size:1.5rem;margin-bottom:4px}h2{font-size:1rem;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}';
   html += 'ul{margin:4px 0 8px 18px}li{margin-bottom:2px}p{color:#666;font-size:.8rem;margin-bottom:14px}';
   html += '.check{display:inline-block;width:12px;height:12px;border:1px solid #999;border-radius:3px;margin-right:5px;vertical-align:middle}';
-  html += '</style></head><body>';
+  html += '</style>  <link rel="manifest" href="/aceAcademy/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="aceAcademy">
+  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
+  <script src="/aceAcademy/streak.js"></script>
+</head><body>';
   html += '<h1>aceAcademy Curriculum — Grade ' + grade + '</h1>';
   html += '<p>Print this page and check off topics as you study them.</p>';
 
