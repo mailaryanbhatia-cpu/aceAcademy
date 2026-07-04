@@ -386,38 +386,43 @@
 
   /* ── VOCAB GAME ── */
 /* ─── Ace Dock (right sidebar) ─── */
+  /* ── Ace Dock ── */
   #ace-dock{
-    position:fixed;right:12px;top:50%;transform:translateY(-50%);
+    position:fixed;right:14px;top:50%;transform:translateY(-50%);
     display:flex;flex-direction:column;align-items:center;
     gap:6px;z-index:800;
     background:rgba(10,16,28,.88);backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,.07);border-radius:20px;
+    border:1px solid rgba(255,255,255,.08);border-radius:20px;
     padding:10px 7px;box-shadow:0 8px 32px rgba(0,0,0,.45);
     width:60px;
   }
   .dock-btn{
-    width:46px;height:46px;border-radius:12px;
-    border:1.5px solid rgba(255,255,255,.06);
-    background:rgba(30,41,59,.9);
-    color:#e2e8f0;font-size:1.15rem;cursor:pointer;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    width:46px;height:46px;border-radius:12px;
+    border:1.5px solid rgba(255,255,255,.07);
+    background:rgba(30,41,59,.9);
+    color:#e2e8f0;font-size:1.2rem;cursor:pointer;
     transition:transform .15s,background .15s,border-color .15s;
-    flex-shrink:0;
+    flex-shrink:0;box-sizing:border-box;
   }
-  .dock-btn:hover{transform:scale(1.06);border-color:#6366f1;background:rgba(99,102,241,.18)}
-  .dock-btn.running{background:linear-gradient(135deg,#ef4444,#f97316)!important;border-color:#ef4444;animation:tpulse 1.5s infinite}
-  .dock-label{font-size:.44rem;font-weight:700;letter-spacing:.04em;color:#475569;text-transform:uppercase;line-height:1;margin-top:1px}
-  .dock-divider{width:32px;height:1px;background:rgba(255,255,255,.08);margin:2px 0;flex-shrink:0}
-  .dock-badge-slot{width:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .dock-btn:hover{transform:scale(1.06);border-color:#6366f1;background:rgba(99,102,241,.2)}
+  .dock-label{font-size:.42rem;font-weight:700;letter-spacing:.04em;color:#475569;text-transform:uppercase;line-height:1;margin-top:1px}
+  .dock-divider{width:34px;height:1px;background:rgba(255,255,255,.09);flex-shrink:0;margin:2px 0}
+  .dock-badge-slot{width:46px;min-height:46px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .dock-badge-slot:empty{display:none}
-  .dock-label-inner{font-size:.44rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1;margin-top:1px}
-  #ace-streak-badge,#ace-coin-badge{position:static!important;bottom:auto!important;right:auto!important;top:auto!important;left:auto!important}
-  /* ── Kill stray fab positions – all layout handled by #ace-dock ── */
-  .timer-fab,.formula-fab,.quiz-fab,.vg-fab{position:static!important;bottom:auto!important;right:auto!important;top:auto!important;width:46px!important;height:46px!important;border-radius:12px!important;box-shadow:none!important}
+  /* Force badges to behave inside the dock — strip all fixed positioning */
+  #ace-streak-badge,#ace-coin-badge{
+    position:static!important;
+    bottom:auto!important;right:auto!important;top:auto!important;left:auto!important;
+    width:46px!important;height:auto!important;min-height:46px!important;
+    border-radius:12px!important;padding:4px 2px!important;
+    display:flex!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;
+    gap:1px!important;font-size:.85rem!important;
+    box-shadow:none!important;flex-shrink:0;box-sizing:border-box!important;
+  }
   #notesBtn{display:none!important}
-  /* Streak + coin badges: override inline styles */
-  #ace-streak-badge{position:static!important;bottom:auto!important;right:auto!important;width:46px!important;height:auto!important;min-height:46px!important;border-radius:12px!important;padding:4px 2px!important;flex-direction:column!important;gap:1px!important;font-size:.85rem!important;box-shadow:none!important}
-  #ace-coin-badge{position:static!important;bottom:auto!important;right:auto!important;width:46px!important;height:auto!important;min-height:46px!important;border-radius:12px!important;padding:4px 2px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;font-size:.85rem!important;box-shadow:none!important}
+  .timer-fab,.formula-fab,.quiz-fab,.vg-fab{position:static!important}
 
 
   .vg-fab { position:fixed; bottom:24px; right:24px; width:48px; height:48px; border-radius:50%;
@@ -3108,26 +3113,19 @@ function moveBadgesToDock(){
   var streakSlot  = document.getElementById('dock-streak-slot');
   var coinSlot    = document.getElementById('dock-coins-slot');
 
+  function resetBadge(el){
+    // Nuke all inline positioning — CSS !important rules take over
+    el.style.cssText = '';
+    // The stylesheet's !important rules now fully control layout
+  }
+
   if(streakBadge && streakSlot && !streakSlot.contains(streakBadge)){
     streakSlot.appendChild(streakBadge);
-    // Reset ALL inline position styles so the dock flex layout controls placement
-    streakBadge.style.position = 'static';
-    streakBadge.style.bottom   = '';
-    streakBadge.style.right    = '';
-    streakBadge.style.top      = '';
-    streakBadge.style.left     = '';
-    streakBadge.style.zIndex   = '';
-    streakBadge.style.borderRadius = '14px';
-    streakBadge.style.width    = '46px';
-    streakBadge.style.height   = '46px';
-    streakBadge.style.padding  = '0';
-    streakBadge.style.flexDirection = 'column';
-    streakBadge.style.gap      = '1px';
-    streakBadge.style.fontSize = '.85rem';
-    streakBadge.style.justifyContent = 'center';
+    resetBadge(streakBadge);
     if(!streakBadge.querySelector('.dock-label-inner')){
       var lbl=document.createElement('span');
       lbl.className='dock-label-inner';
+      lbl.style.cssText='font-size:.42rem;font-weight:700;letter-spacing:.04em;color:#475569;text-transform:uppercase;line-height:1;display:block;margin-top:1px';
       lbl.textContent='streak';
       streakBadge.appendChild(lbl);
     }
@@ -3135,27 +3133,12 @@ function moveBadgesToDock(){
 
   if(coinBadge && coinSlot && !coinSlot.contains(coinBadge)){
     coinSlot.appendChild(coinBadge);
-    coinBadge.style.position = 'static';
-    coinBadge.style.bottom   = '';
-    coinBadge.style.right    = '';
-    coinBadge.style.top      = '';
-    coinBadge.style.left     = '';
-    coinBadge.style.zIndex   = '';
-    coinBadge.style.borderRadius = '14px';
-    coinBadge.style.width    = '46px';
-    coinBadge.style.height   = '46px';
-    coinBadge.style.padding  = '0';
-    coinBadge.style.display  = 'flex';
-    coinBadge.style.flexDirection = 'column';
-    coinBadge.style.alignItems    = 'center';
-    coinBadge.style.justifyContent= 'center';
-    coinBadge.style.gap      = '1px';
-    coinBadge.style.fontSize = '.85rem';
+    resetBadge(coinBadge);
     if(!coinBadge.querySelector('.dock-label-inner')){
       var lbl2=document.createElement('span');
       lbl2.className='dock-label-inner';
+      lbl2.style.cssText='font-size:.42rem;font-weight:700;letter-spacing:.04em;color:rgba(0,0,0,.55);text-transform:uppercase;line-height:1;display:block;margin-top:1px';
       lbl2.textContent='coins';
-      lbl2.style.cssText='font-size:.48rem;font-weight:700;letter-spacing:.03em;color:rgba(28,25,23,.75);text-transform:uppercase;line-height:1';
       coinBadge.appendChild(lbl2);
     }
   }
