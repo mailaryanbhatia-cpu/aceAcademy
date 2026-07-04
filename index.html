@@ -3006,33 +3006,9 @@ function printCurriculum() {
       html += '</ul>';
     });
   });
-  html += '<script>
-(function(){
-  function renderDailySummary(){
-    var fc=JSON.parse(localStorage.getItem("ace_flashcards_v2")||"{}");
-    var cards=(fc.cards||[]);
-    var due=cards.filter(function(c){return !c.nextReview||Date.now()>=c.nextReview;}).length;
-    document.getElementById("ds-cards").textContent=due;
-    var streak=parseInt(localStorage.getItem("dc-streak")||"0");
-    document.getElementById("ds-streak").innerHTML=streak+" &#128293;";
-    var tests=JSON.parse(localStorage.getItem("aceTestHistory")||"[]");
-    if(tests.length){
-      var t=tests[0];
-      var pct=t.pct||(t.correct&&t.total?Math.round(t.correct/t.total*100):null)||t.score||0;
-      document.getElementById("ds-test").textContent=Math.round(pct)+"%";
-      var subj=(t.subject||t.subj||"").replace(/^AP /,"").slice(0,10);
-      if(subj) document.getElementById("ds-test-lbl").textContent=subj;
-    }
-    var today=new Date().toISOString().split("T")[0];
-    var gDate=localStorage.getItem("goal-date");
-    var done=(gDate===today)?parseInt(localStorage.getItem("goal-done")||"0"):0;
-    var target=parseInt(localStorage.getItem("goal-target")||"5");
-    document.getElementById("ds-goal").textContent=done+"/"+target;
-    document.getElementById("dailySummary").style.display="block";
-  }
-  renderDailySummary();
-})();
+}
 </script>
+
 <script>
 // ── Site Search ───────────────────────────────────────────
 var _srchIdx = null;
