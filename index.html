@@ -696,7 +696,7 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 .ds-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 @media(max-width:520px){.ds-grid{grid-template-columns:repeat(2,1fr)}}
 
-.srch-wrap{position:relative;margin-left:8px}
+.srch-wrap{position:relative;margin-left:4px}
 .srch-wrap input{background:#111827;border:1px solid #2a3a55;color:#e8edf5;border-radius:20px;padding:5px 14px 5px 30px;font-size:.77rem;width:180px;outline:none;transition:width .2s,border-color .2s;font-family:inherit}
 .srch-wrap input:focus{width:260px;border-color:#6366f1}
 .srch-wrap input::placeholder{color:#7a8fa8}
@@ -763,6 +763,11 @@ main#mainContent{flex:1;padding:0 36px 36px;}
     <span class="brand-name">ace<span class="brand-accent">Academy</span></span>
   </a>
   <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <div class="srch-wrap">
+    <span class="srch-icon">🔍</span>
+    <input id="siteSearch" placeholder="Search topics &amp; tools…" autocomplete="off" oninput="doSearch(this.value)" onfocus="doSearch(this.value)" onblur="setTimeout(hideSearch,180)" onkeydown="srchKey(event)">
+    <div class="srch-drop" id="srchDrop"></div>
+  </div>
   <div class="nav-spacer"></div>
   <span style="font-size:.82rem;color:#7a8fa8;font-weight:500;font-family:'Inter',system-ui,sans-serif;">Grades 6–12 Learning Platform</span>
   <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark</button>
