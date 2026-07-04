@@ -63,7 +63,21 @@ input:focus,select:focus{border-color:var(--accent)}
   .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}.tip-card{background:#12121f}
   .countdown-card.urgent,.countdown-card.soon,.countdown-card.ok{background:var(--card)}
 }
+[data-theme="dark"]{--bg:#0b1120;--card:#1a2540;--text:#e8edf5;--muted:#7a8fa8;--border:#2a3a55}
+[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+[data-theme="dark"] .topnav,[data-theme="dark"] nav.topnav{background:#0f1a2e;border-color:var(--border)}
+[data-theme="dark"] input,[data-theme="dark"] select{background:#1a2540;color:var(--text);border-color:var(--border)}
+[data-theme="dark"] .card{background:#1a2540;border-color:var(--border)}
+[data-theme="dark"] .tip-card{background:#0f1a2e}
+[data-theme="dark"] .countdown-card.urgent,[data-theme="dark"] .countdown-card.soon,[data-theme="dark"] .countdown-card.ok{background:var(--card)}
+[data-theme="dark"] .btn-sm{background:#1a2540}
+.theme-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:.85rem;color:var(--muted);margin-left:auto;flex-shrink:0}
+.intensity-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;margin:10px 0 4px;gap:2px}
+.intensity-seg{flex:1;border-radius:3px}
+.plan-btn{display:inline-block;margin-top:8px;padding:6px 12px;border-radius:8px;font-size:.76rem;font-weight:700;background:var(--accent);color:#fff;text-decoration:none;border:none;cursor:pointer}
+.plan-btn:hover{opacity:.85}
 </style>
+<script src="theme.js"></script>
 </head>
 <body>
 <nav class="topnav">
@@ -86,6 +100,7 @@ input:focus,select:focus{border-color:var(--accent)}
   <a href="timeline.html" class="nav-link">🗓 Timeline</a>
   <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
   <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
+  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button>
 </nav>
 <div class="hero">
   <h1>⏳ AP Exam Countdown</h1>
@@ -127,6 +142,12 @@ input:focus,select:focus{border-color:var(--accent)}
   </div>
 
   <div id="countdownGrid" class="countdown-grid" style="margin-bottom:20px"></div>
+
+  <div class="card" id="intensityCard" style="display:none;margin-bottom:20px">
+    <h2>📊 Recommended Daily Study Time</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Based on your upcoming exams, here is how many hours per day to study each subject:</p>
+    <div id="intensityList"></div>
+  </div>
 
   <div class="card">
     <h2>📋 Study Phase Guide</h2>
@@ -219,15 +240,38 @@ function renderExams(){
       ${e.start?`
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${fillColor}"></div></div>
       <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px">${pct}% of study period complete</div>`:''}
-      <div style="font-size:.75rem;font-weight:700;color:${fillColor}">📍 ${phase}</div>
+      <div style="font-size:.75rem;font-weight:700;color:${fillColor};margin-bottom:8px">📍 ${phase}</div>
+      ${days>0?`<a class="plan-btn" href="schedule-gen.html?subj=${encodeURIComponent(e.subj)}&date=${e.date}">📅 Plan Study</a>`:''}
     </div>`;
   }).join('');
 }
 
 renderExams();
+renderIntensity();
 
+function renderIntensity(){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const upcoming=exams.filter(function(e){ return new Date(e.date+'T00:00:00')>today; });
+  const card=document.getElementById('intensityCard');
+  const list=document.getElementById('intensityList');
+  if(!upcoming.length){ card.style.display='none'; return; }
+  card.style.display='block';
+  list.innerHTML=upcoming.map(function(e){
+    const days=Math.ceil((new Date(e.date+'T00:00:00')-today)/86400000);
+    let hpd=0;
+    if(days>60) hpd=0.5;
+    else if(days>30) hpd=1;
+    else if(days>14) hpd=1.5;
+    else if(days>7) hpd=2.5;
+    else hpd=3.5;
+    const bars=Math.round(hpd*2);
+    const color=days>30?'#059669':days>14?'#d97706':'#dc2626';
+    const barHtml='<div class="intensity-bar">'+'<div class="intensity-seg" style="background:'+color+'"></div>'.repeat(bars)+'<div class="intensity-seg" style="background:#e5e7eb"></div>'.repeat(7-bars)+'</div>';
+    return '<div style="margin-bottom:12px;padding:10px;background:var(--bg);border-radius:10px;border:1px solid var(--border)"><div style="font-size:.85rem;font-weight:700">'+e.subj+'</div>'+barHtml+'<div style="font-size:.75rem;color:var(--muted)">'+hpd+'h/day · '+days+' days out</div></div>';
+  }).join('');
+}
 // Refresh every minute
-setInterval(renderExams, 60000);
+setInterval(function(){renderExams();renderIntensity();}, 60000);
 </script>
 </body>
 </html>

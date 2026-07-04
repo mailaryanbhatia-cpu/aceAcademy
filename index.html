@@ -693,6 +693,8 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 
 <style id="ace-hero-css">
 .hero-banner{background:linear-gradient(135deg,#06091a 0%,#0d1a40 45%,#1a2080 100%)!important;border-radius:16px;padding:36px 40px;margin-bottom:32px;color:#e8edf5;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.25);}
+.ds-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:520px){.ds-grid{grid-template-columns:repeat(2,1fr)}}
 .hero-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;background:rgba(99,102,241,.05);border-radius:50%;}
 .hero-banner::after{content:'';position:absolute;bottom:-60px;right:60px;width:300px;height:300px;background:rgba(99,102,241,.03);border-radius:50%;}
 .hero-title{font-size:1.9rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:8px;line-height:1.2;color:#fff;}
@@ -881,6 +883,27 @@ main#mainContent{flex:1;padding:0 36px 36px;}
         <span class="hero-chip">🏛 History</span>
         <span class="hero-chip">💻 CS</span>
         <span class="hero-chip">❤️ Health</span>
+      </div>
+    </div>
+    <div id="dailySummary" style="margin:16px 0 6px;display:none">
+      <div style="font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#a5b4fc;margin-bottom:10px">&#128202; Today&#39;s Snapshot</div>
+      <div class="ds-grid">
+        <a href="flashcards.html" style="text-decoration:none;text-align:center;padding:12px 8px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);border-radius:12px;display:block">
+          <div id="ds-cards" style="font-size:1.55rem;font-weight:900;color:#a5b4fc">0</div>
+          <div style="font-size:.65rem;color:#7a8fa8;font-weight:600;margin-top:3px">Cards Due</div>
+        </a>
+        <div style="text-align:center;padding:12px 8px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:12px">
+          <div id="ds-streak" style="font-size:1.55rem;font-weight:900;color:#f59e0b">0 &#128293;</div>
+          <div style="font-size:.65rem;color:#7a8fa8;font-weight:600;margin-top:3px">Day Streak</div>
+        </div>
+        <a href="tests.html" style="text-decoration:none;text-align:center;padding:12px 8px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:12px;display:block">
+          <div id="ds-test" style="font-size:1.55rem;font-weight:900;color:#10b981">&#8212;</div>
+          <div id="ds-test-lbl" style="font-size:.65rem;color:#7a8fa8;font-weight:600;margin-top:3px">Last Test</div>
+        </a>
+        <a href="goals.html" style="text-decoration:none;text-align:center;padding:12px 8px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:12px;display:block">
+          <div id="ds-goal" style="font-size:1.55rem;font-weight:900;color:#8b5cf6">&#8212;</div>
+          <div style="font-size:.65rem;color:#7a8fa8;font-weight:600;margin-top:3px">Goal Today</div>
+        </a>
       </div>
     </div>
     <div class="feature-row">
@@ -8869,7 +8892,34 @@ function printCurriculum() {
       html += '</ul>';
     });
   });
-  html += '</body></html>';
+  html += '<script>
+(function(){
+  function renderDailySummary(){
+    var fc=JSON.parse(localStorage.getItem("ace_flashcards_v2")||"{}");
+    var cards=(fc.cards||[]);
+    var due=cards.filter(function(c){return !c.nextReview||Date.now()>=c.nextReview;}).length;
+    document.getElementById("ds-cards").textContent=due;
+    var streak=parseInt(localStorage.getItem("dc-streak")||"0");
+    document.getElementById("ds-streak").innerHTML=streak+" &#128293;";
+    var tests=JSON.parse(localStorage.getItem("aceTestHistory")||"[]");
+    if(tests.length){
+      var t=tests[0];
+      var pct=t.pct||(t.correct&&t.total?Math.round(t.correct/t.total*100):null)||t.score||0;
+      document.getElementById("ds-test").textContent=Math.round(pct)+"%";
+      var subj=(t.subject||t.subj||"").replace(/^AP /,"").slice(0,10);
+      if(subj) document.getElementById("ds-test-lbl").textContent=subj;
+    }
+    var today=new Date().toISOString().split("T")[0];
+    var gDate=localStorage.getItem("goal-date");
+    var done=(gDate===today)?parseInt(localStorage.getItem("goal-done")||"0"):0;
+    var target=parseInt(localStorage.getItem("goal-target")||"5");
+    document.getElementById("ds-goal").textContent=done+"/"+target;
+    document.getElementById("dailySummary").style.display="block";
+  }
+  renderDailySummary();
+})();
+</script>
+</body></html>';
   const w = window.open('', '_blank');
   w.document.write(html);
   w.document.close();

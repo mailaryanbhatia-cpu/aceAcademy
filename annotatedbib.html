@@ -72,6 +72,14 @@ nav.topnav::-webkit-scrollbar{display:none}
 .preview-entry .ann{margin-top:8px;padding-left:2em;color:#333;font-family:Georgia,serif;font-size:.83rem}
 
 .empty{text-align:center;padding:40px;color:#7a8fa8;font-size:.88rem}
+.fetch-card{background:#0d1a30;border:1.5px solid #2a3a55;border-radius:16px;padding:18px 22px;margin-bottom:20px}
+.fetch-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fetch-input{flex:1;min-width:220px;padding:9px 13px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.85rem;font-family:inherit;outline:none}
+.fetch-input:focus{border-color:#6366f1}
+.fetch-btn{padding:9px 16px;border-radius:9px;border:none;background:#6366f1;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.fetch-btn:hover{background:#5254d8}
+.fetch-status{font-size:.78rem;color:#7a8fa8;margin-top:8px}
+.fetch-status.ok{color:#6ee7b7}.fetch-status.err{color:#f87171}
 .empty-icon{font-size:2rem;margin-bottom:10px}
 </style>
 </head>
@@ -118,6 +126,14 @@ nav.topnav::-webkit-scrollbar{display:none}
 </div>
 
 <div class="container">
+  <div class="fetch-card">
+    <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:12px">&#128279; Auto-Fill from URL or DOI</div>
+    <div class="fetch-row">
+      <input class="fetch-input" id="fetchInput" placeholder="Paste URL, DOI (10.xxxx/...) or ISBN" onkeydown="if(event.key===&quot;Enter&quot;)fetchSource()">
+      <button class="fetch-btn" onclick="fetchSource()">&#128269; Fetch Metadata</button>
+    </div>
+    <div class="fetch-status" id="fetchStatus">Paste a URL, DOI, or ISBN — fields will fill automatically.</div>
+  </div>
   <div class="add-card">
     <div class="form-title">➕ Add Source</div>
     <div class="form-grid">
@@ -232,6 +248,79 @@ function buildCitation(e) {
     return `${a}. "${t}." <em>${pub}</em> (${year}): ${page}.`;
   }
   return `${a}. ${t}. ${pub}, ${year}.`;
+}
+
+async function fetchSource(){
+  const raw=(document.getElementById('fetchInput').value||'').trim();
+  const stat=document.getElementById('fetchStatus');
+  if(!raw){stat.className='fetch-status err';stat.textContent='Enter a URL, DOI, or ISBN first.';return;}
+  stat.className='fetch-status';stat.textContent='Fetching...';
+
+  // DOI detection: starts with 10. or contains doi.org
+  const doiMatch=raw.match(/(?:doi\.org\/|^)(10\.\S+)/i);
+  // ISBN: 10 or 13 digits (may have hyphens)
+  const isbnMatch=raw.replace(/-/g,'').match(/(?:isbn[:\s]*)?(97[89]\d{10}|\d{9}[\dX])/i);
+  // URL
+  const isUrl=raw.startsWith('http')||raw.startsWith('www.');
+
+  try{
+    if(doiMatch){
+      const doi=doiMatch[1];
+      const r=await fetch('https://api.crossref.org/works/'+encodeURIComponent(doi));
+      if(!r.ok) throw new Error('DOI not found');
+      const d=(await r.json()).message;
+      const authors=(d.author||[]).map(function(a){return (a.family||'')+', '+(a.given||'').split(' ')[0];}).join('; ');
+      const title=(d.title||[''])[0];
+      const journal=(d['container-title']||[''])[0];
+      const year=d.published&&d.published['date-parts']&&d.published['date-parts'][0]?String(d.published['date-parts'][0][0]):'';
+      const vol=d.volume?'Vol. '+d.volume+(d.issue?'('+d.issue+')':''):'';
+      const pages=d.page||'';
+      const pageStr=[vol,pages].filter(Boolean).join(', ');
+      document.getElementById('srcType').value='article';
+      document.getElementById('srcAuthor').value=authors;
+      document.getElementById('srcTitle').value=title;
+      document.getElementById('srcPub').value=journal;
+      document.getElementById('srcYear').value=year;
+      document.getElementById('srcPage').value=pageStr;
+      document.getElementById('srcUrl').value='https://doi.org/'+doi;
+      updateFields();
+      stat.className='fetch-status ok';stat.textContent='Metadata loaded from CrossRef!';
+    } else if(isbnMatch){
+      const isbn=isbnMatch[1];
+      const r=await fetch('https://openlibrary.org/api/books?bibkeys=ISBN:'+isbn+'&format=json&jscmd=data');
+      if(!r.ok) throw new Error('ISBN not found');
+      const d=await r.json();
+      const key='ISBN:'+isbn;
+      if(!d[key]) throw new Error('ISBN not in Open Library');
+      const book=d[key];
+      const authors=(book.authors||[]).map(function(a){const p=(a.name||'').split(' ');return p.length>1?p[p.length-1]+', '+p[0]:a.name;}).join('; ');
+      const publisher=(book.publishers||[{name:''}])[0].name||'';
+      const year=book.publish_date?book.publish_date.match(/\d{4}/)?.[0]||'':'';
+      document.getElementById('srcType').value='book';
+      document.getElementById('srcAuthor').value=authors;
+      document.getElementById('srcTitle').value=book.title||'';
+      document.getElementById('srcPub').value=publisher;
+      document.getElementById('srcYear').value=year;
+      document.getElementById('srcUrl').value=book.url||'';
+      updateFields();
+      stat.className='fetch-status ok';stat.textContent='Book metadata loaded from Open Library!';
+    } else if(isUrl){
+      // For URLs, just fill the URL field and set type to website
+      const url=raw.startsWith('www.')?'https://'+raw:raw;
+      document.getElementById('srcType').value='website';
+      document.getElementById('srcUrl').value=url;
+      // Try to extract domain as site name
+      try{const u=new URL(url);document.getElementById('srcPub').value=u.hostname.replace('www.','');}catch(e){}
+      const today=new Date();
+      document.getElementById('srcAccess').value=today.toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'});
+      updateFields();
+      stat.className='fetch-status ok';stat.textContent='URL filled. Add title, author, and year manually.';
+    } else {
+      stat.className='fetch-status err';stat.textContent='Could not detect URL, DOI, or ISBN. Check your input.';
+    }
+  } catch(e){
+    stat.className='fetch-status err';stat.textContent='Error: '+(e.message||'Could not fetch metadata. Try filling fields manually.');
+  }
 }
 
 function addEntry() {

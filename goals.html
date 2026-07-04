@@ -69,6 +69,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 [data-theme="dark"] .school-table,[data-theme="dark"] .school-table th{background:#0f1a2e;color:var(--text)}
 [data-theme="dark"] .school-table td{border-color:var(--border)}
 .theme-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:.85rem;color:var(--muted);margin-left:auto;flex-shrink:0}
+.auto-badge{background:#dbeafe;color:#1e40af;font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px}
+.auto-progress{background:#eff6ff;border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:.8rem;color:#1e40af;border:1px solid #bfdbfe}
+[data-theme="dark"] .auto-progress{background:rgba(37,99,235,.1);border-color:rgba(37,99,235,.3);color:#93c5fd}
+[data-theme="dark"] .auto-badge{background:rgba(37,99,235,.2);color:#93c5fd}
 </style>
 <script src="theme.js"></script>
 </head>
@@ -113,6 +117,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
         <input id="g-title" placeholder="e.g. Score 90%+ on AP Calculus unit test">
       </div>
       <div class="field">
+        <label>Goal Type</label>
+        <select id="g-type" onchange="updateGoalFields()">
+          <option value="custom">Custom (manual milestones)</option>
+          <option value="score_target">Score Target (auto-tracked)</option>
+          <option value="flashcard">Flashcard Mastery (auto-tracked)</option>
+        </select>
+      </div>
+      <div class="field">
         <label>Subject</label>
         <select id="g-subj">
           <option>Math</option><option>Science</option><option>English</option><option>History</option>
@@ -124,7 +136,22 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
         <label>Target Date</label>
         <input type="date" id="g-date">
       </div>
-      <div class="field full">
+      <!-- Score Target fields -->
+      <div class="field" id="scoreTargetFields" style="display:none">
+        <label>Target Score (%)</label>
+        <input type="number" id="g-score" placeholder="85" min="1" max="100">
+      </div>
+      <!-- Flashcard fields -->
+      <div class="field" id="flashcardFields" style="display:none">
+        <label>Deck / Tag</label>
+        <input id="g-deck" placeholder="e.g. Vocabulary or AP Biology">
+      </div>
+      <div class="field" id="flashcardCountField" style="display:none">
+        <label>Cards to Master</label>
+        <input type="number" id="g-fcount" placeholder="50" min="1">
+      </div>
+      <!-- Custom milestones -->
+      <div class="field full" id="milestonesSection">
         <label>Milestones (steps toward the goal)</label>
         <div class="milestone-builder" id="msBuilder">
           <div class="milestone-row"><input placeholder="Milestone 1 — e.g. Complete all unit flashcards"><button class="btn-sm del" onclick="this.parentElement.remove()">✕</button></div>
@@ -145,6 +172,46 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 let goals = JSON.parse(localStorage.getItem('ace_goals')||'[]');
 function save(){ localStorage.setItem('ace_goals', JSON.stringify(goals)); }
 
+function updateGoalFields(){
+  const type=document.getElementById('g-type').value;
+  document.getElementById('scoreTargetFields').style.display=type==='score_target'?'':'none';
+  document.getElementById('flashcardFields').style.display=type==='flashcard'?'':'none';
+  document.getElementById('flashcardCountField').style.display=type==='flashcard'?'':'none';
+  document.getElementById('milestonesSection').style.display=type==='custom'?'':'none';
+}
+
+function getAutoProgress(g){
+  if(g.type==='score_target'){
+    const tests=JSON.parse(localStorage.getItem('aceTestHistory')||'[]');
+    const subj=(g.subj||'').toLowerCase();
+    const relevant=tests.filter(function(t){
+      const ts=((t.subject||t.subj||'')+'').toLowerCase();
+      return subj==='general'||ts.includes(subj.split(' ').pop())||subj.includes(ts.split(' ').pop());
+    });
+    if(!relevant.length) return {pct:0,label:'No tests yet for '+g.subj};
+    const best=relevant.reduce(function(mx,t){
+      const p=t.pct||(t.correct&&t.total?Math.round(t.correct/t.total*100):0)||t.score||0;
+      return p>mx?p:mx;
+    },0);
+    const target=g.targetScore||85;
+    const pct=Math.min(100,Math.round(best/target*100));
+    return {pct:pct,label:'Best: '+Math.round(best)+'% / Target: '+target+'%'};
+  }
+  if(g.type==='flashcard'){
+    const fc=JSON.parse(localStorage.getItem('ace_flashcards_v2')||'{}');
+    const cards=(fc.cards||[]);
+    const deck=(g.deck||'').toLowerCase();
+    const relevant=deck?cards.filter(function(c){
+      return (c.deck||'').toLowerCase().includes(deck)||(c.tag||'').toLowerCase().includes(deck);
+    }):cards;
+    const mastered=relevant.filter(function(c){return (c.reps||0)>=3;}).length;
+    const target=g.targetCards||50;
+    const pct=Math.min(100,Math.round(mastered/target*100));
+    return {pct:pct,label:'Mastered: '+mastered+' / '+target+' cards'};
+  }
+  return null;
+}
+
 function addMilestoneField(){
   const row = document.createElement('div');
   row.className='milestone-row';
@@ -156,14 +223,19 @@ function addMilestoneField(){
 function addGoal(){
   const title = document.getElementById('g-title').value.trim();
   if(!title){ alert('Enter a goal title.'); return; }
-  const milestones = [...document.querySelectorAll('.milestone-row input')]
+  const type=document.getElementById('g-type').value;
+  const milestones = type==='custom'?[...document.querySelectorAll('.milestone-row input')]
     .map(i=>i.value.trim()).filter(Boolean)
-    .map(text=>({text,done:false}));
+    .map(text=>({text,done:false})):[];
   const goal = {
     id: Date.now(),
     title,
+    type: type,
     subj: document.getElementById('g-subj').value,
     date: document.getElementById('g-date').value,
+    targetScore: parseInt(document.getElementById('g-score').value)||85,
+    deck: document.getElementById('g-deck').value.trim(),
+    targetCards: parseInt(document.getElementById('g-fcount').value)||50,
     milestones,
     completed: false,
     ts: Date.now(),
@@ -172,6 +244,9 @@ function addGoal(){
   save(); renderGoals();
   document.getElementById('g-title').value='';
   document.getElementById('g-date').value='';
+  document.getElementById('g-score').value='';
+  document.getElementById('g-deck').value='';
+  document.getElementById('g-fcount').value='';
   document.querySelectorAll('.milestone-row input').forEach(i=>i.value='');
 }
 
@@ -202,27 +277,33 @@ function renderGoals(){
   if(!goals.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">No goals yet. Add your first goal above!</div>'; return; }
 
   grid.innerHTML = goals.map(g=>{
-    const done = g.milestones.filter(m=>m.done).length;
-    const total = g.milestones.length;
-    const pct = total>0 ? Math.round(done/total*100) : 0;
+    const autoP = getAutoProgress(g);
+    const done = (g.milestones||[]).filter(m=>m.done).length;
+    const total = (g.milestones||[]).length;
+    const pct = autoP ? autoP.pct : (total>0 ? Math.round(done/total*100) : 0);
+    const isAuto = g.type==='score_target'||g.type==='flashcard';
+    const isCompleted = g.completed||(autoP&&autoP.pct>=100);
     const dl = daysLeft(g.date);
     const dlStr = dl===null?'':`${dl>0?dl+' days left':dl===0?'Today!':Math.abs(dl)+' days ago'}`;
     const dlColor = dl!==null&&dl<=3?'var(--red)':dl!==null&&dl<=7?'var(--amber)':'var(--green)';
     const color = SUBJ_COLORS[g.subj]||'#f3f4f6';
-    return `<div class="goal-card${g.completed?' completed':''}">
+    const typeLabel = g.type==='score_target'?'📈 Score Goal':g.type==='flashcard'?'🃏 Flashcard Goal':'';
+    return `<div class="goal-card${isCompleted?' completed':''}">
       <div class="actions">
         <button class="btn-sm del" onclick="deleteGoal(${g.id})">✕</button>
       </div>
       <div class="tags">
         <span class="tag" style="background:${color};color:#1e1b4b">${g.subj}</span>
-        ${g.completed?'<span class="tag" style="background:#d1fae5;color:#065f46">✅ Complete</span>':''}
+        ${isCompleted?'<span class="tag" style="background:#d1fae5;color:#065f46">✅ Complete</span>':''}
+        ${isAuto?`<span class="auto-badge">${typeLabel}</span>`:''}
       </div>
       <div class="title">${g.title}</div>
       <div class="meta">${g.date?`📅 ${fmtDate(g.date)} · `:''}${dlStr?`<span style="color:${dlColor};font-weight:700">${dlStr}</span>`:''}</div>
-      ${total>0?`
+      ${autoP?`<div class="auto-progress">📊 ${autoP.label}</div>`:''}
+      ${(autoP||total>0)?`
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-      <div class="pct-label">${done}/${total} milestones · ${pct}%</div>
-      <div class="milestones">
+      <div class="pct-label">${autoP?pct+'% of target':done+'/'+total+' milestones · '+pct+'%'}</div>`:''}
+      ${!isAuto&&total>0?`<div class="milestones">
         ${g.milestones.map((m,i)=>`
           <label class="milestone${m.done?' done':''}">
             <input type="checkbox" ${m.done?'checked':''} onchange="toggleMilestone(${g.id},${i})">
