@@ -59,9 +59,8 @@
       removeBadge();
     }
 
-    // Update index.html timer panel display if on that page
-    const disp = document.getElementById('timerDisplay');
-    if(disp) disp.textContent = fmt(left);
+    // NOTE: #timerDisplay is owned by the circular timer closure in index.html.
+    // timer.js must NOT write to it — doing so causes jumpy display.
     const fab = document.getElementById('timerFab');
     if(fab){
       const lbl=fab.querySelector('.dock-label');
@@ -146,21 +145,25 @@
   });
 
   function resumeCircularTimer(s){
-    // Wait for the circular timer's JS to initialise, then patch remaining
+    // Expose the correct remaining time via a global so the circular timer
+    // closure can read it during its own init sequence.
+    const elapsed = Math.floor((Date.now() - (s.startedAt||Date.now())) / 1000);
+    const left = Math.max(0, (s.left||0) - elapsed);
+    // Store correct remaining so startTimer() reads it instead of its default
+    window._aceTimerResumeLeft = left;
+    window._aceTimerResumeStartedAt = s.startedAt; // preserve original startedAt
+
     setTimeout(function(){
-      const elapsed = Math.floor((Date.now() - (s.startedAt||Date.now())) / 1000);
-      const left = Math.max(0, (s.left||0) - elapsed);
-      // The circular timer uses `remaining` inside its closure; we can't reach it directly.
-      // Instead, if the timer is still running and the circular panel exists,
-      // auto-click Start to reconnect.
       const startBtn = document.getElementById('timerStartBtn');
       const statusEl = document.getElementById('tpStatusText');
       if(startBtn && statusEl && s.running && left > 0){
-        // Circular timer starts paused on reload — resume it
         if(startBtn.textContent.trim() === '▶ Start'){
           startBtn.click();
         }
       }
-    }, 400);
+      // Clean up globals
+      delete window._aceTimerResumeLeft;
+      delete window._aceTimerResumeStartedAt;
+    }, 600);
   }
 })();

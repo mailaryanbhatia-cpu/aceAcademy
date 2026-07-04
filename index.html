@@ -2100,16 +2100,28 @@ if (document.readyState === 'loading') {
   };
 
   function startTimer(){
+    // If resuming after navigation, timer.js sets _aceTimerResumeLeft with correct remaining
+    if(typeof window._aceTimerResumeLeft === 'number'){
+      remaining = window._aceTimerResumeLeft;
+    }
     if(remaining<=0) resetTimer();
+    if(intervalId){ clearInterval(intervalId); intervalId=null; } // prevent stacking intervals
     running=true;
     intervalId=setInterval(tick,1000);
     document.getElementById('timerStartBtn').textContent='⏸ Pause';
     document.getElementById('timerBtn').classList.add('running');
     document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
-    // Persist to localStorage so timer.js badge stays in sync
-    try{ localStorage.setItem('ace_timer_state', JSON.stringify({
-      running:true, startedAt:Date.now(), left:remaining, total:total, mode:mode
-    })); }catch(e){}
+    updateDisplay();
+    // Preserve original startedAt on resume so wall-clock stays accurate
+    try{
+      const prev = JSON.parse(localStorage.getItem('ace_timer_state')||'{}');
+      const startedAt = (window._aceTimerResumeStartedAt) ? window._aceTimerResumeStartedAt
+                        : (prev.running && prev.startedAt) ? prev.startedAt
+                        : Date.now();
+      localStorage.setItem('ace_timer_state', JSON.stringify({
+        running:true, startedAt:startedAt, left:remaining, total:total, mode:mode
+      }));
+    }catch(e){}
   }
 
   function stopTimer(){
@@ -2135,11 +2147,11 @@ if (document.readyState === 'loading') {
 
   function tick(){
     remaining--;
-    // Keep localStorage in sync so timer.js badge shows correct time
-    try{ const s=JSON.parse(localStorage.getItem('ace_timer_state')||'{}');
-      if(s.running) localStorage.setItem('ace_timer_state', JSON.stringify(
-        Object.assign(s,{left:remaining})
-      )); }catch(e){}
+    // Sync remaining to localStorage so timer.js badge is current
+    try{
+      const s=JSON.parse(localStorage.getItem('ace_timer_state')||'{}');
+      if(s.running){ s.left=remaining; localStorage.setItem('ace_timer_state',JSON.stringify(s)); }
+    }catch(e){}
     if(remaining<=0){
       remaining=0;
       updateDisplay();
