@@ -2321,51 +2321,113 @@ function updateMjWidget() {
   } catch(e) {}
 }
 
-// ══ TIMED PRACTICE ══════════════════════════════════════════
-let tpInterval = null, tpLeft = 600, tpTotal = 600, tpRunning = false;
-function toggleTimerPanel() { document.getElementById('timerPanel').classList.toggle('open'); }
+// ══ TIMED PRACTICE — wall-clock based (keeps ticking when panel is hidden) ══
+const TP_KEY = 'ace_timer_state';
+let tpInterval = null;
+
+function tpSave(state) { try { localStorage.setItem(TP_KEY, JSON.stringify(state)); } catch(e){} }
+function tpLoad() { try { return JSON.parse(localStorage.getItem(TP_KEY)); } catch(e) { return null; } }
+function tpGetLeft(state) {
+  if (!state) return 600;
+  if (!state.running) return state.left;
+  const elapsed = Math.floor((Date.now() - state.startedAt) / 1000);
+  return Math.max(0, state.left - elapsed);
+}
+
+function toggleTimerPanel() {
+  const panel = document.getElementById('timerPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) tpRefreshDisplay();
+}
+
 function setTimerPreset(mins, btn) {
-  tpLeft = tpTotal = mins * 60; tpRunning = false; clearInterval(tpInterval);
+  clearInterval(tpInterval); tpInterval = null;
+  const state = { total: mins * 60, left: mins * 60, running: false, startedAt: null };
+  tpSave(state);
   document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  updateTimerDisplay();
+  tpUpdateDisplay(mins * 60);
   const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
-  const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Start';
-  const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = 'Set your focus time';
+  const sb  = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Start';
+  const lb  = document.getElementById('timerLabel');    if (lb) lb.textContent = 'Set your focus time';
 }
+
 function startTimer() {
-  if (tpRunning) {
-    clearInterval(tpInterval); tpRunning = false;
+  let state = tpLoad() || { total: 600, left: 600, running: false, startedAt: null };
+  const left = tpGetLeft(state);
+  if (state.running) {
+    clearInterval(tpInterval); tpInterval = null;
+    state.running = false; state.left = left; state.startedAt = null;
+    tpSave(state);
     const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Resume';
-    const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = 'Paused';
-    const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
+    const lb = document.getElementById('timerLabel');    if (lb) lb.textContent = 'Paused';
+    const fab = document.getElementById('timerFab');     if (fab) fab.classList.remove('running');
   } else {
-    tpRunning = true;
+    state.running = true; state.startedAt = Date.now(); state.left = left;
+    tpSave(state);
     const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Pause';
-    const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = 'Focus!';
-    const fab = document.getElementById('timerFab'); if (fab) fab.classList.add('running');
-    tpInterval = setInterval(() => {
-      tpLeft--; updateTimerDisplay();
-      if (tpLeft <= 0) {
-        clearInterval(tpInterval); tpRunning = false;
-        const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = '⏰ Time\'s up!';
-        const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
-        const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Start';
-      }
-    }, 1000);
+    const lb = document.getElementById('timerLabel');    if (lb) lb.textContent = 'Focus!';
+    const fab = document.getElementById('timerFab');     if (fab) fab.classList.add('running');
+    clearInterval(tpInterval);
+    tpInterval = setInterval(tpTick, 500);
   }
 }
+
+function tpTick() {
+  const state = tpLoad();
+  const remaining = tpGetLeft(state);
+  tpUpdateDisplay(remaining);
+  if (remaining <= 0) {
+    clearInterval(tpInterval); tpInterval = null;
+    const s = tpLoad(); if (s) { s.running = false; s.left = 0; tpSave(s); }
+    const lb  = document.getElementById('timerLabel');    if (lb)  lb.textContent  = '⏰ Time\'s up!';
+    const fab = document.getElementById('timerFab');      if (fab) fab.classList.remove('running');
+    const sb  = document.getElementById('timerStartBtn'); if (sb)  sb.textContent  = 'Start';
+    if (window.AceSound) AceSound.sessionDone();
+  }
+}
+
 function resetTimer() {
-  clearInterval(tpInterval); tpRunning = false; tpLeft = tpTotal; updateTimerDisplay();
-  const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Start';
-  const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = 'Set your focus time';
-  const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
+  clearInterval(tpInterval); tpInterval = null;
+  const state = tpLoad() || { total: 600 };
+  state.running = false; state.left = state.total || 600; state.startedAt = null;
+  tpSave(state);
+  tpUpdateDisplay(state.left);
+  const sb  = document.getElementById('timerStartBtn'); if (sb)  sb.textContent  = 'Start';
+  const lb  = document.getElementById('timerLabel');    if (lb)  lb.textContent  = 'Set your focus time';
+  const fab = document.getElementById('timerFab');      if (fab) fab.classList.remove('running');
 }
-function updateTimerDisplay() {
-  const m = Math.floor(tpLeft / 60), s = tpLeft % 60;
-  const el = document.getElementById('timerDisplay');
-  if (el) el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+
+function tpUpdateDisplay(secs) {
+  const m = Math.floor(secs / 60), s = secs % 60;
+  const txt = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const el = document.getElementById('timerDisplay'); if (el) el.textContent = txt;
+  // Show live countdown on the dock button even when panel is closed
+  const fab = document.getElementById('timerFab');
+  if (fab) {
+    const lbl = fab.querySelector('.dock-label');
+    const state = tpLoad();
+    if (lbl) lbl.textContent = (state && state.running) ? txt : 'Timer';
+  }
 }
+
+function tpRefreshDisplay() {
+  const state = tpLoad();
+  const left = tpGetLeft(state);
+  tpUpdateDisplay(left);
+  if (state && state.running && !tpInterval) {
+    // Page was reloaded while timer was running — reconnect
+    const fab = document.getElementById('timerFab'); if (fab) fab.classList.add('running');
+    const sb  = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Pause';
+    const lb  = document.getElementById('timerLabel');    if (lb) lb.textContent = 'Focus!';
+    tpInterval = setInterval(tpTick, 500);
+  }
+}
+
+// Resume on page load
+(function(){ setTimeout(tpRefreshDisplay, 200); })();
+function updateTimerDisplay() { tpRefreshDisplay(); } // legacy alias
+
 
 // ══ FORMULA REFERENCE ═══════════════════════════════════════
 const FORMULAS = {
