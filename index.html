@@ -412,6 +412,13 @@
   .dock-badge-slot:empty{display:none}
   .dock-label-inner{font-size:.44rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1;margin-top:1px}
   #ace-streak-badge,#ace-coin-badge{position:static!important;bottom:auto!important;right:auto!important;top:auto!important;left:auto!important}
+  /* ── Kill stray fab positions – all layout handled by #ace-dock ── */
+  .timer-fab,.formula-fab,.quiz-fab,.vg-fab{position:static!important;bottom:auto!important;right:auto!important;top:auto!important;width:46px!important;height:46px!important;border-radius:12px!important;box-shadow:none!important}
+  #notesBtn{display:none!important}
+  /* Streak + coin badges: override inline styles */
+  #ace-streak-badge{position:static!important;bottom:auto!important;right:auto!important;width:46px!important;height:auto!important;min-height:46px!important;border-radius:12px!important;padding:4px 2px!important;flex-direction:column!important;gap:1px!important;font-size:.85rem!important;box-shadow:none!important}
+  #ace-coin-badge{position:static!important;bottom:auto!important;right:auto!important;width:46px!important;height:auto!important;min-height:46px!important;border-radius:12px!important;padding:4px 2px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;font-size:.85rem!important;box-shadow:none!important}
+
 
   .vg-fab { position:fixed; bottom:24px; right:24px; width:48px; height:48px; border-radius:50%;
     background:var(--accent); color:#fff; border:none; font-size:1.3rem; cursor:pointer;
@@ -1770,7 +1777,7 @@ if (document.readyState === 'loading') {
 #notesBtn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.35);}
 #notesBtn .badge{position:absolute;top:-4px;right:-4px;background:#f06;color:#fff;
   font-size:.6rem;font-weight:700;padding:2px 5px;border-radius:10px;display:none;}
-#notesPanel{position:fixed;bottom:88px;right:24px;width:360px;max-height:520px;
+#notesPanel{position:fixed;bottom:auto;top:50%;transform:translateY(-50%);right:80px;width:360px;max-height:520px;
   background:#1a2540;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.22);
   z-index:9999;display:flex;flex-direction:column;opacity:0;pointer-events:none;
   transform:translateY(16px);transition:opacity .2s,transform .2s;overflow:hidden;}
@@ -1806,9 +1813,7 @@ if (document.readyState === 'loading') {
 }
 </style>
 
-<button id="notesBtn" onclick="toggleNotes()" title="Notes">
-  📝<span class="badge" id="notesBadge">!</span>
-</button>
+<!-- notesBtn moved to dock -->
 
 <div id="notesPanel">
   <div class="np-head">
@@ -2795,6 +2800,7 @@ window.addEventListener('online', () => { const b = document.getElementById('off
   <button class="dock-btn" onclick="openQuiz()" title="Quiz Mode">✏️<span class="dock-label">Quiz</span></button>
   <button class="dock-btn" onclick="openFormulas()" title="Formula Reference">∑<span class="dock-label">Formulas</span></button>
   <button class="dock-btn" id="timerFab" onclick="toggleTimerPanel()" title="Study Timer">⏱<span class="dock-label">Timer</span></button>
+  <button class="dock-btn" onclick="toggleNotes()" title="Notes">📝<span class="dock-label">Notes</span></button>
   <div class="dock-divider"></div>
   <div class="dock-badge-slot" id="dock-coins-slot"></div>
   <div class="dock-badge-slot" id="dock-streak-slot"></div>
