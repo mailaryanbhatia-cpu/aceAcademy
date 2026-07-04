@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Essay Grader — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
 <style>
 :root{
   --bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;
@@ -70,12 +71,12 @@ textarea:focus{border-color:var(--accent)}
 .type-btn{padding:7px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.85rem;color:var(--muted);transition:.15s}
 .type-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-@media(prefers-color-scheme:dark){
-  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+
   body{background:var(--bg)}select,input,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
   .topnav{background:#12121f;border-color:var(--border)}.type-btn{background:#12121f}
 }
 </style>
+<script src="theme.js"></script>
 </head>
 <body>
 

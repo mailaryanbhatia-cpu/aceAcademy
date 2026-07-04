@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Goal Tracker — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
 <style>
 :root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -51,8 +52,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 .add-ms-btn{padding:6px 12px;border-radius:7px;border:1.5px dashed var(--border);background:#fff;cursor:pointer;font-size:.82rem;color:var(--muted);margin-top:4px;width:100%}
 .add-ms-btn:hover{border-color:var(--accent);color:var(--accent)}
 .empty{text-align:center;padding:40px;color:var(--muted)}
-@media(prefers-color-scheme:dark){
-  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+
   input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
   .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}.goal-card{background:#12121f}
 }

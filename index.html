@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -695,6 +695,22 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 .hero-banner{background:linear-gradient(135deg,#06091a 0%,#0d1a40 45%,#1a2080 100%)!important;border-radius:16px;padding:36px 40px;margin-bottom:32px;color:#e8edf5;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.25);}
 .ds-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 @media(max-width:520px){.ds-grid{grid-template-columns:repeat(2,1fr)}}
+
+.srch-wrap{position:relative;margin-left:8px}
+.srch-wrap input{background:#111827;border:1px solid #2a3a55;color:#e8edf5;border-radius:20px;padding:5px 14px 5px 30px;font-size:.77rem;width:180px;outline:none;transition:width .2s,border-color .2s;font-family:inherit}
+.srch-wrap input:focus{width:260px;border-color:#6366f1}
+.srch-wrap input::placeholder{color:#7a8fa8}
+.srch-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:.75rem;pointer-events:none}
+.srch-drop{position:absolute;top:calc(100% + 6px);right:0;width:320px;background:#0f1a2e;border:1px solid #2a3a55;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.6);z-index:2000;display:none;max-height:380px;overflow-y:auto}
+.sr-item{display:flex;align-items:center;gap:10px;padding:9px 14px;text-decoration:none;color:#e8edf5;border-bottom:1px solid #1a2540;transition:background .1s}
+.sr-item:last-child{border-bottom:none}
+.sr-item:hover{background:rgba(99,102,241,.15)}
+.sr-icon{font-size:1.05rem;flex-shrink:0;width:22px;text-align:center}
+.sr-label{font-size:.83rem;font-weight:600}
+.sr-sub{font-size:.7rem;color:#7a8fa8;margin-top:1px}
+.sr-type{font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;background:rgba(99,102,241,.2);color:#a5b4fc;vertical-align:middle}
+@media(max-width:600px){.srch-wrap{display:none}}
+
 .hero-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;background:rgba(99,102,241,.05);border-radius:50%;}
 .hero-banner::after{content:'';position:absolute;bottom:-60px;right:60px;width:300px;height:300px;background:rgba(99,102,241,.03);border-radius:50%;}
 .hero-title{font-size:1.9rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:8px;line-height:1.2;color:#fff;}
@@ -737,6 +753,7 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 main#mainContent{flex:1;padding:0 36px 36px;}
 </style>
 <script src="auth-guard.js"></script>
+<script src="theme.js"></script>
 </head>
 <body>
 
@@ -8918,6 +8935,91 @@ function printCurriculum() {
   }
   renderDailySummary();
 })();
+</script>
+<script>
+// ── Site Search ───────────────────────────────────────────
+var _srchIdx = null;
+var TOOLS_LIST = [
+  {n:'Worksheets',u:'worksheets.html',i:'📄',d:'Practice problems'},
+  {n:'Tests',u:'tests.html',i:'✏️',d:'Auto-graded quizzes'},
+  {n:'Flashcards',u:'flashcards.html',i:'🃏',d:'Spaced repetition'},
+  {n:'AI Tutor',u:'tutor.html',i:'🎓',d:'Socratic tutoring'},
+  {n:'Notebook',u:'notebook.html',i:'📁',d:'Subject notes'},
+  {n:'Progress',u:'progress.html',i:'📊',d:'Score tracking'},
+  {n:'Planner',u:'calendar.html',i:'📅',d:'Goals & deadlines'},
+  {n:'Languages',u:'language.html',i:'🌏',d:'Mandarin, Japanese, Hindi'},
+  {n:'SAT/ACT',u:'satact.html',i:'📝',d:'Test prep tracking'},
+  {n:'AP Countdown',u:'apcountdown.html',i:'⏳',d:'Exam countdowns'},
+  {n:'Schedule Generator',u:'schedule-gen.html',i:'🗓',d:'Study plans'},
+  {n:'Goals',u:'goals.html',i:'🎯',d:'Academic goals'},
+  {n:'Error Log',u:'errorlog.html',i:'❌',d:'Mistake tracker'},
+  {n:'Word Wall',u:'wordwall.html',i:'📖',d:'Vocabulary builder'},
+  {n:'Reading Log',u:'readinglog.html',i:'📗',d:'Book tracker'},
+  {n:'FRQ Practice',u:'frq.html',i:'✍️',d:'AP free response'},
+  {n:'Gradebook',u:'gradebook.html',i:'📒',d:'Grade tracking'},
+  {n:'Essay Grader',u:'essay.html',i:'📝',d:'AI feedback'},
+  {n:'Annotated Bib',u:'annotatedbib.html',i:'📚',d:'MLA/APA/Chicago'},
+  {n:'Cornell Notes',u:'cornellnotes.html',i:'🗒',d:'Note taking'},
+  {n:'Concept Map',u:'conceptmap.html',i:'🗺',d:'Visual mapping'},
+  {n:'Formula Sheet',u:'formulas.html',i:'∑',d:'Math & science formulas'},
+  {n:'Math Practice',u:'mathgen.html',i:'🔢',d:'Generated problems'},
+  {n:'Video Finder',u:'videofinder.html',i:'🎬',d:'Video lessons'},
+  {n:'Curriculum',u:'curriculum.html',i:'📚',d:'Browse all units'},
+  {n:'College Prep',u:'collegeprep.html',i:'🎓',d:'Application tools'},
+  {n:'Debate',u:'debate.html',i:'🗣',d:'Argument practice'},
+  {n:'All Tools',u:'alltools.html',i:'🛠',d:'Browse everything'},
+];
+
+function buildIdx(){
+  var idx=[];
+  TOOLS_LIST.forEach(function(t){ idx.push({type:'tool',label:t.n,sub:t.d,url:t.u,icon:t.i,q:(t.n+' '+t.d).toLowerCase()}); });
+  // Curriculum units
+  if(typeof CURRICULUM!=='undefined'){
+    Object.keys(CURRICULUM).forEach(function(g){
+      var gdata=CURRICULUM[g];
+      Object.keys(gdata).forEach(function(s){
+        gdata[s].forEach(function(u){
+          var topics=(u.topics||[]).join(' ');
+          idx.push({type:'unit',label:u.unit,sub:'Grade '+g+' · '+s,url:'curriculum.html',icon:'📚',q:(u.unit+' '+topics+' '+s+' grade '+g).toLowerCase()});
+        });
+      });
+    });
+  }
+  // AP Curriculum
+  if(typeof AP_CURRICULUM!=='undefined'){
+    Object.keys(AP_CURRICULUM).forEach(function(subj){
+      AP_CURRICULUM[subj].forEach(function(u){
+        var topics=(u.topics||[]).join(' ');
+        idx.push({type:'ap',label:u.unit,sub:'AP · '+subj,url:'curriculum.html',icon:'🎯',q:('ap '+u.unit+' '+topics+' '+subj).toLowerCase()});
+      });
+    });
+  }
+  return idx;
+}
+
+function doSearch(val){
+  if(!_srchIdx) _srchIdx=buildIdx();
+  var q=(val||'').trim().toLowerCase();
+  var drop=document.getElementById('srchDrop');
+  if(q.length<2){drop.style.display='none';return;}
+  var results=_srchIdx.filter(function(r){return r.q.includes(q);}).slice(0,12);
+  if(!results.length){drop.innerHTML='<div style="padding:14px;color:#7a8fa8;font-size:.82rem">No results for "'+q+'"</div>';drop.style.display='block';return;}
+  drop.innerHTML=results.map(function(r){
+    var badge=r.type==='tool'?'tool':r.type==='ap'?'AP':'unit';
+    return '<a href="'+r.url+'" class="sr-item"><span class="sr-icon">'+r.icon+'</span><span><div class="sr-label">'+r.label+'<span class="sr-type">'+badge+'</span></div><div class="sr-sub">'+r.sub+'</div></span></a>';
+  }).join('');
+  drop.style.display='block';
+}
+
+function hideSearch(){ var d=document.getElementById('srchDrop'); if(d) d.style.display='none'; }
+
+function srchKey(e){
+  if(e.key==='Escape') hideSearch();
+  if(e.key==='Enter'){
+    var first=document.querySelector('.sr-item');
+    if(first) window.location.href=first.href;
+  }
+}
 </script>
 </body></html>';
   const w = window.open('', '_blank');

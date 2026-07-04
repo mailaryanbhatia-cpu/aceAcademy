@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Essay Outline Builder — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
 <style>
 :root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -53,13 +54,13 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
 .preview-sub-point{font-size:.85rem;color:var(--muted);margin:3px 0 3px 30px}
 
 @media(max-width:640px){.outline-area{grid-template-columns:1fr;}.outline-sidebar{border-right:none;border-bottom:1.5px solid var(--border)}}
-@media(prefers-color-scheme:dark){
-  :root{--bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;--border:#2d2d44}
+
   input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
   .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}
   .outline-sidebar{background:#12121f}
 }
 </style>
+<script src="theme.js"></script>
 </head>
 <body>
 <nav class="topnav">

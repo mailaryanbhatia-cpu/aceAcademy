@@ -51,8 +51,8 @@ html { color-scheme: dark; }
 
 body {
   font-family: var(--font) !important;
-  background: var(--bg) !important;
-  color: var(--text) !important;
+  background: #0b1120 !important;
+  color: #e8edf5 !important;
   min-height: 100vh;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;

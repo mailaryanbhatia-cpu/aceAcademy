@@ -1,22 +1,13 @@
-// theme.js — shared dark/light mode for aceAcademy
+// theme.js — aceAcademy dark theme
 (function(){
   function applyTheme(t){
-    document.documentElement.setAttribute('data-theme', t);
-    localStorage.setItem('color-theme', t);
-    const btn = document.getElementById('themeToggle');
-    if(btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+    document.documentElement.setAttribute('data-theme',t);
+    localStorage.setItem('color-theme',t);
+    var btn=document.getElementById('themeToggle')||document.getElementById('themeToggleBtn');
+    if(btn) btn.textContent=t==='dark'?'☀️':'🌙';
   }
-  const saved = localStorage.getItem('color-theme');
-  const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  applyTheme(saved || preferred);
-  window.toggleTheme = function(){
-    const current = document.documentElement.getAttribute('data-theme');
-    applyTheme(current === 'dark' ? 'light' : 'dark');
+  applyTheme(localStorage.getItem('color-theme')||'dark');
+  window.toggleTheme=function(){
+    applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
   };
-  window.addEventListener('DOMContentLoaded', function(){
-    const t = localStorage.getItem('color-theme') || preferred;
-    applyTheme(t);
-    const btn = document.getElementById('themeToggle');
-    if(btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
-  });
 })();
