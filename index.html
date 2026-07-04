@@ -385,6 +385,19 @@
   .bm-remove { float:right; background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.7rem; }
 
   /* ── VOCAB GAME ── */
+/* ─── Ace Dock (right-side widget column) ─── */
+  #ace-dock{position:fixed;right:14px;bottom:18px;display:flex;flex-direction:column-reverse;align-items:center;gap:8px;z-index:9000}
+  .dock-btn{width:46px;height:46px;border-radius:14px;border:1.5px solid rgba(255,255,255,.08);background:rgba(15,23,42,.92);backdrop-filter:blur(10px);color:#e2e8f0;font-size:1.2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .15s,border-color .15s;box-shadow:0 4px 16px rgba(0,0,0,.35);position:relative}
+  .dock-btn:hover{transform:scale(1.08);border-color:#6366f1}
+  .dock-btn.running{background:linear-gradient(135deg,#ef4444,#f97316);border-color:#ef4444;animation:tpulse 1.5s infinite}
+  .dock-label{font-size:.48rem;font-weight:700;letter-spacing:.03em;color:#64748b;text-transform:uppercase;line-height:1}
+  .dock-divider{width:30px;height:1px;background:#1e293b;margin:2px 0}
+  .dock-badge-slot{width:100%;display:flex;justify-content:center}
+  /* Override streak + coin badges to sit in dock */
+  #ace-streak-badge{position:static!important;box-shadow:none!important;width:46px;height:46px;border-radius:14px!important;padding:0!important;flex-direction:column!important;gap:1px!important;font-size:.9rem!important;justify-content:center}
+  #ace-streak-badge .dock-label-inner{font-size:.48rem;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.03em;text-transform:uppercase}
+  #ace-coin-badge{position:static!important;box-shadow:none!important;width:46px;height:46px;border-radius:14px!important;padding:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;font-size:.9rem!important}
+
   .vg-fab { position:fixed; bottom:24px; right:24px; width:48px; height:48px; border-radius:50%;
     background:var(--accent); color:#fff; border:none; font-size:1.3rem; cursor:pointer;
     box-shadow:0 4px 16px rgba(99,102,241,.4); z-index:900; transition:transform .15s; }
@@ -522,7 +535,7 @@
   .timer-fab:hover{transform:scale(1.08)}
   .timer-fab.running{background:linear-gradient(135deg,#ef4444,#f97316);animation:tpulse 1.5s infinite}
   @keyframes tpulse{0%,100%{box-shadow:0 4px 16px rgba(239,68,68,.4)}50%{box-shadow:0 4px 24px rgba(239,68,68,.7)}}
-  .timer-panel{position:fixed;bottom:142px;right:20px;width:215px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:14px;z-index:900;display:none}
+  .timer-panel{position:fixed;bottom:200px;right:72px;width:215px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:14px;z-index:9100;display:none}
   .timer-panel.open{display:block}
   .timer-presets{display:flex;gap:4px;justify-content:center;margin-bottom:8px}
   .timer-preset{padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-size:.7rem;cursor:pointer}
@@ -2762,7 +2775,15 @@ window.addEventListener('online', () => { const b = document.getElementById('off
 
 
 <!-- VOCAB GAME -->
-<button class="vg-fab" onclick="openVocabGame()" title="Vocab Game">🎮</button>
+<div id="ace-dock">
+  <button class="dock-btn" onclick="openVocabGame()" title="Vocab Game">🎮<span class="dock-label">Vocab</span></button>
+  <button class="dock-btn" onclick="openQuiz()" title="Quiz Mode">✏️<span class="dock-label">Quiz</span></button>
+  <button class="dock-btn" onclick="openFormulas()" title="Formula Reference">∑<span class="dock-label">Formulas</span></button>
+  <button class="dock-btn" id="timerFab" onclick="toggleTimerPanel()" title="Study Timer">⏱<span class="dock-label">Timer</span></button>
+  <div class="dock-divider"></div>
+  <div class="dock-badge-slot" id="dock-coins-slot"></div>
+  <div class="dock-badge-slot" id="dock-streak-slot"></div>
+</div>
 <div class="vg-overlay" id="vgOverlay" onclick="vgOverlayClick(event)">
   <div class="vg-modal">
     <div class="vg-header">
@@ -2791,7 +2812,7 @@ window.addEventListener('online', () => { const b = document.getElementById('off
 </div>
 
 <!-- TIMED PRACTICE FAB -->
-<button class="timer-fab" id="timerFab" onclick="toggleTimerPanel()" title="Timed Practice">⏱</button>
+
 <div class="timer-panel" id="timerPanel">
   <div class="timer-presets">
     <button class="timer-preset active" onclick="setTimerPreset(10,this)">10 min</button>
@@ -2808,7 +2829,7 @@ window.addEventListener('online', () => { const b = document.getElementById('off
 </div>
 
 <!-- FORMULA REFERENCE FAB -->
-<button class="formula-fab" onclick="openFormulas()" title="Formula Reference">∑</button>
+
 <div class="formula-overlay" id="formulaOverlay" onclick="fOverlayClick(event)">
   <div class="formula-modal">
     <div class="formula-header">
@@ -2830,7 +2851,7 @@ window.addEventListener('online', () => { const b = document.getElementById('off
 
 
 <!-- QUIZ MODE FAB -->
-<button class="quiz-fab" onclick="openQuiz()" title="Quiz Mode">✏️</button>
+
 <div class="quiz-overlay" id="quizOverlay">
   <div class="quiz-modal">
     <div class="quiz-header">
@@ -3100,6 +3121,38 @@ function srchKey(e){
     if(first) window.location.href=first.href;
   }
 }
+</script>
+
+<script>
+// Move streak + coin badges into dock slots once they appear
+function moveBadgesToDock(){
+  var streakBadge = document.getElementById('ace-streak-badge');
+  var coinBadge   = document.getElementById('ace-coin-badge');
+  var streakSlot  = document.getElementById('dock-streak-slot');
+  var coinSlot    = document.getElementById('dock-coins-slot');
+  if(streakBadge && streakSlot && !streakSlot.contains(streakBadge)){
+    streakSlot.appendChild(streakBadge);
+    // Add tiny sub-label
+    if(!streakBadge.querySelector('.dock-label-inner')){
+      var lbl=document.createElement('span');
+      lbl.className='dock-label-inner';
+      lbl.textContent='streak';
+      streakBadge.appendChild(lbl);
+    }
+  }
+  if(coinBadge && coinSlot && !coinSlot.contains(coinBadge)){
+    coinSlot.appendChild(coinBadge);
+  }
+}
+// Poll until both badges are injected by their scripts
+var _dockPoll = setInterval(function(){
+  var s=document.getElementById('ace-streak-badge');
+  var c=document.getElementById('ace-coin-badge');
+  if(s||c){ moveBadgesToDock(); }
+  if(s&&c){ clearInterval(_dockPoll); }
+},300);
+// Also run after a longer delay as fallback
+setTimeout(moveBadgesToDock, 3000);
 </script>
 </body></html>';
   const w = window.open('', '_blank');
