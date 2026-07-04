@@ -4420,170 +4420,8 @@ let currentGrade = 6;
 let activeSubject = 'all';
 let searchQuery = '';
 
-const _pendingVideos = {};
-const VIDEO_MAP = {
-  'Ratios & Proportional Relationships': { ka: 'https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-ratios-prop-topic', yt: 'https://www.youtube.com/watch?v=bIKmw0aTmYc' },
-  'The Number System': { ka: 'https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-factors-and-multiples', yt: 'https://www.youtube.com/watch?v=f3ySpxX9oeM' },
-  'Expressions & Equations': { ka: 'https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-expressions-and-variables', yt: 'https://www.youtube.com/watch?v=640-86yn2wM' },
-  'Geometry': { ka: 'https://www.khanacademy.org/math/geometry', yt: 'https://www.youtube.com/watch?v=AA6RfgP-AHU' },
-  'Statistics & Probability': { ka: 'https://www.khanacademy.org/math/statistics-probability', yt: 'https://www.youtube.com/watch?v=h8EYEJ32oQ8' },
-  'Matter & Its Interactions': { ka: 'https://www.khanacademy.org/science/ms-chemistry', yt: 'https://www.youtube.com/watch?v=rLNM8zI4Q_M' },
-  'Earth & Space Systems': { ka: 'https://www.khanacademy.org/science/ms-earth-and-space-science', yt: 'https://www.youtube.com/watch?v=7jbwX1Uvd18' },
-  'Ecosystems': { ka: 'https://www.khanacademy.org/science/ms-biology/ms-ecology', yt: 'https://www.youtube.com/watch?v=OfV3VNgjpvw' },
-  'Life Science': { ka: 'https://www.khanacademy.org/science/ms-biology', yt: 'https://www.youtube.com/watch?v=8rbr3lRLNmY' },
-  'Reading Literature': { ka: 'https://www.khanacademy.org/ela/cc-6th-reading-lit', yt: 'https://www.youtube.com/watch?v=Fu2gUTrd4Ow' },
-  'Reading Informational Text': { ka: 'https://www.khanacademy.org/ela/cc-6th-reading-vocab', yt: 'https://www.youtube.com/watch?v=D0YUpfLofgQ' },
-  'Writing': { ka: 'https://www.khanacademy.org/ela/cc-6th-writing', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'Language Conventions': { ka: 'https://www.khanacademy.org/humanities/grammar', yt: 'https://www.youtube.com/watch?v=O-6q-siuMik' },
-  'Language': { ka: 'https://www.khanacademy.org/humanities/grammar', yt: 'https://www.youtube.com/watch?v=O-6q-siuMik' },
-  'Speaking & Listening': { ka: 'https://www.khanacademy.org/ela/cc-6th-speaking-and-listening', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'Early Civilizations': { ka: 'https://www.khanacademy.org/humanities/world-history/ancient-medieval', yt: 'https://www.youtube.com/watch?v=SGSLyp8mmMc' },
-  'World Geography': { ka: 'https://www.khanacademy.org/humanities/ap-human-geography', yt: 'https://www.youtube.com/watch?v=SGSLyp8mmMc' },
-  'Government & Civics Intro': { ka: 'https://www.khanacademy.org/humanities/us-government-and-civics', yt: 'https://www.youtube.com/watch?v=dxLamB6hRuM' },
-  'Digital Literacy': { ka: 'https://www.khanacademy.org/computing/computers-and-internet', yt: 'https://www.youtube.com/watch?v=5k24We8pED8' },
-  'Introduction to Coding': { ka: 'https://www.khanacademy.org/computing/hour-of-code', yt: 'https://www.youtube.com/watch?v=zzjNg-jNflY' },
-  'Personal Health': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Physical Fitness': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Structure & Properties of Matter': { ka: 'https://www.khanacademy.org/science/ms-chemistry/matter-and-atoms', yt: 'https://www.youtube.com/watch?v=rLNM8zI4Q_M' },
-  'Chemical Reactions': { ka: 'https://www.khanacademy.org/science/ap-chemistry-beta/chemical-reactions-ap', yt: 'https://www.youtube.com/watch?v=ja7p_tzTTEA' },
-  'Life Science: Body Systems': { ka: 'https://www.khanacademy.org/science/health-and-medicine/human-anatomy-and-physiology', yt: 'https://www.youtube.com/watch?v=QpcACa39YtA' },
-  'Earth Science': { ka: 'https://www.khanacademy.org/science/ms-earth-and-space-science', yt: 'https://www.youtube.com/watch?v=rmH4W92eHVM' },
-  'Language & Grammar': { ka: 'https://www.khanacademy.org/humanities/grammar', yt: 'https://www.youtube.com/watch?v=O-6q-siuMik' },
-  'Medieval World': { ka: 'https://www.khanacademy.org/humanities/world-history/medieval-ages', yt: 'https://www.youtube.com/watch?v=SGSLyp8mmMc' },
-  'Renaissance & Reformation': { ka: 'https://www.khanacademy.org/humanities/renaissance-reformation', yt: 'https://www.youtube.com/watch?v=rEZ1p5zHZB8' },
-  'Early Americas': { ka: 'https://www.khanacademy.org/humanities/us-history/colonial-america', yt: 'https://www.youtube.com/watch?v=wc3cDimF4a4' },
-  'Programming Fundamentals': { ka: 'https://www.khanacademy.org/computing/computer-programming', yt: 'https://www.youtube.com/watch?v=5LeZflr8Zfs' },
-  'Problem Solving': { ka: 'https://www.khanacademy.org/computing/computer-science/algorithms', yt: 'https://www.youtube.com/watch?v=CvSOaYi89B4' },
-  'Mental & Emotional Health': { ka: 'https://www.khanacademy.org/science/health-and-medicine/mental-health', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Nutrition & Wellness': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Functions': { ka: 'https://www.khanacademy.org/math/cc-eighth-grade-math/cc-8th-linear-equations-functions', yt: 'https://www.youtube.com/watch?v=G2WybA4Hf7Y' },
-  'Force & Motion': { ka: 'https://www.khanacademy.org/science/ap-physics-1/ap-forces-and-newtons-laws-of-motion', yt: 'https://www.youtube.com/watch?v=rjkQcfw5fkM' },
-  'Energy': { ka: 'https://www.khanacademy.org/science/ap-physics-1/ap-work-and-energy', yt: 'https://www.youtube.com/watch?v=UrfLAlk2b_8' },
-  'Waves & Electromagnetic Spectrum': { ka: 'https://www.khanacademy.org/science/ap-physics-1/ap-mechanical-waves-and-sound', yt: 'https://www.youtube.com/watch?v=7eutept5h0Q' },
-  'Earth History & Space': { ka: 'https://www.khanacademy.org/science/ms-earth-and-space-science/ms-history-of-earth', yt: 'https://www.youtube.com/watch?v=7jbwX1Uvd18' },
-  'American Revolution & Founding': { ka: 'https://www.khanacademy.org/humanities/us-history/colonial-america/american-revolution', yt: 'https://www.youtube.com/watch?v=wc3cDimF4a4' },
-  'The Constitution & New Nation': { ka: 'https://www.khanacademy.org/humanities/us-history/colonial-america/constitution', yt: 'https://www.youtube.com/watch?v=dxLamB6hRuM' },
-  'Expansion & Reform': { ka: 'https://www.khanacademy.org/humanities/us-history/the-early-republic', yt: 'https://www.youtube.com/watch?v=rq3ZswJXWqE' },
-  'Civil War & Reconstruction': { ka: 'https://www.khanacademy.org/humanities/us-history/civil-war-era', yt: 'https://www.youtube.com/watch?v=Dl0RRDiG6O8' },
-  'Data & Analysis': { ka: 'https://www.khanacademy.org/math/cc-eighth-grade-math/cc-8th-data', yt: 'https://www.youtube.com/watch?v=0ZKtsUkrgFQ' },
-  'Web Design Basics': { ka: 'https://www.khanacademy.org/computing/computer-programming/html-css', yt: 'https://www.youtube.com/watch?v=1K64fWX5z4U' },
-  'Substance Use & Abuse': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Relationships & Communication': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Algebra I: Foundations': { ka: 'https://www.khanacademy.org/math/algebra', yt: 'https://www.youtube.com/watch?v=640-86yn2wM' },
-  'Linear Relationships': { ka: 'https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:linear-equations-graphs', yt: 'https://www.youtube.com/watch?v=MeU-KzdCBps' },
-  'Systems of Equations': { ka: 'https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:systems-of-equations', yt: 'https://www.youtube.com/watch?v=vA-55wZtLeE' },
-  'Polynomials': { ka: 'https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:polynomial-arithmetic', yt: 'https://www.youtube.com/watch?v=3mWvTv1lGow' },
-  'Quadratic Functions': { ka: 'https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratic-functions-equations', yt: 'https://www.youtube.com/watch?v=IWigvJcCAJ0' },
-  'Exponential & Radical Functions': { ka: 'https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:exponential-growth-decay', yt: 'https://www.youtube.com/watch?v=G2WybA4Hf7Y' },
-  'Biology: Cell Biology': { ka: 'https://www.khanacademy.org/science/ap-biology/cell-structure-and-function', yt: 'https://www.youtube.com/watch?v=QpcACa39YtA' },
-  'Genetics': { ka: 'https://www.khanacademy.org/science/ap-biology/heredity-ap', yt: 'https://www.youtube.com/watch?v=NR3779ef9yQ' },
-  'Evolution': { ka: 'https://www.khanacademy.org/science/ap-biology/natural-selection', yt: 'https://www.youtube.com/watch?v=giw2ELZr-bE' },
-  'Ecology': { ka: 'https://www.khanacademy.org/science/ap-biology/ecology-ap', yt: 'https://www.youtube.com/watch?v=OfV3VNgjpvw' },
-  'Research & Informational Writing': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'Argumentative Writing': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'Vocabulary & Language': { ka: 'https://www.khanacademy.org/humanities/grammar', yt: 'https://www.youtube.com/watch?v=O-6q-siuMik' },
-  'World History: Modern Era': { ka: 'https://www.khanacademy.org/humanities/ap-world-history', yt: 'https://www.youtube.com/watch?v=fUDwPz9VmL0' },
-  'World Geography & Global Systems': { ka: 'https://www.khanacademy.org/humanities/ap-human-geography', yt: 'https://www.youtube.com/watch?v=fUDwPz9VmL0' },
-  'Government & Civics': { ka: 'https://www.khanacademy.org/humanities/us-government-and-civics', yt: 'https://www.youtube.com/watch?v=dxLamB6hRuM' },
-  'Python Programming': { ka: 'https://www.khanacademy.org/computing/computer-programming', yt: 'https://www.youtube.com/watch?v=zzjNg-jNflY' },
-  'Cybersecurity Awareness': { ka: 'https://www.khanacademy.org/computing/computers-and-internet/xcae6f4a7ff015e7d:online-data-security', yt: 'https://www.youtube.com/watch?v=5k24We8pED8' },
-  'Human Development & Sexuality': { ka: 'https://www.khanacademy.org/science/health-and-medicine/reproductive-system-quiz', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'First Aid & Safety': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Geometry: Foundations': { ka: 'https://www.khanacademy.org/math/geometry/hs-geo-foundations', yt: 'https://www.youtube.com/watch?v=AA6RfgP-AHU' },
-  'Triangles & Trigonometry': { ka: 'https://www.khanacademy.org/math/geometry/hs-geo-trig', yt: 'https://www.youtube.com/watch?v=AA6RfgP-AHU' },
-  'Circles': { ka: 'https://www.khanacademy.org/math/geometry/hs-geo-circles', yt: 'https://www.youtube.com/watch?v=AA6RfgP-AHU' },
-  'Area, Surface Area & Volume': { ka: 'https://www.khanacademy.org/math/geometry/hs-geo-solids', yt: 'https://www.youtube.com/watch?v=AA6RfgP-AHU' },
-  'Probability & Statistics': { ka: 'https://www.khanacademy.org/math/statistics-probability', yt: 'https://www.youtube.com/watch?v=h8EYEJ32oQ8' },
-  'Chemistry: Atomic Structure': { ka: 'https://www.khanacademy.org/science/ap-chemistry-beta/electronic-structure-of-atoms-ap', yt: 'https://www.youtube.com/watch?v=CtTmUlp3bBo' },
-  'Solutions & Thermochemistry': { ka: 'https://www.khanacademy.org/science/ap-chemistry-beta/thermodynamics-ap', yt: 'https://www.youtube.com/watch?v=ja7p_tzTTEA' },
-  'World & British Literature': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=Fu2gUTrd4Ow' },
-  'Literary Analysis': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=Fu2gUTrd4Ow' },
-  'Composition': { ka: 'https://www.khanacademy.org/humanities/grammar', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'World War II & Holocaust': { ka: 'https://www.khanacademy.org/humanities/world-history/euro-hist/world-war-ii', yt: 'https://www.youtube.com/watch?v=-kKCjwNvNkQ' },
-  'Cold War Era': { ka: 'https://www.khanacademy.org/humanities/us-history/us-history-since-ww2', yt: 'https://www.youtube.com/watch?v=-kKCjwNvNkQ' },
-  'Modern US History': { ka: 'https://www.khanacademy.org/humanities/us-history/us-history-since-ww2', yt: 'https://www.youtube.com/watch?v=-kKCjwNvNkQ' },
-  'Object-Oriented Programming': { ka: 'https://www.khanacademy.org/computing/computer-programming/programming', yt: 'https://www.youtube.com/watch?v=5LeZflr8Zfs' },
-  'Databases': { ka: 'https://www.khanacademy.org/computing/computer-programming/sql', yt: 'https://www.youtube.com/watch?v=5LeZflr8Zfs' },
-  'Mental Health & Wellness': { ka: 'https://www.khanacademy.org/science/health-and-medicine/mental-health', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Community Health': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Algebra II: Functions': { ka: 'https://www.khanacademy.org/math/algebra2', yt: 'https://www.youtube.com/watch?v=G2WybA4Hf7Y' },
-  'Polynomial & Rational Functions': { ka: 'https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:poly-arithmetic', yt: 'https://www.youtube.com/watch?v=i7idZfS8t8w' },
-  'Exponential & Logarithmic Functions': { ka: 'https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:exp', yt: 'https://www.youtube.com/watch?v=OfV3VNgjpvw' },
-  'Sequences & Series': { ka: 'https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:sequence', yt: 'https://www.youtube.com/watch?v=_cooC3yG_p0' },
-  'Trigonometry': { ka: 'https://www.khanacademy.org/math/trigonometry', yt: 'https://www.youtube.com/watch?v=1m9p9iubMLU' },
-  'Statistics (Pre-AP)': { ka: 'https://www.khanacademy.org/math/statistics-probability', yt: 'https://www.youtube.com/watch?v=h8EYEJ32oQ8' },
-  'Physics: Motion & Forces': { ka: 'https://www.khanacademy.org/science/ap-physics-1/ap-one-dimensional-motion', yt: 'https://www.youtube.com/watch?v=rjkQcfw5fkM' },
-  'Work, Energy & Momentum': { ka: 'https://www.khanacademy.org/science/ap-physics-1/ap-work-and-energy', yt: 'https://www.youtube.com/watch?v=UrfLAlk2b_8' },
-  'Electricity & Magnetism': { ka: 'https://www.khanacademy.org/science/ap-physics-2/ap-electric-charge-electric-force-and-voltage', yt: 'https://www.youtube.com/watch?v=Je_f4RimfKI' },
-  'Waves, Light & Optics': { ka: 'https://www.khanacademy.org/science/ap-physics-2/ap-geometric-optics', yt: 'https://www.youtube.com/watch?v=7eutept5h0Q' },
-  'American Literature': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=Fu2gUTrd4Ow' },
-  'Research & Rhetoric': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'Language & Style': { ka: 'https://www.khanacademy.org/humanities/grammar', yt: 'https://www.youtube.com/watch?v=O-6q-siuMik' },
-  'US History: Late 19th Century to WWII': { ka: 'https://www.khanacademy.org/humanities/us-history/gilded-age', yt: 'https://www.youtube.com/watch?v=bGXSvj-clXo' },
-  'Contemporary Global Issues': { ka: 'https://www.khanacademy.org/humanities/ap-world-history', yt: 'https://www.youtube.com/watch?v=fUDwPz9VmL0' },
-  'Economics': { ka: 'https://www.khanacademy.org/economics-finance-domain/macroeconomics', yt: 'https://www.youtube.com/watch?v=8JYP_wU1JTU' },
-  'Data Structures & Algorithms': { ka: 'https://www.khanacademy.org/computing/computer-science/algorithms', yt: 'https://www.youtube.com/watch?v=CvSOaYi89B4' },
-  'Intro to AI & Machine Learning': { ka: 'https://www.khanacademy.org/computing/computer-science', yt: 'https://www.youtube.com/watch?v=5LeZflr8Zfs' },
-  'Lifetime Fitness Planning': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Health Decision Making': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Pre-Calculus / Calculus Intro': { ka: 'https://www.khanacademy.org/math/precalculus', yt: 'https://www.youtube.com/watch?v=N2PpRnFqnqY' },
-  'Integration': { ka: 'https://www.khanacademy.org/math/ap-calculus-ab/ab-integration-new', yt: 'https://www.youtube.com/watch?v=__Uw1SXPW7s' },
-  'Statistics (AP-level)': { ka: 'https://www.khanacademy.org/math/ap-statistics', yt: 'https://www.youtube.com/watch?v=h8EYEJ32oQ8' },
-  'Discrete Mathematics': { ka: 'https://www.khanacademy.org/computing/computer-science/cryptography', yt: 'https://www.youtube.com/watch?v=5jwXThH6fg4' },
-  'Advanced Biology / AP Bio': { ka: 'https://www.khanacademy.org/science/ap-biology', yt: 'https://www.youtube.com/watch?v=QpcACa39YtA' },
-  'Advanced Chemistry / AP Chem': { ka: 'https://www.khanacademy.org/science/ap-chemistry-beta', yt: 'https://www.youtube.com/watch?v=CtTmUlp3bBo' },
-  'Environmental Science': { ka: 'https://www.khanacademy.org/science/ap-environmental-science', yt: 'https://www.youtube.com/watch?v=OfV3VNgjpvw' },
-  'AP English Language': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'AP English Literature': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=Fu2gUTrd4Ow' },
-  'College Writing Preparation': { ka: 'https://www.khanacademy.org/college-careers-more/college-admissions', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'AP US History / Capstone': { ka: 'https://www.khanacademy.org/humanities/ap-us-history', yt: 'https://www.youtube.com/watch?v=wc3cDimF4a4' },
-  'AP Government & Politics': { ka: 'https://www.khanacademy.org/humanities/ap-us-government-and-politics', yt: 'https://www.youtube.com/watch?v=dxLamB6hRuM' },
-  'Economics & Personal Finance': { ka: 'https://www.khanacademy.org/economics-finance-domain/core-finance', yt: 'https://www.youtube.com/watch?v=8JYP_wU1JTU' },
-  'Philosophy & Ethics Intro': { ka: 'https://www.khanacademy.org/humanities/philosophy', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'Capstone Project': { ka: 'https://www.khanacademy.org/college-careers-more/career-content', yt: 'https://www.youtube.com/watch?v=CvSOaYi89B4' },
-  'Career & College Readiness in CS': { ka: 'https://www.khanacademy.org/college-careers-more/career-content', yt: 'https://www.youtube.com/watch?v=5LeZflr8Zfs' },
-  'Adult Health & Wellness': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'Senior Capstone: Personal Wellness Plan': { ka: 'https://www.khanacademy.org/science/health-and-medicine', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'AP Precalculus': { ka: 'https://www.khanacademy.org/math/precalculus', yt: 'https://www.youtube.com/watch?v=1m9p9iubMLU' },
-  'AP Calculus AB': { ka: 'https://www.khanacademy.org/math/ap-calculus-ab', yt: 'https://www.youtube.com/watch?v=N2PpRnFqnqY' },
-  'AP Calculus BC': { ka: 'https://www.khanacademy.org/math/ap-calculus-bc', yt: 'https://www.youtube.com/watch?v=__Uw1SXPW7s' },
-  'AP Statistics': { ka: 'https://www.khanacademy.org/math/ap-statistics', yt: 'https://www.youtube.com/watch?v=h8EYEJ32oQ8' },
-  'AP Biology': { ka: 'https://www.khanacademy.org/science/ap-biology', yt: 'https://www.youtube.com/watch?v=QpcACa39YtA' },
-  'AP Chemistry': { ka: 'https://www.khanacademy.org/science/ap-chemistry-beta', yt: 'https://www.youtube.com/watch?v=CtTmUlp3bBo' },
-  'AP Environmental Science': { ka: 'https://www.khanacademy.org/science/ap-environmental-science', yt: 'https://www.youtube.com/watch?v=OfV3VNgjpvw' },
-  'AP Physics 1: Algebra-Based': { ka: 'https://www.khanacademy.org/science/ap-physics-1', yt: 'https://www.youtube.com/watch?v=rjkQcfw5fkM' },
-  'AP Physics 2: Algebra-Based': { ka: 'https://www.khanacademy.org/science/ap-physics-2', yt: 'https://www.youtube.com/watch?v=7eutept5h0Q' },
-  'AP Physics C: Mechanics': { ka: 'https://www.khanacademy.org/science/ap-physics-c-mechanics', yt: 'https://www.youtube.com/watch?v=rjkQcfw5fkM' },
-  'AP Physics C: Electricity & Magnetism': { ka: 'https://www.khanacademy.org/science/ap-physics-c-electricity-and-magnetism', yt: 'https://www.youtube.com/watch?v=Je_f4RimfKI' },
-  'AP English Language and Composition': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'AP English Literature and Composition': { ka: 'https://www.khanacademy.org/ela/college-and-career-readiness-english', yt: 'https://www.youtube.com/watch?v=Fu2gUTrd4Ow' },
-  'AP United States History': { ka: 'https://www.khanacademy.org/humanities/ap-us-history', yt: 'https://www.youtube.com/watch?v=wc3cDimF4a4' },
-  'AP World History: Modern': { ka: 'https://www.khanacademy.org/humanities/ap-world-history', yt: 'https://www.youtube.com/watch?v=fUDwPz9VmL0' },
-  'AP European History': { ka: 'https://www.khanacademy.org/humanities/ap-european-history', yt: 'https://www.youtube.com/watch?v=rEZ1p5zHZB8' },
-  'AP United States Government and Politics': { ka: 'https://www.khanacademy.org/humanities/ap-us-government-and-politics', yt: 'https://www.youtube.com/watch?v=dxLamB6hRuM' },
-  'AP Comparative Government and Politics': { ka: 'https://www.khanacademy.org/humanities/ap-us-government-and-politics', yt: 'https://www.youtube.com/watch?v=dxLamB6hRuM' },
-  'AP Human Geography': { ka: 'https://www.khanacademy.org/humanities/ap-human-geography', yt: 'https://www.youtube.com/watch?v=SGSLyp8mmMc' },
-  'AP Macroeconomics': { ka: 'https://www.khanacademy.org/economics-finance-domain/ap-macroeconomics', yt: 'https://www.youtube.com/watch?v=8JYP_wU1JTU' },
-  'AP Microeconomics': { ka: 'https://www.khanacademy.org/economics-finance-domain/ap-microeconomics', yt: 'https://www.youtube.com/watch?v=kl4n-EWwPyA' },
-  'AP Psychology': { ka: 'https://www.khanacademy.org/science/ap-psychology', yt: 'https://www.youtube.com/watch?v=diVGZxXh-dg' },
-  'AP Computer Science A': { ka: 'https://www.khanacademy.org/computing/ap-computer-science-a', yt: 'https://www.youtube.com/watch?v=5LeZflr8Zfs' },
-  'AP Computer Science Principles': { ka: 'https://www.khanacademy.org/computing/ap-computer-science-principles', yt: 'https://www.youtube.com/watch?v=CvSOaYi89B4' },
-  'AP Art History': { ka: 'https://www.khanacademy.org/humanities/ap-art-history', yt: 'https://www.youtube.com/watch?v=lP966pVR2XM' },
-  'AP Music Theory': { ka: 'https://www.khanacademy.org/humanities/music', yt: 'https://www.youtube.com/watch?v=lP966pVR2XM' },
-  'AP Studio Art: 2-D Art and Design': { ka: 'https://www.khanacademy.org/humanities/art-history-basics', yt: 'https://www.youtube.com/watch?v=lP966pVR2XM' },
-  'AP Studio Art: 3-D Art and Design': { ka: 'https://www.khanacademy.org/humanities/art-history-basics', yt: 'https://www.youtube.com/watch?v=lP966pVR2XM' },
-  'AP Studio Art: Drawing': { ka: 'https://www.khanacademy.org/humanities/art-history-basics', yt: 'https://www.youtube.com/watch?v=lP966pVR2XM' },
-  'AP Chinese Language and Culture': { ka: 'https://www.khanacademy.org/humanities/world-history', yt: 'https://www.youtube.com/watch?v=SGSLyp8mmMc' },
-  'AP French Language and Culture': { ka: 'https://www.khanacademy.org/humanities/world-history', yt: 'https://www.youtube.com/watch?v=rEZ1p5zHZB8' },
-  'AP German Language and Culture': { ka: 'https://www.khanacademy.org/humanities/world-history', yt: 'https://www.youtube.com/watch?v=rEZ1p5zHZB8' },
-  'AP Italian Language and Culture': { ka: 'https://www.khanacademy.org/humanities/world-history', yt: 'https://www.youtube.com/watch?v=rEZ1p5zHZB8' },
-  'AP Japanese Language and Culture': { ka: 'https://www.khanacademy.org/humanities/world-history', yt: 'https://www.youtube.com/watch?v=SGSLyp8mmMc' },
-  'AP Latin': { ka: 'https://www.khanacademy.org/humanities/ancient-art-civilizations/greek-art', yt: 'https://www.youtube.com/watch?v=SGSLyp8mmMc' },
-  'AP Spanish Language and Culture': { ka: 'https://www.khanacademy.org/humanities/world-history', yt: 'https://www.youtube.com/watch?v=rEZ1p5zHZB8' },
-  'AP Spanish Literature and Culture': { ka: 'https://www.khanacademy.org/humanities/world-history', yt: 'https://www.youtube.com/watch?v=Fu2gUTrd4Ow' },
-  'AP Seminar': { ka: 'https://www.khanacademy.org/college-careers-more/college-admissions', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-  'AP Research': { ka: 'https://www.khanacademy.org/college-careers-more/college-admissions', yt: 'https://www.youtube.com/watch?v=syrBnXypbd8' },
-};
+
+
 function render() {
   const gradeData = CURRICULUM[currentGrade];
   const main = document.getElementById('mainContent');
@@ -4656,14 +4494,13 @@ function render() {
           <span class="unit-num">Unit ${i+1}</span>
           <span style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
             <span class="unit-name" style="flex:none">${highlight(u.unit)}</span>
-            ${ (function(){ var _v2=VIDEO_MAP[u.unit]; if(!_v2||!_v2.yt) return ''; var _eid2='vid-'+(Math.random()*1e9|0); _pendingVideos[_eid2]={yt:_v2.yt,unit:u.unit}; return '<button data-vid="'+_eid2+'" onclick="event.stopPropagation();var d=_pendingVideos[this.dataset.vid];if(d)openVideo(d.yt,d.unit);" style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;background:rgba(239,68,68,.15);color:#ffffff;font-size:.72rem;font-weight:700;border:1px solid rgba(239,68,68,.3);cursor:pointer;flex-shrink:0;white-space:nowrap">&#9654; Video</button>'; })() }
           </span>
           <span class="unit-toggle">▼</span>
         </div>
         <div class="unit-body">
           <ul>${topicMatch.map(t => `<li>${highlight(t)}</li>`).join('')}</ul>
           <div style="margin:10px 0 6px;display:flex;gap:8px;flex-wrap:wrap">
-            ${ (function(){ var _v=VIDEO_MAP[u.unit]||{}; var _ka=_v.ka||('https://www.khanacademy.org/search?page_search_query='+encodeURIComponent(u.unit)); var _yt=_v.yt||('https://www.youtube.com/@khanacademy/search?query='+encodeURIComponent(u.unit)); var _eid='vid-'+(Math.random()*1e9|0); _pendingVideos[_eid]={yt:_yt,unit:u.unit}; return '<a href="'+_ka+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;background:rgba(20,184,166,.15);color:#14b981;font-size:.78rem;font-weight:700;text-decoration:none;border:1px solid rgba(20,184,166,.3)">🟢 Khan Academy</a><button data-vid="'+_eid+'" onclick="var d=_pendingVideos[this.dataset.vid];if(d)openVideo(d.yt,d.unit);" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;background:rgba(239,68,68,.12);color:#ffffff;font-size:.78rem;font-weight:700;border:1px solid rgba(239,68,68,.25);cursor:pointer">&#9654; Watch Video</button>'; })() }
+            
           </div>
           ${practiceHtml}
         </div>
@@ -5012,16 +4849,16 @@ render();
   font-size:.82rem;font-weight:700;text-align:center;outline:none;}
 .tp-num:focus{border-color:#059669;}
 
-.vid-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;align-items:center;justify-content:center;padding:20px}
-.vid-modal-bg.open{display:flex}
-.vid-modal{background:#0f1a2e;border-radius:16px;overflow:hidden;width:100%;max-width:860px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.vid-modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#1a2540}
-.vid-modal-title{font-size:.9rem;font-weight:700;color:#e8edf5}
-.vid-modal-close{background:none;border:none;color:#94a3b8;font-size:1.4rem;cursor:pointer;padding:0 4px;line-height:1}
-.vid-modal-close:hover{color:#fff}
+
+
+
+
+
+
+
 .vid-iframe-wrap{position:relative;padding-bottom:56.25%;height:0}
 .vid-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
-@media(max-width:600px){.vid-modal{border-radius:10px}}
+@media(max-width:600px){}
 </style>
 
 <button id="timerBtn" onclick="toggleTimer()" title="Study Timer">⏱</button>
@@ -5207,40 +5044,14 @@ render();
   if(tp) tp.style.bottom='24px';
 })();
 
-function openVideo(ytUrl, unitName){
-  // Extract video ID from watch?v= or youtu.be/ URL
-  let vid = '';
-  const m1 = ytUrl.match(/[?&]v=([^&]+)/);
-  const m2 = ytUrl.match(/youtu\.be\/([^?]+)/);
-  if(m1) vid = m1[1]; else if(m2) vid = m2[1];
-  if(!vid){ window.open(ytUrl,'_blank'); return; }
   const embedUrl = 'https://www.youtube-nocookie.com/embed/'+vid+'?autoplay=1&rel=0';
   document.getElementById('vidIframe').src = embedUrl;
-  document.getElementById('vidModalTitle').textContent = unitName || 'Video Lesson';
-  document.getElementById('vidModalBg').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-function closeVidModal(e){
-  if(e && e.target !== document.getElementById('vidModalBg')) return;
-  document.getElementById('vidIframe').src = '';
-  document.getElementById('vidModalBg').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeVidModal(); });
 </script>
 <!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
 
 
-<div class="vid-modal-bg" id="vidModalBg" onclick="closeVidModal(event)">
-  <div class="vid-modal">
-    <div class="vid-modal-header">
-      <span class="vid-modal-title" id="vidModalTitle">Video Lesson</span>
-      <button class="vid-modal-close" onclick="closeVidModal()">&#x2715;</button>
-    </div>
-    <div class="vid-iframe-wrap">
-      <iframe id="vidIframe" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-    </div>
-  </div>
-</div>
+
 </body>
 </html>
