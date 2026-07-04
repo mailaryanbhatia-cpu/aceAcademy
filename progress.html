@@ -187,6 +187,23 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 <div class="container">
   <h1>📊 My Progress</h1>
   <p class="subtitle">All your test results in one place — updated automatically every time you finish a test.</p>
+
+  <!-- Study Heatmap -->
+  <div class="section" style="margin-bottom:20px">
+    <div class="section-title">🗓 Study Activity — Past Year</div>
+    <div id="heatmapWrap" style="overflow-x:auto;padding-bottom:6px"></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:.72rem;color:#64748b">
+      <span>Less</span>
+      <div style="width:11px;height:11px;border-radius:2px;background:#1e293b"></div>
+      <div style="width:11px;height:11px;border-radius:2px;background:#312e81"></div>
+      <div style="width:11px;height:11px;border-radius:2px;background:#4338ca"></div>
+      <div style="width:11px;height:11px;border-radius:2px;background:#6366f1"></div>
+      <div style="width:11px;height:11px;border-radius:2px;background:#a5b4fc"></div>
+      <span>More</span>
+      <span id="heatmapTotal" style="margin-left:12px;color:#94a3b8"></span>
+    </div>
+  </div>
+
   <div class="data-panel">
     <div class="data-panel-left">
       <h3>💾 Your Data</h3>

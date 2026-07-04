@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Whiteboard — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
+<link rel="manifest" href="/aceAcademy/manifest.json"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png"/>
+<script src="theme.js"></script>
+<script src="/aceAcademy/streak.js"></script>
+<script src="/aceAcademy/nav-profile.js"></script>
+<script src="/aceAcademy/splash.js"></script>
+<script src="/aceAcademy/sounds.js"></script>
+<script src="/aceAcademy/coins.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:#0b1120;color:#e2e8f0;overflow:hidden;height:100vh;display:flex;flex-direction:column}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#0f172a;border-bottom:1px solid #1e293b;flex-shrink:0;z-index:10}
+.nav a{color:#e2e8f0;text-decoration:none;font-weight:700;font-size:1rem}
+.toolbar{display:flex;align-items:center;gap:6px;padding:8px 16px;background:#0f172a;border-bottom:1px solid #1e293b;flex-shrink:0;flex-wrap:wrap;z-index:10}
+.tool-group{display:flex;gap:4px;align-items:center;padding-right:10px;margin-right:6px;border-right:1px solid #1e293b}
+.tool-group:last-child{border-right:none}
+.tool-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid #334155;background:transparent;color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .15s;flex-shrink:0}
+.tool-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.tool-btn.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
+.tool-btn span{font-size:.72rem;font-weight:800}
+.color-btn{width:26px;height:26px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:border-color .15s;flex-shrink:0}
+.color-btn.active{border-color:#e2e8f0}
+.size-slider{-webkit-appearance:none;appearance:none;width:70px;height:4px;border-radius:99px;background:#334155;outline:none;cursor:pointer}
+.size-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#6366f1;cursor:pointer}
+.size-preview{width:16px;height:16px;border-radius:50%;background:#6366f1;flex-shrink:0;transition:width .1s,height .1s}
+.toolbar label{font-size:.72rem;color:#475569;white-space:nowrap}
+.action-btn{padding:6px 14px;border-radius:8px;border:1.5px solid #334155;background:transparent;color:#94a3b8;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.action-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.action-btn.save{border-color:#10b981;color:#10b981}
+.action-btn.save:hover{background:rgba(16,185,129,.1)}
+canvas{display:block;flex:1;cursor:crosshair;touch-action:none}
+canvas.eraser{cursor:cell}
+canvas.text-mode{cursor:text}
+.opacity-wrap{display:flex;align-items:center;gap:5px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html">🎓 aceAcademy</a>
+  <div style="font-weight:800;font-size:.95rem;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🖊 Whiteboard</div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <a href="alltools.html" style="color:#94a3b8;text-decoration:none;font-size:.85rem">All Tools</a>
+    <a href="index.html" style="color:#94a3b8;text-decoration:none;font-size:.85rem">Home</a>
+  </div>
+</nav>
+
+<div class="toolbar" id="toolbar">
+  <!-- Tools -->
+  <div class="tool-group">
+    <button class="tool-btn active" id="tool-pen" onclick="setTool('pen')" title="Pen (P)">✏️</button>
+    <button class="tool-btn" id="tool-highlighter" onclick="setTool('highlighter')" title="Highlighter (H)">🖊</button>
+    <button class="tool-btn" id="tool-line" onclick="setTool('line')" title="Line (L)">╱</button>
+    <button class="tool-btn" id="tool-rect" onclick="setTool('rect')" title="Rectangle (R)"><span>▭</span></button>
+    <button class="tool-btn" id="tool-circle" onclick="setTool('circle')" title="Circle (C)"><span>◯</span></button>
+    <button class="tool-btn" id="tool-text" onclick="setTool('text')" title="Text (T)"><span>T</span></button>
+    <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser')" title="Eraser (E)">🧹</button>
+  </div>
+  <!-- Colors -->
+  <div class="tool-group">
+    <div class="color-btn active" style="background:#e2e8f0" onclick="setColor('#e2e8f0',this)" title="White"></div>
+    <div class="color-btn" style="background:#6366f1" onclick="setColor('#6366f1',this)" title="Indigo"></div>
+    <div class="color-btn" style="background:#ec4899" onclick="setColor('#ec4899',this)" title="Pink"></div>
+    <div class="color-btn" style="background:#f59e0b" onclick="setColor('#f59e0b',this)" title="Amber"></div>
+    <div class="color-btn" style="background:#10b981" onclick="setColor('#10b981',this)" title="Green"></div>
+    <div class="color-btn" style="background:#3b82f6" onclick="setColor('#3b82f6',this)" title="Blue"></div>
+    <div class="color-btn" style="background:#ef4444" onclick="setColor('#ef4444',this)" title="Red"></div>
+    <input type="color" id="customColor" value="#e2e8f0" oninput="setColor(this.value,null)" style="width:26px;height:26px;border-radius:50%;border:2px solid #334155;cursor:pointer;background:transparent;padding:0"/>
+  </div>
+  <!-- Size -->
+  <div class="tool-group">
+    <label>Size</label>
+    <input type="range" class="size-slider" id="sizeSlider" min="1" max="50" value="4" oninput="setSize(this.value)"/>
+    <div class="size-preview" id="sizePreview" style="width:8px;height:8px"></div>
+  </div>
+  <!-- Opacity -->
+  <div class="tool-group opacity-wrap">
+    <label>Opacity</label>
+    <input type="range" class="size-slider" id="opacitySlider" min="10" max="100" value="100" oninput="setOpacity(this.value)"/>
+    <span style="font-size:.72rem;color:#475569;width:30px" id="opacityLabel">100%</span>
+  </div>
+  <!-- Actions -->
+  <div class="tool-group">
+    <button class="action-btn" onclick="undo()" title="Undo (Ctrl+Z)">↩ Undo</button>
+    <button class="action-btn" onclick="redo()" title="Redo (Ctrl+Y)">↪ Redo</button>
+    <button class="action-btn" onclick="clearBoard()">🗑 Clear</button>
+    <button class="action-btn save" onclick="saveImage()">💾 Save PNG</button>
+    <button class="action-btn" onclick="loadBoard()">📂 Load</button>
+    <button class="action-btn" onclick="saveBoard()">📋 Keep</button>
+  </div>
+</div>
+
+<canvas id="board"></canvas>
+
+<!-- Text input overlay -->
+<textarea id="textInput" style="display:none;position:fixed;background:#1e293b;border:2px solid #6366f1;border-radius:6px;color:#e2e8f0;padding:6px 10px;font-size:16px;font-family:inherit;resize:none;z-index:99;min-width:150px" rows="2"></textarea>
+
+<script>
+var canvas = document.getElementById('board');
+var ctx = canvas.getContext('2d');
+var tool='pen', color='#e2e8f0', size=4, opacity=1;
+var drawing=false, startX, startY, lastX, lastY;
+var undoStack=[], redoStack=[], MAX_UNDO=40;
+var snapshot=null; // for shape preview
+
+function resize(){
+  var imgData = canvas.width>0 && canvas.height>0 ? ctx.getImageData(0,0,canvas.width,canvas.height) : null;
+  canvas.width = canvas.offsetWidth||window.innerWidth;
+  canvas.height = canvas.offsetHeight||(window.innerHeight-106);
+  ctx.fillStyle='#0b1120'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  if(imgData) ctx.putImageData(imgData,0,0);
+}
+window.addEventListener('resize',resize);
+resize();
+loadBoardFromStorage();
+
+function setTool(t){
+  tool=t;
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+t).classList.add('active');
+  canvas.className = t==='eraser'?'eraser' : t==='text'?'text-mode' : '';
+}
+function setColor(c,btn){
+  color=c;
+  document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+function setSize(v){
+  size=parseInt(v);
+  var d=Math.max(4,Math.min(v*0.6,40));
+  document.getElementById('sizePreview').style.width=d+'px';
+  document.getElementById('sizePreview').style.height=d+'px';
+  document.getElementById('sizePreview').style.background=color;
+}
+function setOpacity(v){
+  opacity=v/100;
+  document.getElementById('opacityLabel').textContent=v+'%';
+}
+
+function getPos(e){
+  var r=canvas.getBoundingClientRect();
+  var t=e.touches?e.touches[0]:e;
+  return{x:t.clientX-r.left, y:t.clientY-r.top};
+}
+
+function push(){
+  undoStack.push(ctx.getImageData(0,0,canvas.width,canvas.height));
+  if(undoStack.length>MAX_UNDO) undoStack.shift();
+  redoStack=[];
+}
+
+function undo(){
+  if(!undoStack.length) return;
+  redoStack.push(ctx.getImageData(0,0,canvas.width,canvas.height));
+  ctx.putImageData(undoStack.pop(),0,0);
+}
+function redo(){
+  if(!redoStack.length) return;
+  undoStack.push(ctx.getImageData(0,0,canvas.width,canvas.height));
+  ctx.putImageData(redoStack.pop(),0,0);
+}
+
+function startDraw(e){
+  e.preventDefault();
+  if(tool==='text'){ handleText(e); return; }
+  var p=getPos(e);
+  startX=p.x; startY=p.y; lastX=p.x; lastY=p.y;
+  drawing=true;
+  push();
+  snapshot=ctx.getImageData(0,0,canvas.width,canvas.height);
+  if(tool==='pen'||tool==='eraser'||tool==='highlighter'){
+    ctx.beginPath(); ctx.moveTo(p.x,p.y);
+  }
+}
+function draw(e){
+  e.preventDefault();
+  if(!drawing) return;
+  var p=getPos(e);
+  ctx.globalAlpha=opacity;
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  if(tool==='pen'){
+    ctx.globalCompositeOperation='source-over';
+    ctx.strokeStyle=color; ctx.lineWidth=size;
+    ctx.lineTo(p.x,p.y); ctx.stroke();
+  } else if(tool==='highlighter'){
+    ctx.globalCompositeOperation='source-over';
+    ctx.strokeStyle=color; ctx.lineWidth=size*3; ctx.globalAlpha=0.35;
+    ctx.lineTo(p.x,p.y); ctx.stroke();
+  } else if(tool==='eraser'){
+    ctx.globalCompositeOperation='destination-out';
+    ctx.lineWidth=size*3; ctx.globalAlpha=1;
+    ctx.lineTo(p.x,p.y); ctx.stroke();
+  } else {
+    // Shapes: restore snapshot then draw preview
+    ctx.putImageData(snapshot,0,0);
+    ctx.globalCompositeOperation='source-over';
+    ctx.strokeStyle=color; ctx.lineWidth=size; ctx.globalAlpha=opacity;
+    if(tool==='line'){ ctx.beginPath(); ctx.moveTo(startX,startY); ctx.lineTo(p.x,p.y); ctx.stroke(); }
+    else if(tool==='rect'){ ctx.strokeRect(startX,startY,p.x-startX,p.y-startY); }
+    else if(tool==='circle'){
+      var rx=(p.x-startX)/2, ry=(p.y-startY)/2;
+      ctx.beginPath(); ctx.ellipse(startX+rx,startY+ry,Math.abs(rx),Math.abs(ry),0,0,2*Math.PI); ctx.stroke();
+    }
+  }
+  lastX=p.x; lastY=p.y;
+}
+function endDraw(e){
+  if(!drawing) return;
+  drawing=false; ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
+  if(tool==='pen'||tool==='highlighter'||tool==='eraser') ctx.closePath();
+  snapshot=null;
+}
+
+// Text tool
+var textX,textY;
+function handleText(e){
+  var p=getPos(e); textX=p.x; textY=p.y;
+  var inp=document.getElementById('textInput');
+  inp.style.display='block';
+  inp.style.left=Math.min(p.x+canvas.getBoundingClientRect().left,window.innerWidth-200)+'px';
+  inp.style.top=(p.y+canvas.getBoundingClientRect().top-8)+'px';
+  inp.style.fontSize=Math.max(12,size*3)+'px';
+  inp.style.color=color;
+  inp.value=''; inp.focus();
+}
+document.getElementById('textInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault(); commitText();
+  } else if(e.key==='Escape'){ this.style.display='none'; }
+});
+function commitText(){
+  var inp=document.getElementById('textInput');
+  var text=inp.value.trim();
+  if(text){ push(); ctx.font=Math.max(12,size*3)+'px '+getComputedStyle(document.body).fontFamily; ctx.fillStyle=color; ctx.globalAlpha=opacity; ctx.fillText(text,textX,textY); ctx.globalAlpha=1; }
+  inp.style.display='none';
+}
+
+canvas.addEventListener('mousedown',startDraw);
+canvas.addEventListener('mousemove',draw);
+canvas.addEventListener('mouseup',endDraw);
+canvas.addEventListener('mouseleave',endDraw);
+canvas.addEventListener('touchstart',startDraw,{passive:false});
+canvas.addEventListener('touchmove',draw,{passive:false});
+canvas.addEventListener('touchend',endDraw);
+
+document.addEventListener('keydown',function(e){
+  if(e.ctrlKey||e.metaKey){
+    if(e.key==='z'){e.preventDefault();undo();}
+    if(e.key==='y'||e.key==='Y'){e.preventDefault();redo();}
+    if(e.key==='s'){e.preventDefault();saveImage();}
+  }
+  if(!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    if(e.key==='p') setTool('pen');
+    if(e.key==='e') setTool('eraser');
+    if(e.key==='r') setTool('rect');
+    if(e.key==='c') setTool('circle');
+    if(e.key==='l') setTool('line');
+    if(e.key==='t') setTool('text');
+    if(e.key==='h') setTool('highlighter');
+  }
+});
+
+function clearBoard(){
+  if(!confirm('Clear the whiteboard? This cannot be undone.')) return;
+  push();
+  ctx.fillStyle='#0b1120'; ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
+function saveImage(){
+  var link=document.createElement('a');
+  link.download='whiteboard-'+new Date().toISOString().split('T')[0]+'.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+function saveBoard(){
+  try{ localStorage.setItem('ace_whiteboard', canvas.toDataURL('image/png')); showToast('Whiteboard saved!'); }
+  catch(e){ showToast('Could not save (too large). Try saving as PNG.'); }
+}
+function loadBoard(){ loadBoardFromStorage(true); }
+function loadBoardFromStorage(userAction){
+  var d=localStorage.getItem('ace_whiteboard');
+  if(!d){ if(userAction) showToast('No saved whiteboard found.'); return; }
+  var img=new Image();
+  img.onload=function(){ ctx.fillStyle='#0b1120'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0); if(userAction) showToast('Whiteboard loaded!'); };
+  img.src=d;
+}
+
+function showToast(msg){
+  var t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid #334155;color:#e2e8f0;font-size:.83rem;padding:10px 20px;border-radius:10px;z-index:9999;box-shadow:0 4px 20px #0004';
+  t.textContent=msg; document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';},2500);
+  setTimeout(()=>t.remove(),3000);
+}
+</script>
+</body>
+</html>
