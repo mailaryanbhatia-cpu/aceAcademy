@@ -48,6 +48,20 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 
 /* Quiz */
 .quiz-q{font-size:1rem;font-weight:700;line-height:1.5;margin-bottom:14px}
+
+/* Match Game */
+.wv-match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.wv-card{padding:12px 14px;border-radius:10px;border:2px solid var(--border);background:var(--bg);cursor:pointer;font-size:.88rem;line-height:1.4;transition:all .15s;user-select:none}
+.wv-card:hover{border-color:var(--accent);background:#eff6ff}
+.wv-card.selected{border-color:var(--accent);background:#eff6ff;font-weight:700}
+.wv-card.matched{border-color:var(--green);background:#d1fae5;color:#065f46;cursor:default;opacity:.75}
+.wv-card.wrong{border-color:var(--red);background:#fee2e2;animation:wv-shake .3s}
+.wv-quiz-opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.wv-quiz-opt{padding:11px 16px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;font-size:.9rem;text-align:left;transition:all .15s}
+.wv-quiz-opt:hover:not(:disabled){border-color:var(--accent);background:#eff6ff}
+.wv-quiz-opt.correct{border-color:var(--green);background:#d1fae5;color:#065f46;font-weight:700}
+.wv-quiz-opt.wrong{border-color:var(--red);background:#fee2e2;color:#991b1b}
+@keyframes wv-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .quiz-choices{display:flex;flex-direction:column;gap:8px}
 .qchoice{padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:.88rem;transition:.12s}
 .qchoice:hover{border-color:var(--accent);background:#eff6ff}
@@ -126,6 +140,7 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
   <div class="tab active" onclick="showTab('wall',this)">🧱 Word Wall</div>
   <div class="tab" onclick="showTab('add',this)">➕ Add Words</div>
   <div class="tab" onclick="showTab('quiz',this)">🧠 Quiz</div>
+  <div class="tab" onclick="showTab('match',this)">🎮 Match Game</div>
   <div class="tab" onclick="showTab('featured',this)">⭐ Featured Words</div>
 </div>
 
@@ -187,6 +202,22 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
     <div class="card" id="quizCard">
       <h2 id="quizTitle">🧠 Vocabulary Quiz</h2>
       <div id="quizContent"><div class="empty">Add some words first, then quiz yourself!</div></div>
+    </div>
+  </div>
+
+  <!-- MATCH GAME -->
+  <div class="section-tab" id="tab-match">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <h2 style="margin:0">🎮 Vocab Match Game</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-outline" id="vgBtnMatch" onclick="wvSetMode('match',this)">🃏 Match</button>
+          <button class="btn" style="background:var(--bg);color:var(--muted);border:1.5px solid var(--border)" id="vgBtnQuiz" onclick="wvSetMode('quiz',this)">❓ Quiz</button>
+          <button class="btn btn-primary" onclick="wvLoad()">↺ New Game</button>
+        </div>
+      </div>
+      <div id="wvScore" style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Match each term with its definition.</div>
+      <div id="wvArea"></div>
     </div>
   </div>
 
@@ -438,6 +469,97 @@ function sendToFlashcards(){
     localStorage.setItem('ace_flashcards_v2', JSON.stringify(fc));
     alert('Sent '+added+' word'+(added!==1?'s':'')+' to Flashcards → Vocabulary deck!\nOpen Flashcards to study them.');
   }catch(e){ alert('Error: '+e.message); }
+}
+
+// ── EMBEDDED MATCH GAME ──────────────────────────────────────────
+let wvMode = 'match', wvScore = 0, wvTotal = 0, wvSel = null;
+
+function wvSetMode(mode, btn) {
+  wvMode = mode;
+  document.getElementById('vgBtnMatch').style.cssText = mode==='match' ? 'background:var(--accent);color:#fff;border:none' : '';
+  document.getElementById('vgBtnQuiz').style.cssText  = mode==='quiz'  ? 'background:var(--accent);color:#fff;border:none' : '';
+  wvLoad();
+}
+
+function wvGetTerms() {
+  // Pull from user's word wall
+  const words = JSON.parse(localStorage.getItem('ace_vocab') || '[]');
+  return words.filter(w => w.def).map(w => ({ term: w.word, def: w.def }));
+}
+
+function wvShuffle(arr) { return arr.slice().sort(() => Math.random() - 0.5); }
+
+function wvLoad() {
+  const terms = wvShuffle(wvGetTerms()).slice(0, wvMode === 'match' ? 6 : 8);
+  if (terms.length < 2) {
+    document.getElementById('wvArea').innerHTML = '<div class="empty" style="padding:24px;text-align:center">Add at least 2 words to your Word Wall to play!</div>';
+    document.getElementById('wvScore').textContent = 'No words yet.';
+    return;
+  }
+  wvScore = 0; wvTotal = terms.length; wvSel = null;
+  document.getElementById('wvScore').textContent = wvMode === 'match' ? 'Match each term with its definition.' : 'Pick the correct term.';
+  if (wvMode === 'match') wvRenderMatch(terms);
+  else wvRenderQuiz(terms);
+}
+
+function wvRenderMatch(terms) {
+  const defs = wvShuffle(terms);
+  let html = '<div class="wv-match-grid"><div>';
+  html += terms.map((t,i) => `<div class="wv-card" data-type="term" data-idx="${i}" onclick="wvClick(this)">${t.term}</div>`).join('');
+  html += '</div><div>';
+  html += defs.map((t) => {
+    const orig = terms.indexOf(t);
+    return `<div class="wv-card" data-type="def" data-orig="${orig}" onclick="wvClick(this)">${t.def.substring(0,90)}</div>`;
+  }).join('');
+  html += '</div></div>';
+  document.getElementById('wvArea').innerHTML = html;
+}
+
+function wvClick(el) {
+  if (el.classList.contains('matched')) return;
+  if (!wvSel) { wvSel = el; el.classList.add('selected'); return; }
+  if (wvSel === el) { el.classList.remove('selected'); wvSel = null; return; }
+  if (wvSel.dataset.type === el.dataset.type) {
+    wvSel.classList.remove('selected'); wvSel = el; el.classList.add('selected'); return;
+  }
+  const termEl = wvSel.dataset.type === 'term' ? wvSel : el;
+  const defEl  = wvSel.dataset.type === 'def'  ? wvSel : el;
+  if (termEl.dataset.idx === defEl.dataset.orig) {
+    termEl.classList.add('matched'); defEl.classList.add('matched'); wvScore++;
+    document.getElementById('wvScore').textContent = wvScore === wvTotal
+      ? '🎉 Perfect! All matched!' : `Matched: ${wvScore} / ${wvTotal}`;
+  } else {
+    termEl.classList.add('wrong'); defEl.classList.add('wrong');
+    setTimeout(() => { termEl.classList.remove('wrong','selected'); defEl.classList.remove('wrong','selected'); }, 500);
+  }
+  wvSel = null;
+}
+
+function wvRenderQuiz(terms) {
+  let qi = 0; wvScore = 0;
+  function showQ() {
+    if (qi >= terms.length) {
+      document.getElementById('wvArea').innerHTML = `<div style="text-align:center;padding:32px;font-size:1.2rem;font-weight:700">${wvScore===wvTotal?'🎉 Perfect! ':''}${wvScore}/${wvTotal} correct!<br><button class="btn btn-primary" style="margin-top:16px" onclick="wvLoad()">Play Again</button></div>`;
+      document.getElementById('wvScore').textContent = 'Quiz complete!';
+      return;
+    }
+    const t = terms[qi];
+    const wrong = wvShuffle(terms.filter((_,i)=>i!==qi)).slice(0,3);
+    const opts = wvShuffle([t,...wrong]);
+    document.getElementById('wvArea').innerHTML =
+      `<div class="quiz-q">Which word means: <em>"${t.def.substring(0,120)}"</em></div>`
+      + `<div class="wv-quiz-opts">${opts.map(o=>`<button class="wv-quiz-opt" onclick="wvAns(this,'${o.term.replace(/'/g,"\'")}','${t.term.replace(/'/g,"\'")}')">${o.term}</button>`).join('')}</div>`;
+    document.getElementById('wvScore').textContent = `Question ${qi+1} of ${wvTotal}`;
+  }
+  window._wvNext = () => { qi++; showQ(); };
+  showQ();
+}
+
+function wvAns(btn, chosen, correct) {
+  document.querySelectorAll('.wv-quiz-opt').forEach(b => b.disabled = true);
+  if (chosen === correct) { btn.classList.add('correct'); wvScore++; }
+  else { btn.classList.add('wrong'); document.querySelectorAll('.wv-quiz-opt').forEach(b => { if(b.textContent===correct) b.classList.add('correct'); }); }
+  setTimeout(() => { if(window._wvNext) window._wvNext(); }, 900);
 }
 </script>
 </body>
