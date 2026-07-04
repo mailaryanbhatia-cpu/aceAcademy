@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>My Profile — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
+<link rel="manifest" href="/aceAcademy/manifest.json"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png"/>
+<script src="theme.js"></script>
+<script src="streak.js"></script>
+<script src="splash.js"></script>
+<style>
+body{font-family:var(--font);background:#0b1120;color:#e2e8f0;margin:0}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:#0f172a;border-bottom:1px solid #1e293b}
+.nav a{color:#e2e8f0;text-decoration:none;font-weight:700;font-size:1.1rem}
+.nav-links{display:flex;gap:14px;align-items:center}
+.nav-links a{color:#94a3b8;text-decoration:none;font-size:.88rem}.nav-links a:hover{color:#e2e8f0}
+.container{max-width:860px;margin:0 auto;padding:32px 20px}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#0f172a,#1e1b4b);border:1px solid #334155;border-radius:24px;padding:32px;display:flex;align-items:center;gap:28px;margin-bottom:24px;flex-wrap:wrap}
+.avatar{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:900;color:#fff;flex-shrink:0;border:3px solid #6366f1;cursor:pointer;position:relative;overflow:hidden}
+.avatar-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.hero-info{flex:1;min-width:0}
+.hero-name{font-size:1.7rem;font-weight:900;color:#e2e8f0;margin-bottom:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hero-sub{font-size:.88rem;color:#64748b;margin-bottom:12px}
+.edit-btn{background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:6px 16px;border-radius:99px;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s}
+.edit-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:16px;text-align:center;transition:border-color .2s;cursor:default}
+.stat-card:hover{border-color:#6366f1}
+.stat-num{font-size:1.9rem;font-weight:900;line-height:1}
+.stat-label{font-size:.72rem;color:#64748b;margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+
+/* Badges */
+.section{background:#0f172a;border:1px solid #1e293b;border-radius:16px;padding:22px;margin-bottom:18px}
+.section h2{margin:0 0 16px;font-size:.95rem;font-weight:800;color:#a5b4fc;display:flex;align-items:center;gap:8px}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.badge-card{border-radius:14px;padding:18px;text-align:center;border:1.5px solid}
+.badge-card.earned{cursor:default}
+.badge-card.locked{opacity:.35;filter:grayscale(1)}
+.badge-emoji{font-size:2.4rem;line-height:1;margin-bottom:8px}
+.badge-name{font-size:.82rem;font-weight:800;margin-bottom:3px}
+.badge-req{font-size:.72rem;color:#64748b}
+
+/* Subjects */
+.chip{display:inline-block;padding:5px 13px;border-radius:99px;border:1.5px solid #334155;background:#0f172a;color:#94a3b8;font-size:.78rem;font-weight:600;margin:4px}
+.chip.active{border-color:#6366f1;background:rgba(99,102,241,.12);color:#a5b4fc}
+
+/* Recent activity */
+.act-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #1e293b;font-size:.84rem}
+.act-row:last-child{border-bottom:none}
+.act-icon{font-size:1.1rem;flex-shrink:0}
+.act-text{flex:1;color:#e2e8f0}
+.act-time{color:#475569;font-size:.75rem}
+
+/* Edit modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal{background:#0f172a;border:1px solid #334155;border-radius:20px;padding:28px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.modal h3{margin:0 0 18px;font-size:1.1rem;font-weight:800;color:#e2e8f0}
+.m-label{font-size:.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;display:block}
+.m-input{width:100%;background:#0b1120;border:1px solid #334155;border-radius:9px;color:#e2e8f0;font-size:.9rem;padding:9px 13px;box-sizing:border-box;margin-bottom:14px;font-family:inherit}
+.m-input:focus{outline:none;border-color:#6366f1}
+.m-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.m-chip{padding:5px 12px;border-radius:99px;border:1.5px solid #334155;background:#0b1120;color:#64748b;font-size:.75rem;cursor:pointer;transition:all .2s}
+.m-chip.on{border-color:#6366f1;background:rgba(99,102,241,.15);color:#a5b4fc}
+.m-btns{display:flex;gap:10px;justify-content:flex-end}
+.m-save{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:9px 22px;border-radius:99px;font-weight:700;cursor:pointer;font-size:.88rem}
+.m-cancel{background:#1e293b;border:none;color:#94a3b8;padding:9px 18px;border-radius:99px;cursor:pointer;font-size:.88rem}
+
+/* Progress bars */
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.prog-label{width:110px;font-size:.8rem;color:#94a3b8;text-align:right;flex-shrink:0}
+.prog-track{flex:1;background:#1e293b;border-radius:99px;height:8px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px}
+.prog-val{width:38px;font-size:.75rem;color:#64748b;text-align:right}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html">🎓 aceAcademy</a>
+  <div class="nav-links">
+    <a href="digest.html">Digest</a>
+    <a href="progress.html">Progress</a>
+    <a href="alltools.html">All Tools</a>
+    <button onclick="toggleTheme()" style="background:none;border:none;cursor:pointer;font-size:1.1rem" id="themeToggle">☀️</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="avatar" id="avatarEl" onclick="document.getElementById('avatarInput').click()" title="Click to change photo">
+      <span id="avatarInitials">?</span>
+      <img id="avatarImg" class="avatar-img" style="display:none" src="" alt="avatar"/>
+    </div>
+    <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/>
+    <div class="hero-info">
+      <div class="hero-name">
+        <span id="displayName">Student</span>
+        <span id="topBadgeEl" style="font-size:1.4rem"></span>
+      </div>
+      <div class="hero-sub" id="heroSub">aceAcademy student</div>
+      <button class="edit-btn" onclick="openEditModal()">✏️ Edit Profile</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <!-- Badges -->
+  <div class="section">
+    <h2>🏆 Badges</h2>
+    <div class="badge-grid" id="badgeGrid"></div>
+  </div>
+
+  <!-- Subject progress -->
+  <div class="section">
+    <h2>📚 My Subjects</h2>
+    <div id="subjectsArea"></div>
+  </div>
+
+  <!-- Recent activity -->
+  <div class="section">
+    <h2>⚡ Recent Activity</h2>
+    <div id="activityList"></div>
+  </div>
+
+  <!-- Quick links -->
+  <div class="section">
+    <h2>🔗 Quick Links</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <a href="progress.html" style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">📈 Progress</a>
+      <a href="digest.html"   style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">📋 Weekly Digest</a>
+      <a href="goals.html"    style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">🎯 Goals</a>
+      <a href="flashcards.html" style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">🃏 Flashcards</a>
+      <a href="schedule-gen.html" style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">📅 Study Schedule</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- Edit modal -->
+<div class="modal-overlay" id="editModal" style="display:none" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <h3>✏️ Edit Profile</h3>
+    <label class="m-label">Your Name</label>
+    <input class="m-input" id="editName" placeholder="e.g. Alex" maxlength="40"/>
+    <label class="m-label">Grade</label>
+    <select class="m-input" id="editGrade">
+      <option value="">— Select grade —</option>
+      <option>9th Grade</option><option>10th Grade</option>
+      <option>11th Grade</option><option>12th Grade</option>
+      <option>College Freshman</option><option>Other</option>
+    </select>
+    <label class="m-label">My AP Subjects</label>
+    <div class="m-chips" id="editSubjectChips"></div>
+    <div class="m-btns">
+      <button class="m-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="m-save" onclick="saveProfile()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var ALL_SUBJECTS = ['AP Biology','AP Chemistry','AP Physics','AP Calculus AB','AP Calculus BC','AP Statistics','AP US History','AP World History','AP Gov & Politics','AP English Lang','AP English Lit','AP Psychology','AP Economics','AP Computer Science','AP Spanish','AP Art History','AP Environmental Science','AP Human Geography'];
+
+var BADGE_DEFS = [
+  { id:'bronze',  emoji:'🥉', name:'Bronze Scholar',  color:'#cd7f32', bg:'rgba(205,127,50,.12)',  req:'30-day streak',  days:30  },
+  { id:'silver',  emoji:'🥈', name:'Silver Scholar',  color:'#c0c0c0', bg:'rgba(192,192,192,.12)', req:'60-day streak',  days:60  },
+  { id:'gold',    emoji:'🥇', name:'Gold Scholar',    color:'#ffd700', bg:'rgba(255,215,0,.12)',   req:'90-day streak',  days:90  },
+  { id:'diamond', emoji:'💎', name:'Diamond Scholar', color:'#b9f2ff', bg:'rgba(185,242,255,.12)', req:'365-day streak', days:365 }
+];
+
+function loadProfile() {
+  var name     = localStorage.getItem('ace_profile_name') || '';
+  var grade    = localStorage.getItem('ace_profile_grade') || '';
+  var subjects = JSON.parse(localStorage.getItem('ace_subjects') || '[]');
+  var avatar   = localStorage.getItem('ace_avatar') || '';
+  var streak   = JSON.parse(localStorage.getItem('ace_login_streak') || '{"count":0}');
+  var badges   = JSON.parse(localStorage.getItem('ace_badges') || '[]');
+  var tests    = JSON.parse(localStorage.getItem('aceTestHistory') || '[]');
+  var decks    = JSON.parse(localStorage.getItem('ace_flashcards_v2') || '{}');
+  var goals    = JSON.parse(localStorage.getItem('ace_goals') || '[]');
+  var sessions = JSON.parse(localStorage.getItem('ace_reading_sessions') || '[]');
+
+  // Avatar
+  if (avatar) {
+    document.getElementById('avatarImg').src = avatar;
+    document.getElementById('avatarImg').style.display = 'block';
+    document.getElementById('avatarInitials').style.display = 'none';
+  } else {
+    var initials = name ? name.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase() : '🎓';
+    document.getElementById('avatarInitials').textContent = initials;
+  }
+
+  // Name + grade
+  document.getElementById('displayName').textContent = name || 'Student';
+  document.getElementById('heroSub').textContent = (grade ? grade + ' · ' : '') + 'aceAcademy student';
+
+  // Top badge
+  var topBadge = null;
+  ['diamond','gold','silver','bronze'].forEach(function(id){
+    if (!topBadge && badges.includes(id)) topBadge = BADGE_DEFS.find(function(b){ return b.id===id; });
+  });
+  document.getElementById('topBadgeEl').textContent = topBadge ? topBadge.emoji : '';
+
+  // Stats
+  var mastered = 0;
+  Object.values(decks).forEach(function(d){ if(d.cards) d.cards.forEach(function(c){ if(c.interval>=21) mastered++; }); });
+  var avgScore = tests.length ? Math.round(tests.reduce(function(a,t){ return a+(t.pct||0); },0)/tests.length) : 0;
+  var readMins = sessions.reduce(function(a,s){ return a+(s.minutes||0); },0);
+  var doneGoals = goals.filter(function(g){ return (g.progress||0)>=100; }).length;
+
+  var statsData = [
+    { num: streak.count||0,  label:'Day Streak 🔥', color:'#ef4444' },
+    { num: tests.length,     label:'Tests Taken',   color:'#6366f1' },
+    { num: avgScore+'%',     label:'Avg Score',     color:'#10b981' },
+    { num: mastered,         label:'Cards Mastered',color:'#f59e0b' },
+    { num: Math.round(readMins/60)+'h', label:'Reading Time', color:'#3b82f6' },
+    { num: doneGoals,        label:'Goals Done',    color:'#8b5cf6' }
+  ];
+  document.getElementById('statsGrid').innerHTML = statsData.map(function(s){
+    return '<div class="stat-card"><div class="stat-num" style="color:'+s.color+'">'+s.num+'</div><div class="stat-label">'+s.label+'</div></div>';
+  }).join('');
+
+  // Badges
+  document.getElementById('badgeGrid').innerHTML = BADGE_DEFS.map(function(b){
+    var got = badges.includes(b.id);
+    return '<div class="badge-card '+(got?'earned':'locked')+'" style="background:'+(got?b.bg:'#0f172a')+';border-color:'+(got?b.color:'#1e293b')+'">'
+      +'<div class="badge-emoji">'+b.emoji+'</div>'
+      +'<div class="badge-name" style="color:'+(got?b.color:'#475569')+'">'+b.name+'</div>'
+      +'<div class="badge-req">'+(got?'✅ Earned!':b.req)+'</div>'
+      +'</div>';
+  }).join('');
+
+  // Subjects
+  if (subjects.length === 0) {
+    document.getElementById('subjectsArea').innerHTML = '<div style="color:#475569;font-size:.85rem">No subjects selected. <button onclick="openEditModal()" style="background:none;border:none;color:#6366f1;cursor:pointer;font-size:.85rem;font-weight:700">Add subjects →</button></div>';
+  } else {
+    // Show subject score breakdown from test history
+    var subjectScores = {};
+    tests.forEach(function(t){ if(t.subject){ if(!subjectScores[t.subject]) subjectScores[t.subject]={total:0,count:0}; subjectScores[t.subject].total+=(t.pct||0); subjectScores[t.subject].count++; } });
+    document.getElementById('subjectsArea').innerHTML = subjects.map(function(s){
+      var sc = subjectScores[s];
+      var avg = sc ? Math.round(sc.total/sc.count) : null;
+      return '<div class="prog-row">'
+        +'<div class="prog-label">'+s.replace('AP ','')+'</div>'
+        +'<div class="prog-track"><div class="prog-fill" style="width:'+(avg||30)+'%;background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div></div>'
+        +'<div class="prog-val">'+(avg!==null?avg+'%':'—')+'</div>'
+        +'</div>';
+    }).join('');
+  }
+
+  // Recent activity (last 8 items)
+  var activities = [];
+  tests.slice(-5).forEach(function(t){ activities.push({ icon:'📝', text:(t.subject||'Test')+' — '+(t.pct||0)+'%', time: t.date ? new Date(t.date).toLocaleDateString() : '' }); });
+  sessions.slice(-3).forEach(function(s){ activities.push({ icon:'📚', text:'Read '+(s.book||'a book')+' for '+(s.minutes||0)+' min', time: s.date||'' }); });
+  activities = activities.slice(-8).reverse();
+  if (activities.length === 0) {
+    document.getElementById('activityList').innerHTML = '<div style="color:#475569;font-size:.85rem;text-align:center;padding:16px">No activity yet — start studying to see it here!</div>';
+  } else {
+    document.getElementById('activityList').innerHTML = activities.map(function(a){
+      return '<div class="act-row"><span class="act-icon">'+a.icon+'</span><span class="act-text">'+a.text+'</span><span class="act-time">'+a.time+'</span></div>';
+    }).join('');
+  }
+}
+
+function uploadAvatar(input) {
+  if (!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    localStorage.setItem('ace_avatar', e.target.result);
+    document.getElementById('avatarImg').src = e.target.result;
+    document.getElementById('avatarImg').style.display = 'block';
+    document.getElementById('avatarInitials').style.display = 'none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function openEditModal() {
+  var name     = localStorage.getItem('ace_profile_name') || '';
+  var grade    = localStorage.getItem('ace_profile_grade') || '';
+  var subjects = JSON.parse(localStorage.getItem('ace_subjects') || '[]');
+  document.getElementById('editName').value = name;
+  document.getElementById('editGrade').value = grade;
+  document.getElementById('editSubjectChips').innerHTML = ALL_SUBJECTS.map(function(s){
+    var on = subjects.includes(s) ? ' on' : '';
+    return '<div class="m-chip'+on+'" onclick="this.classList.toggle(\'on\')">'+s+'</div>';
+  }).join('');
+  document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+
+function saveProfile() {
+  var name = document.getElementById('editName').value.trim();
+  var grade = document.getElementById('editGrade').value;
+  var picked = Array.from(document.querySelectorAll('#editSubjectChips .m-chip.on')).map(function(c){ return c.textContent; });
+  if (name) localStorage.setItem('ace_profile_name', name);
+  if (grade) localStorage.setItem('ace_profile_grade', grade);
+  localStorage.setItem('ace_subjects', JSON.stringify(picked));
+  closeEditModal();
+  loadProfile();
+}
+
+loadProfile();
+</script>
+</body>
+</html>
