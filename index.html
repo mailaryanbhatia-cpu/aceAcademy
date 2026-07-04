@@ -386,17 +386,33 @@
 
   /* ── VOCAB GAME ── */
 /* ─── Ace Dock (right-side widget column) ─── */
-  #ace-dock{position:fixed;right:14px;bottom:18px;display:flex;flex-direction:column-reverse;align-items:center;gap:8px;z-index:9000}
-  .dock-btn{width:46px;height:46px;border-radius:14px;border:1.5px solid rgba(255,255,255,.08);background:rgba(15,23,42,.92);backdrop-filter:blur(10px);color:#e2e8f0;font-size:1.2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .15s,border-color .15s;box-shadow:0 4px 16px rgba(0,0,0,.35);position:relative}
-  .dock-btn:hover{transform:scale(1.08);border-color:#6366f1}
-  .dock-btn.running{background:linear-gradient(135deg,#ef4444,#f97316);border-color:#ef4444;animation:tpulse 1.5s infinite}
-  .dock-label{font-size:.48rem;font-weight:700;letter-spacing:.03em;color:#64748b;text-transform:uppercase;line-height:1}
-  .dock-divider{width:30px;height:1px;background:#1e293b;margin:2px 0}
-  .dock-badge-slot{width:100%;display:flex;justify-content:center}
-  /* Override streak + coin badges to sit in dock */
-  #ace-streak-badge{position:static!important;box-shadow:none!important;width:46px;height:46px;border-radius:14px!important;padding:0!important;flex-direction:column!important;gap:1px!important;font-size:.9rem!important;justify-content:center}
-  #ace-streak-badge .dock-label-inner{font-size:.48rem;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.03em;text-transform:uppercase}
-  #ace-coin-badge{position:static!important;box-shadow:none!important;width:46px;height:46px;border-radius:14px!important;padding:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;font-size:.9rem!important}
+  #ace-dock{
+    position:fixed;right:14px;bottom:18px;
+    display:flex;flex-direction:column-reverse;align-items:stretch;
+    gap:6px;z-index:9000;
+    background:rgba(10,16,28,.85);backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.07);border-radius:18px;
+    padding:8px 6px;box-shadow:0 8px 32px rgba(0,0,0,.45);
+    width:58px;
+  }
+  .dock-btn{
+    width:46px;height:46px;border-radius:12px;
+    border:1.5px solid rgba(255,255,255,.06);
+    background:rgba(30,41,59,.9);
+    color:#e2e8f0;font-size:1.15rem;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    transition:transform .15s,background .15s,border-color .15s;
+    flex-shrink:0;
+  }
+  .dock-btn:hover{transform:scale(1.06);border-color:#6366f1;background:rgba(99,102,241,.18)}
+  .dock-btn.running{background:linear-gradient(135deg,#ef4444,#f97316)!important;border-color:#ef4444;animation:tpulse 1.5s infinite}
+  .dock-label{font-size:.45rem;font-weight:700;letter-spacing:.04em;color:#475569;text-transform:uppercase;line-height:1;margin-top:1px}
+  .dock-divider{width:36px;height:1px;background:rgba(255,255,255,.07);margin:2px auto;flex-shrink:0}
+  .dock-badge-slot{width:46px;flex-shrink:0;min-height:0;display:flex;align-items:center;justify-content:center}
+  .dock-badge-slot:empty{display:none}
+  .dock-label-inner{font-size:.45rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1;margin-top:1px}
+  /* Prevent badges from escaping the dock */
+  #ace-streak-badge,#ace-coin-badge{position:static!important;bottom:auto!important;right:auto!important;top:auto!important;left:auto!important}
 
   .vg-fab { position:fixed; bottom:24px; right:24px; width:48px; height:48px; border-radius:50%;
     background:var(--accent); color:#fff; border:none; font-size:1.3rem; cursor:pointer;
@@ -3124,15 +3140,29 @@ function srchKey(e){
 </script>
 
 <script>
-// Move streak + coin badges into dock slots once they appear
 function moveBadgesToDock(){
   var streakBadge = document.getElementById('ace-streak-badge');
   var coinBadge   = document.getElementById('ace-coin-badge');
   var streakSlot  = document.getElementById('dock-streak-slot');
   var coinSlot    = document.getElementById('dock-coins-slot');
+
   if(streakBadge && streakSlot && !streakSlot.contains(streakBadge)){
     streakSlot.appendChild(streakBadge);
-    // Add tiny sub-label
+    // Reset ALL inline position styles so the dock flex layout controls placement
+    streakBadge.style.position = 'static';
+    streakBadge.style.bottom   = '';
+    streakBadge.style.right    = '';
+    streakBadge.style.top      = '';
+    streakBadge.style.left     = '';
+    streakBadge.style.zIndex   = '';
+    streakBadge.style.borderRadius = '14px';
+    streakBadge.style.width    = '46px';
+    streakBadge.style.height   = '46px';
+    streakBadge.style.padding  = '0';
+    streakBadge.style.flexDirection = 'column';
+    streakBadge.style.gap      = '1px';
+    streakBadge.style.fontSize = '.85rem';
+    streakBadge.style.justifyContent = 'center';
     if(!streakBadge.querySelector('.dock-label-inner')){
       var lbl=document.createElement('span');
       lbl.className='dock-label-inner';
@@ -3140,19 +3170,41 @@ function moveBadgesToDock(){
       streakBadge.appendChild(lbl);
     }
   }
+
   if(coinBadge && coinSlot && !coinSlot.contains(coinBadge)){
     coinSlot.appendChild(coinBadge);
+    coinBadge.style.position = 'static';
+    coinBadge.style.bottom   = '';
+    coinBadge.style.right    = '';
+    coinBadge.style.top      = '';
+    coinBadge.style.left     = '';
+    coinBadge.style.zIndex   = '';
+    coinBadge.style.borderRadius = '14px';
+    coinBadge.style.width    = '46px';
+    coinBadge.style.height   = '46px';
+    coinBadge.style.padding  = '0';
+    coinBadge.style.display  = 'flex';
+    coinBadge.style.flexDirection = 'column';
+    coinBadge.style.alignItems    = 'center';
+    coinBadge.style.justifyContent= 'center';
+    coinBadge.style.gap      = '1px';
+    coinBadge.style.fontSize = '.85rem';
+    if(!coinBadge.querySelector('.dock-label-inner')){
+      var lbl2=document.createElement('span');
+      lbl2.className='dock-label-inner';
+      lbl2.textContent='coins';
+      lbl2.style.cssText='font-size:.48rem;font-weight:700;letter-spacing:.03em;color:rgba(28,25,23,.75);text-transform:uppercase;line-height:1';
+      coinBadge.appendChild(lbl2);
+    }
   }
 }
-// Poll until both badges are injected by their scripts
 var _dockPoll = setInterval(function(){
   var s=document.getElementById('ace-streak-badge');
   var c=document.getElementById('ace-coin-badge');
   if(s||c){ moveBadgesToDock(); }
   if(s&&c){ clearInterval(_dockPoll); }
-},300);
-// Also run after a longer delay as fallback
-setTimeout(moveBadgesToDock, 3000);
+}, 200);
+setTimeout(moveBadgesToDock, 4000);
 </script>
 </body></html>';
   const w = window.open('', '_blank');
