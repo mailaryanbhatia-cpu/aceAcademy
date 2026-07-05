@@ -67,7 +67,6 @@ canvas{width:100%!important}
     <div class="tab" onclick="switchTab('predictions')">🔮 Predictions</div>
     <div class="tab" onclick="switchTab('weaknesses')">⚡ Weaknesses</div>
     <div class="tab" onclick="switchTab('habits')">🔁 Habit Correlation</div>
-    <div class="tab" onclick="switchTab('aicoach')">✦ AI Coach</div>
   </div>
 
   <!-- Score Trends -->
@@ -113,23 +112,9 @@ canvas{width:100%!important}
     </div>
   </div>
 
-  <!-- AI Coach -->
-  <div class="tab-panel" id="tab-aicoach">
-    <div class="section-card">
-      <div class="section-title">✦ AI Performance Coach <span id="aiBadge"></span></div>
-      <p style="font-size:.82rem;color:#64748b;margin:0 0 16px">Claude analyzes your actual data and gives you a personalized improvement plan.</p>
-      <div class="ai-insight">
-        <div id="aiCoachOut" class="ai-out">Click "Get My Plan" to generate a personalized analysis based on your scores, habits, and weak spots.</div>
-      </div>
-      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-        <button class="btn btn-accent" onclick="getAIPlan()">✦ Get My Plan</button>
-        <button class="btn btn-outline" onclick="getAIWeeklyGoals()">📋 Set Weekly Goals</button>
-      </div>
-    </div>
   </div>
 </div>
 
-<script src="/aceAcademy/claude-api.js"></script>
 <script src="/aceAcademy/analytics.js"></script>
 <script>
 // ── Data loading ──────────────────────────────────────────────────────────────
@@ -143,7 +128,7 @@ var essays   = JSON.parse(localStorage.getItem('ace_essay_history')  || '[]');
 
 // ── Tabs ─────────────────────────────────────────────────────────────────────
 function switchTab(id){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active', ['trends','predictions','weaknesses','habits','aicoach'][i]===id));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active', ['trends','predictions','weaknesses','habits'][i]===id));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
 }
@@ -380,73 +365,3 @@ function renderHabits(){
   document.getElementById('activityHeatmap').innerHTML = heatHtml;
 }
 
-// ── AI Coach ──────────────────────────────────────────────────────────────────
-function buildDataSummary(){
-  var subjects = [...new Set(tests.map(t=>t.subject).filter(Boolean))];
-  var subSummary = subjects.map(s=>{
-    var st = tests.filter(t=>t.subject===s);
-    var avg = Math.round(st.reduce((a,t)=>a+(t.pct||0),0)/st.length);
-    var recent = st.slice(-3).map(t=>t.pct+'%').join(', ');
-    return `- ${s}: avg ${avg}%, recent: ${recent}`;
-  }).join('\n');
-  return `Tests taken: ${tests.length}\nLogin streak: ${streak.count||0} days\nSubject breakdown:\n${subSummary || '(no test data)'}\nMistakes logged: ${mistakes.length}\nGoals completed: ${goals.filter(g=>(g.progress||0)>=100).length}`;
-}
-
-async function getAIPlan(){
-  var out = document.getElementById('aiCoachOut');
-  out.textContent = '✦ Analyzing your performance data…';
-  var summary = buildDataSummary();
-  var prompt = `You are an expert AP exam coach. Analyze this student's real performance data:
-
-${summary}
-
-Give a personalized improvement plan with:
-
-PERFORMANCE SUMMARY: [2 sentences on where they stand]
-
-TOP PRIORITY: [the single most important thing to work on right now]
-
-WEEKLY PLAN:
-• Monday-Tuesday: [specific action]
-• Wednesday-Thursday: [specific action]  
-• Friday-Sunday: [specific action]
-
-SCORE PROJECTION: [if they follow this plan, what score improvement in 30 days]
-
-MOTIVATION: [1 encouraging sentence specific to their data]`;
-
-  try {
-    await aceAI.run(async()=>{
-      out.textContent='';
-      await aceAI.stream(prompt,'You are a motivating but honest AP exam coach.',900,(chunk,full)=>{out.textContent=full;});
-    });
-  } catch(e){ out.textContent='Error: '+e.message; }
-}
-
-async function getAIWeeklyGoals(){
-  var out = document.getElementById('aiCoachOut');
-  out.textContent = '✦ Generating your weekly goals…';
-  var summary = buildDataSummary();
-  var prompt = `Based on this student's data:\n${summary}\n\nCreate 5 specific, achievable weekly goals in this format:\n\nGOAL 1: [action] by [day]\nGOAL 2: ...\n...\n\nThen add:\nSUCCESS METRIC: [how they'll know they hit their goals this week]`;
-  try {
-    await aceAI.run(async()=>{
-      out.textContent='';
-      await aceAI.stream(prompt,'You are a concise, practical study coach.',600,(chunk,full)=>{out.textContent=full;});
-    });
-  } catch(e){ out.textContent='Error: '+e.message; }
-}
-
-// ── Init ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded',()=>{
-  renderSummary();
-  renderTrends();
-  renderPredictions();
-  renderWeaknesses();
-  renderHabits();
-  if(typeof aceAI!=='undefined') document.getElementById('aiBadge').innerHTML=aceAI.badge();
-});
-window.addEventListener('resize', renderTrends);
-</script>
-<script src="/aceAcademy/onboarding.js"></script>
-</body>
-</html>

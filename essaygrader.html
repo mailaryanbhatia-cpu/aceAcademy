@@ -60,7 +60,6 @@ textarea.essay-ta:focus{border-color:var(--accent)}
 <script src="/aceAcademy/streak.js"></script><script src="/aceAcademy/sounds.js"></script>
 <script src="/aceAcademy/coins.js"></script><script src="/aceAcademy/nav-profile.js"></script>
 <script src="/aceAcademy/splash.js"></script><script src="/aceAcademy/timer.js"></script>
-<script src="/aceAcademy/claude-api.js"></script>
 <script src="/aceAcademy/analytics.js"></script>
 </head>
 <body>
@@ -104,22 +103,15 @@ textarea.essay-ta:focus{border-color:var(--accent)}
     <br>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
       <button class="ace-btn" onclick="gradeEssay()">📊 Quick Grade</button>
-      <button class="ace-btn" id="aiGradeBtn" onclick="aiGradeEssay()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">✦ AI Grade</button>
+      
       <button class="ace-btn-ghost" onclick="clearEssay()">🗑 Clear</button>
     </div>
   </div>
   
-  <!-- AI Result -->
-  <div id="aiResult" style="display:none">
-    <div style="background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1));border:1.5px solid rgba(99,102,241,.4);border-radius:14px;padding:22px;margin-bottom:18px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-        <span style="font-size:1rem;font-weight:800">✦ AI Feedback</span>
-        <span style="font-size:.72rem;font-weight:700;color:var(--accent);opacity:.8;padding:3px 10px;border:1px solid rgba(99,102,241,.4);border-radius:20px">Claude AI</span>
-        <div id="aiGradeChip" style="margin-left:auto;font-size:1.6rem;font-weight:900;color:#e2e8f0"></div>
-      </div>
-      <div id="aiOutput" style="font-size:.9rem;line-height:1.8;color:#cbd5e1;white-space:pre-wrap"></div>
+  </div>
+      
       <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(99,102,241,.2);display:flex;gap:10px;flex-wrap:wrap">
-        <button class="ace-btn-ghost" onclick="aiGradeEssay()">🔄 Re-grade with AI</button>
+        
         <button class="ace-btn-ghost" onclick="document.getElementById('aiResult').style.display='none'">✕ Hide</button>
       </div>
     </div>
@@ -274,76 +266,3 @@ function gradeEssay(){
 }
 
 // ── Claude AI Essay Grading ─────────────────────────────────────────────────
-async function aiGradeEssay(){
-  const text = document.getElementById('essayText').value.trim();
-  if(text.length < 50){ alert('Please paste a longer essay first.'); return; }
-
-  const grade = document.getElementById('grade').value;
-  const subject = document.getElementById('subject').value;
-  const words = text.split(/\s+/).length;
-
-  const btn = document.getElementById('aiGradeBtn');
-  btn.disabled = true;
-  btn.textContent = '✦ Grading...';
-
-  const outEl = document.getElementById('aiOutput');
-  const resultCard = document.getElementById('aiResult');
-  outEl.textContent = '';
-  resultCard.style.display = 'block';
-  resultCard.scrollIntoView({behavior:'smooth', block:'start'});
-
-  const systemPrompt = `You are an expert writing teacher who grades essays with specific, actionable feedback. You grade honestly — not harshly, not leniently.`;
-
-  const userPrompt = `Grade this ${essayType} essay written for ${subject} at the Grade ${grade} level. The essay is ${words} words.
-
-ESSAY:
-${text}
-
-Provide your response in this EXACT format:
-
-LETTER GRADE: [A/B/C/D/F with +/- as appropriate]
-SCORE: [number]/100
-
-STRENGTHS:
-• [specific strength with example from the essay]
-• [specific strength with example from the essay]
-
-AREAS TO IMPROVE:
-• [specific issue with how to fix it]
-• [specific issue with how to fix it]
-• [specific issue with how to fix it]
-
-THESIS QUALITY: [1-2 sentences evaluating the thesis specifically]
-
-EVIDENCE & ANALYSIS: [1-2 sentences on how well evidence is used]
-
-FINAL COMMENT: [1 encouraging, specific sentence about what would most improve this essay]`;
-
-  try {
-    await aceAI.run(async () => {
-      await aceAI.stream(userPrompt, systemPrompt, 1000, (chunk, full) => {
-        outEl.textContent = full;
-        // Extract grade for chip
-        const gradeMatch = full.match(/LETTER GRADE:\s*([A-F][+-]?)/);
-        if(gradeMatch) document.getElementById('aiGradeChip').textContent = gradeMatch[1];
-      });
-    });
-    saveSettings();
-    const words2 = document.getElementById('essayText').value.trim().split(/\s+/).length;
-    const gradeMatch = outEl.textContent.match(/LETTER GRADE:\s*([A-F][+-]?)/);
-    const scoreMatch = outEl.textContent.match(/SCORE:\s*(\d+)/);
-    if(gradeMatch && scoreMatch){
-      saveToHistory(parseInt(scoreMatch[1]), gradeMatch[1], essayType, words2);
-    }
-  } catch(e) {
-    outEl.textContent = 'Error: ' + e.message;
-  }
-
-  btn.disabled = false;
-  btn.textContent = '✦ AI Grade';
-}
-
-</script>
-<script src="/aceAcademy/onboarding.js"></script>
-</body>
-</html>

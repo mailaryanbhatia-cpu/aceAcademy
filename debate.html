@@ -87,7 +87,6 @@ body{font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--text);mi
   <script src="/aceAcademy/nav-profile.js"></script>
   <script src="/aceAcademy/splash.js"></script>
 <script src="/aceAcademy/timer.js"></script>
-<script src="/aceAcademy/claude-api.js"></script>
 <script src="/aceAcademy/analytics.js"></script>
 </head>
 <body>
@@ -195,14 +194,7 @@ body{font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--text);mi
 
     <!-- Scoring -->
     
-    <!-- AI Coach Panel -->
-    <div id="aiCoachPanel" style="display:none;background:rgba(99,102,241,.07);border:1.5px solid rgba(99,102,241,.35);border-radius:14px;padding:18px;margin-bottom:20px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-        <span style="font-size:.95rem;font-weight:800">✦ AI Coach</span>
-        <span style="font-size:.7rem;color:var(--accent);border:1px solid rgba(99,102,241,.4);padding:2px 8px;border-radius:20px;font-weight:700">Claude AI</span>
-        <button onclick="document.getElementById('aiCoachPanel').style.display='none'" style="margin-left:auto;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:1rem">✕</button>
-      </div>
-      <div id="aiCoachOutput" style="font-size:.88rem;line-height:1.8;color:#cbd5e1;white-space:pre-wrap"></div>
+          <div id="aiCoachOutput" style="font-size:.88rem;line-height:1.8;color:#cbd5e1;white-space:pre-wrap"></div>
     </div>
     <div class="card" id="scoringCard" style="display:none">
       <div class="card-title">⭐ Score Your Performance</div>
@@ -471,132 +463,3 @@ function endDebate(){
 window.addEventListener('DOMContentLoaded',()=>renderDebateHistory());
 
 
-// ── Claude AI Debate Coach ────────────────────────────────────────────────────
-async function aiSuggestArguments(){
-  if(!state.topic){ alert('Start a debate first.'); return; }
-  const side = document.getElementById('sideSel')?.value || 'pro';
-  const phase = PHASES[state.phase];
-
-  const panel = document.getElementById('aiCoachPanel');
-  const out   = document.getElementById('aiCoachOutput');
-  panel.style.display = 'block';
-  out.textContent = '✦ Generating argument suggestions…';
-  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
-
-  const prompt = `You are a competitive debate coach. A student is preparing their ${phase} arguing ${side === 'pro' ? 'FOR' : 'AGAINST'} the following topic:
-
-"${state.topic.title}"
-
-Provide 4 strong, specific arguments they should make. For each argument include:
-- A clear claim (1 sentence)
-- 1 piece of supporting evidence or example
-- A brief explanation of why it matters
-
-Format each as:
-ARGUMENT [N]: [claim]
-Evidence: [evidence]
-Impact: [why it matters]`;
-
-  try {
-    await aceAI.run(async ()=>{
-      out.textContent = '';
-      await aceAI.stream(prompt, 'You are a competitive debate coach giving practical, specific advice.', 800, (chunk, full)=>{
-        out.textContent = full;
-      });
-    });
-  } catch(e) {
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-async function aiCounterArgument(){
-  if(!state.topic){ alert('Start a debate first.'); return; }
-  const side = document.getElementById('sideSel')?.value || 'pro';
-
-  const panel = document.getElementById('aiCoachPanel');
-  const out   = document.getElementById('aiCoachOutput');
-  panel.style.display = 'block';
-  out.textContent = '✦ Anticipating counterarguments…';
-  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
-
-  const oppSide = side === 'pro' ? 'against' : 'in favor of';
-
-  const prompt = `You are a competitive debate coach. A student is arguing ${side === 'pro' ? 'FOR' : 'AGAINST'} this topic:
-
-"${state.topic.title}"
-
-List the 3 strongest counterarguments their opponent will likely make, and for each provide a rebuttal strategy.
-
-Format:
-COUNTERARGUMENT [N]: [what the opponent will say]
-How to rebut: [specific strategy to counter it]
-Key phrase to use: [a strong phrase to start the rebuttal]`;
-
-  try {
-    await aceAI.run(async ()=>{
-      out.textContent = '';
-      await aceAI.stream(prompt, 'You are a competitive debate coach.', 700, (chunk, full)=>{
-        out.textContent = full;
-      });
-    });
-  } catch(e) {
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-async function getAIDebateFeedback(){
-  const speechText = document.getElementById('speechText')?.value?.trim();
-  if(!speechText){ alert('Write your speech first, then get AI feedback.'); return; }
-  if(!state.topic){ alert('Start a debate first.'); return; }
-
-  const btn = document.getElementById('aiDebateBtn');
-  btn.disabled = true; btn.textContent = '✦ Analyzing...';
-
-  const panel = document.getElementById('aiCoachPanel');
-  const out   = document.getElementById('aiCoachOutput');
-  panel.style.display = 'block';
-  out.textContent = '✦ Claude is reading your speech…';
-  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
-
-  const side  = document.getElementById('sideSel')?.value || 'pro';
-  const phase = PHASES[state.phase];
-
-  const prompt = `You are a debate judge and coach. Evaluate this student's ${phase} on the topic "${state.topic.title}". They are arguing ${side === 'pro' ? 'FOR' : 'AGAINST'} the motion.
-
-SPEECH:
-${speechText}
-
-Provide specific, constructive feedback in this format:
-
-SCORE: [X]/10
-
-WHAT WORKED:
-• [specific strength with example from their speech]
-• [specific strength]
-
-WHAT TO IMPROVE:
-• [specific weakness with how to fix it]
-• [specific weakness with how to fix it]
-
-STRONGEST MOMENT: [quote or paraphrase the best part of their speech]
-
-COACH'S ADVICE: [1-2 sentences of the most important thing to work on]`;
-
-  try {
-    await aceAI.run(async ()=>{
-      out.textContent = '';
-      await aceAI.stream(prompt, 'You are an expert debate coach and judge.', 800, (chunk, full)=>{
-        out.textContent = full;
-      });
-    });
-  } catch(e) {
-    out.textContent = 'Error: ' + e.message;
-  }
-
-  btn.disabled = false; btn.textContent = '✦ AI Coach Feedback';
-}
-
-</script>
-<script src="/aceAcademy/onboarding.js"></script>
-</body>
-</html>
