@@ -2152,21 +2152,19 @@ if (document.readyState === 'loading') {
 
   function startTimer(){
     if(remaining<=0) resetTimer();
-    if(intervalId){ clearInterval(intervalId); intervalId=null; } // prevent interval stacking
+    if(intervalId){ clearInterval(intervalId); intervalId=null; }
     running=true;
+    // Save wall-clock anchor: startedAt + leftAtStart lets tick() compute remaining purely from clock
+    const startedAt = Date.now();
+    const leftAtStart = remaining;
+    try{ localStorage.setItem('ace_timer_state', JSON.stringify({
+      running:true, startedAt:startedAt, left:leftAtStart, total:total, mode:mode
+    })); }catch(e){}
     intervalId=setInterval(tick,1000);
     document.getElementById('timerStartBtn').textContent='⏸ Pause';
     document.getElementById('timerBtn').classList.add('running');
     document.getElementById('tpStatusText').textContent=mode==='work'?'Studying…':'Resting…';
     updateDisplay();
-    try{
-      const prev = JSON.parse(localStorage.getItem('ace_timer_state')||'{}');
-      // Preserve original startedAt so wall-clock is accurate across page loads
-      const startedAt = (prev.running && prev.startedAt) ? prev.startedAt : Date.now();
-      localStorage.setItem('ace_timer_state', JSON.stringify({
-        running:true, startedAt:startedAt, left:remaining, total:total, mode:mode
-      }));
-    }catch(e){}
   }
 
   function stopTimer(){
@@ -2191,11 +2189,13 @@ if (document.readyState === 'loading') {
   };
 
   function tick(){
-    remaining--;
-    // Sync remaining to localStorage so timer.js badge is current
+    // Wall-clock: compute remaining from startedAt so double-firing can't double-decrement
     try{
       const s=JSON.parse(localStorage.getItem('ace_timer_state')||'{}');
-      if(s.running){ s.left=remaining; localStorage.setItem('ace_timer_state',JSON.stringify(s)); }
+      if(s.running && s.startedAt){
+        const elapsed=Math.floor((Date.now()-s.startedAt)/1000);
+        remaining=Math.max(0,(s.left||0)-elapsed);
+      }
     }catch(e){}
     if(remaining<=0){
       remaining=0;
