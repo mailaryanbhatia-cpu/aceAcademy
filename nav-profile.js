@@ -20,21 +20,31 @@
     pill.href = '/aceAcademy/profile.html';
     pill.title = 'My Profile';
     pill.style.cssText = [
-      'display:inline-flex','align-items:center','gap:7px',
-      'background:#1e293b','border:1px solid #334155',
-      'border-radius:99px','padding:4px 12px 4px 4px',
+      'display:inline-flex','align-items:center','gap:8px',
+      'background:rgba(15,21,41,.8)','border:1px solid rgba(255,255,255,.09)',
+      'border-radius:99px','padding:5px 14px 5px 5px',
       'text-decoration:none','color:#e2e8f0',
-      'font-size:.8rem','font-weight:700',
-      'transition:border-color .2s',
+      'font-size:.78rem','font-weight:600',
+      'letter-spacing:.01em',
+      'transition:all .18s cubic-bezier(.4,0,.2,1)',
       'flex-shrink:0','white-space:nowrap',
-      'position:relative','z-index:100'
+      'position:relative','z-index:100',
+      'backdrop-filter:blur(12px)','-webkit-backdrop-filter:blur(12px)'
     ].join(';');
-    pill.onmouseenter = function(){ this.style.borderColor='#6366f1'; };
-    pill.onmouseleave = function(){ this.style.borderColor='#334155'; };
+    pill.onmouseenter = function(){
+      this.style.borderColor='rgba(129,140,248,.5)';
+      this.style.boxShadow='0 0 0 1px rgba(129,140,248,.2),0 4px 16px rgba(99,102,241,.25)';
+      this.style.background='rgba(99,102,241,.12)';
+    };
+    pill.onmouseleave = function(){
+      this.style.borderColor='rgba(255,255,255,.09)';
+      this.style.boxShadow='none';
+      this.style.background='rgba(15,21,41,.8)';
+    };
 
     // Avatar circle
     var av = document.createElement('div');
-    av.style.cssText = 'width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:#fff;overflow:hidden;flex-shrink:0';
+    av.style.cssText = 'width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:#fff;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 2px rgba(129,140,248,.3)';
     if (avatar) {
       var img = document.createElement('img');
       img.src = avatar;
