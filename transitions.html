@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Transition Word Bank — aceAcademy</title>
@@ -8,41 +9,41 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
-.logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
-.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
-.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55}
-.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
-.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
-.search-bar{padding:14px 24px;background:#080e1c;border-bottom:1px solid #2a3a55;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.search-input{flex:1;min-width:200px;padding:9px 14px;background:#111c32;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.9rem;font-family:inherit;outline:none;transition:.15s}
-.search-input:focus{border-color:#6366f1}
+.logo span{color:var(--accent)}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.nav-link.active{background:rgba(99,102,241,.18);color:var(--accent)}
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:var(--accent)}
+.hero p{color:var(--muted2);font-size:.83rem;margin-top:4px}
+.search-bar{padding:14px 24px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;padding:9px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:inherit;outline:none;transition:.15s}
+.search-input:focus{border-color:var(--accent2)}
 .search-input::placeholder{color:#4a5568}
-.cats-bar{padding:10px 20px;background:#080e1c;border-bottom:1px solid #2a3a55;display:flex;gap:6px;flex-wrap:wrap}
-.cat-chip{padding:5px 13px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.cats-bar{padding:10px 20px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap}
+.cat-chip{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--muted2);font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .cat-chip.active{border-color:var(--cc);color:var(--cc);background:rgba(var(--cr),0.15)}
 .container{max-width:1000px;margin:0 auto;padding:24px 20px 60px}
 .section{margin-bottom:32px}
 .section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid}
 .section-title{font-size:1rem;font-weight:800}
-.section-sub{font-size:.75rem;color:#7a8fa8;font-weight:500}
+.section-sub{font-size:.75rem;color:var(--muted2);font-weight:500}
 .words-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
-.word-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:11px;padding:12px 14px;cursor:pointer;transition:.15s;position:relative}
-.word-card:hover{border-color:#6366f1;transform:translateY(-1px)}
+.word-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:11px;padding:12px 14px;cursor:pointer;transition:.15s;position:relative}
+.word-card:hover{border-color:var(--accent2);transform:translateY(-1px)}
 .word-card:active{transform:translateY(0)}
 .word-name{font-size:.88rem;font-weight:700;margin-bottom:4px}
-.word-example{font-size:.74rem;color:#7a8fa8;line-height:1.5;font-style:italic}
+.word-example{font-size:.74rem;color:var(--muted2);line-height:1.5;font-style:italic}
 .copied-badge{position:absolute;top:6px;right:8px;font-size:.65rem;font-weight:800;background:#10b981;color:#fff;padding:2px 6px;border-radius:6px;opacity:0;transition:.3s;pointer-events:none}
 .word-card.copied .copied-badge{opacity:1}
-.no-results{text-align:center;padding:60px 20px;color:#7a8fa8}
+.no-results{text-align:center;padding:60px 20px;color:var(--muted2)}
 .no-results-icon{font-size:2rem;margin-bottom:10px}
-.tip-bar{background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;padding:14px 18px;margin-bottom:24px;font-size:.82rem;color:#b8c4d8;line-height:1.6}
-.tip-bar strong{color:#a5b4fc}
+.tip-bar{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:24px;font-size:.82rem;color:#b8c4d8;line-height:1.6}
+.tip-bar strong{color:var(--accent)}
 </style>
 <script src="theme.js"></script>
   <link rel="manifest" href="/aceAcademy/manifest.json">
@@ -59,18 +60,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="transitions.html" class="nav-link active">🔗 Transitions</a>
-  <a href="grammar.html" class="nav-link">📖 Grammar</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
-  <a href="outline.html" class="nav-link">🗂 Outline</a>
-  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
-  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 <div class="hero">
   <h1>🔗 Transition <span>Word Bank</span></h1>
   <p>Click any word or phrase to copy it. Search by purpose or browse by category.</p>
@@ -79,7 +75,7 @@ nav.topnav::-webkit-scrollbar{display:none}
   <input class="search-input" id="searchInput" placeholder='Search transitions… e.g. "contrast", "furthermore", "however"' oninput="render()">
 </div>
 <div class="cats-bar" id="catBar"></div>
-<div class="container">
+<div class="ace-wrap">
   <div class="tip-bar"><strong>How to use:</strong> Click any transition to copy it to your clipboard. Use transitions to connect ideas clearly — but don't overuse them. Aim for one strong transition per paragraph, not one per sentence.</div>
   <div id="output"></div>
 </div>
@@ -237,7 +233,7 @@ let activeCat = 'all';
 
 function init() {
   const bar = document.getElementById('catBar');
-  bar.innerHTML = `<button class="cat-chip active" style="--cc:#a5b4fc;--cr:165,180,252" onclick="setCat('all',this)">All</button>` +
+  bar.innerHTML = `<button class="cat-chip active" style="--cc:var(--accent);--cr:165,180,252" onclick="setCat('all',this)">All</button>` +
     CATS.map(c =>
       `<button class="cat-chip" style="--cc:${c.color};--cr:${c.rgb}" onclick="setCat('${c.id}',this)">${c.label}</button>`
     ).join('');
@@ -266,7 +262,7 @@ function render() {
     if (!filtered.length) return;
     total += filtered.length;
     html += `
-      <div class="section">
+      <div class="ace-mb">
         <div class="section-header" style="border-color:${cat.color}">
           <span class="section-title" style="color:${cat.color}">${cat.label}</span>
           <span class="section-sub">${cat.desc}</span>

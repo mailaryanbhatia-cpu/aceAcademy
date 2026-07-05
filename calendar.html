@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>aceAcademy — Goal Planner</title>
@@ -13,7 +14,7 @@
 <script src="auth-guard.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* ── Layout ── */
 .page{display:flex;gap:0;min-height:calc(100vh - 60px)}
@@ -21,23 +22,23 @@ body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:#0b1120;colo
 /* ── Sidebar ── */
 .sidebar{width:280px;min-width:280px;background:#0f172a;border-right:1px solid #2a3a55;display:flex;flex-direction:column;position:sticky;top:60px;height:calc(100vh - 60px);overflow:hidden}
 .sidebar-header{padding:16px 18px 12px;border-bottom:1px solid #2a3a55}
-.sidebar-header h2{font-size:.95rem;font-weight:700;margin-bottom:10px;color:#e8edf5}
+.sidebar-header h2{font-size:.95rem;font-weight:700;margin-bottom:10px;color:var(--text)}
 .filter-row{display:flex;gap:5px;flex-wrap:wrap}
-.filter-btn{padding:3px 9px;border:1px solid #2a3a55;border-radius:20px;font-size:.72rem;background:none;cursor:pointer;color:#7a8fa8;transition:all .15s;font-family:inherit}
+.filter-btn{padding:3px 9px;border:1px solid #2a3a55;border-radius:20px;font-size:.72rem;background:none;cursor:pointer;color:var(--muted2);transition:all .15s;font-family:inherit}
 .filter-btn.active{background:#6366f1;color:#fff;border-color:#6366f1}
 .goals-list{flex:1;overflow-y:auto;padding:10px}
 .goal-item{background:#1a2540;border:1px solid #2a3a55;border-radius:8px;padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:box-shadow .15s;position:relative;border-left:4px solid #64748b}
 .goal-item:hover{box-shadow:0 2px 12px rgba(0,0,0,.35);border-color:#334466}
 .goal-item.done{opacity:.5}
 .goal-item.done .goal-title{text-decoration:line-through}
-.goal-title{font-size:.83rem;font-weight:600;margin-bottom:3px;padding-right:22px;color:#e8edf5}
-.goal-meta{font-size:.7rem;color:#7a8fa8;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.goal-title{font-size:.83rem;font-weight:600;margin-bottom:3px;padding-right:22px;color:var(--text)}
+.goal-meta{font-size:.7rem;color:var(--muted2);display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .goal-badge{padding:1px 6px;border-radius:10px;font-size:.66rem;font-weight:700;text-transform:uppercase;color:#fff}
 .goal-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border:2px solid #2a3a55;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;background:#1e2d45}
 .goal-check.checked{background:#6366f1;border-color:#6366f1;color:#fff}
 .goal-check svg{display:none}
 .goal-check.checked svg{display:block}
-.no-goals{text-align:center;color:#7a8fa8;font-size:.83rem;padding:28px 0}
+.no-goals{text-align:center;color:var(--muted2);font-size:.83rem;padding:28px 0}
 .add-goal-btn{margin:0 12px 12px;padding:10px;border:2px dashed #2a3a55;border-radius:8px;background:none;cursor:pointer;color:#6366f1;font-size:.83rem;font-weight:600;transition:all .15s;width:calc(100% - 24px);font-family:inherit}
 .add-goal-btn:hover{border-color:#6366f1;background:rgba(99,102,241,.1)}
 
@@ -46,9 +47,9 @@ main{flex:1;padding:24px 28px;overflow-y:auto;min-width:0}
 
 /* ── Year header ── */
 .year-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
-.year-header h1{font-size:1.6rem;font-weight:900;letter-spacing:-1px;color:#e8edf5;flex:1}
+.year-header h1{font-size:1.6rem;font-weight:900;letter-spacing:-1px;color:var(--text);flex:1}
 .year-nav{display:flex;gap:6px;align-items:center}
-.year-nav button{width:34px;height:34px;border:1px solid #2a3a55;border-radius:8px;background:#1a2540;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .15s;color:#e8edf5}
+.year-nav button{width:34px;height:34px;border:1px solid #2a3a55;border-radius:8px;background:#1a2540;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--text)}
 .year-nav button:hover{background:#6366f1;border-color:#6366f1}
 .this-year-btn{padding:6px 14px;border:1px solid #2a3a55;border-radius:8px;background:#1a2540;cursor:pointer;font-size:.8rem;font-weight:600;color:#a5b4fc;transition:all .15s;font-family:inherit}
 .this-year-btn:hover{background:#6366f1;border-color:#6366f1;color:#fff}
@@ -57,7 +58,7 @@ main{flex:1;padding:24px 28px;overflow-y:auto;min-width:0}
 .stats-row{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
 .stat-card{background:#1a2540;border:1px solid #2a3a55;border-radius:10px;padding:12px 16px;flex:1;min-width:100px}
 .stat-num{font-size:1.4rem;font-weight:900;color:#a5b4fc}
-.stat-label{font-size:.68rem;color:#7a8fa8;margin-top:2px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.stat-label{font-size:.68rem;color:var(--muted2);margin-top:2px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 
 /* ── Year grid: 4 cols × 3 rows of mini months ── */
 .year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
@@ -67,7 +68,7 @@ main{flex:1;padding:24px 28px;overflow-y:auto;min-width:0}
 .mini-month.current-month{border-color:#6366f1;box-shadow:0 0 0 1px #6366f1}
 .mini-month-header{padding:10px 12px 6px;background:#1e2d45;display:flex;align-items:center;justify-content:space-between}
 .mini-month-name{font-size:.78rem;font-weight:800;color:#a5b4fc;text-transform:uppercase;letter-spacing:.5px}
-.mini-month-count{font-size:.65rem;color:#7a8fa8;font-weight:600}
+.mini-month-count{font-size:.65rem;color:var(--muted2);font-weight:600}
 .mini-days-header{display:grid;grid-template-columns:repeat(7,1fr);padding:4px 6px 2px}
 .mini-day-name{text-align:center;font-size:.55rem;font-weight:700;color:#3d5070;text-transform:uppercase}
 .mini-cells{display:grid;grid-template-columns:repeat(7,1fr);padding:0 6px 8px;gap:1px}
@@ -87,13 +88,13 @@ main{flex:1;padding:24px 28px;overflow-y:auto;min-width:0}
 .modal{background:#1a2540;border:1px solid #2a3a55;border-radius:16px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.6);transform:translateY(16px);transition:transform .2s}
 .modal-overlay.open .modal{transform:translateY(0)}
 .modal-header{padding:20px 22px 0;display:flex;align-items:center;justify-content:space-between}
-.modal-header h3{font-size:1rem;font-weight:700;color:#e8edf5}
-.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:#7a8fa8;line-height:1;padding:4px;transition:color .15s}
-.modal-close:hover{color:#e8edf5}
+.modal-header h3{font-size:1rem;font-weight:700;color:var(--text)}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted2);line-height:1;padding:4px;transition:color .15s}
+.modal-close:hover{color:var(--text)}
 .modal-body{padding:18px 22px}
 .form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:.72rem;font-weight:700;color:#7a8fa8;margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px}
-.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid #2a3a55;border-radius:8px;padding:9px 12px;font-size:.88rem;outline:none;transition:border-color .15s,box-shadow .15s;font-family:inherit;background:#0f172a;color:#e8edf5}
+.form-group label{display:block;font-size:.72rem;font-weight:700;color:var(--muted2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid #2a3a55;border-radius:8px;padding:9px 12px;font-size:.88rem;outline:none;transition:border-color .15s,box-shadow .15s;font-family:inherit;background:#0f172a;color:var(--text)}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.2)}
 .form-group textarea{resize:vertical;min-height:64px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -111,7 +112,7 @@ main{flex:1;padding:24px 28px;overflow-y:auto;min-width:0}
 .btn-danger:hover{background:rgba(248,113,113,.25)}
 
 /* ── Tooltip for hovered day ── */
-.day-tooltip{position:fixed;background:#243352;border:1px solid #334466;border-radius:8px;padding:8px 12px;font-size:.75rem;color:#e8edf5;pointer-events:none;z-index:2000;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5);display:none}
+.day-tooltip{position:fixed;background:#243352;border:1px solid #334466;border-radius:8px;padding:8px 12px;font-size:.75rem;color:var(--text);pointer-events:none;z-index:2000;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5);display:none}
 .day-tooltip .tt-date{font-weight:700;color:#a5b4fc;margin-bottom:4px}
 .day-tooltip .tt-goal{color:#b0bdd0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
@@ -442,7 +443,7 @@ function showTooltip(e, dateStr, dayGoals) {
     dayGoals.slice(0, 4).forEach(g => {
       html += `<div class="tt-goal">${g.done ? '✓ ' : '• '}${escHtml(g.title)}</div>`;
     });
-    if (dayGoals.length > 4) html += `<div class="tt-goal" style="color:#7a8fa8">+${dayGoals.length-4} more</div>`;
+    if (dayGoals.length > 4) html += `<div class="tt-goal" style="color:var(--muted2)">+${dayGoals.length-4} more</div>`;
   }
   tooltip.innerHTML = html;
   tooltip.style.display = 'block';

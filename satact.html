@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>SAT/ACT Prep — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css"/>
 <link rel="stylesheet" href="ace-theme.css">
 <style>
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 nav.topnav .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px;white-space:nowrap;flex-shrink:0}
 nav.topnav .logo span{color:#a5b4fc}
@@ -143,20 +144,13 @@ h1{font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:4px}
 </style>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="tests.html" class="nav-link">✏️ Tests</a>
-  <a href="progress.html" class="nav-link">📊 Progress</a>
-  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
-  <a href="goals.html" class="nav-link">🎯 Goals</a>
-  <a href="satact.html" class="nav-link active">📝 SAT/ACT</a>
-  <a href="essay.html" class="nav-link">✍ Essay</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-  <a href="mathgen.html" class="nav-link">🔢 Math</a>
-  <a href="wordwall.html" class="nav-link">📖 Vocab</a>
-
-  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button></nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <main>
   <!-- HOME -->

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Annotated Bibliography — aceAcademy</title>
@@ -14,57 +15,57 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
 .logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
 .nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
 
 .hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
-.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+.hero p{color:var(--muted2);font-size:.83rem;margin-top:4px}
 .hero-btns{display:flex;gap:8px;flex-wrap:wrap}
 .btn{padding:8px 14px;border-radius:9px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
-.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:var(--muted2)}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
 .btn-success{background:rgba(16,185,129,.2);color:#6ee7b7;border:1.5px solid rgba(16,185,129,.3)}.btn-success:hover{background:rgba(16,185,129,.3)}
 
 /* Style bar */
-.style-bar{background:#080e1c;border-bottom:1px solid #2a3a55;padding:10px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.style-label{font-size:.72rem;font-weight:700;color:#7a8fa8}
+.style-bar{background:var(--bg);border-bottom:1px solid #2a3a55;padding:10px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.style-label{font-size:.72rem;font-weight:700;color:var(--muted2)}
 .style-chips{display:flex;gap:6px}
-.style-chip{padding:5px 13px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.style-chip{padding:5px 13px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:var(--muted2);font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .style-chip.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
-.title-input{flex:1;min-width:200px;max-width:350px;padding:7px 12px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.85rem;font-family:inherit;outline:none;font-weight:700;transition:.15s}
+.title-input{flex:1;min-width:200px;max-width:350px;padding:7px 12px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:var(--text);font-size:.85rem;font-family:inherit;outline:none;font-weight:700;transition:.15s}
 .title-input:focus{border-color:#6366f1}
 
 .container{max-width:860px;margin:0 auto;padding:24px 20px 60px}
 
 /* Add form */
 .add-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:22px;margin-bottom:24px}
-.form-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.form-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 @media(max-width:560px){.form-grid{grid-template-columns:1fr}}
-.field label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;display:block;margin-bottom:5px}
-.field input,.field select{width:100%;padding:8px 11px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.field label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);display:block;margin-bottom:5px}
+.field input,.field select{width:100%;padding:8px 11px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:var(--text);font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
 .field input:focus,.field select:focus{border-color:#6366f1}
 .field-full{margin-bottom:12px}
-.field-full label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;display:block;margin-bottom:5px}
-.field-full textarea{width:100%;padding:10px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;resize:vertical;line-height:1.6;transition:.15s}
+.field-full label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);display:block;margin-bottom:5px}
+.field-full textarea{width:100%;padding:10px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:8px;color:var(--text);font-size:.83rem;font-family:inherit;outline:none;resize:vertical;line-height:1.6;transition:.15s}
 .field-full textarea:focus{border-color:#6366f1}
-.anno-tip{font-size:.72rem;color:#7a8fa8;margin-top:4px;line-height:1.5}
+.anno-tip{font-size:.72rem;color:var(--muted2);margin-top:4px;line-height:1.5}
 .char-count{float:right;color:#a5b4fc;font-weight:700}
 
 /* Entry cards */
 .entry-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:20px;margin-bottom:14px}
-.entry-citation{font-size:.9rem;line-height:1.65;margin-bottom:12px;color:#e8edf5}
+.entry-citation{font-size:.9rem;line-height:1.65;margin-bottom:12px;color:var(--text)}
 .entry-citation em{font-style:italic}
 .entry-annotation{font-size:.85rem;color:#b8c4d8;line-height:1.7;padding:12px 14px;background:#0d1628;border-radius:9px;border-left:3px solid #6366f1;margin-bottom:12px}
 .entry-actions{display:flex;gap:8px;flex-wrap:wrap}
-.entry-btn{padding:5px 12px;border-radius:7px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.entry-btn{padding:5px 12px;border-radius:7px;border:1.5px solid #2a3a55;background:transparent;color:var(--muted2);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .entry-btn:hover{border-color:#6366f1;color:#a5b4fc}
 .entry-btn.danger:hover{border-color:#ef4444;color:#f87171}
 .entry-num{display:inline-block;width:24px;height:24px;border-radius:7px;background:rgba(99,102,241,.2);color:#a5b4fc;font-size:.75rem;font-weight:800;text-align:center;line-height:24px;margin-right:8px;flex-shrink:0}
@@ -77,14 +78,14 @@ nav.topnav::-webkit-scrollbar{display:none}
 .preview-entry .cit{font-family:Georgia,serif;text-indent:-2em;padding-left:2em}
 .preview-entry .ann{margin-top:8px;padding-left:2em;color:#333;font-family:Georgia,serif;font-size:.83rem}
 
-.empty{text-align:center;padding:40px;color:#7a8fa8;font-size:.88rem}
+.empty{text-align:center;padding:40px;color:var(--muted2);font-size:.88rem}
 .fetch-card{background:#0d1a30;border:1.5px solid #2a3a55;border-radius:16px;padding:18px 22px;margin-bottom:20px}
 .fetch-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.fetch-input{flex:1;min-width:220px;padding:9px 13px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.85rem;font-family:inherit;outline:none}
+.fetch-input{flex:1;min-width:220px;padding:9px 13px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:var(--text);font-size:.85rem;font-family:inherit;outline:none}
 .fetch-input:focus{border-color:#6366f1}
 .fetch-btn{padding:9px 16px;border-radius:9px;border:none;background:#6366f1;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
 .fetch-btn:hover{background:#5254d8}
-.fetch-status{font-size:.78rem;color:#7a8fa8;margin-top:8px}
+.fetch-status{font-size:.78rem;color:var(--muted2);margin-top:8px}
 .fetch-status.ok{color:#6ee7b7}.fetch-status.err{color:#f87171}
 .empty-icon{font-size:2rem;margin-bottom:10px}
 </style>
@@ -103,23 +104,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="annotatedbib.html" class="nav-link active">📚 Annot. Bib.</a>
-  <a href="citation.html" class="nav-link">📎 Citation</a>
-  <a href="research.html" class="nav-link">🔬 Research</a>
-  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
-  <a href="outline.html" class="nav-link">🗂 Outline</a>
-  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
-  <a href="venn.html" class="nav-link">⭕ Venn</a>
-  <a href="grammar.html" class="nav-link">📖 Grammar</a>
-  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
-  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
-  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="hero">
   <div>
@@ -146,7 +137,7 @@ nav.topnav::-webkit-scrollbar{display:none}
 
 <div class="container">
   <div class="fetch-card">
-    <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:12px">&#128279; Auto-Fill from URL or DOI</div>
+    <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:12px">&#128279; Auto-Fill from URL or DOI</div>
     <div class="fetch-row">
       <input class="fetch-input" id="fetchInput" placeholder="Paste URL, DOI (10.xxxx/...) or ISBN" onkeydown="if(event.key===&quot;Enter&quot;)fetchSource()">
       <button class="fetch-btn" onclick="fetchSource()">&#128269; Fetch Metadata</button>
@@ -167,7 +158,7 @@ nav.topnav::-webkit-scrollbar{display:none}
         </select>
       </div>
       <div class="field">
-        <label>Author(s) <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:#7a8fa8">Last, First</span></label>
+        <label>Author(s) <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted2)">Last, First</span></label>
         <input id="srcAuthor" placeholder="e.g. Smith, John; Jones, Mary">
       </div>
       <div class="field">
@@ -187,11 +178,11 @@ nav.topnav::-webkit-scrollbar{display:none}
         <input id="srcPage" placeholder="e.g. pp. 45–67 or Vol. 12(3)">
       </div>
       <div class="field" id="urlField">
-        <label>URL <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:#7a8fa8">(for websites)</span></label>
+        <label>URL <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted2)">(for websites)</span></label>
         <input id="srcUrl" placeholder="https://...">
       </div>
       <div class="field" id="dateField">
-        <label>Access Date <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:#7a8fa8">(websites)</span></label>
+        <label>Access Date <span style="font-size:.65rem;font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted2)">(websites)</span></label>
         <input id="srcAccess" placeholder="e.g. 30 June 2026">
       </div>
     </div>

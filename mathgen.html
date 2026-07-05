@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Math Practice Generator — aceAcademy</title>
@@ -72,28 +73,19 @@ select:focus,input:focus{border-color:var(--accent)}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-
-  <a href="tests.html" class="nav-link">✏️ Tests</a>
-  <a href="progress.html" class="nav-link">📊 Progress</a>
-  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
-  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
-  <a href="mathgen.html" class="nav-link active">🔢 Math Practice</a>
-  <a href="tools.html" class="nav-link">🧮 Calculator</a>
-  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
-  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
-  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 <div class="hero">
   <h1>🔢 Math Problem Generator</h1>
   <p>Unlimited practice problems — from basic arithmetic to calculus. Type your answer and check instantly.</p>
 </div>
-<div class="container">
-  <div class="card">
+<div class="ace-wrap">
+  <div class="ace-card">
     <div class="controls">
       <div class="field"><label>Topic</label>
         <select id="g-topic">
@@ -125,8 +117,8 @@ select:focus,input:focus{border-color:var(--accent)}
         </select>
       </div>
       <div style="display:flex;gap:8px;align-items:flex-end">
-        <button class="btn btn-primary" onclick="generate()">⚡ Generate</button>
-        <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
+        <button class="btn ace-btn-primary" onclick="generate()">⚡ Generate</button>
+        <button class="btn ace-btn-outline" onclick="window.print()">🖨 Print</button>
       </div>
     </div>
   </div>
@@ -234,7 +226,7 @@ function renderProblems(){
       <div class="q-text">${i+1}. ${p.q}</div>
       <div class="answer-row">
         <input type="text" id="ans${i}" placeholder="Your answer" onkeydown="if(event.key==='Enter')checkAnswer(${i})">
-        <button class="check-btn" onclick="checkAnswer(${i})">Check ✓</button>
+        <button class="check-ace-btn" onclick="checkAnswer(${i})">Check ✓</button>
       </div>
       <div class="feedback" id="fb${i}"></div>
     </div>`).join('');

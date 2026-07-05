@@ -1,0 +1,254 @@
+/* ═══════════════════════════════════════════════════════════════
+   aceAcademy — Shared Design System
+   Load this on every page for consistent look and feel.
+═══════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg:      #060b18;
+  --surface: #0d1526;
+  --surface2:#111827;
+  --border:  rgba(255,255,255,.07);
+  --accent:  #818cf8;
+  --accent2: #6366f1;
+  --text:    #e2e8f0;
+  --muted:   #475569;
+  --muted2:  #64748b;
+  --radius:  14px;
+  --radius-sm: 10px;
+  --font:    'Inter', system-ui, sans-serif;
+  --shadow:  0 4px 24px rgba(0,0,0,.4);
+  --glow:    0 0 0 1px rgba(129,140,248,.3), 0 4px 20px rgba(99,102,241,.25);
+  --transition: .18s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ══ HEADER ══════════════════════════════════════════════════ */
+.ace-header {
+  background: rgba(6,11,24,.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 62px;
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  box-shadow: 0 1px 0 rgba(255,255,255,.04), 0 4px 24px rgba(0,0,0,.3);
+}
+@media(max-width:700px) {
+  .ace-header { padding: 0 14px; gap: 10px; height: 56px; }
+}
+
+.ace-brand {
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  background: linear-gradient(135deg, #818cf8 0%, #a78bfa 60%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ace-nav-link {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: color var(--transition), background var(--transition);
+  white-space: nowrap;
+}
+.ace-nav-link:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.ace-nav-link.active { color: var(--accent); background: rgba(129,140,248,.1); }
+
+.ace-spacer { flex: 1; }
+
+/* ══ HERO BANNER ════════════════════════════════════════════ */
+.ace-hero {
+  background: linear-gradient(135deg,#060918 0%,#0d1a40 50%,#130a30 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 36px 24px;
+}
+@media(max-width:700px) { .ace-hero { padding: 20px 16px; } }
+.ace-hero h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: -.5px; margin-bottom: 6px; }
+.ace-hero h1 span { background: linear-gradient(135deg,#818cf8,#c084fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.ace-hero p { color: var(--muted2); font-size: .85rem; max-width: 600px; line-height: 1.6; }
+
+/* ══ WRAP ═══════════════════════════════════════════════════ */
+.ace-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+@media(max-width:700px) { .ace-wrap { padding: 18px 14px 80px; } }
+
+/* ══ CARDS ══════════════════════════════════════════════════ */
+.ace-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.ace-card:hover { border-color: rgba(129,140,248,.25); }
+.ace-card-glow:hover { box-shadow: var(--glow); }
+
+/* ══ BUTTONS ════════════════════════════════════════════════ */
+.ace-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--accent2);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 20px;
+  font-size: .85rem;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  text-decoration: none;
+}
+.ace-btn:hover { background: #4f46e5; transform: translateY(-1px); }
+
+.ace-btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted2);
+}
+.ace-btn-ghost:hover { border-color: var(--accent); color: var(--text); background: rgba(129,140,248,.07); transform: none; }
+
+.ace-btn-sm { padding: 6px 14px; font-size: .78rem; }
+
+/* ══ FORM ELEMENTS ══════════════════════════════════════════ */
+.ace-input, .ace-select, .ace-textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: .85rem;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  width: 100%;
+}
+.ace-input:focus, .ace-select:focus, .ace-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(129,140,248,.12);
+}
+.ace-input::placeholder, .ace-textarea::placeholder { color: var(--muted); }
+.ace-textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+
+/* ══ LABELS ═════════════════════════════════════════════════ */
+.ace-label {
+  display: block;
+  font-size: .71rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+
+/* ══ SECTION HEAD ═══════════════════════════════════════════ */
+.ace-section-head {
+  font-size: .71rem;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ace-section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ══ STAT CARDS ═════════════════════════════════════════════ */
+.ace-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 12px; }
+.ace-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.ace-stat-val { font-size: 1.6rem; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+.ace-stat-lbl { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+
+/* ══ CHIPS / BADGES ═════════════════════════════════════════ */
+.ace-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(129,140,248,.12);
+  border: 1px solid rgba(129,140,248,.2);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: .74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.ace-chip:hover, .ace-chip.active {
+  background: rgba(129,140,248,.25);
+  border-color: var(--accent);
+}
+
+/* ══ EMPTY STATE ════════════════════════════════════════════ */
+.ace-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.ace-empty-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
+.ace-empty p { font-size: .88rem; line-height: 1.6; }
+
+/* ══ MOBILE ═════════════════════════════════════════════════ */
+@media(max-width:700px) {
+  .ace-hero { padding: 18px 14px; }
+  .ace-hero h1 { font-size: 1.25rem; }
+  .ace-stats { grid-template-columns: repeat(2,1fr); }
+  .ace-card { padding: 16px; }
+  h1 { font-size: 1.3rem !important; }
+  h2 { font-size: 1.05rem !important; }
+}
+
+/* ══ UTILITY ════════════════════════════════════════════════ */
+.ace-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ace-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+@media(max-width:600px) { .ace-grid-2,.ace-grid-3 { grid-template-columns: 1fr; } }
+.ace-flex { display: flex; align-items: center; gap: 12px; }
+.ace-mb { margin-bottom: 20px; }
+.ace-mt { margin-top: 20px; }
+.text-accent { color: var(--accent); }
+.text-muted  { color: var(--muted); }
+.fw-900 { font-weight: 900; }

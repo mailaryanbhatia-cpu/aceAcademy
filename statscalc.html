@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Statistics Calculator — aceAcademy</title>
@@ -8,58 +9,58 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
-.logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
-.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
-.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55}
-.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
-.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+.logo span{color:var(--accent)}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.nav-link.active{background:rgba(99,102,241,.18);color:var(--accent)}
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:var(--accent)}
+.hero p{color:var(--muted2);font-size:.83rem;margin-top:4px}
 .container{max-width:860px;margin:0 auto;padding:24px 20px 60px}
-.input-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:22px;margin-bottom:22px}
-.input-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:8px;display:block}
-.data-input{width:100%;padding:12px 14px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.95rem;font-family:'Consolas',monospace;outline:none;transition:.15s;resize:vertical;min-height:70px}
-.data-input:focus{border-color:#6366f1}
+.input-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:22px;margin-bottom:22px}
+.input-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:8px;display:block}
+.data-input{width:100%;padding:12px 14px;background:#0d1628;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.95rem;font-family:'Consolas',monospace;outline:none;transition:.15s;resize:vertical;min-height:70px}
+.data-input:focus{border-color:var(--accent2)}
 .data-input::placeholder{color:#3d4f6a}
-.input-hint{font-size:.72rem;color:#7a8fa8;margin-top:6px}
+.input-hint{font-size:.72rem;color:var(--muted2);margin-top:6px}
 .btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 .btn{padding:9px 18px;border-radius:9px;border:none;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
-.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
-.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-primary{background:var(--accent2);color:#fff}.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted2)}.btn-ghost:hover{border-color:var(--accent2);color:var(--accent)}
 .samples{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.sample-btn{padding:4px 10px;border-radius:8px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
-.sample-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.sample-btn{padding:4px 10px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted2);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.sample-btn:hover{border-color:var(--accent2);color:var(--accent)}
 
 /* Results */
 .results{display:none}
 .results.show{display:block}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px}
-.stat-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;padding:14px 16px;text-align:center}
-.stat-value{font-size:1.4rem;font-weight:900;color:#a5b4fc;font-variant-numeric:tabular-nums}
-.stat-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-top:4px}
-.stat-card.highlight{border-color:#6366f1;background:rgba(99,102,241,.08)}
+.stat-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;text-align:center}
+.stat-value{font-size:1.4rem;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums}
+.stat-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-top:4px}
+.stat-card.highlight{border-color:var(--accent2);background:rgba(99,102,241,.08)}
 
 /* Sorted data */
-.section-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:10px}
-.sorted-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-family:'Consolas',monospace;font-size:.85rem;line-height:1.8;word-break:break-all;color:#b8c4d8}
-.sorted-card .q-mark{color:#6366f1;font-weight:800}
+.section-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:10px}
+.sorted-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:16px;font-family:'Consolas',monospace;font-size:.85rem;line-height:1.8;word-break:break-all;color:#b8c4d8}
+.sorted-card .q-mark{color:var(--accent2);font-weight:800}
 
 /* Box plot */
-.boxplot-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:20px;margin-bottom:16px}
+.boxplot-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
 .boxplot-card svg{width:100%;height:auto;display:block}
 
 /* Frequency table */
-.freq-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:16px 18px;margin-bottom:16px;overflow-x:auto}
+.freq-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px;overflow-x:auto}
 .freq-table{width:100%;border-collapse:collapse;font-size:.82rem}
-.freq-table th{text-align:left;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;padding:6px 12px;border-bottom:1px solid #2a3a55}
+.freq-table th{text-align:left;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);padding:6px 12px;border-bottom:1px solid var(--border)}
 .freq-table td{padding:7px 12px;border-bottom:1px solid #1a2a45;color:#b8c4d8}
 .freq-table tr:last-child td{border-bottom:none}
 .bar-cell{min-width:120px}
-.freq-bar{height:8px;border-radius:4px;background:#6366f1;transition:width .4s}
+.freq-bar{height:8px;border-radius:4px;background:var(--accent2);transition:width .4s}
 .error-msg{background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;color:#f87171;font-size:.85rem;margin-top:10px}
 </style>
 <script src="theme.js"></script>
@@ -77,37 +78,33 @@ nav.topnav::-webkit-scrollbar{display:none}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="statscalc.html" class="nav-link active">📊 Stats Calc</a>
-  <a href="equationsolver.html" class="nav-link">🔢 Equation Solver</a>
-  <a href="mathgen.html" class="nav-link">🧮 Math Gen</a>
-  <a href="tools.html" class="nav-link">🛠 Calculators</a>
-  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 <div class="hero">
   <h1>📊 Statistics <span>Calculator</span></h1>
   <p>Enter a dataset and instantly get mean, median, mode, standard deviation, IQR, quartiles, box plot, and frequency table.</p>
 </div>
-<div class="container">
+<div class="ace-wrap">
   <div class="input-card">
     <label class="input-label">Enter Your Data</label>
     <textarea class="data-input" id="dataInput" placeholder="Enter numbers separated by commas or spaces&#10;e.g.  12, 15, 11, 18, 14, 15, 9, 22, 15, 10"></textarea>
     <div class="input-hint">Separate values with commas, spaces, or newlines. Up to 500 values.</div>
     <div id="errMsg"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="calculate()">📊 Calculate</button>
-      <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+    <div class="ace-btn-row">
+      <button class="btn ace-btn-primary" onclick="calculate()">📊 Calculate</button>
+      <button class="btn ace-btn-ghost" onclick="clearAll()">✕ Clear</button>
     </div>
     <div class="samples">
-      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Sample datasets:</span>
-      <button class="sample-btn" onclick="loadSample('test')">Test Scores</button>
-      <button class="sample-btn" onclick="loadSample('heights')">Heights (cm)</button>
-      <button class="sample-btn" onclick="loadSample('temp')">Temperatures</button>
-      <button class="sample-btn" onclick="loadSample('random')">Random (n=20)</button>
+      <span style="font-size:.7rem;color:var(--muted2);align-self:center">Sample datasets:</span>
+      <button class="sample-ace-btn" onclick="loadSample('test')">Test Scores</button>
+      <button class="sample-ace-btn" onclick="loadSample('heights')">Heights (cm)</button>
+      <button class="sample-ace-btn" onclick="loadSample('temp')">Temperatures</button>
+      <button class="sample-ace-btn" onclick="loadSample('random')">Random (n=20)</button>
     </div>
   </div>
 
@@ -204,7 +201,7 @@ function calculate() {
   const marked = sorted.map((v,i) => {
     let cls = '';
     if (v === min || v === max) cls = ' style="color:#f87171;font-weight:700"';
-    else if (Math.abs(v - median) < 0.001) cls = ' style="color:#a5b4fc;font-weight:700"';
+    else if (Math.abs(v - median) < 0.001) cls = ' style="color:var(--accent);font-weight:700"';
     return `<span${cls}>${v}</span>`;
   });
   document.getElementById('sortedData').innerHTML = marked.join(' · ');
@@ -252,7 +249,7 @@ function renderBoxPlot(min, q1, med, q3, max, sorted) {
   let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
 
   // Axis line
-  svg += `<line x1="${PAD}" y1="${BY+BH/2+20}" x2="${W-PAD}" y2="${BY+BH/2+20}" stroke="#2a3a55" stroke-width="1.5"/>`;
+  svg += `<line x1="${PAD}" y1="${BY+BH/2+20}" x2="${W-PAD}" y2="${BY+BH/2+20}" stroke="var(--border)" stroke-width="1.5"/>`;
 
   // Tick marks and labels
   const ticks = 5;
@@ -271,10 +268,10 @@ function renderBoxPlot(min, q1, med, q3, max, sorted) {
 
   // IQR box
   const bx = sc(q1), bw = sc(q3)-sc(q1);
-  svg += `<rect x="${bx}" y="${BY}" width="${bw}" height="${BH}" rx="4" fill="rgba(99,102,241,0.25)" stroke="#6366f1" stroke-width="2"/>`;
+  svg += `<rect x="${bx}" y="${BY}" width="${bw}" height="${BH}" rx="4" fill="rgba(99,102,241,0.25)" stroke="var(--accent2)" stroke-width="2"/>`;
 
   // Median line
-  svg += `<line x1="${sc(med)}" y1="${BY}" x2="${sc(med)}" y2="${BY+BH}" stroke="#a5b4fc" stroke-width="2.5"/>`;
+  svg += `<line x1="${sc(med)}" y1="${BY}" x2="${sc(med)}" y2="${BY+BH}" stroke="var(--accent)" stroke-width="2.5"/>`;
 
   // Outlier dots
   outliers.forEach(v => {

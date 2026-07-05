@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>aceAcademy — Tests</title>
@@ -168,11 +169,11 @@ nav.topnav .logo span,nav.topnav a.logo span{color:#a5b4fc!important;}
 nav.topnav a.nav-link,nav.topnav a.back-link{display:inline-flex!important;align-items:center!important;gap:4px!important;text-decoration:none!important;padding:6px 11px!important;border-radius:8px!important;font-size:.75rem!important;font-weight:600!important;white-space:nowrap!important;color:#64748b!important;transition:all .18s cubic-bezier(.4,0,.2,1)!important;font-family:inherit!important;letter-spacing:.01em!important;}
 nav.topnav a.nav-link:hover,nav.topnav a.back-link:hover{background:rgba(255,255,255,.07)!important;color:#e2e8f0!important;}
 nav.topnav a.nav-link.active{background:rgba(99,102,241,.2)!important;color:#a5b4fc!important;box-shadow:inset 0 0 0 1px rgba(129,140,248,.2)!important;}
-nav.topnav .spacer,nav.topnav h1.nav-title{flex:1!important;color:#7a8fa8!important;font-size:.8rem!important;font-weight:500!important;}
-nav.topnav input,nav.topnav select{background:#111827!important;border:1px solid #2a3a55!important;color:#e8edf5!important;border-radius:6px!important;padding:5px 10px!important;font-size:.78rem!important;font-family:inherit!important;outline:none!important;}
+nav.topnav .spacer,nav.topnav h1.nav-title{flex:1!important;color:var(--muted2)!important;font-size:.8rem!important;font-weight:500!important;}
+nav.topnav input,nav.topnav select{background:#111827!important;border:1px solid #2a3a55!important;color:var(--text)!important;border-radius:6px!important;padding:5px 10px!important;font-size:.78rem!important;font-family:inherit!important;outline:none!important;}
 :root{--bg:#0b1120;--surface:#1a2540;--border:#2a3a55;--text:#e8edf5;--muted:#7a8fa8;--accent:#6366f1;--accent-light:rgba(99,102,241,0.18);}
 body{background:var(--bg);color:var(--text);}
-footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid #2a3a55!important;}
+footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1px solid #2a3a55!important;}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#334466;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#7a8fa8}
 </style>
 
@@ -213,46 +214,13 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 </style>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-
-  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
-  <a href="goals.html" class="nav-link">🎯 Goals</a>
-  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
-  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
-  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
-  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
-  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
-  <a href="outline.html" class="nav-link">🗂 Outline</a>
-  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
-  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
-  <a href="reading.html" class="nav-link">📄 Passages</a>
-  <a href="curriculum.html" class="nav-link">📚 Curriculum</a>
-  <a href="worksheets.html" class="nav-link">📄 Worksheets</a>
-  <a href="tests.html" class="nav-link active">✏️ Tests</a>
-  <a href="language.html" class="nav-link">🌏 Languages</a>
-  <a href="flashcards.html" style="text-decoration:none;margin-right:8px;padding:7px 14px;background:#7c3aed;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;white-space:nowrap;">🃏 Flashcards</a>
-  <a href="notebook.html" style="text-decoration:none;margin-right:8px;padding:7px 14px;background:#f59e0b;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;white-space:nowrap;">📁 Notebook</a>
-  <a href="calendar.html" style="text-decoration:none;margin-right:8px;padding:7px 14px;background:#0ea5e9;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;white-space:nowrap;">📅 Calendar</a>
-  <a href="progress.html" style="text-decoration:none;margin-right:8px;padding:7px 14px;background:#059669;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;white-space:nowrap;">📊 Progress</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-    <a href="essay.html" class="nav-link">📝 Essay</a>
-  <a href="formulas.html" class="nav-link">🔢 Formulas</a>
-  <a href="citation.html" class="nav-link">📖 Citations</a>
-  <a href="tools.html" class="nav-link">🔬 Tools</a>
-  <a href="assign.html" class="nav-link">📋 Assignments</a>
-  <a href="parent.html" class="nav-link">👪 Parent View</a>
-  <div class="spacer"></div>
-  <h1>Unit Tests</h1>
-
-  <a href="frq.html" class="nav-link">📝 FRQ</a>
-  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
-  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
-  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
-  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
-  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
-  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="grade-bar">
   <button class="grade-btn active" onclick="selectGrade(6,this)">Grade 6</button>
@@ -1006,13 +974,13 @@ document.getElementById('testWrap').addEventListener('input', updateProgress);
   font-size:.85rem;cursor:pointer;transition:all .15s;}
 .tp-start{background:#059669;color:#fff;}
 .tp-start:hover{background:#047857;}
-.tp-reset{background:#0b1120;color:#7a8fa8;}
+.tp-reset{background:var(--bg);color:var(--muted2);}
 .tp-reset:hover{background:#e2e8f0;}
 .tp-footer{background:#1e2d45;border-top:1px solid #e2e8f0;padding:10px 16px;
-  display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:#7a8fa8;}
+  display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:var(--muted2);}
 .tp-sessions{font-weight:700;color:#059669;}
 .tp-settings-row{display:flex;gap:8px;padding:0 16px 12px;align-items:center;}
-.tp-settings-row label{font-size:.72rem;color:#7a8fa8;font-weight:600;}
+.tp-settings-row label{font-size:.72rem;color:var(--muted2);font-weight:600;}
 .tp-num{width:52px;padding:5px 6px;border:1px solid #2a3a55;border-radius:7px;
   font-size:.82rem;font-weight:700;text-align:center;outline:none;}
 .tp-num:focus{border-color:#059669;}

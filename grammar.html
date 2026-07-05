@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Grammar Reference — aceAcademy</title>
@@ -8,28 +9,28 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
 .logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
 .nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
 
 .hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
-.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+.hero p{color:var(--muted2);font-size:.83rem;margin-top:4px}
 
-.search-bar{padding:14px 24px;background:#080e1c;border-bottom:1px solid #2a3a55;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.search-input{flex:1;min-width:200px;padding:9px 14px;background:#111c32;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.9rem;font-family:inherit;outline:none;transition:.15s}
+.search-bar{padding:14px 24px;background:var(--bg);border-bottom:1px solid #2a3a55;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;padding:9px 14px;background:#111c32;border:1.5px solid #2a3a55;border-radius:10px;color:var(--text);font-size:.9rem;font-family:inherit;outline:none;transition:.15s}
 .search-input:focus{border-color:#6366f1}
 .search-input::placeholder{color:#4a5568}
-.clear-btn{padding:8px 14px;border-radius:9px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.clear-btn{padding:8px 14px;border-radius:9px;border:1.5px solid #2a3a55;background:transparent;color:var(--muted2);font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .clear-btn:hover{border-color:#6366f1;color:#a5b4fc}
 
-.cats-bar{padding:10px 20px;background:#080e1c;border-bottom:1px solid #2a3a55;display:flex;gap:6px;flex-wrap:wrap}
-.cat-chip{padding:5px 13px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.cats-bar{padding:10px 20px;background:var(--bg);border-bottom:1px solid #2a3a55;display:flex;gap:6px;flex-wrap:wrap}
+.cat-chip{padding:5px 13px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:var(--muted2);font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .cat-chip.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
 
 .container{max-width:900px;margin:0 auto;padding:24px 20px 60px}
@@ -54,13 +55,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 .tag-pronoun{background:rgba(20,184,166,.2);color:#5eead4}
 .tag-modifier{background:rgba(249,115,22,.2);color:#fdba74}
 .tag-tense{background:rgba(132,204,22,.2);color:#bef264}
-.rule-chevron{color:#7a8fa8;font-size:.9rem;transition:.2s}
+.rule-chevron{color:var(--muted2);font-size:.9rem;transition:.2s}
 .rule-card.expanded .rule-chevron{transform:rotate(180deg)}
 
 .rule-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid #2a3a55}
 .rule-card.expanded .rule-body{display:block}
 .rule-desc{font-size:.86rem;color:#b8c4d8;line-height:1.7;margin-bottom:12px}
-.examples-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:8px}
+.examples-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:8px}
 .example-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
 @media(max-width:560px){.example-row{grid-template-columns:1fr}}
 .ex-box{padding:9px 12px;border-radius:9px;font-size:.82rem;font-family:Georgia,serif;line-height:1.5}
@@ -71,11 +72,11 @@ nav.topnav::-webkit-scrollbar{display:none}
 .rule-tip{margin-top:12px;padding:10px 12px;background:rgba(99,102,241,.1);border-radius:9px;font-size:.8rem;color:#a5b4fc;line-height:1.6}
 .rule-tip::before{content:'💡 Tip: ';font-weight:700}
 
-.no-results{text-align:center;padding:60px 20px;color:#7a8fa8;font-size:.9rem}
+.no-results{text-align:center;padding:60px 20px;color:var(--muted2);font-size:.9rem}
 .no-results-icon{font-size:2rem;margin-bottom:10px}
 
 .quick-ref{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:20px;margin-bottom:28px}
-.qr-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:14px}
+.qr-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:14px}
 .qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
 .qr-item{padding:9px 12px;background:#0d1628;border-radius:9px;font-size:.79rem;cursor:pointer;border:1.5px solid transparent;transition:.15s}
 .qr-item:hover{border-color:#6366f1;background:#131f38}
@@ -96,21 +97,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="grammar.html" class="nav-link active">📖 Grammar</a>
-  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
-  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
-  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
-  <a href="research.html" class="nav-link">🔬 Research</a>
-  <a href="venn.html" class="nav-link">⭕ Venn</a>
-  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
-  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
-  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="hero">
   <div>

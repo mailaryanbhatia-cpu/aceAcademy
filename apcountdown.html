@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AP Exam Countdown — aceAcademy</title>
@@ -112,28 +113,13 @@ input:focus,select:focus{border-color:var(--accent)}
 </style>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-
-  <a href="tests.html" class="nav-link">✏️ AP Tests</a>
-  <a href="progress.html" class="nav-link">📊 Progress</a>
-  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
-  <a href="goals.html" class="nav-link">🎯 Goals</a>
-  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
-  <a href="apcountdown.html" class="nav-link active">⏳ AP Countdown</a>
-  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
-  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-
-  <a href="frq.html" class="nav-link">📝 FRQ</a>
-  <a href="simulator.html" class="nav-link">🎯 Simulator</a>
-  <a href="gradebook.html" class="nav-link">📒 Grade Book</a>
-  <a href="labreport.html" class="nav-link">🧪 Lab Report</a>
-  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
-  <a href="collegeprep.html" class="nav-link">🎓 College Prep</a>
-  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
-  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 <div class="hero">
   <h1>⏳ AP Exam Countdown</h1>
   <p>Track every AP exam with a live countdown — know exactly how many days you have left.</p>

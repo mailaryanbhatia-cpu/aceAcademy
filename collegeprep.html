@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>College Prep Checklist — aceAcademy</title>
@@ -14,30 +15,30 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
 .logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
 .nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
 
 .hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:32px 40px 24px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
 .hero-text h1{font-size:1.7rem;font-weight:900}
 .hero-text h1 span{color:#a5b4fc}
-.hero-text p{color:#7a8fa8;font-size:.88rem;margin-top:4px}
+.hero-text p{color:var(--muted2);font-size:.88rem;margin-top:4px}
 .hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .progress-ring-wrap{display:flex;align-items:center;gap:12px}
-.progress-label{font-size:.78rem;color:#7a8fa8;font-weight:600}
+.progress-label{font-size:.78rem;color:var(--muted2);font-weight:600}
 .progress-pct{font-size:1.4rem;font-weight:900;color:#a5b4fc}
 
 /* Grade tabs */
 .grade-tabs{display:flex;gap:4px;padding:16px 40px;background:#0d1628;border-bottom:1px solid #2a3a55;overflow-x:auto}
-.grade-tab{padding:8px 18px;border-radius:10px;border:none;background:transparent;color:#7a8fa8;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
-.grade-tab:hover{background:rgba(255,255,255,.06);color:#e8edf5}
+.grade-tab{padding:8px 18px;border-radius:10px;border:none;background:transparent;color:var(--muted2);font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.grade-tab:hover{background:rgba(255,255,255,.06);color:var(--text)}
 .grade-tab.active{background:#6366f1;color:#fff}
-.tab-note{font-size:.72rem;color:#7a8fa8;padding-left:10px;align-self:center}
+.tab-note{font-size:.72rem;color:var(--muted2);padding-left:10px;align-self:center}
 
 .container{max-width:920px;margin:0 auto;padding:28px 24px 60px}
 @media(max-width:700px){.container{padding:18px 14px}.hero{padding:22px 18px 18px}.grade-tabs{padding:12px 14px}}
@@ -45,7 +46,7 @@ nav.topnav::-webkit-scrollbar{display:none}
 /* Section */
 .section{margin-bottom:28px}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.section-title{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;display:flex;align-items:center;gap:8px}
+.section-title{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);display:flex;align-items:center;gap:8px}
 .section-title::before{content:'';width:3px;height:14px;border-radius:2px;background:#6366f1}
 .section-count{font-size:.72rem;font-weight:700;color:#a5b4fc;background:rgba(99,102,241,.15);padding:2px 9px;border-radius:20px}
 
@@ -53,18 +54,18 @@ nav.topnav::-webkit-scrollbar{display:none}
 .check-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:#111c32;border:1.5px solid #2a3a55;border-radius:12px;cursor:pointer;user-select:none;transition:.15s}
 .check-item:hover{border-color:#6366f1}
 .check-item.done{opacity:.6}
-.check-item.done .check-text{text-decoration:line-through;color:#7a8fa8}
+.check-item.done .check-text{text-decoration:line-through;color:var(--muted2)}
 .check-box{width:22px;height:22px;border-radius:7px;border:2px solid #2a3a55;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:.15s;margin-top:1px}
 .check-item.done .check-box{background:#10b981;border-color:#10b981;color:#fff}
 .check-content{flex:1}
-.check-text{font-size:.87rem;font-weight:600;color:#e8edf5;line-height:1.4}
-.check-note{font-size:.73rem;color:#7a8fa8;margin-top:3px;line-height:1.45}
+.check-text{font-size:.87rem;font-weight:600;color:var(--text);line-height:1.4}
+.check-note{font-size:.73rem;color:var(--muted2);margin-top:3px;line-height:1.45}
 .check-deadline{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(245,158,11,.15);color:#fcd34d;margin-top:5px;display:inline-block}
 .check-urgent{background:rgba(239,68,68,.15);color:#fca5a5}
 
 /* College tracker */
 .college-section{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:20px;margin-bottom:28px}
-.college-title{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.college-title{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .college-title::before{content:'';width:3px;height:14px;border-radius:2px;background:#a5b4fc}
 .college-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .college-item{display:flex;align-items:center;gap:10px;padding:10px 13px;background:#0d1628;border-radius:10px}
@@ -73,13 +74,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 .type-reach{background:rgba(239,68,68,.15);color:#fca5a5}
 .type-match{background:rgba(99,102,241,.15);color:#a5b4fc}
 .type-safety{background:rgba(16,185,129,.15);color:#6ee7b7}
-.college-status{font-size:.72rem;color:#7a8fa8}
+.college-status{font-size:.72rem;color:var(--muted2)}
 .college-del{border:none;background:transparent;color:#3d4f6e;cursor:pointer;font-size:.75rem;transition:.15s;padding:3px}
 .college-del:hover{color:#f87171}
 .add-college-row{display:flex;gap:8px;flex-wrap:wrap}
-.add-college-input{flex:1;min-width:150px;padding:8px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.add-college-input{flex:1;min-width:150px;padding:8px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:var(--text);font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
 .add-college-input:focus{border-color:#6366f1}
-.add-college-select{padding:8px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.add-college-select{padding:8px 12px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:var(--text);font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
 .add-college-btn{padding:8px 14px;background:#6366f1;border:none;border-radius:9px;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
 
 /* Overall progress bar */
@@ -101,17 +102,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="collegeprep.html" class="nav-link active">🎓 College Prep</a>
-  <a href="goals.html" class="nav-link">🎯 Goals</a>
-  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
-  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
-  <a href="progress.html" class="nav-link">📊 Progress</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="hero">
   <div class="hero-text">
@@ -363,7 +360,7 @@ function setGrade(g, el){
 
 function renderColleges(){
   const list=document.getElementById('collegeList');
-  if(!colleges.length){ list.innerHTML='<div style="color:#7a8fa8;font-size:.82rem;padding:6px 0">No colleges added yet. Build your list above.</div>'; return; }
+  if(!colleges.length){ list.innerHTML='<div style="color:var(--muted2);font-size:.82rem;padding:6px 0">No colleges added yet. Build your list above.</div>'; return; }
   list.innerHTML=colleges.map((c,i)=>`
     <div class="college-item">
       <div class="college-name">${c.name}</div>

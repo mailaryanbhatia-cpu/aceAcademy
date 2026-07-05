@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AP Free Response Practice — aceAcademy</title>
@@ -14,30 +15,30 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
 .logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:background .15s,color .15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:background .15s,color .15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
 .nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
 
 .hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:36px 40px 28px;border-bottom:1px solid #2a3a55}
 .hero h1{font-size:1.8rem;font-weight:900;margin-bottom:6px}
 .hero h1 span{color:#a5b4fc}
-.hero p{color:#7a8fa8;font-size:.9rem;max-width:520px;line-height:1.6}
+.hero p{color:var(--muted2);font-size:.9rem;max-width:520px;line-height:1.6}
 
 .layout{display:grid;grid-template-columns:280px 1fr;gap:0;min-height:calc(100vh - 160px)}
-.sidebar{background:#080e1c;border-right:1px solid #2a3a55;padding:20px 16px;overflow-y:auto}
+.sidebar{background:var(--bg);border-right:1px solid #2a3a55;padding:20px 16px;overflow-y:auto}
 .main{padding:28px 32px;overflow-y:auto}
 @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid #2a3a55}.hero{padding:24px 20px 20px}.main{padding:20px 16px}}
 
 /* Sidebar */
-.sb-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8;margin:16px 0 8px}
+.sb-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin:16px 0 8px}
 .sb-label:first-child{margin-top:0}
-.sb-btn{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;border:none;background:transparent;color:#7a8fa8;font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
-.sb-btn:hover{background:rgba(255,255,255,.06);color:#e8edf5}
+.sb-btn{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;border:none;background:transparent;color:var(--muted2);font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
+.sb-btn:hover{background:rgba(255,255,255,.06);color:var(--text)}
 .sb-btn.active{background:rgba(99,102,241,.18);color:#a5b4fc}
 .sb-score{display:inline-block;margin-left:auto;float:right;font-size:.7rem;padding:1px 7px;border-radius:20px;background:rgba(99,102,241,.2);color:#a5b4fc}
 
@@ -45,9 +46,9 @@ nav.topnav::-webkit-scrollbar{display:none}
 .prompt-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:24px;margin-bottom:20px}
 .prompt-meta{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .prompt-subject{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;padding:3px 10px;border-radius:20px;background:rgba(99,102,241,.2);color:#a5b4fc}
-.prompt-type{font-size:.72rem;font-weight:700;color:#7a8fa8}
+.prompt-type{font-size:.72rem;font-weight:700;color:var(--muted2)}
 .prompt-points{font-size:.72rem;font-weight:700;color:#fcd34d;background:rgba(245,158,11,.15);padding:3px 9px;border-radius:20px}
-.prompt-q{font-size:.97rem;font-weight:600;line-height:1.65;color:#e8edf5;margin-bottom:18px}
+.prompt-q{font-size:.97rem;font-weight:600;line-height:1.65;color:var(--text);margin-bottom:18px}
 .prompt-parts{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
 .prompt-part{background:#0d1628;border-radius:10px;padding:14px 16px}
 .prompt-part-label{font-size:.72rem;font-weight:800;color:#a5b4fc;margin-bottom:4px}
@@ -55,14 +56,14 @@ nav.topnav::-webkit-scrollbar{display:none}
 
 /* Response area */
 .response-area{margin-top:18px}
-.response-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:8px}
-.response-ta{width:100%;min-height:180px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.88rem;font-family:inherit;padding:14px;resize:vertical;outline:none;line-height:1.6;transition:border-color .15s}
+.response-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);margin-bottom:8px}
+.response-ta{width:100%;min-height:180px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:var(--text);font-size:.88rem;font-family:inherit;padding:14px;resize:vertical;outline:none;line-height:1.6;transition:border-color .15s}
 .response-ta:focus{border-color:#6366f1}
 .response-ta::placeholder{color:#3d4f6e}
 
 /* Rubric */
 .rubric-section{margin-top:20px;background:#0d1628;border-radius:12px;padding:18px}
-.rubric-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:12px}
+.rubric-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:12px}
 .rubric-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #1a2540;cursor:pointer;user-select:none}
 .rubric-item:last-child{border-bottom:none}
 .rubric-check{width:20px;height:20px;border-radius:6px;border:2px solid #2a3a55;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:.15s;margin-top:1px}
@@ -75,20 +76,20 @@ nav.topnav::-webkit-scrollbar{display:none}
 .score-display{font-size:1.4rem;font-weight:900;color:#a5b4fc;min-width:60px}
 .score-bar{flex:1;height:8px;background:#1a2540;border-radius:4px;overflow:hidden}
 .score-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;transition:width .4s}
-.score-label{font-size:.78rem;color:#7a8fa8;font-weight:600;white-space:nowrap}
+.score-label{font-size:.78rem;color:var(--muted2);font-weight:600;white-space:nowrap}
 
 /* Buttons */
 .btn-row{display:flex;gap:10px;margin-top:18px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .btn{padding:9px 20px;border-radius:9px;border:none;font-size:.83rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .btn-primary{background:#6366f1;color:#fff}
 .btn-primary:hover{background:#5254d8}
-.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:var(--muted2)}
 .btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
 .btn-success{background:rgba(16,185,129,.2);color:#6ee7b7;border:1.5px solid rgba(16,185,129,.3)}
 .btn-success:hover{background:rgba(16,185,129,.3)}
 
 /* Empty state */
-.empty{text-align:center;padding:60px 20px;color:#7a8fa8}
+.empty{text-align:center;padding:60px 20px;color:var(--muted2)}
 .empty-icon{font-size:2.5rem;margin-bottom:12px}
 .empty-text{font-size:.9rem;line-height:1.6}
 
@@ -111,19 +112,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="tests.html" class="nav-link">✏️ Tests</a>
-  <a href="progress.html" class="nav-link">📊 Progress</a>
-  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
-  <a href="goals.html" class="nav-link">🎯 Goals</a>
-  <a href="frq.html" class="nav-link active">📝 FRQ Practice</a>
-  <a href="essay.html" class="nav-link">📝 Essay</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-  <a href="mathgen.html" class="nav-link">🔢 Math</a>
-  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="hero">
   <h1>📝 AP Free Response <span>Practice</span></h1>

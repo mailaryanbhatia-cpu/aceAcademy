@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Essay Outline Builder — aceAcademy</title>
@@ -75,37 +76,21 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-
-  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
-  <a href="thesis.html" class="nav-link">✍️ Thesis</a>
-  <a href="outline.html" class="nav-link active">🗂 Outline</a>
-  <a href="citation.html" class="nav-link">📎 Citations</a>
-  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
-  <a href="goals.html" class="nav-link">🎯 Goals</a>
-  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
-  <a href="readinglog.html" class="nav-link">📗 Reading Log</a>
-  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
-  <a href="research.html" class="nav-link">🔬 Research</a>
-  <a href="venn.html" class="nav-link">⭕ Venn</a>
-  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
-  <a href="grammar.html" class="nav-link">📖 Grammar</a>
-  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
-  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
-  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 <div class="hero">
   <h1>🗂 Essay Outline Builder</h1>
   <p>Structure your essay with a clear outline — intro, body paragraphs, conclusion, with evidence and sub-points.</p>
 </div>
 
-<div class="container">
+<div class="ace-wrap">
   <!-- Setup -->
-  <div class="card" id="setupCard">
+  <div class="ace-card" id="setupCard">
     <h2>Essay Setup</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="field" style="grid-column:1/-1"><label>Essay Title / Topic</label><input id="e-title" placeholder="The causes of the American Revolution"></div>
@@ -128,17 +113,17 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
       </div>
       <div class="field" style="grid-column:1/-1"><label>Thesis Statement (optional — you can fill it in the outline)</label><textarea id="e-thesis" placeholder="Enter your thesis here or write it in the outline..." style="min-height:52px"></textarea></div>
     </div>
-    <button class="btn btn-primary" onclick="buildOutline()" style="margin-top:4px">🗂 Build Outline</button>
+    <button class="btn ace-btn-primary" onclick="buildOutline()" style="margin-top:4px">🗂 Build Outline</button>
   </div>
 
   <!-- Outline editor -->
-  <div class="card" id="outlineCard" style="display:none">
+  <div class="ace-card" id="outlineCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0">📄 <span id="outlineTitle">Outline</span></h2>
       <div>
-        <button class="btn btn-outline" onclick="copyOutline()">📋 Copy Text</button>
-        <button class="btn btn-primary" onclick="window.print()">🖨 Print</button>
-        <button class="btn-sm" onclick="resetOutline()" style="margin-left:4px">↩ Reset</button>
+        <button class="btn ace-btn-outline" onclick="copyOutline()">📋 Copy Text</button>
+        <button class="btn ace-btn-primary" onclick="window.print()">🖨 Print</button>
+        <button class="ace-btn-sm" onclick="resetOutline()" style="margin-left:4px">↩ Reset</button>
       </div>
     </div>
     <div class="outline-area">
@@ -192,7 +177,7 @@ function buildOutline(){
 
 function renderSidebar(){
   document.getElementById('sidebarSections').innerHTML = sections.map((s,i)=>`
-    <button class="section-btn${i===activeIdx?' active':''}" onclick="switchSection(${i})">${s.name}</button>
+    <button class="section-ace-btn${i===activeIdx?' active':''}" onclick="switchSection(${i})">${s.name}</button>
   `).join('');
 }
 
@@ -205,18 +190,18 @@ function renderPanel(){
     html += `<div class="point-row">
       <span class="point-num">${pi+1}.</span>
       <textarea placeholder="${p.hint}" oninput="sections[${activeIdx}].points[${pi}].text=this.value">${p.text}</textarea>
-      <button class="btn-sm del" onclick="removePoint(${pi})">✕</button>
+      <button class="ace-btn-sm del" onclick="removePoint(${pi})">✕</button>
     </div>`;
     p.subs.forEach((sub,si)=>{
       html += `<div class="sub-point-row">
         <span style="color:var(--muted);font-size:.85rem;padding-top:9px">↳</span>
         <textarea placeholder="Sub-point..." oninput="sections[${activeIdx}].points[${pi}].subs[${si}]=this.value">${sub}</textarea>
-        <button class="btn-sm del" onclick="removeSub(${pi},${si})">✕</button>
+        <button class="ace-btn-sm del" onclick="removeSub(${pi},${si})">✕</button>
       </div>`;
     });
-    html += `<div style="margin:0 0 10px 28px"><button class="btn-sm add" onclick="addSub(${pi})">+ sub-point</button></div>`;
+    html += `<div style="margin:0 0 10px 28px"><button class="ace-btn-sm add" onclick="addSub(${pi})">+ sub-point</button></div>`;
   });
-  html += `<button class="btn-sm add" onclick="addPoint()" style="margin-top:6px">+ point</button>`;
+  html += `<button class="ace-btn-sm add" onclick="addPoint()" style="margin-top:6px">+ point</button>`;
   document.getElementById('mainPanel').innerHTML = html;
 }
 

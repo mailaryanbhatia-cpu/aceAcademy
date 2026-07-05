@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Flashcards — aceAcademy</title>
@@ -159,16 +160,13 @@ textarea{resize:vertical;min-height:66px}
 </style>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="alltools.html" class="nav-link">All Tools</a>
-  <a href="tests.html" class="nav-link">Tests</a>
-  <a href="progress.html" class="nav-link">Progress</a>
-  <a href="flashcards.html" class="nav-link active">Flashcards</a>
-  <a href="goals.html" class="nav-link">Goals</a>
-  <a href="wordwall.html" class="nav-link">Word Wall</a>
-  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="hero">
   <h1>🃏 Flashcard Decks</h1>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Venn Diagram Builder — aceAcademy</title>
@@ -14,37 +15,37 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
 .logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
 .nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
 
 .hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:24px 36px 18px;border-bottom:1px solid #2a3a55;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
-.hero p{color:#7a8fa8;font-size:.83rem;margin-top:3px}
+.hero p{color:var(--muted2);font-size:.83rem;margin-top:3px}
 .hero-btns{display:flex;gap:8px}
 .btn{padding:8px 14px;border-radius:9px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
-.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:var(--muted2)}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
 
 .workspace{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 130px)}
 @media(max-width:768px){.workspace{grid-template-columns:1fr}}
-.panel{background:#080e1c;border-right:1px solid #2a3a55;padding:18px 14px;overflow-y:auto}
+.panel{background:var(--bg);border-right:1px solid #2a3a55;padding:18px 14px;overflow-y:auto}
 .canvas-area{padding:24px;display:flex;flex-direction:column;align-items:center;gap:20px}
 @media(max-width:768px){.panel{border-right:none;border-bottom:1px solid #2a3a55}}
 
 /* Mode toggle */
 .mode-toggle{display:flex;gap:4px;background:#0d1628;border-radius:10px;padding:4px;margin-bottom:16px}
-.mode-btn{flex:1;padding:7px;border-radius:7px;border:none;background:transparent;color:#7a8fa8;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;text-align:center}
+.mode-btn{flex:1;padding:7px;border-radius:7px;border:none;background:transparent;color:var(--muted2);font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;text-align:center}
 .mode-btn.active{background:#6366f1;color:#fff}
 
 /* Labels */
 .label-row{display:flex;gap:10px;margin-bottom:14px}
-.label-input{flex:1;padding:8px 11px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.82rem;font-family:inherit;outline:none;font-weight:700;transition:.15s}
+.label-input{flex:1;padding:8px 11px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:var(--text);font-size:.82rem;font-family:inherit;outline:none;font-weight:700;transition:.15s}
 .label-input:focus{border-color:#6366f1}
 
 /* Item adding */
@@ -52,7 +53,7 @@ nav.topnav::-webkit-scrollbar{display:none}
 .section-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .section-dot{width:10px;height:10px;border-radius:50%}
 .add-row{display:flex;gap:7px}
-.add-input{flex:1;padding:8px 11px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:#e8edf5;font-size:.82rem;font-family:inherit;outline:none;transition:.15s}
+.add-input{flex:1;padding:8px 11px;background:#111c32;border:1.5px solid #2a3a55;border-radius:8px;color:var(--text);font-size:.82rem;font-family:inherit;outline:none;transition:.15s}
 .add-input:focus{border-color:#6366f1}
 .add-btn{padding:8px 13px;border-radius:8px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;transition:.15s;white-space:nowrap}
 .item-list{margin-top:8px;display:flex;flex-direction:column;gap:5px}
@@ -90,20 +91,13 @@ svg.venn{width:100%;height:auto}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="venn.html" class="nav-link active">⭕ Venn Diagram</a>
-  <a href="conceptmap.html" class="nav-link">🗺 Concept Map</a>
-  <a href="timeline.html" class="nav-link">🗓 Timeline</a>
-  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-  <a href="cornellnotes.html" class="nav-link">🗒 Cornell Notes</a>
-  <a href="research.html" class="nav-link">🔬 Research</a>
-  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
-  <a href="grammar.html" class="nav-link">📖 Grammar</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="hero">
   <div>
@@ -126,7 +120,7 @@ svg.venn{width:100%;height:auto}
     </div>
 
     <!-- Labels -->
-    <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:8px">Circle Labels</div>
+    <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);margin-bottom:8px">Circle Labels</div>
     <div class="label-row" id="labelRow2">
       <input class="label-input" id="label1" placeholder="Topic A" style="border-color:#6366f1;color:#a5b4fc" oninput="render()">
       <input class="label-input" id="label2" placeholder="Topic B" style="border-color:#10b981;color:#6ee7b7" oninput="render()">
@@ -179,8 +173,8 @@ svg.venn{width:100%;height:auto}
 
     <!-- Saved -->
     <div style="height:1px;background:#2a3a55;margin:14px 0"></div>
-    <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;margin-bottom:8px">Saved Diagrams</div>
-    <div id="savedList"><div style="color:#7a8fa8;font-size:.75rem">No saved diagrams.</div></div>
+    <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);margin-bottom:8px">Saved Diagrams</div>
+    <div id="savedList"><div style="color:var(--muted2);font-size:.75rem">No saved diagrams.</div></div>
   </div>
 
   <div class="canvas-area">
@@ -388,14 +382,14 @@ function renderSavedList() {
   let saved = [];
   try { saved = JSON.parse(localStorage.getItem('venn-saved') || '[]'); } catch(e) {}
   const list = document.getElementById('savedList');
-  if (!saved.length) { list.innerHTML = '<div style="color:#7a8fa8;font-size:.75rem">No saved diagrams.</div>'; return; }
+  if (!saved.length) { list.innerHTML = '<div style="color:var(--muted2);font-size:.75rem">No saved diagrams.</div>'; return; }
   list.innerHTML = saved.map((d, i) => `
     <div style="padding:8px 10px;background:#111c32;border-radius:9px;border:1.5px solid #2a3a55;margin-bottom:6px;display:flex;align-items:center;gap:8px">
       <div style="flex:1">
         <div style="font-size:.8rem;font-weight:700">${d.name}</div>
-        <div style="font-size:.68rem;color:#7a8fa8">${d.savedAt}</div>
+        <div style="font-size:.68rem;color:var(--muted2)">${d.savedAt}</div>
       </div>
-      <button onclick="loadDiagram(${i})" style="padding:4px 10px;border-radius:6px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s">Load</button>
+      <button onclick="loadDiagram(${i})" style="padding:4px 10px;border-radius:6px;border:1.5px solid #2a3a55;background:transparent;color:var(--muted2);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s">Load</button>
     </div>
   `).join('');
 }

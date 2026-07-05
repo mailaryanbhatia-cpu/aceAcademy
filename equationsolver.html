@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Equation Solver — aceAcademy</title>
@@ -8,37 +9,37 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
 .logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
 .nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
 .hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid #2a3a55}
 .hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:#a5b4fc}
-.hero p{color:#7a8fa8;font-size:.83rem;margin-top:4px}
+.hero p{color:var(--muted2);font-size:.83rem;margin-top:4px}
 .container{max-width:800px;margin:0 auto;padding:24px 20px 60px}
 .type-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.type-btn{padding:8px 16px;border-radius:10px;border:1.5px solid #2a3a55;background:#111c32;color:#7a8fa8;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.type-btn{padding:8px 16px;border-radius:10px;border:1.5px solid #2a3a55;background:#111c32;color:var(--muted2);font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .type-btn.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
 .type-btn:hover{border-color:#6366f1;color:#a5b4fc}
 .input-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:22px;margin-bottom:20px}
-.form-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:14px}
+.form-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:14px}
 .eq-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.eq-label{font-size:.85rem;font-weight:700;color:#7a8fa8;white-space:nowrap;min-width:80px}
-.eq-input{padding:10px 14px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:1rem;font-family:'Consolas',monospace;outline:none;transition:.15s;width:180px;text-align:center}
+.eq-label{font-size:.85rem;font-weight:700;color:var(--muted2);white-space:nowrap;min-width:80px}
+.eq-input{padding:10px 14px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:9px;color:var(--text);font-size:1rem;font-family:'Consolas',monospace;outline:none;transition:.15s;width:180px;text-align:center}
 .eq-input:focus{border-color:#6366f1}
-.eq-sep{font-size:1.1rem;color:#7a8fa8;font-weight:700}
+.eq-sep{font-size:1.1rem;color:var(--muted2);font-weight:700}
 .eq-display{font-size:1.1rem;font-family:'Consolas',monospace;color:#a5b4fc;background:#0d1628;padding:10px 16px;border-radius:9px;min-width:220px;text-align:center;letter-spacing:.05em}
-.hint{font-size:.72rem;color:#7a8fa8;margin-top:4px}
+.hint{font-size:.72rem;color:var(--muted2);margin-top:4px}
 .btn-row{display:flex;gap:8px;margin-top:14px}
 .btn{padding:9px 18px;border-radius:9px;border:none;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
 .btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
-.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:var(--muted2)}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
 .examples{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.ex-btn{padding:4px 10px;border-radius:8px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Consolas',monospace;transition:.15s}
+.ex-btn{padding:4px 10px;border-radius:8px;border:1.5px solid #2a3a55;background:transparent;color:var(--muted2);font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Consolas',monospace;transition:.15s}
 .ex-btn:hover{border-color:#6366f1;color:#a5b4fc}
 
 /* Steps */
@@ -47,11 +48,11 @@ nav.topnav::-webkit-scrollbar{display:none}
 .step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
 .step-num{width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,.25);color:#a5b4fc;font-size:.78rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .step-body{}
-.step-action{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a8fa8;margin-bottom:4px}
-.step-eq{font-family:'Consolas',monospace;font-size:1.05rem;color:#e8edf5;margin-bottom:2px}
-.step-note{font-size:.78rem;color:#7a8fa8;line-height:1.5}
+.step-action{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:4px}
+.step-eq{font-family:'Consolas',monospace;font-size:1.05rem;color:var(--text);margin-bottom:2px}
+.step-note{font-size:.78rem;color:var(--muted2);line-height:1.5}
 .answer-box{background:rgba(99,102,241,.12);border:2px solid #6366f1;border-radius:12px;padding:16px 20px;margin-top:14px;display:flex;align-items:center;gap:14px}
-.answer-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8}
+.answer-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2)}
 .answer-value{font-family:'Consolas',monospace;font-size:1.4rem;font-weight:900;color:#a5b4fc}
 .no-real-sol{color:#f87171;font-weight:700;font-size:.9rem;margin-top:10px;padding:12px 16px;background:rgba(239,68,68,.1);border-radius:9px;border-left:3px solid #ef4444}
 .error-msg{background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;color:#f87171;font-size:.85rem;margin-top:10px}
@@ -71,17 +72,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="equationsolver.html" class="nav-link active">🔢 Eq. Solver</a>
-  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
-  <a href="mathgen.html" class="nav-link">🧮 Math Gen</a>
-  <a href="tools.html" class="nav-link">🛠 Calculators</a>
-  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 <div class="hero">
   <h1>🔢 Step-by-Step <span>Equation Solver</span></h1>
   <p>Enter coefficients and see every step of the solution — linear, quadratic, and systems of equations.</p>
@@ -102,13 +99,13 @@ nav.topnav::-webkit-scrollbar{display:none}
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
       <div><label class="hint" style="display:block;margin-bottom:4px">a (coefficient)</label><input class="eq-input" id="la" placeholder="2" oninput="updateDisplay('linear')" style="width:90px"></div>
-      <div style="align-self:flex-end;font-size:1.1rem;padding-bottom:8px;color:#7a8fa8">x +</div>
+      <div style="align-self:flex-end;font-size:1.1rem;padding-bottom:8px;color:var(--muted2)">x +</div>
       <div><label class="hint" style="display:block;margin-bottom:4px">b (constant, left)</label><input class="eq-input" id="lb" placeholder="3" oninput="updateDisplay('linear')" style="width:90px"></div>
-      <div style="align-self:flex-end;font-size:1.1rem;padding-bottom:8px;color:#7a8fa8">=</div>
+      <div style="align-self:flex-end;font-size:1.1rem;padding-bottom:8px;color:var(--muted2)">=</div>
       <div><label class="hint" style="display:block;margin-bottom:4px">c (right side)</label><input class="eq-input" id="lc" placeholder="11" oninput="updateDisplay('linear')" style="width:90px"></div>
     </div>
     <div class="examples">
-      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Examples:</span>
+      <span style="font-size:.7rem;color:var(--muted2);align-self:center">Examples:</span>
       <button class="ex-btn" onclick="setLinear(2,3,11)">2x+3=11</button>
       <button class="ex-btn" onclick="setLinear(5,-2,18)">5x−2=18</button>
       <button class="ex-btn" onclick="setLinear(-3,9,0)">−3x+9=0</button>
@@ -125,14 +122,14 @@ nav.topnav::-webkit-scrollbar{display:none}
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
       <div><label class="hint" style="display:block;margin-bottom:4px">a</label><input class="eq-input" id="qa" placeholder="1" oninput="updateDisplay('quadratic')" style="width:80px"></div>
-      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:#7a8fa8">x² +</div>
+      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:var(--muted2)">x² +</div>
       <div><label class="hint" style="display:block;margin-bottom:4px">b</label><input class="eq-input" id="qb" placeholder="-5" oninput="updateDisplay('quadratic')" style="width:80px"></div>
-      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:#7a8fa8">x +</div>
+      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:var(--muted2)">x +</div>
       <div><label class="hint" style="display:block;margin-bottom:4px">c</label><input class="eq-input" id="qc" placeholder="6" oninput="updateDisplay('quadratic')" style="width:80px"></div>
-      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:#7a8fa8">= 0</div>
+      <div style="align-self:flex-end;font-size:1rem;padding-bottom:8px;color:var(--muted2)">= 0</div>
     </div>
     <div class="examples">
-      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Examples:</span>
+      <span style="font-size:.7rem;color:var(--muted2);align-self:center">Examples:</span>
       <button class="ex-btn" onclick="setQuad(1,-5,6)">x²−5x+6=0</button>
       <button class="ex-btn" onclick="setQuad(2,3,-5)">2x²+3x−5=0</button>
       <button class="ex-btn" onclick="setQuad(1,0,-9)">x²−9=0</button>
@@ -161,7 +158,7 @@ nav.topnav::-webkit-scrollbar{display:none}
     </div>
     <div class="hint">Uses elimination method.</div>
     <div class="examples">
-      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Examples:</span>
+      <span style="font-size:.7rem;color:var(--muted2);align-self:center">Examples:</span>
       <button class="ex-btn" onclick="setSystem(2,3,8,1,-1,1)">2x+3y=8, x−y=1</button>
       <button class="ex-btn" onclick="setSystem(3,2,12,1,1,5)">3x+2y=12, x+y=5</button>
       <button class="ex-btn" onclick="setSystem(4,-2,10,2,3,13)">4x−2y=10, 2x+3y=13</button>
@@ -183,7 +180,7 @@ nav.topnav::-webkit-scrollbar{display:none}
       <input class="eq-input" id="pd" placeholder="10" style="width:80px">
     </div>
     <div class="examples">
-      <span style="font-size:.7rem;color:#7a8fa8;align-self:center">Examples:</span>
+      <span style="font-size:.7rem;color:var(--muted2);align-self:center">Examples:</span>
       <button class="ex-btn" onclick="setProp('3','x','6','10')">3/x = 6/10</button>
       <button class="ex-btn" onclick="setProp('x','4','9','12')">x/4 = 9/12</button>
       <button class="ex-btn" onclick="setProp('5','8','x','24')">5/8 = x/24</button>
@@ -256,7 +253,7 @@ function step(num, action, eq, note='') {
 function answer(label, val) {
   return `<div class="answer-box">
     <div><div class="answer-label">Answer</div><div class="answer-value">${label}</div></div>
-    <div style="font-size:.78rem;color:#7a8fa8">${val}</div>
+    <div style="font-size:.78rem;color:var(--muted2)">${val}</div>
   </div>`;
 }
 

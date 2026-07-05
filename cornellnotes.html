@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cornell Notes — aceAcademy</title>
@@ -14,68 +15,68 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
-.logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
-.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.logo span{color:var(--accent)}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.nav-link.active{background:rgba(99,102,241,.18);color:var(--accent)}
 
 /* Top bar */
-.topbar{background:#080e1c;border-bottom:1px solid #2a3a55;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.topbar input{padding:8px 12px;background:#111c32;border:1.5px solid #2a3a55;border-radius:9px;color:#e8edf5;font-size:.88rem;font-family:inherit;outline:none;transition:.15s}
-.topbar input:focus{border-color:#6366f1}
+.topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.topbar input{padding:8px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-size:.88rem;font-family:inherit;outline:none;transition:.15s}
+.topbar input:focus{border-color:var(--accent2)}
 .topbar input.title-input{font-weight:700;min-width:240px;flex:1;max-width:400px}
 .btn{padding:8px 16px;border-radius:9px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
-.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#5254d8}
-.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:#7a8fa8}.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
-.sep{width:1px;height:24px;background:#2a3a55;flex-shrink:0}
+.btn-primary{background:var(--accent2);color:#fff}.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted2)}.btn-ghost:hover{border-color:var(--accent2);color:var(--accent)}
+.sep{width:1px;height:24px;background:var(--border);flex-shrink:0}
 
 /* Saved list panel */
 .layout{display:flex;min-height:calc(100vh - 116px)}
-.sidebar{width:240px;background:#080e1c;border-right:1px solid #2a3a55;padding:14px;overflow-y:auto;flex-shrink:0}
+.sidebar{width:240px;background:var(--bg);border-right:1px solid var(--border);padding:14px;overflow-y:auto;flex-shrink:0}
 @media(max-width:700px){.sidebar{display:none}}
-.sb-label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8;margin-bottom:10px}
-.note-item{padding:9px 11px;border-radius:9px;border:1.5px solid #2a3a55;background:transparent;cursor:pointer;margin-bottom:7px;transition:.15s}
-.note-item:hover{border-color:#6366f1;background:rgba(99,102,241,.06)}
-.note-item.active{border-color:#6366f1;background:rgba(99,102,241,.12)}
-.note-item-title{font-size:.82rem;font-weight:700;color:#e8edf5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.note-item-meta{font-size:.68rem;color:#7a8fa8;margin-top:2px}
-.new-note-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;border-radius:9px;border:1.5px dashed #2a3a55;background:transparent;color:#7a8fa8;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-bottom:12px}
-.new-note-btn:hover{border-color:#6366f1;color:#a5b4fc}
+.sb-label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:10px}
+.note-item{padding:9px 11px;border-radius:9px;border:1.5px solid var(--border);background:transparent;cursor:pointer;margin-bottom:7px;transition:.15s}
+.note-item:hover{border-color:var(--accent2);background:rgba(99,102,241,.06)}
+.note-item.active{border-color:var(--accent2);background:rgba(99,102,241,.12)}
+.note-item-title{font-size:.82rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-item-meta{font-size:.68rem;color:var(--muted2);margin-top:2px}
+.new-note-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;border-radius:9px;border:1.5px dashed var(--border);background:transparent;color:var(--muted2);font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-bottom:12px}
+.new-note-btn:hover{border-color:var(--accent2);color:var(--accent)}
 .note-del{float:right;border:none;background:transparent;color:#3d4f6e;cursor:pointer;font-size:.75rem;padding:0;transition:.15s}
 .note-del:hover{color:#f87171}
 
 /* Cornell layout */
 .cornell-wrap{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:0}
-.cornell-header{background:#111c32;border:1.5px solid #2a3a55;border-bottom:none;border-radius:14px 14px 0 0;padding:14px 18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.cornell-header{background:var(--surface2);border:1.5px solid var(--border);border-bottom:none;border-radius:14px 14px 0 0;padding:14px 18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 @media(max-width:600px){.cornell-header{grid-template-columns:1fr}}
-.hdr-field label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;display:block;margin-bottom:4px}
-.hdr-field input{width:100%;padding:7px 10px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:7px;color:#e8edf5;font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
-.hdr-field input:focus{border-color:#6366f1}
+.hdr-field label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);display:block;margin-bottom:4px}
+.hdr-field input{width:100%;padding:7px 10px;background:#0d1628;border:1.5px solid var(--border);border-radius:7px;color:var(--text);font-size:.83rem;font-family:inherit;outline:none;transition:.15s}
+.hdr-field input:focus{border-color:var(--accent2)}
 
-.cornell-body{display:grid;grid-template-columns:220px 1fr;border:1.5px solid #2a3a55;border-top:none;background:#111c32;min-height:480px}
+.cornell-body{display:grid;grid-template-columns:220px 1fr;border:1.5px solid var(--border);border-top:none;background:var(--surface2);min-height:480px}
 @media(max-width:600px){.cornell-body{grid-template-columns:1fr}}
-.cue-col{border-right:1.5px solid #2a3a55;padding:0;display:flex;flex-direction:column}
+.cue-col{border-right:1.5px solid var(--border);padding:0;display:flex;flex-direction:column}
 .notes-col{display:flex;flex-direction:column}
-.col-header{padding:8px 14px;background:#0d1628;border-bottom:1px solid #2a3a55;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;display:flex;align-items:center;justify-content:space-between}
-.col-header span{color:#a5b4fc;font-size:.7rem;text-transform:none;font-weight:600;letter-spacing:0}
-.col-ta{flex:1;width:100%;padding:14px;background:transparent;border:none;color:#e8edf5;font-size:.87rem;font-family:inherit;resize:none;outline:none;line-height:1.7}
+.col-header{padding:8px 14px;background:#0d1628;border-bottom:1px solid var(--border);font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);display:flex;align-items:center;justify-content:space-between}
+.col-header span{color:var(--accent);font-size:.7rem;text-transform:none;font-weight:600;letter-spacing:0}
+.col-ta{flex:1;width:100%;padding:14px;background:transparent;border:none;color:var(--text);font-size:.87rem;font-family:inherit;resize:none;outline:none;line-height:1.7}
 .col-ta::placeholder{color:#3d4f6e}
 
-.summary-section{border:1.5px solid #2a3a55;border-top:none;border-radius:0 0 14px 14px;background:#0d1628}
-.sum-header{padding:8px 14px;border-bottom:1px solid #2a3a55;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7a8fa8;display:flex;align-items:center;gap:8px}
-.sum-header span{color:#7a8fa8;font-weight:500;text-transform:none;letter-spacing:0;font-size:.72rem}
-.sum-ta{width:100%;padding:14px;background:transparent;border:none;color:#e8edf5;font-size:.87rem;font-family:inherit;resize:none;outline:none;min-height:100px;line-height:1.7;border-radius:0 0 14px 14px}
+.summary-section{border:1.5px solid var(--border);border-top:none;border-radius:0 0 14px 14px;background:#0d1628}
+.sum-header{padding:8px 14px;border-bottom:1px solid var(--border);font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);display:flex;align-items:center;gap:8px}
+.sum-header span{color:var(--muted2);font-weight:500;text-transform:none;letter-spacing:0;font-size:.72rem}
+.sum-ta{width:100%;padding:14px;background:transparent;border:none;color:var(--text);font-size:.87rem;font-family:inherit;resize:none;outline:none;min-height:100px;line-height:1.7;border-radius:0 0 14px 14px}
 .sum-ta::placeholder{color:#3d4f6e}
 
 /* Word count */
-.word-count{font-size:.7rem;color:#7a8fa8;padding:4px 14px 8px;text-align:right}
+.word-count{font-size:.7rem;color:var(--muted2);padding:4px 14px 8px;text-align:right}
 
 /* Tips */
-.tips-bar{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.78rem;color:#a5b4fc;line-height:1.55}
+.tips-bar{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.78rem;color:var(--accent);line-height:1.55}
 .tips-bar strong{font-weight:800}
 </style>
 <script src="theme.js"></script>
@@ -93,36 +94,25 @@ nav.topnav::-webkit-scrollbar{display:none}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="cornellnotes.html" class="nav-link active">📓 Cornell Notes</a>
-  <a href="notebook.html" class="nav-link">📁 Notebook</a>
-  <a href="outline.html" class="nav-link">🗂 Outline</a>
-  <a href="research.html" class="nav-link">🔬 Research</a>
-  <a href="essay.html" class="nav-link">📝 Essay Grader</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-  <a href="venn.html" class="nav-link">⭕ Venn</a>
-  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
-  <a href="grammar.html" class="nav-link">📖 Grammar</a>
-  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
-  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
-  <a href="equationsolver.html" class="nav-link">🔢 Eq. Solver</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="topbar">
   <input class="title-input" id="noteTitle" placeholder="Note title…" oninput="autoSave()">
   <div class="sep"></div>
-  <button class="btn btn-ghost" onclick="newNote()">＋ New</button>
-  <button class="btn btn-ghost" onclick="printNote()">🖨 Print</button>
-  <button class="btn btn-primary" onclick="saveNote()">💾 Save</button>
+  <button class="btn ace-btn-ghost" onclick="newNote()">＋ New</button>
+  <button class="btn ace-btn-ghost" onclick="printNote()">🖨 Print</button>
+  <button class="btn ace-btn-primary" onclick="saveNote()">💾 Save</button>
 </div>
 
 <div class="layout">
   <div class="sidebar">
-    <button class="new-note-btn" onclick="newNote()">＋ New Note</button>
+    <button class="new-note-ace-btn" onclick="newNote()">＋ New Note</button>
     <div class="sb-label">Saved Notes</div>
     <div id="noteList"></div>
   </div>
@@ -250,7 +240,7 @@ function deleteNote(idx, e) {
 
 function renderNoteList() {
   const list = document.getElementById('noteList');
-  if (!notes.length) { list.innerHTML = '<div style="color:#7a8fa8;font-size:.78rem">No saved notes yet.</div>'; return; }
+  if (!notes.length) { list.innerHTML = '<div style="color:var(--muted2);font-size:.78rem">No saved notes yet.</div>'; return; }
   list.innerHTML = notes.map((n, i) => `
     <div class="note-item${i === currentIdx ? ' active' : ''}" onclick="loadNote(${i})">
       <button class="note-del" onclick="deleteNote(${i}, event)">✕</button>

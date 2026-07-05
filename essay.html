@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Essay Grader — aceAcademy</title>
@@ -92,29 +93,21 @@ textarea:focus{border-color:var(--accent)}
 </head>
 <body>
 
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="essay.html" class="nav-link active">📝 Essay Grader</a>
-  <a href="outline.html" class="nav-link">🗂 Outline</a>
-  <a href="thesis.html" class="nav-link">💡 Thesis</a>
-  <a href="citation.html" class="nav-link">📎 Citations</a>
-  <a href="grammar.html" class="nav-link">📖 Grammar</a>
-  <a href="transitions.html" class="nav-link">🔗 Transitions</a>
-  <a href="paraphrase.html" class="nav-link">✏️ Paraphrase</a>
-  <a href="annotatedbib.html" class="nav-link">📚 Annot. Bib.</a>
-  <a href="frq.html" class="nav-link">📝 FRQ</a>
-  <a href="statscalc.html" class="nav-link">📊 Stats Calc</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="hero">
   <h1>📝 Essay Grader</h1>
   <p>Paste your essay below for instant rubric-based feedback on thesis, evidence, structure, and style.</p>
 </div>
 
-<div class="container">
-  <div class="card">
+<div class="ace-wrap">
+  <div class="ace-card">
     <h2>Essay Settings</h2>
     <div class="controls">
       <select id="grade">
@@ -135,17 +128,17 @@ textarea:focus{border-color:var(--accent)}
       </select>
     </div>
     <div class="essay-type-row">
-      <button class="type-btn active" onclick="setType(this,'argumentative')">Argumentative</button>
-      <button class="type-btn" onclick="setType(this,'expository')">Expository</button>
-      <button class="type-btn" onclick="setType(this,'narrative')">Narrative</button>
-      <button class="type-btn" onclick="setType(this,'analytical')">Analytical</button>
+      <button class="type-ace-btn active" onclick="setType(this,'argumentative')">Argumentative</button>
+      <button class="type-ace-btn" onclick="setType(this,'expository')">Expository</button>
+      <button class="type-ace-btn" onclick="setType(this,'narrative')">Narrative</button>
+      <button class="type-ace-btn" onclick="setType(this,'analytical')">Analytical</button>
     </div>
     <textarea id="essayText" placeholder="Paste or type your essay here…" oninput="updateWordCount()"></textarea>
     <div class="word-count" id="wordCount">0 words</div>
     <br>
     <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="gradeEssay()">📊 Grade My Essay</button>
-      <button class="btn btn-secondary" onclick="clearEssay()">🗑 Clear</button>
+      <button class="btn ace-btn-primary" onclick="gradeEssay()">📊 Grade My Essay</button>
+      <button class="btn ace-btn-secondary" onclick="clearEssay()">🗑 Clear</button>
     </div>
   </div>
 
@@ -163,7 +156,7 @@ textarea:focus{border-color:var(--accent)}
 
     <div class="rubric-grid" id="rubricGrid"></div>
 
-    <div class="card">
+    <div class="ace-card">
       <h2>📋 Detailed Feedback</h2>
       <div id="feedbackContent"></div>
     </div>

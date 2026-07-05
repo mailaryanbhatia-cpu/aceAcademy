@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Weakness Report — aceAcademy</title>
@@ -15,8 +16,8 @@
 <script src="/aceAcademy/sounds.js"></script>
 <script src="/aceAcademy/coins.js"></script>
 <style>
-body{font-family:var(--font);background:#0b1120;color:#e2e8f0;margin:0}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:#0f172a;border-bottom:1px solid #1e293b}
+body{font-family:var(--font);background:var(--bg);color:#e2e8f0;margin:0}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--surface);border-bottom:1px solid #1e293b}
 .nav a{color:#e2e8f0;text-decoration:none;font-weight:700;font-size:1.1rem}
 .nav-links{display:flex;gap:14px;align-items:center}
 .nav-links a{color:#94a3b8;text-decoration:none;font-size:.88rem}.nav-links a:hover{color:#e2e8f0}
@@ -24,11 +25,11 @@ body{font-family:var(--font);background:#0b1120;color:#e2e8f0;margin:0}
 h1{font-size:1.8rem;font-weight:900;margin:0 0 4px;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .subtitle{color:#64748b;font-size:.93rem;margin-bottom:28px}
 .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
-.sum-card{background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:16px;text-align:center}
+.sum-card{background:var(--surface);border:1px solid #1e293b;border-radius:14px;padding:16px;text-align:center}
 .sum-num{font-size:1.9rem;font-weight:900;line-height:1}
 .sum-label{font-size:.72rem;color:#64748b;margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
-.section{background:#0f172a;border:1px solid #1e293b;border-radius:16px;padding:22px;margin-bottom:18px}
-.section h2{margin:0 0 16px;font-size:.95rem;font-weight:800;color:#a5b4fc;display:flex;align-items:center;gap:8px}
+.section{background:var(--surface);border:1px solid #1e293b;border-radius:16px;padding:22px;margin-bottom:18px}
+.section h2{margin:0 0 16px;font-size:.95rem;font-weight:800;color:var(--accent);display:flex;align-items:center;gap:8px}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .bar-label{width:160px;font-size:.82rem;color:#e2e8f0;flex-shrink:0;text-align:right}
 .bar-track{flex:1;background:#1e293b;border-radius:99px;height:10px;overflow:hidden}
@@ -61,7 +62,7 @@ h1{font-size:1.8rem;font-weight:900;margin:0 0 4px;background:linear-gradient(13
     <button onclick="toggleTheme()" style="background:none;border:none;cursor:pointer;font-size:1.1rem" id="themeToggle">☀️</button>
   </div>
 </nav>
-<div class="container">
+<div class="ace-wrap">
   <h1>🎯 Topic Weakness Report</h1>
   <p class="subtitle">Based on your test history — here's exactly where to focus your studying</p>
   <div id="report"></div>
@@ -121,14 +122,14 @@ function buildReport(){
 
   // Summary cards
   html += '<div class="summary-grid">';
-  html += '<div class="sum-card"><div class="sum-num" style="color:#6366f1">'+tests.length+'</div><div class="sum-label">Tests Taken</div></div>';
+  html += '<div class="sum-card"><div class="sum-num" style="color:var(--accent2)">'+tests.length+'</div><div class="sum-label">Tests Taken</div></div>';
   html += '<div class="sum-card"><div class="sum-num" style="color:'+(overallAvg>=80?'#10b981':overallAvg>=60?'#f59e0b':'#ef4444')+'">'+overallAvg+'%</div><div class="sum-label">Overall Avg</div></div>';
   html += '<div class="sum-card"><div class="sum-num" style="color:#ef4444">'+below70+'</div><div class="sum-label">Subjects Below 70%</div></div>';
   html += '<div class="sum-card"><div class="sum-num" style="color:#f59e0b">'+totalErrors+'</div><div class="sum-label">Errors Logged</div></div>';
   html += '</div>';
 
   // Weakest subjects
-  html += '<div class="section"><h2>📉 Weakest Subjects</h2>';
+  html += '<div class="ace-mb"><h2>📉 Weakest Subjects</h2>';
   if(!subjectList.length){
     html += '<div class="empty" style="padding:16px">No subject data yet</div>';
   } else {
@@ -151,7 +152,7 @@ function buildReport(){
 
   // Subject bar chart (all subjects)
   if(subjectList.length>0){
-    html += '<div class="section"><h2>📊 Score Breakdown</h2>';
+    html += '<div class="ace-mb"><h2>📊 Score Breakdown</h2>';
     var maxS = Math.max.apply(null, subjectList.map(function(s){return s.avg;}));
     subjectList.forEach(function(s){
       var col = s.avg>=80?'#10b981':s.avg>=60?'#f59e0b':'#ef4444';
@@ -166,7 +167,7 @@ function buildReport(){
 
   // Most common errors
   if(errorList.length>0){
-    html += '<div class="section"><h2>❌ Most Missed Topics</h2>';
+    html += '<div class="ace-mb"><h2>❌ Most Missed Topics</h2>';
     errorList.forEach(function(e,i){
       var col = i<3?'#ef4444':i<6?'#f59e0b':'#64748b';
       html += '<div class="bar-row">';
@@ -180,7 +181,7 @@ function buildReport(){
 
   // Weak flashcard decks
   if(weakDecks.length>0){
-    html += '<div class="section"><h2>🃏 Flashcard Decks Needing Work</h2>';
+    html += '<div class="ace-mb"><h2>🃏 Flashcard Decks Needing Work</h2>';
     weakDecks.slice(0,6).forEach(function(d){
       var pct = Math.round(d.struggling/d.total*100);
       html += '<div class="bar-row">';
@@ -193,7 +194,7 @@ function buildReport(){
   }
 
   // Recommendations
-  html += '<div class="section"><h2>💡 What to Do Next</h2>';
+  html += '<div class="ace-mb"><h2>💡 What to Do Next</h2>';
   var recs = [];
   if(subjectList.length>0 && subjectList[0].avg<70)
     recs.push({icon:'🔴', text:'<strong>'+subjectList[0].name+'</strong> is your weakest subject at '+subjectList[0].avg+'% — prioritize this in your study schedule.'});
@@ -206,8 +207,8 @@ function buildReport(){
   var improving = subjectList.filter(function(s){return s.trend>5;});
   if(improving.length>0)
     recs.push({icon:'📈', text:'<strong>'+improving[0].name+'</strong> is trending up +'+improving[0].trend+'% — keep up the momentum!'});
-  recs.push({icon:'🎯', text:'Set a specific score goal for your weakest subject using the <a href="goals.html" style="color:#6366f1">Goals</a> page.'});
-  recs.push({icon:'📅', text:'Use the <a href="schedule-gen.html" style="color:#6366f1">Study Schedule</a> to dedicate extra time to your bottom two subjects.'});
+  recs.push({icon:'🎯', text:'Set a specific score goal for your weakest subject using the <a href="goals.html" style="color:var(--accent2)">Goals</a> page.'});
+  recs.push({icon:'📅', text:'Use the <a href="schedule-gen.html" style="color:var(--accent2)">Study Schedule</a> to dedicate extra time to your bottom two subjects.'});
 
   recs.forEach(function(r){
     html += '<div class="rec-item"><span class="rec-icon">'+r.icon+'</span><span>'+r.text+'</span></div>';

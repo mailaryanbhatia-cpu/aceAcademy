@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Assignment Builder — aceAcademy</title>
@@ -81,26 +82,20 @@ select:focus,input:focus{border-color:var(--accent)}
 <script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
-<nav class="topnav">
-  <a href="index.html" class="logo">ace<span>Academy</span></a>
-  <a href="alltools.html" class="nav-link">🛠 All Tools</a>
-  <a href="tests.html" class="nav-link">✏️ Tests</a>
-  <a href="progress.html" class="nav-link">📊 Progress</a>
-  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
-  <a href="goals.html" class="nav-link">🎯 Goals</a>
-  <a href="assign.html" class="nav-link active">📋 Assignments</a>
-  <a href="essay.html" class="nav-link">📝 Essay</a>
-  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
-  <a href="mathgen.html" class="nav-link">🔢 Math</a>
-  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
-</nav>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
 
 <div class="hero">
   <h1>📋 Assignment Builder</h1>
   <p>Select grade, subject, and unit — generate a printable assignment with real problems and an answer key.</p>
 </div>
 
-<div class="container">
+<div class="ace-wrap">
   <div class="card no-print">
     <h2>Build Your Assignment</h2>
     <div class="controls">
@@ -132,22 +127,22 @@ select:focus,input:focus{border-color:var(--accent)}
     <div style="margin-bottom:14px">
       <label style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:8px">Assignment Type</label>
       <div class="type-row">
-        <button class="type-btn active" onclick="setType(this,'quiz')">✏️ Quiz (Multiple Choice)</button>
-        <button class="type-btn" onclick="setType(this,'worksheet')">📄 Worksheet (Free Response)</button>
-        <button class="type-btn" onclick="setType(this,'mixed')">📋 Mixed</button>
+        <button class="type-ace-btn active" onclick="setType(this,'quiz')">✏️ Quiz (Multiple Choice)</button>
+        <button class="type-ace-btn" onclick="setType(this,'worksheet')">📄 Worksheet (Free Response)</button>
+        <button class="type-ace-btn" onclick="setType(this,'mixed')">📋 Mixed</button>
       </div>
     </div>
     <div class="field" style="max-width:300px;margin-bottom:16px">
       <label>Class / Period</label>
       <input type="text" id="className" placeholder="e.g., Period 3 — Fall 2025"/>
     </div>
-    <button class="btn btn-primary" onclick="generateAssignment()">📋 Generate Assignment</button>
+    <button class="btn ace-btn-primary" onclick="generateAssignment()">📋 Generate Assignment</button>
   </div>
 
   <div class="print-actions no-print" id="printActions" style="display:none">
-    <button class="btn btn-primary" onclick="window.print()">🖨 Print Assignment</button>
-    <button class="btn btn-outline" onclick="printWithKey()">🔑 Print with Answer Key</button>
-    <button class="btn btn-outline" onclick="document.getElementById('assignment').style.display='none';document.getElementById('printActions').style.display='none'">✕ Close</button>
+    <button class="btn ace-btn-primary" onclick="window.print()">🖨 Print Assignment</button>
+    <button class="btn ace-btn-outline" onclick="printWithKey()">🔑 Print with Answer Key</button>
+    <button class="btn ace-btn-outline" onclick="document.getElementById('assignment').style.display='none';document.getElementById('printActions').style.display='none'">✕ Close</button>
   </div>
 
   <div class="assignment" id="assignment">
