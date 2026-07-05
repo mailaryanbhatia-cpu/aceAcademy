@@ -7,54 +7,36 @@
 <title>Thesis Generator — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css">
 <style>
-:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
-.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
-.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
-.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,var(--surface),#1e40af);color:#fff}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#1e1b4b,#1e40af);color:#fff}
 .hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
 .hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
-.container{max-width:820px;margin:24px auto;padding:0 20px}
-.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:20px}
-.card h2{font-size:1rem;font-weight:700;margin-bottom:16px}
 .field{margin-bottom:14px}
 label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px}
-input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none;font-family:inherit}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:var(--surface2);outline:none;font-family:inherit}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 textarea{resize:vertical;min-height:64px}
 .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.tag{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted);transition:.15s}
+.tag{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted);transition:.15s;font-family:inherit}
 .tag.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn{padding:10px 24px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;margin-right:8px}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
-.btn-sm{padding:6px 14px;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted)}
-.btn-sm:hover{background:var(--bg)}
-
-.result-box{background:linear-gradient(135deg,#ede9fe,#dbeafe);border:1.5px solid #c4b5fd;border-radius:12px;padding:18px;margin-bottom:14px}
+.btn-sm{padding:6px 14px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);font-family:inherit;transition:.15s}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+.result-box{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.1));border:1.5px solid rgba(99,102,241,.4);border-radius:12px;padding:18px;margin-bottom:12px}
 .result-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:6px}
 .thesis-text{font-size:1rem;line-height:1.7;font-weight:600;color:var(--text)}
 .result-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-
 .eval-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.eval-label{font-size:.82rem;font-weight:600;min-width:140px}
-.eval-bar{flex:1;background:#e5e7eb;border-radius:99px;height:8px;overflow:hidden}
-.eval-fill{height:100%;border-radius:99px;background:var(--green)}
-.eval-score{font-size:.78rem;font-weight:700;min-width:30px;text-align:right}
-
+.eval-label{font-size:.82rem;font-weight:600;min-width:120px}
+.eval-bar{flex:1;background:var(--border);border-radius:99px;height:8px;overflow:hidden}
+.eval-fill{height:100%;border-radius:99px;background:#34d399;transition:.6s}
+.eval-score{font-size:.78rem;font-weight:700;min-width:30px;text-align:right;color:var(--muted)}
 .saved-list{display:flex;flex-direction:column;gap:8px}
-.saved-item{background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:12px;font-size:.87rem;line-height:1.6;position:relative}
+.saved-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:12px;font-size:.87rem;line-height:1.6;position:relative}
 .saved-item .type{font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:4px}
 .saved-item .del{position:absolute;top:8px;right:8px;border:none;background:none;cursor:pointer;color:var(--muted);font-size:.9rem}
-.saved-item .del:hover{color:#dc2626}
+.saved-item .del:hover{color:#f87171}
 .empty{text-align:center;padding:32px;color:var(--muted);font-size:.9rem}
-
-
-  input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
-  .topnav{background:#12121f;border-color:var(--border)}.tag{background:#1a1a2e}.btn-sm{background:#1a1a2e}
-  .result-box{background:linear-gradient(135deg,#1e1b4b,#1e3a8a);border-color:#4338ca}.saved-item{background:#12121f}
-}
 </style>
 <script src="theme.js"></script>
   <link rel="manifest" href="/aceAcademy/manifest.json">

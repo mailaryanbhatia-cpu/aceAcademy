@@ -7,64 +7,54 @@
 <title>Assignment Builder — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css">
 <style>
-:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.topnav::-webkit-scrollbar{display:none}
-.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
-.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
-.hero{text-align:center;padding:36px 20px 22px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero{text-align:center;padding:36px 20px 22px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff}
 .hero h1{font-size:2rem;font-weight:800;margin-bottom:8px}
 .hero p{opacity:.85;max-width:540px;margin:0 auto}
-.container{max-width:960px;margin:28px auto;padding:0 20px}
-.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:20px}
-.card h2{font-size:1.05rem;font-weight:700;margin-bottom:16px}
-.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px}
 .field{display:flex;flex-direction:column;gap:5px}
 label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-select,input[type=number],input[type=text]{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
+select,input[type=number],input[type=text]{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:var(--surface2);outline:none}
 select:focus,input:focus{border-color:var(--accent)}
 .type-row{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:16px}
-.type-btn{padding:8px 16px;border-radius:9px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--muted);transition:.15s}
+.type-btn{padding:8px 16px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;font-size:.85rem;font-weight:600;color:var(--muted);transition:.15s;font-family:inherit}
 .type-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn{padding:10px 24px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;transition:.15s}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
-.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
-.assignment{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:28px;display:none}
+.assignment{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:28px;display:none}
 .assign-header{border-bottom:2px solid var(--text);padding-bottom:14px;margin-bottom:20px}
 .assign-header .title{font-size:1.2rem;font-weight:800}
 .assign-header .meta{font-size:.85rem;color:var(--muted);margin-top:4px}
 .assign-header .info-row{display:flex;gap:24px;margin-top:12px;font-size:.85rem;flex-wrap:wrap}
 .q-section h3{font-size:1rem;font-weight:700;margin:20px 0 12px;border-left:3px solid var(--accent);padding-left:10px}
-.mc-item{margin-bottom:16px;padding:14px;border:1px solid var(--border);border-radius:9px}
+.mc-item{margin-bottom:16px;padding:14px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)}
 .mc-item .q-text{font-size:.92rem;font-weight:600;margin-bottom:10px;line-height:1.5}
 .mc-item .choices{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .choice{font-size:.85rem;padding:7px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg)}
-.fr-item{margin-bottom:16px;padding:14px;border:1px solid var(--border);border-radius:9px}
+.fr-item{margin-bottom:16px;padding:14px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)}
 .fr-item .q-text{font-size:.92rem;font-weight:600;margin-bottom:10px;line-height:1.5;white-space:pre-line}
 .answer-line{height:1px;background:var(--border);width:100%;margin-top:10px}
 .answer-key{margin-top:24px;padding-top:16px;border-top:2px dashed var(--border);display:none}
 .answer-key h3{font-size:.9rem;font-weight:700;margin-bottom:10px;color:var(--accent)}
 .answer-key-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
-.ak-item{font-size:.82rem;padding:8px 10px;background:var(--bg);border-radius:7px;border:1px solid var(--border)}
+.ak-item{font-size:.82rem;padding:8px 10px;background:var(--surface2);border-radius:7px;border:1px solid var(--border)}
 .ak-label{color:var(--muted);font-size:.75rem;font-weight:700}
-.ak-ans{font-weight:700;color:var(--green);font-size:.9rem}
+.ak-ans{font-weight:700;color:#34d399;font-size:.9rem}
 .ak-exp{color:var(--muted);font-size:.75rem;margin-top:2px}
-.no-data-note{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;font-size:.85rem;color:#92400e;margin-bottom:12px}
 .print-actions{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.history-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.hist-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:.15s}
+.hist-item:hover{border-color:var(--accent)}
+.hi-icon{font-size:1.2rem}
+.hi-info{flex:1}
+.hi-title{font-size:.85rem;font-weight:700}
+.hi-meta{font-size:.72rem;color:var(--muted)}
 @media print{
-  .topnav,.hero,.print-actions,.no-print{display:none!important}
+  .ace-header,.hero,.print-actions,.no-print{display:none!important}
   .assignment{display:block!important;border:none;padding:0}
-  body{background:#fff}
-  .mc-item,.fr-item{break-inside:avoid}
+  body{background:#fff;color:#000}
+  .mc-item,.fr-item{break-inside:avoid;background:#fff;border-color:#ccc}
+  .choice{background:#f9f9f9}
   .answer-key{display:none}
-}
-
-  select,input{background:#1a1a2e;color:var(--text)}
-  .type-btn,.btn-outline{background:#1a1a2e}
-  .choice{background:#12121f}
-  .topnav{background:#12121f;border-color:var(--border)}
 }
 </style>
 <script src="theme.js"></script>
@@ -161,6 +151,13 @@ select:focus,input:focus{border-color:var(--accent)}
       <h3>🔑 Answer Key (Teacher Copy)</h3>
       <div class="answer-key-grid" id="answerKeyGrid"></div>
     </div>
+  </div>
+
+  <!-- Assignment history -->
+  <div class="ace-card no-print" id="historyCard" style="display:none">
+    <h2 style="margin-bottom:10px">📚 Recent Assignments</h2>
+    <div class="history-list" id="historyList"></div>
+    <button class="ace-btn-ghost" onclick="localStorage.removeItem('ace_assign_history');renderHistory()" style="margin-top:12px;font-size:.8rem">Clear History</button>
   </div>
 </div>
 
@@ -288,6 +285,99 @@ function printWithKey() {
 }
 
 updateSubjects();
+
+// ── localStorage persistence ────────────────────────────────────────────────
+const LS_SET='ace_assign_settings', LS_HIST='ace_assign_history';
+
+function saveSettings(){
+  localStorage.setItem(LS_SET,JSON.stringify({
+    grade:document.getElementById('gradeSelect').value,
+    subject:document.getElementById('subjectSelect').value,
+    unit:document.getElementById('unitSelect').value,
+    num:document.getElementById('numQs').value,
+    cls:document.getElementById('className').value,
+    type:assignType
+  }));
+}
+
+function loadSettings(){
+  const s=JSON.parse(localStorage.getItem(LS_SET)||'{}');
+  if(s.grade){document.getElementById('gradeSelect').value=s.grade;updateSubjects();}
+  if(s.subject){document.getElementById('subjectSelect').value=s.subject;updateUnits();}
+  if(s.unit&&document.getElementById('unitSelect')){
+    const opt=[...document.getElementById('unitSelect').options];
+    if(opt.find(o=>o.value===s.unit))document.getElementById('unitSelect').value=s.unit;
+  }
+  if(s.num)document.getElementById('numQs').value=s.num;
+  if(s.cls)document.getElementById('className').value=s.cls;
+  if(s.type){
+    assignType=s.type;
+    document.querySelectorAll('.type-btn').forEach(b=>{
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+s.type+"'")){
+        b.classList.add('active');
+      }
+    });
+  }
+}
+
+function saveToHistory(grade,subj,unit,type,numQs){
+  const hist=JSON.parse(localStorage.getItem(LS_HIST)||'[]');
+  hist.push({grade,subj,unit,type,numQs,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
+  if(hist.length>10)hist.shift();
+  localStorage.setItem(LS_HIST,JSON.stringify(hist));
+  renderHistory();
+}
+
+function renderHistory(){
+  const hist=JSON.parse(localStorage.getItem(LS_HIST)||'[]');
+  const card=document.getElementById('historyCard');
+  if(!hist||!hist.length){if(card)card.style.display='none';return;}
+  if(card)card.style.display='block';
+  const list=document.getElementById('historyList');
+  if(list)list.innerHTML=hist.slice().reverse().map(h=>`
+    <div class="hist-item" onclick="reloadAssignment('${h.grade}','${h.subj}','${h.unit}','${h.type}','${h.numQs}')">
+      <span class="hi-icon">📋</span>
+      <div class="hi-info">
+        <div class="hi-title">${h.unit} — Grade ${h.grade}</div>
+        <div class="hi-meta">${h.subj} · ${h.type} · ${h.numQs} questions · ${h.date}</div>
+      </div>
+    </div>`).join('');
+}
+
+function reloadAssignment(grade,subj,unit,type,num){
+  document.getElementById('gradeSelect').value=grade;
+  updateSubjects();
+  document.getElementById('subjectSelect').value=subj;
+  updateUnits();
+  const unitSel=document.getElementById('unitSelect');
+  for(let o of unitSel.options){if(o.value===unit){unitSel.value=unit;break;}}
+  document.getElementById('numQs').value=num;
+  assignType=type;
+  document.querySelectorAll('.type-btn').forEach(b=>{
+    b.classList.toggle('active',b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+type+"'"));
+  });
+  generateAssignment();
+}
+
+// Patch generateAssignment to also save settings & history
+const _origGenerate=generateAssignment;
+window.generateAssignment=function(){
+  saveSettings();
+  _origGenerate();
+  const g=document.getElementById('gradeSelect').value;
+  const s=document.getElementById('subjectSelect').value;
+  const u=document.getElementById('unitSelect').value;
+  if(g&&s&&u)saveToHistory(g,s,u,assignType,document.getElementById('numQs').value);
+};
+
+// Input change auto-save
+['gradeSelect','subjectSelect','unitSelect','numQs','className'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('change',saveSettings);
+});
+
+window.addEventListener('DOMContentLoaded',()=>{loadSettings();renderHistory();});
+
 </script>
 </body>
 </html>

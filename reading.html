@@ -7,50 +7,41 @@
 <title>Reading Comprehension — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css">
 <style>
-:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
-.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
-.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
 .hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#065f46,#059669);color:#fff}
 .hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
 .hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
-.container{max-width:860px;margin:24px auto;padding:0 20px}
-.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
-.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
-select,input{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
-select:focus,input:focus{border-color:var(--accent)}
-.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-right:6px}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
-.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
-
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat-box .val{font-size:1.4rem;font-weight:800;color:#34d399}
+.stat-box .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;margin-top:2px}
 .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
 .controls .field{display:flex;flex-direction:column;gap:5px}
 .controls label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase}
-
-.passage-box{background:#fafbff;border:1.5px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px;line-height:1.9;font-size:.93rem}
-.passage-box h3{font-size:.85rem;font-weight:800;color:var(--accent);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}
-
-.q-block{margin-bottom:14px;padding:14px;background:var(--bg);border-radius:10px;border:1.5px solid var(--border)}
+.controls select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:var(--surface2);outline:none}
+.controls select:focus{border-color:var(--accent)}
+.passage-box{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px;line-height:1.9;font-size:.93rem}
+.passage-box h3{font-size:.85rem;font-weight:800;color:#34d399;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}
+.q-block{margin-bottom:14px;padding:14px;background:var(--surface2);border-radius:10px;border:1.5px solid var(--border)}
 .q-text{font-size:.9rem;font-weight:600;line-height:1.5;margin-bottom:10px}
 .choices{display:flex;flex-direction:column;gap:7px}
-.choice{display:flex;gap:10px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:.87rem;transition:.12s;align-items:flex-start}
-.choice:hover{background:var(--card);border-color:var(--accent)}
-.choice.selected{border-color:var(--accent);background:#ede9fe}
-.choice.correct{border-color:var(--green);background:#d1fae5}
-.choice.wrong{border-color:var(--red);background:#fee2e2}
-.choice-letter{font-weight:800;min-width:18px;flex-shrink:0}
-.explanation{margin-top:10px;padding:10px 14px;background:#f0fdf4;border:1.5px solid #6ee7b7;border-radius:8px;font-size:.83rem;line-height:1.5;display:none}
-
-.score-summary{display:flex;gap:20px;align-items:center;padding:12px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap}
+.choice{display:flex;gap:10px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:.87rem;transition:.12s;align-items:flex-start;background:var(--bg)}
+.choice:hover{border-color:var(--accent)}
+.choice.selected{border-color:var(--accent);background:rgba(99,102,241,.1)}
+.choice.correct{border-color:#34d399;background:rgba(52,211,153,.1)}
+.choice.wrong{border-color:#f87171;background:rgba(248,113,113,.08)}
+.choice-letter{font-weight:800;min-width:18px;flex-shrink:0;color:var(--muted)}
+.explanation{margin-top:10px;padding:10px 14px;background:rgba(52,211,153,.08);border:1.5px solid #34d399;border-radius:8px;font-size:.83rem;line-height:1.5;display:none;color:#6ee7b7}
+.score-summary{display:flex;gap:20px;align-items:center;padding:14px 18px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap}
 .score-summary .num{font-size:1.6rem;font-weight:900;color:var(--accent)}
 .score-summary .lbl{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase}
-
-
-  select,input{background:#1a1a2e;color:var(--text);border-color:var(--border)}
-  .topnav{background:#12121f;border-color:var(--border)}.q-block,.passage-box{background:#12121f}
-}
+.history-list{display:flex;flex-direction:column;gap:8px}
+.hist-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)}
+.hist-item .hp{font-size:1.1rem;font-weight:800;color:#34d399}
+.hist-item .hi{flex:1}
+.hist-item .hs{font-size:.85rem;font-weight:700}
+.hist-item .ht{font-size:.72rem;color:var(--muted)}
 </style>
 <script src="theme.js"></script>
   <link rel="manifest" href="/aceAcademy/manifest.json">
@@ -79,6 +70,11 @@ select:focus,input:focus{border-color:var(--accent)}
   <p>Practice with grade-leveled passages across science, history, literature, and current events.</p>
 </div>
 <div class="ace-wrap">
+  <div class="stats-row">
+    <div class="stat-box"><div class="val" id="st-passages">0</div><div class="lbl">Passages Read</div></div>
+    <div class="stat-box"><div class="val" id="st-acc">—</div><div class="lbl">Avg Score</div></div>
+    <div class="stat-box"><div class="val" id="st-perfect">0</div><div class="lbl">Perfect Scores</div></div>
+  </div>
   <div class="ace-card">
     <div class="controls">
       <div class="field"><label>Grade Level</label>
@@ -104,6 +100,12 @@ select:focus,input:focus{border-color:var(--accent)}
 
   <div id="passageArea"></div>
 </div>
+
+  <div class="ace-card" id="historyCard" style="display:none">
+    <h2 style="margin-bottom:14px">📚 Reading History</h2>
+    <div class="history-list" id="historyList"></div>
+    <button class="ace-btn-ghost" onclick="clearReadingHistory()" style="margin-top:12px;font-size:.8rem">Clear History</button>
+  </div>
 
 <script>
 const PASSAGES = [
@@ -234,6 +236,48 @@ function pick(qi, ci){
 }
 
 loadPassage();
+
+// ── localStorage ──────────────────────────────────────────────────────────────
+const LS_READ_HIST = 'ace_reading_history';
+function saveReadingResult(title, correct, total){
+  const hist = JSON.parse(localStorage.getItem(LS_READ_HIST)||'[]');
+  hist.push({title, correct, total, pct:Math.round(correct/total*100), date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  if(hist.length>30)hist.shift();
+  localStorage.setItem(LS_READ_HIST, JSON.stringify(hist));
+  updateReadingStats(); renderReadingHistory();
+}
+function updateReadingStats(){
+  const hist=JSON.parse(localStorage.getItem(LS_READ_HIST)||'[]');
+  document.getElementById('st-passages').textContent=hist.length;
+  if(!hist.length)return;
+  const avg=Math.round(hist.reduce((s,h)=>s+h.pct,0)/hist.length);
+  const perfects=hist.filter(h=>h.pct===100).length;
+  document.getElementById('st-acc').textContent=avg+'%';
+  document.getElementById('st-perfect').textContent=perfects;
+}
+function renderReadingHistory(){
+  const hist=JSON.parse(localStorage.getItem(LS_READ_HIST)||'[]');
+  const card=document.getElementById('historyCard');
+  if(!hist.length){card.style.display='none';return;}
+  card.style.display='block';
+  document.getElementById('historyList').innerHTML=hist.slice().reverse().slice(0,10).map(h=>`
+    <div class="hist-item">
+      <div class="hp">${h.pct}%</div>
+      <div class="hi"><div class="hs">${h.title}</div><div class="ht">${h.correct}/${h.total} correct · ${h.date}</div></div>
+    </div>`).join('');
+}
+function clearReadingHistory(){if(!confirm('Clear reading history?'))return;localStorage.removeItem(LS_READ_HIST);updateReadingStats();renderReadingHistory();}
+window.addEventListener('DOMContentLoaded',()=>{updateReadingStats();renderReadingHistory();});
+// Patch pick to save when complete
+const _origPick=pick;
+function pick(qi,ci){
+  _origPick(qi,ci);
+  if(Object.keys(answered).length===current.questions.length){
+    const correct=Object.entries(answered).filter(([i,c])=>current.questions[i].a===parseInt(c)).length;
+    saveReadingResult(current.title,correct,current.questions.length);
+  }
+}
+
 </script>
 </body>
 </html>

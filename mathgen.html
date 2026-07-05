@@ -7,84 +7,94 @@
 <title>Math Practice Generator — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css">
 <style>
-:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
-.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
-.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
 .hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#0c4a6e,#0369a1);color:#fff}
 .hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
 .hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
-.container{max-width:860px;margin:24px auto;padding:0 20px}
-.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
-.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
-select,input{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
-select:focus,input:focus{border-color:var(--accent)}
-.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-right:6px}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
-.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
-
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:500px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat-box .val{font-size:1.4rem;font-weight:800;color:var(--accent)}
+.stat-box .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;margin-top:2px}
 .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
 .controls .field{display:flex;flex-direction:column;gap:5px}
 .controls label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase}
-.controls select{min-width:160px}
-
-.score-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px;margin-bottom:14px;font-size:.85rem}
-.score-bar .s-correct{font-weight:800;color:var(--green)}
-.score-bar .s-wrong{font-weight:800;color:var(--red)}
-.score-bar .s-total{color:var(--muted)}
-.streak{font-weight:800;color:var(--amber)}
-
-.q-card{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;transition:.2s}
-.q-card.correct-card{border-color:#6ee7b7;background:#f0fdf4}
-.q-card.wrong-card{border-color:#fca5a5;background:#fff1f2}
+.controls select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:var(--surface2);outline:none;min-width:140px}
+.controls select:focus{border-color:var(--accent)}
+.score-bar{display:flex;align-items:center;gap:16px;padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;font-size:.85rem;flex-wrap:wrap}
+.s-correct{font-weight:800;color:#34d399}
+.s-wrong{font-weight:800;color:#f87171}
+.s-streak{font-weight:800;color:#fbbf24}
+.s-pct{font-weight:800;color:var(--accent)}
+.q-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;transition:.2s}
+.q-card.correct-card{border-color:#34d399;background:rgba(52,211,153,.07)}
+.q-card.wrong-card{border-color:#f87171;background:rgba(248,113,113,.07)}
 .q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
-.q-tag{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:20px;background:#dbeafe;color:#1e40af}
+.q-tag{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:20px;background:rgba(99,102,241,.2);color:var(--accent)}
 .q-diff{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px}
-.easy{background:#d1fae5;color:#065f46}.medium{background:#fef3c7;color:#78350f}.hard{background:#fee2e2;color:#7f1d1d}
+.easy{background:rgba(52,211,153,.15);color:#34d399}
+.medium{background:rgba(251,191,36,.15);color:#fbbf24}
+.hard{background:rgba(248,113,113,.15);color:#f87171}
 .q-text{font-size:1rem;font-weight:600;line-height:1.6;margin-bottom:12px}
 .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.answer-row input{width:120px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;text-align:center;font-weight:700}
+.answer-row input{width:130px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;text-align:center;font-weight:700;background:var(--surface2);color:var(--text);outline:none}
 .answer-row input:focus{border-color:var(--accent)}
-.check-btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:.88rem;background:var(--accent);color:#fff}
-.check-btn:hover{background:#3730a3}
+.check-btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:.88rem;background:var(--accent);color:#fff;transition:.15s}
+.check-btn:hover{background:var(--accent2)}
 .feedback{margin-top:10px;padding:10px 14px;border-radius:9px;font-size:.85rem;font-weight:600;display:none;line-height:1.5}
-.feedback.ok{background:#d1fae5;color:#065f46;display:block}
-.feedback.err{background:#fee2e2;color:#7f1d1d;display:block}
-@media print{.topnav,.hero,.controls,.btn,.score-bar{display:none!important}.q-card{border:1.5px solid #ccc;break-inside:avoid}}
-
-  select,input{background:#1a1a2e;color:var(--text);border-color:var(--border)}
-  .topnav{background:#12121f;border-color:var(--border)}.q-card{background:#12121f}
-}
+.feedback.ok{background:rgba(52,211,153,.12);border-left:3px solid #34d399;color:#6ee7b7;display:block}
+.feedback.err{background:rgba(248,113,113,.1);border-left:3px solid #f87171;color:#fca5a5;display:block}
+.session-summary{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+.session-summary h3{font-size:1rem;font-weight:700;margin-bottom:14px}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
+.sum-item{text-align:center;padding:10px;background:var(--bg);border-radius:10px;border:1px solid var(--border)}
+.sum-item .sv{font-size:1.4rem;font-weight:800;color:var(--accent)}
+.sum-item .sl{font-size:.72rem;color:var(--muted);text-transform:uppercase}
+.topic-bars{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.topic-bar{display:flex;align-items:center;gap:10px;font-size:.82rem}
+.topic-bar .tname{min-width:100px;color:var(--muted)}
+.topic-bar .ttrack{flex:1;background:var(--border);border-radius:4px;height:8px;overflow:hidden}
+.topic-bar .tfill{height:100%;border-radius:4px;background:var(--accent);transition:.6s}
+.history-list{display:flex;flex-direction:column;gap:8px}
+.hist-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)}
+.hist-item .hp{font-size:1.1rem;font-weight:800;color:var(--accent)}
+.hist-item .hi{flex:1}
+.hist-item .hs{font-size:.85rem;font-weight:700}
+.hist-item .ht{font-size:.72rem;color:var(--muted)}
+@media print{.ace-header,.hero,.ace-card:first-of-type,.score-bar{display:none!important}.q-card{break-inside:avoid;border:1.5px solid #333}}
 </style>
 <script src="theme.js"></script>
-  <link rel="manifest" href="/aceAcademy/manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="aceAcademy">
-  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
-  <script src="/aceAcademy/streak.js"></script>
-  <script src="/aceAcademy/sounds.js"></script>
-  <script src="/aceAcademy/coins.js"></script>
-  <script src="/aceAcademy/nav-profile.js"></script>
-  <script src="/aceAcademy/splash.js"></script>
-<script src="/aceAcademy/timer.js"></script>
+<link rel="manifest" href="/aceAcademy/manifest.json">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="aceAcademy">
+<link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
+<script src="/aceAcademy/streak.js"></script><script src="/aceAcademy/sounds.js"></script>
+<script src="/aceAcademy/coins.js"></script><script src="/aceAcademy/nav-profile.js"></script>
+<script src="/aceAcademy/splash.js"></script><script src="/aceAcademy/timer.js"></script>
 </head>
 <body>
 <header class="ace-header">
   <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
   <a href="index.html" class="ace-nav-link">← Home</a>
-  
   <div class="ace-spacer"></div>
   <a href="alltools.html" class="ace-nav-link">All Tools</a>
 </header>
 <div class="hero">
   <h1>🔢 Math Problem Generator</h1>
-  <p>Unlimited practice problems — from basic arithmetic to calculus. Type your answer and check instantly.</p>
+  <p>Unlimited practice problems — from arithmetic to calculus. Type your answer and check instantly.</p>
 </div>
 <div class="ace-wrap">
+  <!-- All-time stats -->
+  <div class="stats-row">
+    <div class="stat-box"><div class="val" id="st-sessions">0</div><div class="lbl">Sessions</div></div>
+    <div class="stat-box"><div class="val" id="st-solved">0</div><div class="lbl">Problems Solved</div></div>
+    <div class="stat-box"><div class="val" id="st-acc">—</div><div class="lbl">All-time Accuracy</div></div>
+    <div class="stat-box"><div class="val" id="st-streak">0</div><div class="lbl">Best Streak</div></div>
+  </div>
+
+  <!-- Controls -->
   <div class="ace-card">
     <div class="controls">
       <div class="field"><label>Topic</label>
@@ -94,7 +104,7 @@ select:focus,input:focus{border-color:var(--accent)}
           <option value="algebra1">Algebra I</option>
           <option value="algebra2">Algebra II</option>
           <option value="geometry">Geometry</option>
-          <option value="stats">Statistics & Probability</option>
+          <option value="stats">Statistics</option>
           <option value="precalc">Precalculus</option>
           <option value="calculus">Calculus</option>
           <option value="mixed">Mixed (Random)</option>
@@ -117,107 +127,118 @@ select:focus,input:focus{border-color:var(--accent)}
         </select>
       </div>
       <div style="display:flex;gap:8px;align-items:flex-end">
-        <button class="btn ace-btn-primary" onclick="generate()">⚡ Generate</button>
-        <button class="btn ace-btn-outline" onclick="window.print()">🖨 Print</button>
+        <button class="ace-btn" onclick="generate()">⚡ Generate</button>
+        <button class="ace-btn-ghost" onclick="window.print()">🖨 Print</button>
       </div>
     </div>
   </div>
 
+  <!-- Live score bar -->
   <div id="scoreBar" style="display:none" class="score-bar">
-    <span>Answered: <b id="s-answered">0</b></span>
+    <span>Q: <b id="s-answered">0</b>/<b id="s-total">0</b></span>
     <span class="s-correct">✓ <span id="s-correct">0</span></span>
     <span class="s-wrong">✗ <span id="s-wrong">0</span></span>
-    <span class="s-total"><span id="s-pct">0</span>%</span>
-    <span class="streak">🔥 Streak: <span id="s-streak">0</span></span>
+    <span class="s-pct"><span id="s-pct">0</span>%</span>
+    <span class="s-streak">🔥 Streak: <span id="s-streak">0</span></span>
+    <button class="ace-btn-ghost" onclick="generate()" style="margin-left:auto;padding:5px 14px;font-size:.8rem">New Set</button>
   </div>
 
+  <!-- Problems -->
   <div id="problemsArea"></div>
-</div>
 
+  <!-- Session summary (shown when all answered) -->
+  <div class="session-summary" id="summaryCard" style="display:none">
+    <h3>📊 Session Results</h3>
+    <div class="sum-grid">
+      <div class="sum-item"><div class="sv" id="sum-score">0/0</div><div class="sl">Score</div></div>
+      <div class="sum-item"><div class="sv" id="sum-pct">0%</div><div class="sl">Accuracy</div></div>
+      <div class="sum-item"><div class="sv" id="sum-streak">0</div><div class="sl">Best Streak</div></div>
+      <div class="sum-item"><div class="sv" id="sum-topic">—</div><div class="sl">Topic</div></div>
+    </div>
+    <div id="topicBars" class="topic-bars"></div>
+    <div style="margin-top:14px;display:flex;gap:10px">
+      <button class="ace-btn" onclick="generate()">⚡ Try Again</button>
+      <button class="ace-btn-ghost" onclick="document.getElementById('g-topic').value='mixed';generate()">🎲 Random Mix</button>
+    </div>
+  </div>
+
+  <!-- Session history -->
+  <div class="ace-card" id="historyCard" style="display:none">
+    <h2 style="margin-bottom:14px">📚 Session History</h2>
+    <div class="history-list" id="historyList"></div>
+    <button class="ace-btn-ghost" onclick="clearHistory()" style="margin-top:12px;font-size:.8rem">Clear History</button>
+  </div>
+</div>
 <script>
-// Random helpers
+const LS_HIST='ace_math_history', LS_STATS='ace_math_stats';
 const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
 const rndNZ=(a,b)=>{let v=rnd(a,b);return v===0?1:v;};
 const choice=arr=>arr[Math.floor(Math.random()*arr.length)];
-
-// Problem generators per topic + difficulty
-const GENERATORS = {
+function fact(n){if(n<=1)return 1;let r=1;for(let i=2;i<=n;i++)r*=i;return r;}
+const GENERATORS={
   arithmetic:{
-    easy:()=>{const a=rnd(2,20),b=rnd(2,20),op=choice(['+','-','×']);const ans=op==='+'?a+b:op==='-'?a-b:a*b;return{q:`${a} ${op} ${b}`,a:ans};},
-    medium:()=>{const a=rnd(10,200),b=rnd(10,200),op=choice(['+','-','×']);const ans=op==='+'?a+b:op==='-'?a-b:a*b;return{q:`${a} ${op} ${b}`,a:ans};},
-    hard:()=>{const a=rnd(100,999),b=rnd(2,99),op=choice(['×','÷']);if(op==='÷'){const c=rnd(2,12);return{q:`${a*c} ÷ ${a}`,a:c};}return{q:`${a} × ${b}`,a:a*b};}
+    easy:()=>{const a=rnd(2,20),b=rnd(2,20),op=choice(['+','-','×']);const ans=op==='+'?a+b:op==='-'?a-b:a*b;return{q:`${a} ${op} ${b} = ?`,a:ans};},
+    medium:()=>{const a=rnd(10,200),b=rnd(10,200),op=choice(['+','-','×']);const ans=op==='+'?a+b:op==='-'?a-b:a*b;return{q:`${a} ${op} ${b} = ?`,a:ans};},
+    hard:()=>{const a=rnd(100,999),b=rnd(2,99),op=choice(['×','÷']);if(op==='÷'){const c=rnd(2,12);return{q:`${a*c} ÷ ${a} = ?`,a:c};}return{q:`${a} × ${b} = ?`,a:a*b};}
   },
   fractions:{
-    easy:()=>{const d=rnd(2,8);const n1=rnd(1,d-1);const n2=rnd(1,d-1);const sum=n1+n2;return{q:`${n1}/${d} + ${n2}/${d}`,a:`${sum}/${d} (simplify if needed)`,exact:sum/d};},
-    medium:()=>{const d1=rnd(2,6);const d2=rnd(2,6);const n1=rnd(1,d1);const n2=rnd(1,d2);const lcd=d1*d2;const num=n1*d2+n2*d1;return{q:`${n1}/${d1} + ${n2}/${d2}`,a:`${num}/${lcd}`,exact:num/lcd};},
-    hard:()=>{const d1=rnd(3,8);const d2=rnd(3,8);const n1=rnd(1,d1-1);const n2=rnd(1,d2-1);const lcd=d1*d2;const num=n1*d2-n2*d1;return{q:`${n1}/${d1} − ${n2}/${d2}`,a:`${num}/${lcd}`,exact:num/lcd};}
+    easy:()=>{const d=rnd(2,8),n1=rnd(1,d-1),n2=rnd(1,d-1),sum=n1+n2;return{q:`${n1}/${d} + ${n2}/${d} = ?`,a:sum+'/'+d,exact:sum/d};},
+    medium:()=>{const d1=rnd(2,6),d2=rnd(2,6),n1=rnd(1,d1),n2=rnd(1,d2),lcd=d1*d2,num=n1*d2+n2*d1;return{q:`${n1}/${d1} + ${n2}/${d2} = ? (as fraction)`,a:`${num}/${lcd}`,exact:num/lcd};},
+    hard:()=>{const d1=rnd(3,8),d2=rnd(3,8),n1=rnd(1,d1-1),n2=rnd(1,d2-1),lcd=d1*d2,num=n1*d2-n2*d1;return{q:`${n1}/${d1} − ${n2}/${d2} = ? (as fraction)`,a:`${num}/${lcd}`,exact:num/lcd};}
   },
   algebra1:{
-    easy:()=>{const a=rndNZ(2,10);const b=rnd(-20,20);const x=rnd(-10,10);const c=a*x+b;return{q:`If ${a}x + ${b} = ${c}, what is x?`,a:x};},
-    medium:()=>{const a=rndNZ(2,8);const b=rnd(-15,15);const c=rndNZ(2,8);const d=rnd(-15,15);const x=rnd(-5,5);const rhs=a*x+b;const lhs=c*x+d;return{q:`Solve for x: ${a}x + ${b} = ${c}x + ${d}`,a:(d-b)/(a-c)};},
-    hard:()=>{const a=rndNZ(1,5);const b=rnd(-6,6);const c=rnd(-8,8);const d=a*b;const e=-(a+b);const r=rnd(-3,3);const s=rnd(-3,3);return{q:`Factor: x² + ${e>=0?'+':''} ${e}x + ${d} = 0. What are the values of x?`,a:`x=${-a} and x=${-b}`};}
+    easy:()=>{const a=rndNZ(2,10),b=rnd(-20,20),x=rnd(-10,10),c=a*x+b;return{q:`Solve: ${a}x + ${b} = ${c}`,a:x};},
+    medium:()=>{const a=rndNZ(2,8),b=rnd(-15,15),c=rndNZ(2,8),d=rnd(-15,15);if(a===c)return{q:`Solve: 2x + 3 = 9`,a:3};const x=(d-b)/(a-c);if(!Number.isFinite(x)||!Number.isInteger(x))return{q:`Solve: 3x − 4 = 11`,a:5};return{q:`Solve: ${a}x + ${b} = ${c}x + ${d}`,a:x};},
+    hard:()=>{const r1=rnd(-5,5),r2=rnd(-5,5),e=-(r1+r2),p=r1*r2;return{q:`Factor: x² ${e>=0?'+ '+e:'− '+Math.abs(e)}x ${p>=0?'+ '+p:'− '+Math.abs(p)} = 0. Find x.`,a:`x=${-r1} and x=${-r2}`};}
   },
   algebra2:{
-    easy:()=>{const a=rndNZ(1,5);const h=rnd(-4,4);const k=rnd(-8,8);return{q:`What are the vertex coordinates of y = ${a}(x − ${h})² + ${k}?`,a:`(${h}, ${k})`};},
-    medium:()=>{const a=rndNZ(2,6);const x=rnd(1,4);const ans=Math.pow(a,x);return{q:`Solve: ${a}^x = ${ans}`,a:x};},
-    hard:()=>{const a=rndNZ(2,5);const b=rnd(-5,5);const ans=rnd(1,4);const c=Math.pow(a,ans)-b;return{q:`Solve: log base ${a} of (x + ${b}) = ${ans}`,a:Math.pow(a,ans)-b};}
+    easy:()=>{const a=rndNZ(1,5),h=rnd(-4,4),k=rnd(-8,8);return{q:`Vertex of y = ${a}(x − ${h})² + ${k}?`,a:`(${h}, ${k})`};},
+    medium:()=>{const a=rndNZ(2,6),x=rnd(1,4),ans=Math.pow(a,x);return{q:`Solve: ${a}^x = ${ans}`,a:x};},
+    hard:()=>{const a=rndNZ(2,5),ans=rnd(1,4),b=rnd(-5,5);return{q:`Solve: log₍${a}₎(x + ${b}) = ${ans}`,a:Math.pow(a,ans)-b};}
   },
   geometry:{
-    easy:()=>{const r=rnd(2,15);return{q:`What is the area of a circle with radius ${r}? (Leave in terms of π)`,a:`${r*r}π`};},
-    medium:()=>{const b=rnd(3,20);const h=rnd(3,20);const type=choice(['triangle','parallelogram']);const a=type==='triangle'?(b*h/2):(b*h);return{q:`Find the area of a ${type} with base ${b} and height ${h}.`,a:a};},
-    hard:()=>{const a=rnd(3,12);const b=rnd(3,12);return{q:`A right triangle has legs ${a} and ${b}. What is the hypotenuse? (Round to 2 decimal places)`,a:Math.round(Math.sqrt(a*a+b*b)*100)/100};}
+    easy:()=>{const r=rnd(2,15);return{q:`Area of circle with radius ${r}? (in terms of π)`,a:`${r*r}π`};},
+    medium:()=>{const b=rnd(3,20),h=rnd(3,20),type=choice(['triangle','parallelogram']);const a=type==='triangle'?(b*h/2):(b*h);return{q:`Area of ${type} with base ${b} and height ${h}?`,a:a};},
+    hard:()=>{const a=rnd(3,12),b=rnd(3,12);return{q:`Right triangle: legs ${a} and ${b}. Hypotenuse? (2 decimal places)`,a:Math.round(Math.sqrt(a*a+b*b)*100)/100};}
   },
   stats:{
-    easy:()=>{const nums=[rnd(1,20),rnd(1,20),rnd(1,20),rnd(1,20),rnd(1,20)];const s=nums.reduce((a,b)=>a+b,0);return{q:`Find the mean of: ${nums.join(', ')}`,a:Math.round(s/nums.length*100)/100};},
-    medium:()=>{const nums=[rnd(1,30),rnd(1,30),rnd(1,30),rnd(1,30),rnd(1,30)].sort((a,b)=>a-b);return{q:`Find the median of: ${nums.join(', ')}`,a:nums[2]};},
-    hard:()=>{const p=rnd(1,9);const n=rnd(5,20);const r=rnd(1,Math.min(p,n-p));const top=fact(n)/(fact(r)*fact(n-r));return{q:`How many ways can you choose ${r} items from ${n} items? (Combination)`,a:top};}
+    easy:()=>{const nums=[rnd(1,20),rnd(1,20),rnd(1,20),rnd(1,20),rnd(1,20)],s=nums.reduce((a,b)=>a+b,0);return{q:`Mean of: ${nums.join(', ')}`,a:Math.round(s/nums.length*100)/100};},
+    medium:()=>{const nums=[rnd(1,30),rnd(1,30),rnd(1,30),rnd(1,30),rnd(1,30)].sort((a,b)=>a-b);return{q:`Median of: ${nums.join(', ')}`,a:nums[2]};},
+    hard:()=>{const n=rnd(5,20),r=rnd(1,Math.min(4,n-1));const top=fact(n)/(fact(r)*fact(n-r));return{q:`C(${n},${r}) = ? (combination)`,a:top};}
   },
   precalc:{
-    easy:()=>{const angles={0:0,30:0.5,45:0.707,60:0.866,90:1};const keys=Object.keys(angles);const deg=choice(keys);return{q:`What is sin(${deg}°)?`,a:angles[deg]};},
-    medium:()=>{const deg=choice([0,30,45,60,90,120,180,270]);const rad=deg*Math.PI/180;const v=Math.round(Math.cos(rad)*1000)/1000;return{q:`What is cos(${deg}°)?`,a:v};},
-    hard:()=>{const a=rndNZ(2,5);const b=rndNZ(1,4);return{q:`What is the period of y = ${a}sin(${b}x)?`,a:`${Math.round(2*Math.PI/b*100)/100} (2π/${b})`};}
+    easy:()=>{const A={0:0,30:.5,45:Math.round(.707*100)/100,60:Math.round(.866*100)/100,90:1};const k=choice(Object.keys(A));return{q:`sin(${k}°) = ?`,a:A[k]};},
+    medium:()=>{const deg=choice([0,30,45,60,90,120,180,270]);const v=Math.round(Math.cos(deg*Math.PI/180)*1000)/1000;return{q:`cos(${deg}°) = ?`,a:v};},
+    hard:()=>{const b=rndNZ(1,4);return{q:`Period of y = sin(${b}x)?`,a:`${Math.round(2*Math.PI/b*100)/100}`};}
   },
   calculus:{
-    easy:()=>{const n=rnd(2,6);return{q:`Find the derivative: d/dx [x^${n}]`,a:`${n}x^${n-1}`};},
-    medium:()=>{const a=rndNZ(2,8);const n=rnd(2,5);return{q:`Find the derivative: d/dx [${a}x^${n}]`,a:`${a*n}x^${n-1}`};},
-    hard:()=>{const a=rndNZ(1,5);const n=rnd(2,4);return{q:`Integrate: ∫ ${a}x^${n} dx`,a:`${a}x^${n+1}/${n+1} + C`};}
-  },
-};
-
-function fact(n){if(n<=1)return 1;let r=1;for(let i=2;i<=n;i++)r*=i;return r;}
-
-let session = [];
-let answered = {}, streak = 0;
-
-function getDiff(topicDiff, globalDiff){
-  if(globalDiff==='mixed') return choice(['easy','medium','hard']);
-  return globalDiff;
-}
-
-function generate(){
-  const topic = document.getElementById('g-topic').value;
-  const diff = document.getElementById('g-diff').value;
-  const count = parseInt(document.getElementById('g-count').value);
-  answered = {}; streak = 0;
-
-  const topics = topic==='mixed'?Object.keys(GENERATORS):[topic];
-  session = [];
-  for(let i=0;i<count;i++){
-    const t = choice(topics);
-    const d = getDiff(null, diff);
-    try{
-      const gen = GENERATORS[t]?.[d]||GENERATORS[t]?.medium;
-      if(gen){ const p=gen(); session.push({...p,topic:t,diff:d,id:i}); }
-    }catch(e){ session.push({q:'2 + 2',a:4,topic:'arithmetic',diff:'easy',id:i}); }
+    easy:()=>{const n=rnd(2,6);return{q:`d/dx [x^${n}] = ?`,a:`${n}x^${n-1}`};},
+    medium:()=>{const a=rndNZ(2,8),n=rnd(2,5);return{q:`d/dx [${a}x^${n}] = ?`,a:`${a*n}x^${n-1}`};},
+    hard:()=>{const a=rndNZ(1,5),n=rnd(2,4);return{q:`∫ ${a}x^${n} dx = ?`,a:`${a}/${n+1}·x^${n+1} + C`};}
   }
-
-  renderProblems();
-  updateScore();
+};
+let session=[],answered={},streak=0,bestStreak=0,sessionStart=0;
+function getDiff(d){return d==='mixed'?choice(['easy','medium','hard']):d;}
+function generate(){
+  const topic=document.getElementById('g-topic').value;
+  const diff=document.getElementById('g-diff').value;
+  const count=parseInt(document.getElementById('g-count').value);
+  answered={}; streak=0; bestStreak=0; sessionStart=Date.now();
+  const topics=topic==='mixed'?Object.keys(GENERATORS):[topic];
+  session=[];
+  for(let i=0;i<count;i++){
+    const t=choice(topics),d=getDiff(diff);
+    try{const gen=GENERATORS[t]?.[d]||GENERATORS[t]?.medium;if(gen)session.push({...gen(),topic:t,diff:d,id:i});}
+    catch(e){session.push({q:'5 + 7 = ?',a:12,topic:'arithmetic',diff:'easy',id:i});}
+  }
+  document.getElementById('summaryCard').style.display='none';
   document.getElementById('scoreBar').style.display='flex';
+  document.getElementById('s-total').textContent=session.length;
+  renderProblems(); updateScore();
+  document.getElementById('problemsArea').scrollIntoView({behavior:'smooth',block:'start'});
 }
-
 function renderProblems(){
-  document.getElementById('problemsArea').innerHTML = session.map((p,i)=>`
+  document.getElementById('problemsArea').innerHTML=session.map((p,i)=>`
     <div class="q-card" id="qcard${i}">
       <div class="q-header">
         <span class="q-tag">${p.topic.charAt(0).toUpperCase()+p.topic.slice(1)}</span>
@@ -226,58 +247,43 @@ function renderProblems(){
       <div class="q-text">${i+1}. ${p.q}</div>
       <div class="answer-row">
         <input type="text" id="ans${i}" placeholder="Your answer" onkeydown="if(event.key==='Enter')checkAnswer(${i})">
-        <button class="check-ace-btn" onclick="checkAnswer(${i})">Check ✓</button>
+        <button class="check-btn" onclick="checkAnswer(${i})">Check ✓</button>
       </div>
       <div class="feedback" id="fb${i}"></div>
     </div>`).join('');
 }
-
-function normalizeAnswer(s){
-  return String(s).toLowerCase().replace(/\s+/g,'').replace(/×/g,'*').replace(/÷/g,'/');
-}
-
+function normalizeAnswer(s){return String(s).toLowerCase().replace(/\s+/g,'').replace(/×/g,'*').replace(/÷/g,'/');}
 function checkAnswer(i){
-  if(answered[i]!==undefined) return;
-  const p = session[i];
-  const userRaw = document.getElementById(`ans${i}`).value.trim();
-  if(!userRaw) return;
-
-  const user = normalizeAnswer(userRaw);
-  const correct = normalizeAnswer(p.a);
-
-  let isCorrect = user===correct;
-  // Try numeric comparison
-  if(!isCorrect){
-    const nu=parseFloat(user), nc=parseFloat(correct);
-    if(!isNaN(nu)&&!isNaN(nc)) isCorrect=Math.abs(nu-nc)<0.01;
-  }
-  // Check if exact decimal matches
-  if(!isCorrect && p.exact!==undefined){
-    const nu=parseFloat(user);
-    if(!isNaN(nu)) isCorrect=Math.abs(nu-p.exact)<0.01;
-  }
-
-  answered[i] = isCorrect;
-  const card = document.getElementById(`qcard${i}`);
-  const fb = document.getElementById(`fb${i}`);
-  if(isCorrect){
+  if(answered[i]!==undefined)return;
+  const p=session[i];
+  const userRaw=document.getElementById('ans'+i).value.trim();
+  if(!userRaw)return;
+  const user=normalizeAnswer(userRaw);
+  const correct=normalizeAnswer(p.a);
+  let ok=user===correct;
+  if(!ok){const nu=parseFloat(user),nc=parseFloat(correct);if(!isNaN(nu)&&!isNaN(nc))ok=Math.abs(nu-nc)<0.02;}
+  if(!ok&&p.exact!==undefined){const nu=parseFloat(user);if(!isNaN(nu))ok=Math.abs(nu-p.exact)<0.02;}
+  answered[i]=ok;
+  const card=document.getElementById('qcard'+i);
+  const fb=document.getElementById('fb'+i);
+  if(ok){
     card.classList.add('correct-card');
     fb.className='feedback ok';
-    fb.innerHTML=`✅ Correct!${p.hint?'<br>'+p.hint:''}`;
+    fb.innerHTML='✅ Correct!';
     streak++;
+    if(streak>bestStreak)bestStreak=streak;
   } else {
     card.classList.add('wrong-card');
     fb.className='feedback err';
-    fb.innerHTML=`✗ Not quite. The answer is <strong>${p.a}</strong>${p.exp?'<br>'+p.exp:''}`;
+    fb.innerHTML=`✗ Not quite — answer: <strong>${p.a}</strong>`;
     streak=0;
   }
-  document.getElementById(`ans${i}`).disabled=true;
+  document.getElementById('ans'+i).disabled=true;
   updateScore();
+  if(Object.keys(answered).length===session.length)showSummary();
 }
-
 function updateScore(){
-  const an=Object.keys(answered).length;
-  const co=Object.values(answered).filter(Boolean).length;
+  const an=Object.keys(answered).length,co=Object.values(answered).filter(Boolean).length;
   const wr=an-co;
   document.getElementById('s-answered').textContent=an;
   document.getElementById('s-correct').textContent=co;
@@ -285,6 +291,67 @@ function updateScore(){
   document.getElementById('s-pct').textContent=an>0?Math.round(co/an*100):0;
   document.getElementById('s-streak').textContent=streak;
 }
+function showSummary(){
+  const an=Object.keys(answered).length,co=Object.values(answered).filter(Boolean).length;
+  const pct=Math.round(co/an*100);
+  document.getElementById('sum-score').textContent=co+'/'+an;
+  document.getElementById('sum-pct').textContent=pct+'%';
+  document.getElementById('sum-streak').textContent=bestStreak;
+  const topicSet=document.getElementById('g-topic').value;
+  document.getElementById('sum-topic').textContent=topicSet==='mixed'?'Mixed':topicSet.charAt(0).toUpperCase()+topicSet.slice(1);
+  // Topic breakdown
+  const topicMap={};
+  session.forEach((p,i)=>{
+    if(!topicMap[p.topic])topicMap[p.topic]={c:0,t:0};
+    topicMap[p.topic].t++;
+    if(answered[i])topicMap[p.topic].c++;
+  });
+  document.getElementById('topicBars').innerHTML=Object.entries(topicMap).map(([t,v])=>`
+    <div class="topic-bar">
+      <span class="tname">${t.charAt(0).toUpperCase()+t.slice(1)}</span>
+      <div class="ttrack"><div class="tfill" style="width:${Math.round(v.c/v.t*100)}%"></div></div>
+      <span style="font-size:.75rem;color:var(--muted)">${v.c}/${v.t}</span>
+    </div>`).join('');
+  document.getElementById('summaryCard').style.display='block';
+  document.getElementById('summaryCard').scrollIntoView({behavior:'smooth',block:'start'});
+  saveSession(co,an,pct);
+}
+function saveSession(correct,total,pct){
+  const hist=JSON.parse(localStorage.getItem(LS_HIST)||'[]');
+  hist.push({correct,total,pct,topic:document.getElementById('g-topic').value,diff:document.getElementById('g-diff').value,bestStreak,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  if(hist.length>30)hist.shift();
+  localStorage.setItem(LS_HIST,JSON.stringify(hist));
+  // Update cumulative stats
+  const stats=JSON.parse(localStorage.getItem(LS_STATS)||'{"sessions":0,"solved":0,"correct":0,"bestStreak":0}');
+  stats.sessions++;
+  stats.solved+=total;
+  stats.correct+=correct;
+  if(bestStreak>stats.bestStreak)stats.bestStreak=bestStreak;
+  localStorage.setItem(LS_STATS,JSON.stringify(stats));
+  updateAllTimeStats();
+  renderHistory();
+}
+function updateAllTimeStats(){
+  const s=JSON.parse(localStorage.getItem(LS_STATS)||'{"sessions":0,"solved":0,"correct":0,"bestStreak":0}');
+  document.getElementById('st-sessions').textContent=s.sessions;
+  document.getElementById('st-solved').textContent=s.solved;
+  document.getElementById('st-acc').textContent=s.solved>0?Math.round(s.correct/s.solved*100)+'%':'—';
+  document.getElementById('st-streak').textContent=s.bestStreak;
+}
+function renderHistory(){
+  const hist=JSON.parse(localStorage.getItem(LS_HIST)||'[]');
+  const card=document.getElementById('historyCard');
+  if(!hist.length){card.style.display='none';return;}
+  card.style.display='block';
+  document.getElementById('historyList').innerHTML=hist.slice().reverse().slice(0,10).map(h=>`
+    <div class="hist-item">
+      <div class="hp">${h.pct}%</div>
+      <div class="hi"><div class="hs">${h.correct}/${h.total} correct &nbsp;·&nbsp; ${h.topic} &nbsp;·&nbsp; ${h.diff}</div><div class="ht">${h.date} · Best streak: ${h.bestStreak}</div></div>
+    </div>`).join('');
+}
+function clearHistory(){if(!confirm('Clear math history?'))return;localStorage.removeItem(LS_HIST);localStorage.removeItem(LS_STATS);updateAllTimeStats();renderHistory();}
+// Init
+updateAllTimeStats(); renderHistory();
 </script>
 </body>
 </html>

@@ -119,6 +119,12 @@ nav.topnav::-webkit-scrollbar{display:none}
   </div>
 </div>
 
+  <div class="ace-card" id="savedDatasetsCard" style="display:none">
+    <h2 style="margin-bottom:12px">📊 Saved Datasets</h2>
+    <div id="savedDatasetsList" style="display:flex;flex-direction:column;gap:8px"></div>
+    <button class="ace-btn-ghost" onclick="localStorage.removeItem('ace_statscalc_datasets');renderSavedDatasets()" style="margin-top:12px;font-size:.8rem">Clear All</button>
+  </div>
+
 <script>
 const SAMPLES = {
   test: [72,85,91,68,77,84,90,63,88,75,82,79,95,61,87,73,80,92,66,78],
@@ -314,6 +320,66 @@ function renderFreqTable(sorted, n) {
       <tbody>${rows.join('')}</tbody>
     </table>`;
 }
+
+// ── localStorage: save datasets ──────────────────────────────────────────────
+const LS_STATS = 'ace_statscalc_history';
+const LS_DATASETS = 'ace_statscalc_datasets';
+
+function saveDataset(name, data, results){
+  const datasets = JSON.parse(localStorage.getItem(LS_DATASETS)||'[]');
+  datasets.unshift({name:name||'Dataset '+(datasets.length+1), data, results:results||{}, date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  if(datasets.length>8)datasets.pop();
+  localStorage.setItem(LS_DATASETS, JSON.stringify(datasets));
+  renderSavedDatasets();
+}
+
+function renderSavedDatasets(){
+  const datasets=JSON.parse(localStorage.getItem(LS_DATASETS)||'[]');
+  const card=document.getElementById('savedDatasetsCard');
+  if(!card)return;
+  if(!datasets.length){card.style.display='none';return;}
+  card.style.display='block';
+  document.getElementById('savedDatasetsList').innerHTML=datasets.map((d,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);cursor:pointer" onclick="loadDataset(${i})">
+      <div style="flex:1">
+        <div style="font-size:.85rem;font-weight:700">${d.name}</div>
+        <div style="font-size:.72rem;color:var(--muted)">${d.data} · ${d.date}${d.results.n?' · n='+d.results.n:''}</div>
+      </div>
+      <button style="border:none;background:none;color:#f87171;cursor:pointer;font-size:.85rem" onclick="event.stopPropagation();deleteDataset(${i})">✕</button>
+    </div>`).join('');
+}
+
+function loadDataset(i){
+  const datasets=JSON.parse(localStorage.getItem(LS_DATASETS)||'[]');
+  if(!datasets[i])return;
+  const input=document.getElementById('dataInput')||document.querySelector('textarea');
+  if(input)input.value=datasets[i].data;
+}
+
+function deleteDataset(i){
+  const datasets=JSON.parse(localStorage.getItem(LS_DATASETS)||'[]');
+  datasets.splice(i,1);
+  localStorage.setItem(LS_DATASETS,JSON.stringify(datasets));
+  renderSavedDatasets();
+}
+
+// Patch calculate to auto-save
+const _origCalc=calculate;
+function calculate(){
+  _origCalc();
+  const input=document.getElementById('dataInput')||document.querySelector('textarea');
+  if(input&&input.value.trim()){
+    const nums=input.value.trim().split(/[,\s
+]+/).map(Number).filter(n=>!isNaN(n));
+    if(nums.length>=2){
+      const n=nums.length, mean=nums.reduce((a,b)=>a+b,0)/n;
+      saveDataset(null, input.value.trim().substring(0,60)+'...', {n, mean:Math.round(mean*100)/100});
+    }
+  }
+}
+
+window.addEventListener('DOMContentLoaded',()=>renderSavedDatasets());
+
 </script>
 </body>
 </html>

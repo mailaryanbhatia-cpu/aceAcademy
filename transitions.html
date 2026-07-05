@@ -44,6 +44,18 @@ nav.topnav::-webkit-scrollbar{display:none}
 .no-results-icon{font-size:2rem;margin-bottom:10px}
 .tip-bar{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:24px;font-size:.82rem;color:#b8c4d8;line-height:1.6}
 .tip-bar strong{color:var(--accent)}
+
+.recent-bar{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:16px}
+.recent-bar h4{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.recent-chips{display:flex;gap:6px;flex-wrap:wrap}
+.recent-chip{padding:5px 12px;border-radius:20px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:var(--accent);font-size:.8rem;font-weight:600;cursor:pointer;transition:.15s}
+.recent-chip:hover{background:rgba(99,102,241,.25)}
+.fav-badge{position:absolute;top:6px;left:8px;font-size:.7rem;color:#fbbf24;display:none}
+.word-card.favorited .fav-badge{display:block}
+.fav-toggle{position:absolute;top:6px;right:8px;font-size:.75rem;background:none;border:none;cursor:pointer;color:var(--muted);transition:.15s;padding:2px}
+.fav-toggle:hover{color:#fbbf24}
+.stats-mini{font-size:.75rem;color:var(--muted);margin-left:auto}
+
 </style>
 <script src="theme.js"></script>
   <link rel="manifest" href="/aceAcademy/manifest.json">
@@ -70,6 +82,13 @@ nav.topnav::-webkit-scrollbar{display:none}
 <div class="hero">
   <h1>🔗 Transition <span>Word Bank</span></h1>
   <p>Click any word or phrase to copy it. Search by purpose or browse by category.</p>
+</div>
+
+<div id="recentSection" style="display:none;padding:0 20px;max-width:1000px;margin:0 auto">
+  <div class="recent-bar">
+    <h4>⏱ Recently Used <span class="stats-mini" id="recentStats"></span></h4>
+    <div class="recent-chips" id="recentChips"></div>
+  </div>
 </div>
 <div class="search-bar">
   <input class="search-input" id="searchInput" placeholder='Search transitions… e.g. "contrast", "furthermore", "however"' oninput="render()">
@@ -306,6 +325,58 @@ function copyWord(card, word) {
 }
 
 init();
+
+// ── localStorage: Recents + Favorites ───────────────────────────────────────
+const LS_RECENT='ace_transitions_recent', LS_FAVS='ace_transitions_favs';
+
+function getRecent(){return JSON.parse(localStorage.getItem(LS_RECENT)||'[]');}
+function getFavs(){return JSON.parse(localStorage.getItem(LS_FAVS)||'[]');}
+function getFav(w){return getFavs().includes(w);}
+
+function addRecent(word){
+  let r=getRecent().filter(x=>x!==word);
+  r.unshift(word);
+  if(r.length>12)r=r.slice(0,12);
+  localStorage.setItem(LS_RECENT,JSON.stringify(r));
+  renderRecents();
+}
+
+function toggleFav(btn,word){
+  let favs=getFavs();
+  const idx=favs.indexOf(word);
+  if(idx>=0)favs.splice(idx,1); else favs.push(word);
+  localStorage.setItem(LS_FAVS,JSON.stringify(favs));
+  btn.textContent=getFav(word)?'⭐':'☆';
+  const card=btn.closest('.word-card');
+  if(card)card.classList.toggle('favorited',getFav(word));
+}
+
+function renderRecents(){
+  const r=getRecent();
+  const sec=document.getElementById('recentSection');
+  if(!r.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  document.getElementById('recentStats').textContent=r.length+' recent · '+getFavs().length+' favorites';
+  document.getElementById('recentChips').innerHTML=r.map(w=>`
+    <span class="recent-chip" onclick="quickCopy('${w.replace(/'/g,"\\'")}')">
+      ${w} <span style="opacity:.6;font-size:.7rem">📋</span>
+    </span>`).join('');
+}
+
+function quickCopy(word){
+  navigator.clipboard.writeText(word).catch(()=>{});
+  addRecent(word);
+}
+
+// Override copyWord to track recents
+const _origCopyWord=copyWord;
+function copyWord(card,word){
+  _origCopyWord(card,word);
+  addRecent(word);
+}
+
+window.addEventListener('DOMContentLoaded',()=>renderRecents());
+
 </script>
 </body>
 </html>

@@ -221,6 +221,13 @@ body{font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--text);mi
       <button class="btn btn-accent" style="margin-top:16px" onclick="location.reload()">🔄 New Debate</button>
     </div>
   </div>
+
+  <!-- Debate history -->
+  <div class="card" id="debateHistoryCard" style="display:none;margin-top:20px">
+    <div class="card-title">📚 Debate History</div>
+    <div id="debateHistoryList" style="display:flex;flex-direction:column;gap:8px"></div>
+    <button class="btn btn-outline" onclick="clearDebateHistory()" style="margin-top:12px;font-size:.8rem;padding:6px 14px">Clear History</button>
+  </div>
 </div>
 
 <script>
@@ -398,6 +405,59 @@ function generateFeedback(){
 function endDebate(){if(confirm('End this debate session?')){location.reload();}}
 
 renderTopics();
+
+// ── localStorage: debate history ─────────────────────────────────────────────
+const LS_DEBATE = 'ace_debate_history';
+function saveDebateSession(){
+  const total=state.scores.reduce((a,b)=>a+b,0);
+  const max=state.scores.length*10;
+  const pct=Math.round(total/max*100);
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F';
+  const hist=JSON.parse(localStorage.getItem(LS_DEBATE)||'[]');
+  hist.push({
+    topic:state.topic?.title||'Custom topic',
+    total,max,pct,grade,
+    rounds:state.savedArgs.length,
+    side:document.getElementById('sideSel')?.value||'pro',
+    date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+  });
+  if(hist.length>20)hist.shift();
+  localStorage.setItem(LS_DEBATE,JSON.stringify(hist));
+  renderDebateHistory();
+}
+function renderDebateHistory(){
+  const hist=JSON.parse(localStorage.getItem(LS_DEBATE)||'[]');
+  const card=document.getElementById('debateHistoryCard');
+  if(!hist||!hist.length){if(card)card.style.display='none';return;}
+  if(card)card.style.display='block';
+  const list=document.getElementById('debateHistoryList');
+  if(list)list.innerHTML=hist.slice().reverse().slice(0,10).map(h=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+      <div style="font-size:1.2rem;font-weight:800;color:var(--accent);min-width:32px">${h.grade}</div>
+      <div style="flex:1">
+        <div style="font-size:.85rem;font-weight:700">${h.topic}</div>
+        <div style="font-size:.72rem;color:var(--muted)">${h.pct}% · ${h.rounds} rounds · ${h.side} · ${h.date}</div>
+      </div>
+    </div>`).join('');
+}
+function clearDebateHistory(){if(!confirm('Clear debate history?'))return;localStorage.removeItem(LS_DEBATE);renderDebateHistory();}
+
+// Patch showScoring to auto-save
+const _origShowScoring=showScoring;
+function showScoring(){
+  _origShowScoring();
+  saveDebateSession();
+}
+
+// Patch location.reload() to save on end
+const _origEndDebate=endDebate;
+function endDebate(){
+  if(state.phase>0)saveDebateSession();
+  if(confirm('End this debate session?')){location.reload();}
+}
+
+window.addEventListener('DOMContentLoaded',()=>renderDebateHistory());
+
 </script>
 </body>
 </html>

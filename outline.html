@@ -7,59 +7,37 @@
 <title>Essay Outline Builder — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css">
 <style>
-:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
-.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
-.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
-.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,var(--accent2),#a855f7);color:#fff}
 .hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
 .hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
-.container{max-width:860px;margin:24px auto;padding:0 20px}
-.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
-.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
-input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none;font-family:inherit}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:var(--surface2);outline:none;font-family:inherit}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 textarea{resize:vertical;min-height:60px}
 label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px}
 .field{margin-bottom:12px}
-.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-right:8px}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
-.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:#eff6ff}
-.btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--muted)}
-.btn-sm:hover{background:var(--bg)}.btn-sm.del{color:var(--red)}.btn-sm.del:hover{background:#fef2f2}
-.btn-sm.add{color:var(--accent);border-color:var(--accent)}.btn-sm.add:hover{background:#eff6ff}
-
-/* Outline editor */
+.btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;color:var(--muted);font-family:inherit}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm.del{color:#f87171;border-color:transparent}.btn-sm.del:hover{background:rgba(248,113,113,.1)}
+.btn-sm.add{color:var(--accent);border-color:var(--accent)}.btn-sm.add:hover{background:rgba(99,102,241,.1)}
 .outline-area{display:grid;grid-template-columns:220px 1fr;gap:0;border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
-.outline-sidebar{background:#f9fafb;border-right:1.5px solid var(--border);padding:14px}
-.outline-sidebar .section-btn{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:8px;border:none;background:none;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:3px}
-.outline-sidebar .section-btn:hover{background:#ede9fe;color:var(--accent)}
-.outline-sidebar .section-btn.active{background:#ede9fe;color:var(--accent)}
+.outline-sidebar{background:var(--surface2);border-right:1.5px solid var(--border);padding:14px}
+.section-btn{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:8px;border:none;background:none;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:3px;font-family:inherit;transition:.15s}
+.section-btn:hover{background:rgba(99,102,241,.12);color:var(--accent)}
+.section-btn.active{background:rgba(99,102,241,.18);color:var(--accent)}
 .outline-main{padding:18px;min-height:340px}
-.section-header{font-size:.95rem;font-weight:800;margin-bottom:12px;color:var(--accent);display:flex;justify-content:space-between;align-items:center}
+.sec-header{font-size:.95rem;font-weight:800;margin-bottom:12px;color:var(--accent);display:flex;justify-content:space-between;align-items:center}
 .point-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
-.point-row .handle{cursor:grab;color:var(--muted);font-size:1rem;padding-top:9px;flex-shrink:0}
-.point-row textarea{flex:1;min-height:52px}
 .point-num{font-size:.75rem;font-weight:700;color:var(--muted);padding-top:10px;flex-shrink:0;min-width:18px}
-.sub-point-row{display:flex;gap:6px;margin:6px 0 6px 28px;align-items:flex-start}
-.sub-point-row textarea{flex:1;min-height:44px}
-
-/* Outline preview (print) */
-.outline-preview{display:none}
-@media print{.topnav,.hero,.card:not(.preview-card){display:none!important}.outline-preview{display:block}.preview-card{display:block!important}}
-.preview-section{margin-bottom:20px}
-.preview-section h3{font-size:1rem;font-weight:800;border-bottom:1.5px solid var(--border);padding-bottom:4px;margin-bottom:8px}
-.preview-main-point{font-size:.9rem;margin:6px 0 2px 10px;font-weight:600}
-.preview-sub-point{font-size:.85rem;color:var(--muted);margin:3px 0 3px 30px}
-
-@media(max-width:640px){.outline-area{grid-template-columns:1fr;}.outline-sidebar{border-right:none;border-bottom:1.5px solid var(--border)}}
-
-  input,select,textarea{background:#1a1a2e;color:var(--text);border-color:var(--border)}
-  .topnav{background:#12121f;border-color:var(--border)}.btn-sm{background:#1a1a2e}
-  .outline-sidebar{background:#12121f}
-}
+.sub-point-row{display:flex;gap:6px;margin:4px 0 4px 28px;align-items:flex-start}
+.drafts-list{display:flex;flex-direction:column;gap:8px}
+.draft-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:.15s}
+.draft-item:hover{border-color:var(--accent)}
+.di-title{font-size:.85rem;font-weight:700}
+.di-meta{font-size:.72rem;color:var(--muted)}
+@media(max-width:640px){.outline-area{grid-template-columns:1fr}.outline-sidebar{border-right:none;border-bottom:1.5px solid var(--border)}}
+@media print{.ace-header,.hero,.ace-card:not(.preview-card){display:none!important}body{background:#fff;color:#000}}
 </style>
 <script src="theme.js"></script>
   <link rel="manifest" href="/aceAcademy/manifest.json">
@@ -113,7 +91,7 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
       </div>
       <div class="field" style="grid-column:1/-1"><label>Thesis Statement (optional — you can fill it in the outline)</label><textarea id="e-thesis" placeholder="Enter your thesis here or write it in the outline..." style="min-height:52px"></textarea></div>
     </div>
-    <button class="btn ace-btn-primary" onclick="buildOutline()" style="margin-top:4px">🗂 Build Outline</button>
+    <button class="ace-btn" onclick="buildOutline()" style="margin-top:4px">🗂 Build Outline</button>
   </div>
 
   <!-- Outline editor -->
@@ -121,9 +99,9 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0">📄 <span id="outlineTitle">Outline</span></h2>
       <div>
-        <button class="btn ace-btn-outline" onclick="copyOutline()">📋 Copy Text</button>
-        <button class="btn ace-btn-primary" onclick="window.print()">🖨 Print</button>
-        <button class="ace-btn-sm" onclick="resetOutline()" style="margin-left:4px">↩ Reset</button>
+        <button class="ace-btn-ghost" onclick="copyOutline()">📋 Copy Text</button>
+        <button class="ace-btn" onclick="window.print()">🖨 Print</button>
+        <button class="btn-sm" onclick="resetOutline()" style="margin-left:4px">↩ Reset</button>
       </div>
     </div>
     <div class="outline-area">
@@ -135,6 +113,11 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:upperca
   <!-- Print preview -->
   <div class="outline-preview card preview-card" id="printPreview"></div>
 </div>
+
+  <div class="ace-card" id="draftsCard" style="display:none">
+    <h2 style="margin-bottom:14px">📋 Saved Drafts</h2>
+    <div class="drafts-list" id="draftsList"></div>
+  </div>
 
 <script>
 let sections = [];
@@ -177,7 +160,7 @@ function buildOutline(){
 
 function renderSidebar(){
   document.getElementById('sidebarSections').innerHTML = sections.map((s,i)=>`
-    <button class="section-ace-btn${i===activeIdx?' active':''}" onclick="switchSection(${i})">${s.name}</button>
+    <button class="section-btn${i===activeIdx?' active':''}" onclick="switchSection(${i})">${s.name}</button>
   `).join('');
 }
 
@@ -243,6 +226,79 @@ window.onbeforeprint = function(){
   });
   document.getElementById('printPreview').innerHTML = html;
 };
+
+// ── localStorage: auto-save outline drafts ───────────────────────────────────
+const LS_OUTLINE = 'ace_outline_drafts';
+let outlineAutoSaveTimer = null;
+
+function autoSave(){
+  if(!sections||!sections.length)return;
+  clearTimeout(outlineAutoSaveTimer);
+  outlineAutoSaveTimer = setTimeout(()=>{
+    const title = document.getElementById('outlineTitle')?.textContent || 'Outline';
+    const drafts = JSON.parse(localStorage.getItem(LS_OUTLINE)||'[]');
+    const idx = drafts.findIndex(d=>d.id===currentDraftId);
+    const draft = {id:currentDraftId, title, sections:JSON.parse(JSON.stringify(sections)), date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
+    if(idx>=0)drafts[idx]=draft; else drafts.push(draft);
+    if(drafts.length>5)drafts.shift();
+    localStorage.setItem(LS_OUTLINE,JSON.stringify(drafts));
+    renderDraftsList();
+  }, 1500);
+}
+
+let currentDraftId = Date.now();
+
+function renderDraftsList(){
+  const drafts=JSON.parse(localStorage.getItem(LS_OUTLINE)||'[]');
+  const card=document.getElementById('draftsCard');
+  if(!card)return;
+  if(!drafts.length){card.style.display='none';return;}
+  card.style.display='block';
+  document.getElementById('draftsList').innerHTML=drafts.slice().reverse().map(d=>`
+    <div class="draft-item" onclick="loadDraft('${d.id}')">
+      <div><div class="di-title">📄 ${d.title}</div><div class="di-meta">${d.sections?.length||0} sections · ${d.date}</div></div>
+      <button class="btn-sm del" onclick="event.stopPropagation();deleteDraft('${d.id}')">✕</button>
+    </div>`).join('');
+}
+
+function loadDraft(id){
+  const drafts=JSON.parse(localStorage.getItem(LS_OUTLINE)||'[]');
+  const draft=drafts.find(d=>d.id==id);
+  if(!draft)return;
+  currentDraftId=draft.id;
+  sections=draft.sections;
+  document.getElementById('outlineTitle').textContent=draft.title;
+  document.getElementById('setupCard').style.display='none';
+  document.getElementById('outlineCard').style.display='block';
+  activeIdx=0; renderSidebar(); renderPanel();
+}
+
+function deleteDraft(id){
+  if(!confirm('Delete this draft?'))return;
+  const drafts=JSON.parse(localStorage.getItem(LS_OUTLINE)||'[]');
+  localStorage.setItem(LS_OUTLINE,JSON.stringify(drafts.filter(d=>d.id!=id)));
+  renderDraftsList();
+}
+
+// Patch renderPanel to add auto-save on text input
+const _origRenderPanel=renderPanel;
+function renderPanel(){
+  _origRenderPanel();
+  document.querySelectorAll('.outline-main textarea').forEach(ta=>{
+    ta.addEventListener('input',autoSave);
+  });
+}
+
+// Patch buildOutline to assign new draft id
+const _origBuildOutline=buildOutline;
+function buildOutline(){
+  currentDraftId=Date.now();
+  _origBuildOutline();
+  autoSave();
+}
+
+window.addEventListener('DOMContentLoaded',()=>renderDraftsList());
+
 </script>
 </body>
 </html>
