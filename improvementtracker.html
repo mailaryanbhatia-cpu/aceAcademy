@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Improvement Tracker — aceAcademy</title>
+<link rel="stylesheet" href="/aceAcademy/ace-shared.css"/>
+<style>
+.page-wrap{max-width:900px;margin:0 auto;padding:20px 16px 80px}
+.hero{background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1));border:1px solid rgba(99,102,241,.25);border-radius:20px;padding:28px;margin-bottom:24px;text-align:center}
+.hero h1{font-size:1.6rem;font-weight:900;margin:0 0 6px;background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:#94a3b8;font-size:.9rem;margin:0}
+.section-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:20px}
+.section-title{font-size:.95rem;font-weight:800;color:#a5b4fc;margin:0 0 18px;display:flex;align-items:center;gap:8px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.tab{background:#0f172a;border:1.5px solid #1e293b;border-radius:99px;padding:8px 18px;font-size:.82rem;font-weight:700;color:#64748b;cursor:pointer;transition:all .2s}
+.tab.active{background:rgba(99,102,241,.15);border-color:#6366f1;color:#a5b4fc}
+.tab-panel{display:none}.tab-panel.active{display:block}
+/* Chart */
+.chart-wrap{position:relative;width:100%;height:220px;overflow:hidden}
+canvas{width:100%!important}
+/* Stats row */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+.stat-box{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:14px;text-align:center}
+.stat-box .num{font-size:1.4rem;font-weight:900}
+.stat-box .lbl{font-size:.72rem;color:#64748b;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+/* Progress bars */
+.prog-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.prog-label{font-size:.82rem;color:#e2e8f0;width:140px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog-track{flex:1;height:8px;background:#1e293b;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;transition:width .6s}
+.prog-val{font-size:.8rem;color:#94a3b8;width:40px;text-align:right}
+/* Correlation dots */
+.corr-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:.83rem}
+.corr-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+/* Prediction */
+.pred-card{background:rgba(99,102,241,.08);border:1.5px solid rgba(99,102,241,.25);border-radius:12px;padding:16px;margin-bottom:12px}
+.pred-subject{font-weight:800;font-size:.9rem;margin-bottom:4px}
+.pred-bar{display:flex;align-items:center;gap:12px;margin-top:8px}
+.pred-now{font-size:.78rem;color:#94a3b8}
+.pred-arrow{color:#6366f1;font-size:1rem}
+.pred-future{font-size:.9rem;font-weight:800;color:#a5b4fc}
+.trend-badge{font-size:.7rem;padding:3px 10px;border-radius:99px;font-weight:700}
+.trend-up{background:rgba(16,185,129,.15);color:#10b981}
+.trend-down{background:rgba(239,68,68,.15);color:#ef4444}
+.trend-flat{background:rgba(148,163,184,.1);color:#94a3b8}
+/* AI section */
+.ai-insight{background:rgba(99,102,241,.07);border:1.5px solid rgba(99,102,241,.3);border-radius:14px;padding:18px}
+.ai-out{font-size:.87rem;line-height:1.8;color:#cbd5e1;white-space:pre-wrap;min-height:60px}
+.empty{color:#475569;font-size:.85rem;text-align:center;padding:24px}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="hero">
+    <h1>📈 Improvement Tracker</h1>
+    <p>See how you're improving, where to focus, and where you'll be in 30 days</p>
+  </div>
+
+  <!-- Summary stats -->
+  <div class="stat-row" id="summaryStats"></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('trends')">📊 Score Trends</div>
+    <div class="tab" onclick="switchTab('predictions')">🔮 Predictions</div>
+    <div class="tab" onclick="switchTab('weaknesses')">⚡ Weaknesses</div>
+    <div class="tab" onclick="switchTab('habits')">🔁 Habit Correlation</div>
+    <div class="tab" onclick="switchTab('aicoach')">✦ AI Coach</div>
+  </div>
+
+  <!-- Score Trends -->
+  <div class="tab-panel active" id="tab-trends">
+    <div class="section-card">
+      <div class="section-title">📊 Test Score Trends</div>
+      <div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap" id="subjectFilters"></div>
+      <div class="chart-wrap"><canvas id="trendsChart"></canvas></div>
+      <div id="trendsEmpty" class="empty" style="display:none">Take some tests in the Tests tool to see your trends here.</div>
+    </div>
+  </div>
+
+  <!-- Predictions -->
+  <div class="tab-panel" id="tab-predictions">
+    <div class="section-card">
+      <div class="section-title">🔮 30-Day Score Projections</div>
+      <p style="font-size:.8rem;color:#64748b;margin:0 0 16px">Based on your score trajectory. Keep your streak going to hit these targets.</p>
+      <div id="predictionsList"></div>
+    </div>
+  </div>
+
+  <!-- Weaknesses -->
+  <div class="tab-panel" id="tab-weaknesses">
+    <div class="section-card">
+      <div class="section-title">⚡ Subject Weaknesses</div>
+      <div id="weaknessList"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">📝 Wrong Answer Patterns</div>
+      <div id="mistakePatterns"></div>
+    </div>
+  </div>
+
+  <!-- Habit Correlation -->
+  <div class="tab-panel" id="tab-habits">
+    <div class="section-card">
+      <div class="section-title">🔁 How Your Habits Affect Scores</div>
+      <div id="habitCorrelation"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">📅 Study Activity (Last 30 Days)</div>
+      <div id="activityHeatmap" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+    </div>
+  </div>
+
+  <!-- AI Coach -->
+  <div class="tab-panel" id="tab-aicoach">
+    <div class="section-card">
+      <div class="section-title">✦ AI Performance Coach <span id="aiBadge"></span></div>
+      <p style="font-size:.82rem;color:#64748b;margin:0 0 16px">Claude analyzes your actual data and gives you a personalized improvement plan.</p>
+      <div class="ai-insight">
+        <div id="aiCoachOut" class="ai-out">Click "Get My Plan" to generate a personalized analysis based on your scores, habits, and weak spots.</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn btn-accent" onclick="getAIPlan()">✦ Get My Plan</button>
+        <button class="btn btn-outline" onclick="getAIWeeklyGoals()">📋 Set Weekly Goals</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/aceAcademy/claude-api.js"></script>
+<script src="/aceAcademy/analytics.js"></script>
+<script>
+// ── Data loading ──────────────────────────────────────────────────────────────
+var tests    = JSON.parse(localStorage.getItem('aceTestHistory')     || '[]');
+var streak   = JSON.parse(localStorage.getItem('ace_login_streak')   || '{"count":0}');
+var goals    = JSON.parse(localStorage.getItem('ace_goals')          || '[]');
+var mistakes = JSON.parse(localStorage.getItem('ace_mistake_journal')|| '[]');
+var sessions = JSON.parse(localStorage.getItem('ace_reading_sessions')|| '[]');
+var mathHist = JSON.parse(localStorage.getItem('ace_math_history')   || '[]');
+var essays   = JSON.parse(localStorage.getItem('ace_essay_history')  || '[]');
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active', ['trends','predictions','weaknesses','habits','aicoach'][i]===id));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// ── Summary stats ─────────────────────────────────────────────────────────────
+function renderSummary(){
+  var subjects = [...new Set(tests.map(t=>t.subject).filter(Boolean))];
+  var avgNow   = tests.length ? Math.round(tests.slice(-5).reduce((a,t)=>a+(t.pct||0),0)/Math.min(5,tests.length)) : 0;
+  var avgAll   = tests.length ? Math.round(tests.reduce((a,t)=>a+(t.pct||0),0)/tests.length) : 0;
+  var trend    = avgNow - avgAll;
+  var doneGoals = goals.filter(g=>(g.progress||0)>=100).length;
+  document.getElementById('summaryStats').innerHTML = [
+    { num: tests.length,          lbl:'Tests Taken',    color:'#6366f1' },
+    { num: avgAll+'%',            lbl:'All-Time Avg',   color:'#10b981' },
+    { num: (trend>=0?'+':'')+trend+'%', lbl:'Recent Trend', color: trend>=0?'#10b981':'#ef4444' },
+    { num: streak.count||0,       lbl:'Day Streak 🔥',  color:'#ef4444' },
+    { num: subjects.length,       lbl:'Subjects',       color:'#8b5cf6' },
+    { num: doneGoals,             lbl:'Goals Done',     color:'#f59e0b' }
+  ].map(s=>`<div class="stat-box"><div class="num" style="color:${s.color}">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join('');
+}
+
+// ── Score Trends chart (vanilla canvas, no lib needed) ─────────────────────────
+var activeSubject = 'all';
+function renderTrends(){
+  var canvas = document.getElementById('trendsChart');
+  var ctx    = canvas.getContext('2d');
+  var subjects = [...new Set(tests.map(t=>t.subject).filter(Boolean))];
+  // Subject filter chips
+  var chips = ['<span class="tab '+(activeSubject==='all'?'active':'')+'" style="padding:5px 12px;font-size:.75rem" onclick="activeSubject=\'all\';renderTrends()">All</span>'];
+  subjects.forEach(s=>{ chips.push('<span class="tab '+(activeSubject===s?'active':'')+'" style="padding:5px 12px;font-size:.75rem" onclick="activeSubject=\''+s+'\';renderTrends()">'+s.replace('AP ','')+'</span>'); });
+  document.getElementById('subjectFilters').innerHTML = chips.join('');
+
+  var filtered = activeSubject==='all' ? tests : tests.filter(t=>t.subject===activeSubject);
+  filtered = filtered.slice(-20); // last 20
+
+  if(filtered.length < 2){
+    document.getElementById('trendsEmpty').style.display='';
+    canvas.style.display='none';
+    return;
+  }
+  document.getElementById('trendsEmpty').style.display='none';
+  canvas.style.display='';
+
+  // Size canvas
+  var W = canvas.parentElement.offsetWidth || 700;
+  var H = 200;
+  canvas.width = W; canvas.height = H;
+  ctx.clearRect(0,0,W,H);
+
+  var pts = filtered.map((t,i)=>({ x: (i/(filtered.length-1))*(W-60)+30, y: H-10-(((t.pct||0)/100)*(H-40)), pct: t.pct||0, label: t.subject ? t.subject.replace('AP ','') : 'Test' }));
+
+  // Grid lines
+  [25,50,75,100].forEach(v=>{
+    var y = H-10-((v/100)*(H-40));
+    ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(30,y); ctx.lineTo(W-10,y); ctx.stroke();
+    ctx.fillStyle='#475569'; ctx.font='10px system-ui'; ctx.fillText(v+'%',2,y+4);
+  });
+
+  // Gradient fill
+  var grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'rgba(99,102,241,.3)');
+  grad.addColorStop(1,'rgba(99,102,241,0)');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, H-10);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x, H-10);
+  ctx.closePath();
+  ctx.fillStyle=grad; ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle='#6366f1'; ctx.lineWidth=2.5; ctx.stroke();
+
+  // Trend line (linear regression)
+  var n=pts.length, sumX=0,sumY=0,sumXY=0,sumX2=0;
+  pts.forEach((p,i)=>{sumX+=i;sumY+=p.pct;sumXY+=i*p.pct;sumX2+=i*i;});
+  var slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);
+  var intercept=(sumY-slope*sumX)/n;
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, H-10-((intercept/100)*(H-40)));
+  ctx.lineTo(pts[n-1].x, H-10-(((intercept+slope*(n-1))/100)*(H-40)));
+  ctx.strokeStyle='rgba(16,185,129,.5)'; ctx.lineWidth=1.5; ctx.setLineDash([5,5]); ctx.stroke(); ctx.setLineDash([]);
+
+  // Dots + tooltips
+  pts.forEach(p=>{
+    ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2);
+    ctx.fillStyle='#818cf8'; ctx.fill();
+    ctx.strokeStyle='#0d1526'; ctx.lineWidth=2; ctx.stroke();
+  });
+}
+
+// ── Predictions (linear regression per subject) ────────────────────────────────
+function renderPredictions(){
+  var subjects = [...new Set(tests.map(t=>t.subject).filter(Boolean))];
+  if(subjects.length===0){
+    document.getElementById('predictionsList').innerHTML='<div class="empty">No test data yet.</div>';
+    return;
+  }
+  var html='';
+  subjects.forEach(s=>{
+    var st = tests.filter(t=>t.subject===s);
+    if(st.length < 2){ return; }
+    var n=st.length, scores=st.map(t=>t.pct||0);
+    var sumX=0,sumY=0,sumXY=0,sumX2=0;
+    scores.forEach((v,i)=>{sumX+=i;sumY+=v;sumXY+=i*v;sumX2+=i*i;});
+    var slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);
+    var intercept=(sumY-slope*sumX)/n;
+    var current = Math.round(intercept+slope*(n-1));
+    var future30 = Math.min(100, Math.max(0, Math.round(current + slope*5)));
+    var trend = slope > 0.5 ? 'up' : slope < -0.5 ? 'down' : 'flat';
+    var trendLabel = trend==='up' ? '↑ Improving' : trend==='down' ? '↓ Declining' : '→ Stable';
+    var pctBar = Math.max(10, Math.min(100, future30));
+    html += `<div class="pred-card">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="pred-subject">${s.replace('AP ','')}</div>
+        <span class="trend-badge trend-${trend}">${trendLabel}</span>
+      </div>
+      <div class="pred-bar">
+        <div>
+          <div class="pred-now">Now: ${current}%</div>
+          <div style="background:#1e293b;border-radius:99px;height:8px;width:200px;margin-top:6px">
+            <div style="width:${current}%;background:linear-gradient(90deg,#6366f1,#8b5cf6);height:8px;border-radius:99px"></div>
+          </div>
+        </div>
+        <div class="pred-arrow">→</div>
+        <div>
+          <div class="pred-future">30 days: ${future30}%</div>
+          <div style="background:#1e293b;border-radius:99px;height:8px;width:200px;margin-top:6px">
+            <div style="width:${pctBar}%;background:linear-gradient(90deg,#10b981,#06b6d4);height:8px;border-radius:99px"></div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:.75rem;color:#64748b;margin-top:6px">Based on ${n} test${n!==1?'s':''} · ${slope>=0?'+':''}${slope.toFixed(1)}%/test trajectory</div>
+    </div>`;
+  });
+  document.getElementById('predictionsList').innerHTML = html || '<div class="empty">Need at least 2 tests per subject to project.</div>';
+}
+
+// ── Weaknesses ────────────────────────────────────────────────────────────────
+function renderWeaknesses(){
+  var subjects = [...new Set(tests.map(t=>t.subject).filter(Boolean))];
+  var subAvgs = subjects.map(s=>{
+    var st = tests.filter(t=>t.subject===s);
+    return { name:s, avg: Math.round(st.reduce((a,t)=>a+(t.pct||0),0)/st.length), count: st.length };
+  }).sort((a,b)=>a.avg-b.avg);
+
+  var html = subAvgs.map(s=>{
+    var color = s.avg >= 80 ? '#10b981' : s.avg >= 60 ? '#f59e0b' : '#ef4444';
+    var label = s.avg >= 80 ? 'Strong' : s.avg >= 60 ? 'Needs Work' : '⚠ Weak Spot';
+    return `<div class="prog-row">
+      <div class="prog-label">${s.name.replace('AP ','')}</div>
+      <div class="prog-track"><div class="prog-fill" style="width:${s.avg}%;background:${color}"></div></div>
+      <div class="prog-val" style="color:${color}">${s.avg}%</div>
+      <span style="font-size:.7rem;color:${color};border:1px solid ${color}33;padding:2px 8px;border-radius:99px;white-space:nowrap">${label}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('weaknessList').innerHTML = html || '<div class="empty">Take tests in different subjects to see your weaknesses.</div>';
+
+  // Mistake patterns
+  var topMistakes = mistakes.slice(-30);
+  var subjMistakes = {};
+  topMistakes.forEach(m=>{
+    var s = m.subject || 'Unknown';
+    subjMistakes[s] = (subjMistakes[s]||0)+1;
+  });
+  var mkHtml = Object.entries(subjMistakes).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([s,n])=>
+    `<div class="prog-row">
+      <div class="prog-label">${s.replace('AP ','')}</div>
+      <div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,n*10)}%;background:#ef4444"></div></div>
+      <div class="prog-val" style="color:#ef4444">${n}</div>
+    </div>`
+  ).join('');
+  document.getElementById('mistakePatterns').innerHTML = mkHtml || '<div class="empty">No mistakes logged yet.</div>';
+}
+
+// ── Habit Correlation ─────────────────────────────────────────────────────────
+function renderHabits(){
+  var avgScore = tests.length ? Math.round(tests.reduce((a,t)=>a+(t.pct||0),0)/tests.length) : 0;
+  var streakDays = streak.count || 0;
+  var readMins   = sessions.reduce((a,s)=>a+(s.minutes||0),0);
+  var doneGoals  = goals.filter(g=>(g.progress||0)>=100).length;
+  var mathSessions = mathHist.length;
+
+  var insights = [
+    { icon:'🔥', label:'Login streak', val: streakDays+' days',
+      insight: streakDays>=7 ? 'Great! Students with 7+ day streaks score ~12% higher on average.'
+              : streakDays>=3 ? 'Building momentum. 7+ days unlocks a measurable score boost.'
+              : 'Log in daily to build a streak — it strongly correlates with improvement.',
+      color: streakDays>=7 ? '#10b981' : streakDays>=3 ? '#f59e0b' : '#ef4444' },
+    { icon:'📚', label:'Reading time', val: Math.round(readMins/60)+'h total',
+      insight: readMins >= 300 ? 'Strong reading habit — comprehension and writing skills benefit.'
+              : 'More reading time correlates with better essay and reading scores.',
+      color: readMins >= 300 ? '#10b981' : '#f59e0b' },
+    { icon:'🎯', label:'Goals completed', val: doneGoals+' goals',
+      insight: doneGoals >= 5 ? 'Consistent goal-setting is one of the best predictors of improvement.'
+              : 'Set and complete goals in the Goals tool to stay on track.',
+      color: doneGoals >= 5 ? '#10b981' : '#94a3b8' },
+    { icon:'🔢', label:'Math practice sessions', val: mathSessions+' sessions',
+      insight: mathSessions >= 10 ? 'Regular math practice shows — keep it up for consistent gains.'
+              : 'More practice sessions in Math Generator will boost calculation accuracy.',
+      color: mathSessions >= 10 ? '#10b981' : '#94a3b8' }
+  ];
+
+  document.getElementById('habitCorrelation').innerHTML = insights.map(h=>
+    `<div class="corr-row" style="margin-bottom:14px">
+      <div class="corr-icon" style="background:${h.color}22">${h.icon}</div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+          <span style="font-weight:700;color:#e2e8f0">${h.label}</span>
+          <span style="color:${h.color};font-weight:700">${h.val}</span>
+        </div>
+        <div style="font-size:.8rem;color:#94a3b8">${h.insight}</div>
+      </div>
+    </div>`
+  ).join('');
+
+  // Activity heatmap (last 30 days)
+  var today = new Date();
+  var actMap = {};
+  tests.forEach(t=>{ if(t.date) { var d=t.date.slice(0,10); actMap[d]=(actMap[d]||0)+1; } });
+  sessions.forEach(s=>{ if(s.date) { var d=s.date.slice(0,10); actMap[d]=(actMap[d]||0)+1; } });
+
+  var heatHtml = '';
+  for(var i=29;i>=0;i--){
+    var d = new Date(today); d.setDate(today.getDate()-i);
+    var key = d.toISOString().slice(0,10);
+    var count = actMap[key]||0;
+    var opacity = count===0?0.07:count===1?0.3:count===2?0.6:0.95;
+    var title = key + (count?' ('+count+' activities)':'');
+    heatHtml += `<div title="${title}" style="width:26px;height:26px;border-radius:5px;background:rgba(99,102,241,${opacity});cursor:default"></div>`;
+  }
+  document.getElementById('activityHeatmap').innerHTML = heatHtml;
+}
+
+// ── AI Coach ──────────────────────────────────────────────────────────────────
+function buildDataSummary(){
+  var subjects = [...new Set(tests.map(t=>t.subject).filter(Boolean))];
+  var subSummary = subjects.map(s=>{
+    var st = tests.filter(t=>t.subject===s);
+    var avg = Math.round(st.reduce((a,t)=>a+(t.pct||0),0)/st.length);
+    var recent = st.slice(-3).map(t=>t.pct+'%').join(', ');
+    return `- ${s}: avg ${avg}%, recent: ${recent}`;
+  }).join('\n');
+  return `Tests taken: ${tests.length}\nLogin streak: ${streak.count||0} days\nSubject breakdown:\n${subSummary || '(no test data)'}\nMistakes logged: ${mistakes.length}\nGoals completed: ${goals.filter(g=>(g.progress||0)>=100).length}`;
+}
+
+async function getAIPlan(){
+  var out = document.getElementById('aiCoachOut');
+  out.textContent = '✦ Analyzing your performance data…';
+  var summary = buildDataSummary();
+  var prompt = `You are an expert AP exam coach. Analyze this student's real performance data:
+
+${summary}
+
+Give a personalized improvement plan with:
+
+PERFORMANCE SUMMARY: [2 sentences on where they stand]
+
+TOP PRIORITY: [the single most important thing to work on right now]
+
+WEEKLY PLAN:
+• Monday-Tuesday: [specific action]
+• Wednesday-Thursday: [specific action]  
+• Friday-Sunday: [specific action]
+
+SCORE PROJECTION: [if they follow this plan, what score improvement in 30 days]
+
+MOTIVATION: [1 encouraging sentence specific to their data]`;
+
+  try {
+    await aceAI.run(async()=>{
+      out.textContent='';
+      await aceAI.stream(prompt,'You are a motivating but honest AP exam coach.',900,(chunk,full)=>{out.textContent=full;});
+    });
+  } catch(e){ out.textContent='Error: '+e.message; }
+}
+
+async function getAIWeeklyGoals(){
+  var out = document.getElementById('aiCoachOut');
+  out.textContent = '✦ Generating your weekly goals…';
+  var summary = buildDataSummary();
+  var prompt = `Based on this student's data:\n${summary}\n\nCreate 5 specific, achievable weekly goals in this format:\n\nGOAL 1: [action] by [day]\nGOAL 2: ...\n...\n\nThen add:\nSUCCESS METRIC: [how they'll know they hit their goals this week]`;
+  try {
+    await aceAI.run(async()=>{
+      out.textContent='';
+      await aceAI.stream(prompt,'You are a concise, practical study coach.',600,(chunk,full)=>{out.textContent=full;});
+    });
+  } catch(e){ out.textContent='Error: '+e.message; }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  renderSummary();
+  renderTrends();
+  renderPredictions();
+  renderWeaknesses();
+  renderHabits();
+  if(typeof aceAI!=='undefined') document.getElementById('aiBadge').innerHTML=aceAI.badge();
+});
+window.addEventListener('resize', renderTrends);
+</script>
+</body>
+</html>

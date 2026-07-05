@@ -1655,6 +1655,38 @@ document.querySelectorAll('.stab').forEach(function(btn) {
   });
 });
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// Science lab session tracking
+var SCI_KEY = 'ace_sciencelab_history';
+var SCI_STATS = 'ace_sciencelab_stats';
+
+function saveSciSession(topic, result){
+  var hist = JSON.parse(localStorage.getItem(SCI_KEY)||'[]');
+  hist.unshift({ topic: topic||'Lab Session', result: (result||'').slice(0,150), date: new Date().toLocaleDateString() });
+  localStorage.setItem(SCI_KEY, JSON.stringify(hist.slice(0,20)));
+  var stats = JSON.parse(localStorage.getItem(SCI_STATS)||'{"sessions":0}');
+  stats.sessions++;
+  localStorage.setItem(SCI_STATS, JSON.stringify(stats));
+  renderSciHistory();
+}
+
+function renderSciHistory(){
+  var el = document.getElementById('sciHistory');
+  if(!el) return;
+  var hist = JSON.parse(localStorage.getItem(SCI_KEY)||'[]');
+  var stats = JSON.parse(localStorage.getItem(SCI_STATS)||'{"sessions":0}');
+  var countEl = document.getElementById('sciSessionCount');
+  if(countEl) countEl.textContent = stats.sessions;
+  if(!hist.length){ el.innerHTML='<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">No lab sessions yet.</div>'; return; }
+  el.innerHTML = hist.slice(0,8).map(h=>`
+    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-weight:700;color:#e2e8f0;font-size:.85rem">${h.topic}</span>
+        <span style="font-size:.72rem;color:#475569">${h.date}</span>
+      </div>
+      <div style="font-size:.78rem;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.result||'—'}</div>
+    </div>`).join('');
+}
+
+document.addEventListener("DOMContentLoaded", renderSciHistory);
+</script>

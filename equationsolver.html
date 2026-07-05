@@ -482,6 +482,36 @@ function showErr(msg) {
   document.getElementById('stepsCard').classList.add('show');
 }
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// Equation solver history
+var EQ_KEY = 'ace_equation_history';
+var eqStats = JSON.parse(localStorage.getItem('ace_eq_stats')||'{"solved":0}');
+
+function saveEquation(expr, result){
+  var hist = JSON.parse(localStorage.getItem(EQ_KEY)||'[]');
+  hist.unshift({ expr, result: String(result).slice(0,80), date: new Date().toLocaleDateString() });
+  localStorage.setItem(EQ_KEY, JSON.stringify(hist.slice(0,30)));
+  eqStats.solved++;
+  localStorage.setItem('ace_eq_stats', JSON.stringify(eqStats));
+  renderEqHistory();
+}
+function renderEqHistory(){
+  var el = document.getElementById('eqHistory');
+  if(!el) return;
+  var hist = JSON.parse(localStorage.getItem(EQ_KEY)||'[]');
+  var total = hist.length;
+  document.getElementById('eqSolvedCount').textContent = total;
+  if(!hist.length){ el.innerHTML='<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">No equations solved yet.</div>'; return; }
+  el.innerHTML = hist.slice(0,10).map(h=>`
+    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer"
+      onclick="document.getElementById('equationInput')&&(document.getElementById('equationInput').value='${h.expr.replace(/'/g,"\'")}')">
+      <div>
+        <div style="font-family:monospace;color:#a5b4fc;font-size:.85rem">${h.expr}</div>
+        <div style="font-size:.78rem;color:#10b981;margin-top:2px">= ${h.result}</div>
+      </div>
+      <div style="font-size:.7rem;color:#475569">${h.date}</div>
+    </div>`).join('');
+}
+
+document.addEventListener("DOMContentLoaded", renderEqHistory);
+</script>

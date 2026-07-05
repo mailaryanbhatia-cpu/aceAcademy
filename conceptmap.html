@@ -473,6 +473,46 @@ function loadTemplate(key){
 renderColorRow();
 renderMap();
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// Concept map save/load
+var CMAP_KEY = 'ace_conceptmaps';
+function saveConceptMap(){
+  var title = document.getElementById('mapTitle')?.value || prompt('Name this concept map:','My Concept Map');
+  if(!title) return;
+  // Serialize current map state — collect nodes/connections from DOM or data
+  var mapData = typeof getMapData==='function' ? getMapData() : { nodes:[], edges:[] };
+  var saved = JSON.parse(localStorage.getItem(CMAP_KEY)||'[]');
+  saved.unshift({ title, mapData, date: new Date().toLocaleDateString(), nodeCount: (mapData.nodes||[]).length });
+  localStorage.setItem(CMAP_KEY, JSON.stringify(saved.slice(0,10)));
+  renderCmapHistory();
+  showToast('Map saved!');
+}
+function loadConceptMap(i){
+  var saved = JSON.parse(localStorage.getItem(CMAP_KEY)||'[]');
+  var m = saved[i];
+  if(!m) return;
+  if(typeof loadMapData==='function') loadMapData(m.mapData);
+}
+function showToast(msg){
+  var t = document.createElement('div');
+  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:8px 20px;border-radius:99px;font-weight:700;font-size:.85rem;z-index:9999';
+  t.textContent=msg; document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2000);
+}
+function renderCmapHistory(){
+  var el = document.getElementById('cmapHistory');
+  if(!el) return;
+  var saved = JSON.parse(localStorage.getItem(CMAP_KEY)||'[]');
+  if(!saved.length){ el.innerHTML='<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">No saved maps.</div>'; return; }
+  el.innerHTML = saved.map((m,i)=>`
+    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-weight:700;color:#e2e8f0;font-size:.85rem">${m.title}</div>
+        <div style="font-size:.75rem;color:#64748b">${m.nodeCount||0} node${m.nodeCount!==1?'s':''} · ${m.date}</div>
+      </div>
+      <button onclick="loadConceptMap(${i})" style="background:rgba(99,102,241,.15);border:none;border-radius:6px;color:#a5b4fc;padding:5px 12px;font-size:.75rem;cursor:pointer;font-weight:700">Load</button>
+    </div>`).join('');
+}
+
+document.addEventListener("DOMContentLoaded", renderCmapHistory);
+</script>

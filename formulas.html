@@ -566,6 +566,46 @@ document.getElementById('gradeSelect').addEventListener('change', function(){
 
 buildSheet();
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// Formula favorites + search history
+var FAV_KEY  = 'ace_formula_favs';
+var SRCH_KEY = 'ace_formula_searches';
+
+function toggleFavorite(formulaId, formulaText){
+  var favs = JSON.parse(localStorage.getItem(FAV_KEY)||'[]');
+  var idx  = favs.findIndex(f=>f.id===formulaId);
+  if(idx >= 0){ favs.splice(idx,1); }
+  else { favs.unshift({ id: formulaId, text: formulaText, date: new Date().toLocaleDateString() }); }
+  localStorage.setItem(FAV_KEY, JSON.stringify(favs.slice(0,30)));
+  renderFormulaFavs();
+  return idx < 0; // true = now favorited
+}
+
+function isFavorite(formulaId){
+  var favs = JSON.parse(localStorage.getItem(FAV_KEY)||'[]');
+  return favs.some(f=>f.id===formulaId);
+}
+
+function saveFormulaSearch(query){
+  if(!query || query.length < 2) return;
+  var searches = JSON.parse(localStorage.getItem(SRCH_KEY)||'[]');
+  searches = searches.filter(s=>s!==query);
+  searches.unshift(query);
+  localStorage.setItem(SRCH_KEY, JSON.stringify(searches.slice(0,10)));
+}
+
+function renderFormulaFavs(){
+  var el = document.getElementById('formulaFavs');
+  if(!el) return;
+  var favs = JSON.parse(localStorage.getItem(FAV_KEY)||'[]');
+  if(!favs.length){ el.innerHTML='<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">Click ⭐ on any formula to save it here.</div>'; return; }
+  el.innerHTML = favs.map(f=>`
+    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-family:monospace;color:#a5b4fc;font-size:.85rem">${f.text}</div>
+      <button onclick="toggleFavorite('${f.id}','${f.text.replace(/'/g,"\'")}');renderFormulaFavs()" 
+        style="background:none;border:none;cursor:pointer;font-size:1rem;color:#64748b">✕</button>
+    </div>`).join('');
+}
+
+document.addEventListener("DOMContentLoaded", renderFormulaFavs);
+</script>

@@ -493,6 +493,30 @@ function insertWord(w) {
 
 renderSynonyms();
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// Paraphrase history
+var PARA_KEY = 'ace_paraphrase_history';
+function saveParaphrase(original, result, mode){
+  var hist = JSON.parse(localStorage.getItem(PARA_KEY)||'[]');
+  hist.unshift({ original: original.slice(0,100), result: result.slice(0,200), mode, date: new Date().toLocaleDateString() });
+  localStorage.setItem(PARA_KEY, JSON.stringify(hist.slice(0,25)));
+  renderParaHistory();
+}
+function renderParaHistory(){
+  var el = document.getElementById('paraHistory');
+  if(!el) return;
+  var hist = JSON.parse(localStorage.getItem(PARA_KEY)||'[]');
+  if(!hist.length){ el.innerHTML='<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">No paraphrases saved yet.</div>'; return; }
+  el.innerHTML = hist.slice(0,8).map(h=>`
+    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+        <span style="font-size:.75rem;color:#6366f1;font-weight:700;text-transform:capitalize">${h.mode||'Standard'}</span>
+        <span style="font-size:.72rem;color:#475569">${h.date}</span>
+      </div>
+      <div style="font-size:.78rem;color:#94a3b8;margin-bottom:4px;font-style:italic">Original: "${h.original}..."</div>
+      <div style="font-size:.8rem;color:#cbd5e1">"${h.result}..."</div>
+    </div>`).join('');
+}
+
+document.addEventListener("DOMContentLoaded", renderParaHistory);
+</script>

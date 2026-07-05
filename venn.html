@@ -435,6 +435,57 @@ renderLists();
 renderSavedList();
 render();
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// Venn diagram save/load
+var VENN_KEY = 'ace_venn_diagrams';
+function saveVennDiagram(){
+  var title   = document.getElementById('vennTitle')?.value || 'Untitled Venn';
+  var leftL   = document.getElementById('leftLabel')?.value  || 'A';
+  var rightL  = document.getElementById('rightLabel')?.value || 'B';
+  var leftI   = document.getElementById('leftItems')?.value  || '';
+  var sharedI = document.getElementById('sharedItems')?.value|| '';
+  var rightI  = document.getElementById('rightItems')?.value || '';
+  if(!leftI && !sharedI && !rightI){ alert('Add some items before saving.'); return; }
+  var saved = JSON.parse(localStorage.getItem(VENN_KEY)||'[]');
+  saved.unshift({ title, leftL, rightL, leftI, sharedI, rightI, date: new Date().toLocaleDateString() });
+  localStorage.setItem(VENN_KEY, JSON.stringify(saved.slice(0,10)));
+  renderVennHistory();
+}
+function loadVennDiagram(i){
+  var saved = JSON.parse(localStorage.getItem(VENN_KEY)||'[]');
+  var d = saved[i];
+  if(!d) return;
+  if(document.getElementById('vennTitle'))  document.getElementById('vennTitle').value  = d.title;
+  if(document.getElementById('leftLabel'))  document.getElementById('leftLabel').value  = d.leftL;
+  if(document.getElementById('rightLabel')) document.getElementById('rightLabel').value = d.rightL;
+  if(document.getElementById('leftItems'))  document.getElementById('leftItems').value  = d.leftI;
+  if(document.getElementById('sharedItems'))document.getElementById('sharedItems').value= d.sharedI;
+  if(document.getElementById('rightItems')) document.getElementById('rightItems').value = d.rightI;
+  if(typeof renderVenn==='function') renderVenn();
+}
+function deleteVennDiagram(i){
+  var saved = JSON.parse(localStorage.getItem(VENN_KEY)||'[]');
+  saved.splice(i,1);
+  localStorage.setItem(VENN_KEY, JSON.stringify(saved));
+  renderVennHistory();
+}
+function renderVennHistory(){
+  var el = document.getElementById('vennHistory');
+  if(!el) return;
+  var saved = JSON.parse(localStorage.getItem(VENN_KEY)||'[]');
+  if(!saved.length){ el.innerHTML='<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">No saved diagrams yet.</div>'; return; }
+  el.innerHTML = saved.map((d,i)=>`
+    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-weight:700;color:#e2e8f0;font-size:.85rem">${d.title}</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:2px">${d.leftL} vs ${d.rightL} · ${d.date}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button onclick="loadVennDiagram(${i})" style="background:rgba(99,102,241,.15);border:none;border-radius:6px;color:#a5b4fc;padding:5px 10px;font-size:.75rem;cursor:pointer">Load</button>
+        <button onclick="deleteVennDiagram(${i})" style="background:none;border:1px solid #1e293b;border-radius:6px;color:#64748b;padding:5px 10px;font-size:.75rem;cursor:pointer">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+document.addEventListener("DOMContentLoaded", renderVennHistory);
+</script>

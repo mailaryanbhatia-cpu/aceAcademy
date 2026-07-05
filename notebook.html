@@ -798,6 +798,34 @@ renderNoteList();
 </script>
 <!-- ══ END STUDY TIMER WIDGET ══════════════════════════════════════════ -->
 
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// Multi-notebook support
+var NB_LIST = 'ace_notebook_list';
+function getNbList(){
+  return JSON.parse(localStorage.getItem(NB_LIST)||'["Default Notebook"]');
+}
+function createNotebook(){
+  var name = prompt('New notebook name:','');
+  if(!name) return;
+  var list = getNbList();
+  if(!list.includes(name)){ list.push(name); localStorage.setItem(NB_LIST, JSON.stringify(list)); }
+  renderNbSidebar();
+}
+function renderNbSidebar(){
+  var el = document.getElementById('nbSidebar');
+  if(!el) return;
+  var list = getNbList();
+  var current = localStorage.getItem('ace_notebook_active')||list[0];
+  el.innerHTML = list.map(n=>`
+    <div onclick="switchNb('${n.replace(/'/g,"\'")}')" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:${n===current?'800':'500'};color:${n===current?'#a5b4fc':'#64748b'};background:${n===current?'rgba(99,102,241,.15)':'transparent'};margin-bottom:2px">
+      📓 ${n}
+    </div>`).join('');
+}
+function switchNb(name){
+  localStorage.setItem('ace_notebook_active', name);
+  renderNbSidebar();
+  if(typeof loadNotes==='function') loadNotes();
+}
+
+document.addEventListener("DOMContentLoaded", renderNbSidebar);
+</script>

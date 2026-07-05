@@ -502,6 +502,44 @@ function renderResults() {
 
 render();
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// Cumulative spelling stats
+var SPELL_STATS = 'ace_spelling_alltime';
+function updateSpellingStats(correct, total){
+  var stats = JSON.parse(localStorage.getItem(SPELL_STATS)||'{"sessions":0,"correct":0,"total":0,"best":0}');
+  stats.sessions++;
+  stats.correct += correct;
+  stats.total   += total;
+  var pct = total ? Math.round(correct/total*100) : 0;
+  if(pct > stats.best) stats.best = pct;
+  localStorage.setItem(SPELL_STATS, JSON.stringify(stats));
+  renderSpellingStats();
+}
+function renderSpellingStats(){
+  var el = document.getElementById('spellingAlltime');
+  if(!el) return;
+  var stats = JSON.parse(localStorage.getItem(SPELL_STATS)||'{"sessions":0,"correct":0,"total":0,"best":0}');
+  var acc = stats.total ? Math.round(stats.correct/stats.total*100) : 0;
+  el.innerHTML = `
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:1.3rem;font-weight:900;color:#6366f1">${stats.sessions}</div>
+        <div style="font-size:.72rem;color:#64748b;font-weight:700">Quizzes</div>
+      </div>
+      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:1.3rem;font-weight:900;color:#10b981">${acc}%</div>
+        <div style="font-size:.72rem;color:#64748b;font-weight:700">Accuracy</div>
+      </div>
+      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:1.3rem;font-weight:900;color:#f59e0b">${stats.best}%</div>
+        <div style="font-size:.72rem;color:#64748b;font-weight:700">Best Score</div>
+      </div>
+      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:1.3rem;font-weight:900;color:#8b5cf6">${stats.correct}</div>
+        <div style="font-size:.72rem;color:#64748b;font-weight:700">Words Correct</div>
+      </div>
+    </div>`;
+}
+
+document.addEventListener("DOMContentLoaded", renderSpellingStats);
+</script>

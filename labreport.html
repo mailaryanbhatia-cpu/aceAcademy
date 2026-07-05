@@ -440,6 +440,7 @@ function printReport(){
   <p><strong>Sources of Error:</strong></p><pre>${d.errors||'—'}</pre>
   <p><strong>Improvements:</strong></p><pre>${d.improvements||'—'}</pre>
   <script src="/aceAcademy/analytics.js"></script>
+<div id="labSaveStatus" style="font-size:.75rem;color:#10b981;min-height:18px;margin-top:8px"></div>
 </body></html>`;
   const w = window.open('','_blank');
   w.document.write(html);
@@ -459,6 +460,23 @@ function switchTab(name, el){
 
 // Init
 renderDataTable();
+
+// Lab report auto-save
+var LAB_DRAFT = 'ace_labreport_draft';
+function autoSaveLab(){
+  var fields = ['labTitle','labObjective','labHypothesis','labMaterials','labProcedure','labData','labAnalysis','labConclusion','labErrors'];
+  var draft = {};
+  fields.forEach(id=>{ var el=document.getElementById(id); if(el) draft[id]=el.value; });
+  draft.saved = new Date().toLocaleTimeString();
+  localStorage.setItem(LAB_DRAFT, JSON.stringify(draft));
+  var el = document.getElementById('labSaveStatus');
+  if(el){ el.textContent='✓ Auto-saved '+draft.saved; setTimeout(()=>el.textContent='',2000); }
+}
+function loadLabDraft(){
+  var draft = JSON.parse(localStorage.getItem(LAB_DRAFT)||'null');
+  if(!draft) return;
+  Object.entries(draft).forEach(([id,val])=>{ var el=document.getElementById(id); if(el&&val) el.value=val; });
+}
+
+document.addEventListener("DOMContentLoaded",()=>{ loadLabDraft(); setInterval(autoSaveLab,30000); });
 </script>
-</body>
-</html>

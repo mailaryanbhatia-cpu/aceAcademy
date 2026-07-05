@@ -603,6 +603,40 @@ function nextPrompt() {
 renderPromptList();
 renderPrompt();
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-</body>
-</html>
+<script src="/aceAcademy/analytics.js">
+// FRQ all-time stats
+var FRQ_STATS = 'ace_frq_alltime';
+function updateFrqStats(score, maxScore, subject){
+  var stats = JSON.parse(localStorage.getItem(FRQ_STATS)||'{"attempts":0,"totalScore":0,"totalMax":0,"bestPct":0}');
+  stats.attempts++;
+  stats.totalScore += score;
+  stats.totalMax   += maxScore;
+  var pct = maxScore ? Math.round(score/maxScore*100) : 0;
+  if(pct > stats.bestPct) stats.bestPct = pct;
+  localStorage.setItem(FRQ_STATS, JSON.stringify(stats));
+  renderFrqStats();
+}
+function renderFrqStats(){
+  var el = document.getElementById('frqAlltime');
+  if(!el) return;
+  var stats = JSON.parse(localStorage.getItem(FRQ_STATS)||'{"attempts":0,"totalScore":0,"totalMax":0,"bestPct":0}');
+  var avg = stats.totalMax ? Math.round(stats.totalScore/stats.totalMax*100) : 0;
+  el.innerHTML = `
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:1.3rem;font-weight:900;color:#6366f1">${stats.attempts}</div>
+        <div style="font-size:.72rem;color:#64748b;font-weight:700">FRQs Done</div>
+      </div>
+      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:1.3rem;font-weight:900;color:#10b981">${avg}%</div>
+        <div style="font-size:.72rem;color:#64748b;font-weight:700">Avg Score</div>
+      </div>
+      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:1.3rem;font-weight:900;color:#f59e0b">${stats.bestPct}%</div>
+        <div style="font-size:.72rem;color:#64748b;font-weight:700">Best Score</div>
+      </div>
+    </div>`;
+}
+
+document.addEventListener("DOMContentLoaded", renderFrqStats);
+</script>
