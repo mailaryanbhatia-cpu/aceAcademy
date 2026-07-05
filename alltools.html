@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html data-theme="dark" lang="en">
+<html lang="en">
 <head>
-<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>All Tools — aceAcademy</title>
-<link rel="stylesheet" href="ace-theme.css">
+<title>All Tools — AcerAcademy</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter','Segoe UI',sans-serif;background:#0b1120;color:#e8edf5;min-height:100vh;-webkit-font-smoothing:antialiased}
 
 /* Nav */
-nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5);padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav{background:#080e1c;border-bottom:1px solid #2a3a55;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5);padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
 nav.topnav::-webkit-scrollbar{display:none}
 .logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
 .logo span{color:#a5b4fc}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:background .15s,color .15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:#7a8fa8;transition:background .15s,color .15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:#e8edf5}
 .nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
 
 /* Hero */
@@ -25,20 +23,20 @@ nav.topnav::-webkit-scrollbar{display:none}
 .hero::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:rgba(99,102,241,.06);border-radius:50%}
 .hero h1{font-size:2rem;font-weight:900;letter-spacing:-.5px;margin-bottom:8px}
 .hero h1 span{color:#a5b4fc}
-.hero p{color:var(--muted2);font-size:.93rem;max-width:480px;line-height:1.6;margin-bottom:20px}
+.hero p{color:#7a8fa8;font-size:.93rem;max-width:480px;line-height:1.6;margin-bottom:20px}
 .hero-stats{display:flex;gap:24px;flex-wrap:wrap}
 .hero-stat{font-size:.82rem;color:#a5b4fc;font-weight:600}
-.hero-stat span{color:var(--text);font-size:1.1rem;font-weight:900;margin-right:5px}
+.hero-stat span{color:#e8edf5;font-size:1.1rem;font-weight:900;margin-right:5px}
 
 /* Search */
 .search-bar{display:flex;align-items:center;gap:10px;padding:20px 40px;background:#0d1628;border-bottom:1px solid #2a3a55;flex-wrap:wrap}
 .search-wrap{position:relative;flex:1;max-width:400px}
-.search-wrap input{width:100%;padding:9px 14px 9px 36px;background:#1a2540;border:1.5px solid #2a3a55;border-radius:10px;color:var(--text);font-size:.88rem;outline:none;transition:border-color .15s;font-family:inherit}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;background:#1a2540;border:1.5px solid #2a3a55;border-radius:10px;color:#e8edf5;font-size:.88rem;outline:none;transition:border-color .15s;font-family:inherit}
 .search-wrap input:focus{border-color:#6366f1}
-.search-wrap input::placeholder{color:var(--muted2)}
-.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted2);font-size:.9rem}
+.search-wrap input::placeholder{color:#7a8fa8}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#7a8fa8;font-size:.9rem}
 .filter-chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{padding:6px 14px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:var(--muted2);font-size:.78rem;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.chip{padding:6px 14px;border-radius:20px;border:1.5px solid #2a3a55;background:transparent;color:#7a8fa8;font-size:.78rem;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
 .chip:hover{border-color:#6366f1;color:#a5b4fc}
 .chip.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
 
@@ -47,18 +45,18 @@ nav.topnav::-webkit-scrollbar{display:none}
 @media(max-width:700px){.hero{padding:28px 20px 24px}.container{padding:20px 16px}.search-bar{padding:14px 16px}}
 
 /* Category label */
-.cat-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.cat-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7a8fa8;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .cat-label::after{content:'';flex:1;height:1px;background:#2a3a55}
 .cat-section{margin-bottom:36px}
 
 /* Tool grid */
 .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.tool-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:18px;text-decoration:none;color:var(--text);transition:border-color .15s,box-shadow .15s,transform .1s;display:flex;flex-direction:column;gap:8px;position:relative}
+.tool-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:14px;padding:18px;text-decoration:none;color:#e8edf5;transition:border-color .15s,box-shadow .15s,transform .1s;display:flex;flex-direction:column;gap:8px;position:relative}
 .tool-card:hover{border-color:#6366f1;box-shadow:0 0 0 1px #6366f1,0 6px 20px rgba(0,0,0,.5);transform:translateY(-2px)}
 .tool-card.hidden{display:none}
 .tool-icon{font-size:1.6rem;line-height:1}
-.tool-name{font-size:.92rem;font-weight:700;color:var(--text)}
-.tool-desc{font-size:.78rem;color:var(--muted2);line-height:1.5;flex:1}
+.tool-name{font-size:.92rem;font-weight:700;color:#e8edf5}
+.tool-desc{font-size:.78rem;color:#7a8fa8;line-height:1.5;flex:1}
 .tool-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
 .tool-tag{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:20px}
 .tag-new{background:rgba(99,102,241,.25);color:#a5b4fc}
@@ -66,51 +64,31 @@ nav.topnav::-webkit-scrollbar{display:none}
 .tag-practice{background:rgba(245,158,11,.15);color:#fcd34d}
 .tag-ap{background:rgba(139,92,246,.2);color:#c4b5fd}
 
-.no-results{text-align:center;padding:60px 20px;color:var(--muted2);font-size:.9rem;display:none}
+.no-results{text-align:center;padding:60px 20px;color:#7a8fa8;font-size:.9rem;display:none}
 .no-results.show{display:block}
-</style>
-<script src="theme.js"></script>
-  <link rel="manifest" href="/aceAcademy/manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="aceAcademy">
-  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
-  <script src="/aceAcademy/streak.js"></script>
-  <script src="/aceAcademy/sounds.js"></script>
-  <script src="/aceAcademy/coins.js"></script>
-  <script src="/aceAcademy/nav-profile.js"></script>
-  <script src="/aceAcademy/splash.js"></script>
-<script src="/aceAcademy/timer.js"></script>
-
-<style id="ace-mobile-fix">
-@media(max-width:700px){
-  header,nav.topnav,.ace-nav{padding:0 14px!important;height:56px!important;gap:10px!important}
-  .tagline,.srch-wrap,.search-wrap{display:none!important}
-  .brand-name,.logo{font-size:1rem!important}
-  main,#mainContent,.main-content,.page-content{padding:14px 12px 80px!important}
-  .card,.tool-card,.stat-card,.feature-card{border-radius:10px!important}
-  h1{font-size:1.4rem!important}
-  h2{font-size:1.1rem!important}
-  table{font-size:.78rem}
-  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr!important}
-  .flex-row{flex-direction:column!important}
-}
 </style>
 </head>
 <body>
 
-<header class="ace-header">
-  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
-  <a href="index.html" class="ace-nav-link">← Home</a>
-  
-  <div class="ace-spacer"></div>
-  <a href="alltools.html" class="ace-nav-link">All Tools</a>
-</header>
+<nav class="topnav">
+  <a href="index.html" class="logo">ace<span>Academy</span></a>
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="alltools.html" class="nav-link active">🛠 All Tools</a>
+  <a href="tests.html" class="nav-link">✏️ Tests</a>
+  <a href="progress.html" class="nav-link">📊 Progress</a>
+  <a href="schedule-gen.html" class="nav-link">📅 Study Plan</a>
+  <a href="goals.html" class="nav-link">🎯 Goals</a>
+  <a href="errorlog.html" class="nav-link">❌ Error Log</a>
+  <a href="satact.html" class="nav-link">📝 SAT/ACT</a>
+  <a href="apcountdown.html" class="nav-link">⏳ AP Countdown</a>
+  <a href="mathgen.html" class="nav-link">🔢 Math Practice</a>
+  <a href="wordwall.html" class="nav-link">📖 Word Wall</a>
+  <a href="tutor.html" class="nav-link">🤖 Tutor</a>
+</nav>
 
 <div class="hero">
   <h1>🛠 All <span>Tools</span></h1>
-  <p>Every tool on aceAcademy in one place — click anything to jump straight in.</p>
+  <p>Every tool on AcerAcademy in one place — click anything to jump straight in.</p>
   <div class="hero-stats">
     <div class="hero-stat"><span>52</span>tools</div>
     <div class="hero-stat"><span>10</span>categories</div>
@@ -239,37 +217,7 @@ nav.topnav::-webkit-scrollbar{display:none}
     <div class="cat-label">📚 Reading &amp; Vocabulary</div>
     <div class="tool-grid">
 
-      <a href="digest.html" class="tool-card" data-cats="progress" data-name="weekly digest study summary progress report">
-  <div class="tool-icon">📋</div>
-  <div class="tool-name">Weekly Digest</div>
-  <div class="tool-desc">Auto-summary of your week: tests taken, flashcards reviewed, goals hit, reading time, and streak.</div>
-  <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
-</a>
-<a href="essaygrader.html" class="tool-card" data-cats="ela writing" data-name="essay grader ap rubric feedback thesis evidence sophistication">
-  <div class="tool-icon">✍️</div>
-  <div class="tool-name">Essay Grader</div>
-  <div class="tool-desc">Paste your essay, pick an AP rubric, and get structured feedback with per-category scores and improvement tips.</div>
-  <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
-</a>
-<a href="profile.html" class="tool-card" data-cats="progress" data-name="profile user stats badges subjects avatar">
-  <div class="tool-icon">👤</div>
-  <div class="tool-name">My Profile</div>
-  <div class="tool-desc">Your stats, earned badges, subjects, recent activity, and avatar all in one place.</div>
-  <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
-</a>
-<a href="weakness.html" class="tool-card" data-cats="progress" data-name="weakness report topic weak subjects error patterns flashcard">
-  <div class="tool-icon">📉</div>
-  <div class="tool-name">Weakness Report</div>
-  <div class="tool-desc">See your weakest subjects, most-missed topics, error patterns, and get personalized study recommendations.</div>
-  <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
-</a>
-<a href="whiteboard.html" class="tool-card" data-cats="tools" data-name="whiteboard freehand drawing canvas pen eraser shapes text save png">
-  <div class="tool-icon">🖊</div>
-  <div class="tool-name">Whiteboard</div>
-  <div class="tool-desc">Freehand canvas with pen, highlighter, shapes, text, undo/redo, and save as PNG. Perfect for working through problems.</div>
-  <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
-</a>
-<a href="debate.html" class="tool-card" data-cats="practice ela" data-name="debate practice tool topics arguments timer pro con sides">
+      <a href="debate.html" class="tool-card" data-cats="practice ela" data-name="debate practice tool topics arguments timer pro con sides">
   <div class="tool-icon">🗣️</div>
   <div class="tool-name">Debate Practice Tool</div>
   <div class="tool-desc">Pick a debate topic, argue both sides with timed rounds, and get scored on evidence, logic, and clarity.</div>
@@ -333,7 +281,6 @@ nav.topnav::-webkit-scrollbar{display:none}
       </a>
 
       <a href="progress.html" class="tool-card" data-cats="study ap" data-name="progress streaks test scores dashboard ap predictor">
-      { name:'Improvement Tracker', desc:'Score trends, predictions & habit correlation', icon:'📈', url:'improvementtracker.html', tags:['progress','analytics','stats','improvement'] },
         <div class="tool-icon">📊</div>
         <div class="tool-name">Progress &amp; Streaks</div>
         <div class="tool-desc">Track all your test scores, study streaks, and get AP score predictions (1–5 scale).</div>
@@ -448,7 +395,6 @@ nav.topnav::-webkit-scrollbar{display:none}
         <div class="tool-desc">Grade-by-grade college application checklist — academics, testing, essays, FAFSA, and more.</div>
         <div class="tool-tags"><span class="tool-tag tag-new">new</span></div>
       </a>
-
 
       <a href="conceptmap.html" class="tool-card" data-cats="new study" data-name="concept map visual web topics connections drag drop">
         <div class="tool-icon">🗺</div>
@@ -662,7 +608,5 @@ function filterTools(){
   document.getElementById('noResults').classList.toggle('show', visible===0);
 }
 </script>
-<script src="/aceAcademy/analytics.js"></script>
-<script src="/aceAcademy/onboarding.js"></script>
 </body>
 </html>
