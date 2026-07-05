@@ -88,6 +88,7 @@ body{font-family:var(--font);background:var(--bg);color:#e2e8f0;margin:0}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="/aceAcademy/firebase-auth.js"></script>
 <script src="/aceAcademy/firestore.js"></script>
+<script src="/aceAcademy/sync-indicator.js"></script>
 
 <style id="ace-mobile-fix">
 @media(max-width:700px){
@@ -421,6 +422,34 @@ function saveProfile() {
 loadProfile();
 renderAnalytics();
 refreshAIKeyUI();
+
+function updateSyncUI(){
+  var dot  = document.getElementById('syncDotLarge');
+  var text = document.getElementById('syncStatusText');
+  var sub  = document.getElementById('syncStatusSub');
+  if(!dot) return;
+  if(typeof aceFirestore === 'undefined' || !navigator.onLine){
+    dot.style.background='#64748b'; text.textContent='Offline'; sub.textContent='Changes saved locally, will sync when you reconnect.'; return;
+  }
+  var st = aceFirestore.status();
+  if(!st.synced){ dot.style.background='#64748b'; text.textContent='Not signed in'; sub.textContent='Sign in to enable cross-device sync.'; return; }
+  if(st.dirty>0||st.pending>0){ dot.style.background='#f59e0b'; text.textContent='Syncing…'; sub.textContent=st.pending+' change'+(st.pending!==1?'s':'')+' pending'; return; }
+  dot.style.background='#10b981'; text.textContent='✓ Synced'; sub.textContent='All data is up to date across your devices.';
+}
+function forceSyncNow(){
+  if(typeof aceFirestore==='undefined') return;
+  aceFirestore.save();
+  aceFirestore.pull().then(updateSyncUI);
+  document.getElementById('syncStatusText').textContent='Syncing…';
+  document.getElementById('syncDotLarge').style.background='#f59e0b';
+  setTimeout(updateSyncUI,3000);
+}
+setInterval(updateSyncUI, 3000);
+window.addEventListener('ace-sync-updated', updateSyncUI);
+window.addEventListener('online', updateSyncUI);
+window.addEventListener('offline', updateSyncUI);
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateSyncUI,1500); });
+
 </script>
 <script src="/aceAcademy/onboarding.js"></script>
 </body>
