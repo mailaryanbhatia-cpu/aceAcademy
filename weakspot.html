@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weak Spot Detector — aceAcademy</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/aceAcademy/firebase-auth.js"></script>
+<script src="/aceAcademy/firestore.js"></script>
+<script src="auth-guard.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#060b18;--surface:#0d1526;--border:rgba(255,255,255,.07);--accent:#818cf8;--text:#e2e8f0;--muted:#475569;--font:'Inter',system-ui,sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+header{background:rgba(6,11,24,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:14px;height:62px;position:sticky;top:0;z-index:500}
+.brand{text-decoration:none;font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 10px;border-radius:8px;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.spacer{flex:1}
+.wrap{max-width:860px;margin:0 auto;padding:32px 20px 80px}
+h1{font-size:1.5rem;font-weight:900;margin-bottom:4px}
+.subtitle{color:var(--muted);font-size:.85rem;margin-bottom:28px}
+
+/* Summary bar */
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.summary{grid-template-columns:1fr 1fr}}
+.sum-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.sum-val{font-size:1.7rem;font-weight:900;margin-bottom:4px}
+.sum-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+
+/* Section */
+.section{margin-bottom:32px}
+.section-head{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-head::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Weakness card */
+.weak-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px;margin-bottom:10px;transition:border-color .15s}
+.weak-card:hover{border-color:rgba(239,68,68,.4)}
+.weak-bar-wrap{flex:1;min-width:0}
+.weak-label{font-size:.88rem;font-weight:700;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+.weak-sub{font-size:.72rem;color:var(--muted);margin-bottom:6px}
+.bar-bg{height:6px;background:#1e293b;border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.weak-score{font-size:.85rem;font-weight:800;min-width:36px;text-align:right}
+.badge-pill{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:6px;margin-left:6px}
+
+/* Priority legend */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted)}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.action-btn{background:rgba(129,140,248,.15);border:1px solid rgba(129,140,248,.3);color:var(--accent);border-radius:8px;padding:5px 12px;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .15s;text-decoration:none;display:inline-block}
+.action-btn:hover{background:rgba(129,140,248,.3)}
+
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:3rem;margin-bottom:12px}
+
+.tip-card{background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(139,92,246,.1));border:1px solid rgba(129,140,248,.2);border-radius:14px;padding:18px 20px;margin-bottom:24px}
+.tip-card h3{font-size:.85rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+.tip-card p{font-size:.8rem;color:#94a3b8;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">🎓 aceAcademy</a>
+  <a href="index.html" class="nav-link">← Home</a>
+  <div class="spacer"></div>
+  <a href="alltools.html" class="nav-link">All Tools</a>
+</header>
+
+<div class="wrap">
+  <h1>🔍 Weak Spot Detector</h1>
+  <p class="subtitle">Analyzes your topic mastery, test history, and mistake journal to surface exactly where to focus.</p>
+
+  <div class="tip-card">
+    <h3>💡 How it works</h3>
+    <p>Topics marked as "Learning" (yellow), subjects where you scored below 70% on tests, and frequently logged mistakes are combined into a priority list. Study these first for maximum improvement.</p>
+  </div>
+
+  <div class="summary">
+    <div class="sum-card"><div class="sum-val" id="ws-critical" style="color:#ef4444">0</div><div class="sum-lbl">🔴 Critical</div></div>
+    <div class="sum-card"><div class="sum-val" id="ws-needs" style="color:#f59e0b">0</div><div class="sum-lbl">🟡 Needs Work</div></div>
+    <div class="sum-card"><div class="sum-val" id="ws-strong" style="color:#22c55e">0</div><div class="sum-lbl">🟢 Strong</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#ef4444"></div>Critical — score &lt;50% or multiple mistakes</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Needs work — score 50–69% or marked Learning</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Strong — Mastered / 70%+</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">Priority topics to study</div>
+    <div id="weakList"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">Strong topics (keep these up)</div>
+    <div id="strongList"></div>
+  </div>
+</div>
+
+<script>
+function analyze() {
+  const results = [];
+
+  // Source 1: mastery dots (ace_mastery)
+  try {
+    const mastery = JSON.parse(localStorage.getItem('ace_mastery') || '{}');
+    Object.entries(mastery).forEach(([key, val]) => {
+      const parts = key.split('_');
+      const label = parts.slice(2).join(' ') || key;
+      const subj = parts[1] || 'General';
+      let score = val === 'mastered' ? 90 : val === 'practiced' ? 65 : val === 'learning' ? 30 : 50;
+      results.push({ label, subject: subj, score, sources: ['mastery'] });
+    });
+  } catch(e) {}
+
+  // Source 2: test history (ace_test_history)
+  try {
+    const tests = JSON.parse(localStorage.getItem('ace_test_history') || '[]');
+    const bySubj = {};
+    tests.forEach(t => {
+      const s = t.subject || 'General';
+      if (!bySubj[s]) bySubj[s] = [];
+      bySubj[s].push(t.score || 0);
+    });
+    Object.entries(bySubj).forEach(([subj, scores]) => {
+      const avg = scores.reduce((a,b) => a+b, 0) / scores.length;
+      const existing = results.find(r => r.label === subj && r.subject === subj);
+      if (existing) {
+        existing.score = Math.round((existing.score + avg) / 2);
+        existing.sources.push('test');
+      } else {
+        results.push({ label: subj + ' (Tests)', subject: subj, score: Math.round(avg), sources: ['test'] });
+      }
+    });
+  } catch(e) {}
+
+  // Source 3: mistake journal — penalize topics with open mistakes
+  try {
+    const mistakes = JSON.parse(localStorage.getItem('ace_mistake_journal') || '[]');
+    const openByTopic = {};
+    mistakes.filter(m => !m.resolved).forEach(m => {
+      const key = m.topic + '__' + m.subject;
+      openByTopic[key] = (openByTopic[key] || 0) + 1;
+    });
+    Object.entries(openByTopic).forEach(([key, count]) => {
+      const [topic, subj] = key.split('__');
+      const existing = results.find(r => r.label === topic);
+      if (existing) { existing.score = Math.max(0, existing.score - count * 15); existing.sources.push('mistakes'); }
+      else { results.push({ label: topic, subject: subj, score: Math.max(0, 40 - count * 10), sources: ['mistakes'] }); }
+    });
+  } catch(e) {}
+
+  return results;
+}
+
+function render() {
+  const data = analyze();
+  const weak = data.filter(d => d.score < 70).sort((a,b) => a.score - b.score);
+  const strong = data.filter(d => d.score >= 70).sort((a,b) => b.score - a.score).slice(0, 8);
+  const critical = weak.filter(d => d.score < 50).length;
+  const needsWork = weak.filter(d => d.score >= 50).length;
+
+  document.getElementById('ws-critical').textContent = critical;
+  document.getElementById('ws-needs').textContent = needsWork;
+  document.getElementById('ws-strong').textContent = strong.length;
+
+  function card(d) {
+    const color = d.score < 50 ? '#ef4444' : d.score < 70 ? '#f59e0b' : '#22c55e';
+    const priority = d.score < 50 ? '🔴 Critical' : d.score < 70 ? '🟡 Needs Work' : '🟢 Strong';
+    const pillColor = d.score < 50 ? 'rgba(239,68,68,.2)' : d.score < 70 ? 'rgba(245,158,11,.2)' : 'rgba(34,197,94,.2)';
+    const sources = d.sources.map(s => ({mastery:'Mastery',test:'Test',mistakes:'Mistakes'}[s] || s)).join(', ');
+    return `<div class="weak-card">
+      <div class="weak-bar-wrap">
+        <div class="weak-label">
+          ${d.label}
+          <span class="badge-pill" style="background:${pillColor};color:${color}">${priority}</span>
+        </div>
+        <div class="weak-sub">Subject: ${d.subject} · Sources: ${sources}</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${d.score}%;background:${color}"></div></div>
+      </div>
+      <div class="weak-score" style="color:${color}">${d.score}%</div>
+    </div>`;
+  }
+
+  const weakList = document.getElementById('weakList');
+  weakList.innerHTML = weak.length
+    ? weak.map(card).join('') + (weak.length ? `<p style="margin-top:12px;font-size:.78rem;color:var(--muted)">💡 Start with the red topics. Use <a href="flashcards.html" class="action-btn">Flashcards</a> or the <a href="tutor.html" class="action-btn">AI Tutor</a> to drill these.</p>` : '')
+    : '<div class="empty"><div class="empty-icon">🎉</div><p>No weak spots found! Keep studying to get more data.</p></div>';
+
+  document.getElementById('strongList').innerHTML = strong.length
+    ? strong.map(card).join('')
+    : '<p style="color:var(--muted);font-size:.85rem">No strong topics yet — keep studying!</p>';
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Goal — aceAcademy</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/aceAcademy/firebase-auth.js"></script>
+<script src="/aceAcademy/firestore.js"></script>
+<script src="auth-guard.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#060b18;--surface:#0d1526;--border:rgba(255,255,255,.07);--accent:#818cf8;--text:#e2e8f0;--muted:#475569;--font:'Inter',system-ui,sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+header{background:rgba(6,11,24,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:14px;height:62px;position:sticky;top:0;z-index:500}
+.brand{text-decoration:none;font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 10px;border-radius:8px;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.spacer{flex:1}
+.wrap{max-width:760px;margin:0 auto;padding:32px 20px 80px}
+
+/* Hero progress ring */
+.goal-hero{text-align:center;padding:32px 20px;margin-bottom:28px}
+.goal-hero h1{font-size:1.5rem;font-weight:900;margin-bottom:4px}
+.goal-hero p{color:var(--muted);font-size:.85rem;margin-bottom:28px}
+.ring-wrap{position:relative;display:inline-block;margin-bottom:20px}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:2rem;font-weight:900;color:var(--accent)}
+.ring-lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.goal-msg{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.goal-sub{font-size:.82rem;color:var(--muted)}
+
+/* Target setter */
+.target-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:24px}
+.target-card h2{font-size:.85rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+.target-options{display:flex;gap:8px;flex-wrap:wrap}
+.target-opt{background:#111827;border:1.5px solid var(--border);border-radius:10px;padding:8px 18px;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s}
+.target-opt.active{border-color:var(--accent);color:var(--accent);background:rgba(129,140,248,.1)}
+
+/* Activity today */
+.section-head{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-head::after{content:'';flex:1;height:1px;background:var(--border)}
+.activity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:28px}
+.act-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);transition:border-color .15s}
+.act-card:hover{border-color:rgba(129,140,248,.3)}
+.act-icon{font-size:1.4rem;flex-shrink:0}
+.act-label{font-size:.82rem;font-weight:700}
+.act-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+.act-check{margin-left:auto;font-size:1.1rem}
+
+/* Streak calendar mini */
+.streak-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+.streak-day{width:28px;height:28px;border-radius:6px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--muted)}
+.streak-day.done{background:rgba(34,197,94,.3);color:#22c55e}
+.streak-day.today{border:2px solid var(--accent)}
+
+/* Add custom goal */
+.add-goal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px}
+.add-goal h2{font-size:.85rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+.goal-input-row{display:flex;gap:10px}
+input{background:#111827;border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 14px;font-size:.85rem;font-family:var(--font);outline:none;flex:1;transition:border-color .15s}
+input:focus{border-color:var(--accent)}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn:hover{background:#6366f1}
+.goal-items{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.goal-item{display:flex;align-items:center;gap:10px;background:#111827;border-radius:10px;padding:10px 14px}
+.goal-item-text{flex:1;font-size:.85rem}
+.goal-item-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.goal-item-check.done{background:#22c55e;border-color:#22c55e;color:#fff}
+.goal-item-del{color:var(--muted);cursor:pointer;font-size:.8rem;padding:2px 6px;border-radius:5px;transition:color .15s}
+.goal-item-del:hover{color:#ef4444}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">🎓 aceAcademy</a>
+  <a href="index.html" class="nav-link">← Home</a>
+  <div class="spacer"></div>
+  <a href="alltools.html" class="nav-link">All Tools</a>
+</header>
+
+<div class="wrap">
+  <!-- Progress ring hero -->
+  <div class="goal-hero">
+    <h1>🎯 Daily Goal</h1>
+    <p>Set a daily study target and track it every time you log in.</p>
+    <div class="ring-wrap">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="58" fill="none" stroke="#1e293b" stroke-width="12"/>
+        <circle id="ringFill" cx="70" cy="70" r="58" fill="none" stroke="#818cf8" stroke-width="12"
+          stroke-dasharray="364" stroke-dashoffset="364" stroke-linecap="round"
+          style="transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-pct" id="ringPct">0%</div>
+        <div class="ring-lbl" id="ringLbl">of goal</div>
+      </div>
+    </div>
+    <div class="goal-msg" id="goalMsg">Let's get started today!</div>
+    <div class="goal-sub" id="goalSub" style="color:var(--muted)"></div>
+  </div>
+
+  <!-- Target setter -->
+  <div class="target-card">
+    <h2>Daily target</h2>
+    <div class="target-options" id="targetOptions">
+      <div class="target-opt" data-val="1" onclick="setTarget(1,this)">Light · 1 task</div>
+      <div class="target-opt" data-val="3" onclick="setTarget(3,this)">Focus · 3 tasks</div>
+      <div class="target-opt" data-val="5" onclick="setTarget(5,this)">Study · 5 tasks</div>
+      <div class="target-opt" data-val="10" onclick="setTarget(10,this)">Grind · 10 tasks</div>
+    </div>
+  </div>
+
+  <!-- Today's activity -->
+  <div class="section-head">Today's activity</div>
+  <div class="activity-grid" id="activityGrid"></div>
+
+  <!-- Last 7 days streak -->
+  <div class="section-head">Last 14 days</div>
+  <div class="streak-row" id="streakRow"></div>
+
+  <!-- Custom goals -->
+  <div class="add-goal">
+    <h2>Custom goals for today</h2>
+    <div class="goal-input-row">
+      <input id="goalInput" placeholder="e.g. Review Chapter 5, Do 20 flashcards…" onkeydown="if(event.key==='Enter')addGoalItem()">
+      <button class="btn" onclick="addGoalItem()">+ Add</button>
+    </div>
+    <div class="goal-items" id="goalItems"></div>
+  </div>
+</div>
+
+<script>
+const TODAY = new Date().toDateString();
+
+function getState() {
+  try { return JSON.parse(localStorage.getItem('ace_daily_goal_state') || '{}'); } catch(e) { return {}; }
+}
+function setState(s) { localStorage.setItem('ace_daily_goal_state', JSON.stringify(s)); }
+
+// Reset state if new day
+let state = getState();
+if (state.date !== TODAY) {
+  state = { date: TODAY, target: state.target || 3, customGoals: [], completedGoals: [] };
+  setState(state);
+}
+
+function setTarget(val, el) {
+  state.target = val;
+  setState(state);
+  document.querySelectorAll('.target-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  updateRing();
+}
+
+function addGoalItem() {
+  const inp = document.getElementById('goalInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  state.customGoals.push({ id: Date.now(), text, done: false });
+  setState(state);
+  inp.value = '';
+  renderGoalItems();
+  updateRing();
+}
+
+function toggleGoalItem(id) {
+  const g = state.customGoals.find(x => x.id === id);
+  if (g) { g.done = !g.done; setState(state); renderGoalItems(); updateRing(); }
+}
+
+function deleteGoalItem(id) {
+  state.customGoals = state.customGoals.filter(x => x.id !== id);
+  setState(state);
+  renderGoalItems();
+  updateRing();
+}
+
+function renderGoalItems() {
+  const el = document.getElementById('goalItems');
+  el.innerHTML = state.customGoals.map(g => `
+    <div class="goal-item">
+      <div class="goal-item-check${g.done?' done':''}" onclick="toggleGoalItem(${g.id})">${g.done?'✓':''}</div>
+      <div class="goal-item-text" style="${g.done?'text-decoration:line-through;color:var(--muted)':''}">${g.text}</div>
+      <span class="goal-item-del" onclick="deleteGoalItem(${g.id})">✕</span>
+    </div>`).join('');
+}
+
+function getCompletedCount() {
+  // Count from activity sources
+  let count = 0;
+  try {
+    const tests = JSON.parse(localStorage.getItem('ace_test_history') || '[]');
+    count += tests.filter(t => new Date(t.date || t.timestamp || 0).toDateString() === TODAY).length;
+  } catch(e) {}
+  try {
+    const reviewed = JSON.parse(localStorage.getItem('ace_reviewed_today') || '[]');
+    count += reviewed.filter(r => r.date === TODAY).length;
+  } catch(e) {}
+  count += state.customGoals.filter(g => g.done).length;
+  return count;
+}
+
+function updateRing() {
+  const done = getCompletedCount();
+  const target = state.target || 3;
+  const pct = Math.min(100, Math.round((done / target) * 100));
+  const circumference = 364;
+  const offset = circumference - (circumference * pct / 100);
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringPct').textContent = pct + '%';
+  document.getElementById('ringLbl').textContent = `${done} of ${target} tasks`;
+
+  const msgs = [
+    [0,   "Let's get started today! 🚀"],
+    [25,  "Good start — keep going! 💪"],
+    [50,  "Halfway there! You're on a roll 🔥"],
+    [75,  "Almost done! Push through! ⚡"],
+    [100, "Goal complete! Amazing work today! 🎉"],
+  ];
+  const msg = msgs.reverse().find(([p]) => pct >= p);
+  document.getElementById('goalMsg').textContent = msg ? msg[1] : '';
+
+  // Update ring color
+  const color = pct >= 100 ? '#22c55e' : pct >= 50 ? '#818cf8' : '#818cf8';
+  document.getElementById('ringFill').style.stroke = color;
+
+  // Save completion to history
+  try {
+    const history = JSON.parse(localStorage.getItem('ace_daily_goal_history') || '{}');
+    history[TODAY] = { done, target, pct };
+    localStorage.setItem('ace_daily_goal_history', JSON.stringify(history));
+  } catch(e) {}
+}
+
+function renderActivity() {
+  const sources = [
+    { icon: '🃏', label: 'Flashcards', key: 'ace_flashcard_session_today', link: 'flashcards.html' },
+    { icon: '✏️', label: 'Tests', key: 'ace_test_today', link: 'tests.html' },
+    { icon: '🔁', label: 'Reviews Done', key: 'ace_reviewed_today', link: 'dueforreview.html' },
+    { icon: '📔', label: 'Mistakes Logged', key: 'ace_mistake_journal', link: 'mistakejournal.html' },
+    { icon: '🎯', label: 'Custom Goals', count: state.customGoals.filter(g=>g.done).length + '/' + state.customGoals.length, link: '#', noKey: true },
+  ];
+  const grid = document.getElementById('activityGrid');
+  grid.innerHTML = sources.map(s => {
+    let count = s.count;
+    if (!s.noKey) {
+      try {
+        const val = JSON.parse(localStorage.getItem(s.key) || '[]');
+        if (Array.isArray(val)) {
+          count = val.filter(v => {
+            const d = new Date(v.date || v.timestamp || v || 0);
+            return d.toDateString() === TODAY;
+          }).length;
+        } else { count = 0; }
+      } catch(e) { count = 0; }
+    }
+    const done = parseInt(count) > 0;
+    return `<a href="${s.link}" class="act-card">
+      <div class="act-icon">${s.icon}</div>
+      <div>
+        <div class="act-label">${s.label}</div>
+        <div class="act-count">${count} today</div>
+      </div>
+      <div class="act-check">${done ? '✅' : '⭕'}</div>
+    </a>`;
+  }).join('');
+}
+
+function renderStreak() {
+  const history = (() => { try { return JSON.parse(localStorage.getItem('ace_daily_goal_history') || '{}'); } catch(e) { return {}; } })();
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    days.push(d);
+  }
+  const row = document.getElementById('streakRow');
+  row.innerHTML = days.map(d => {
+    const key = d.toDateString();
+    const isToday = key === TODAY;
+    const done = history[key] && history[key].pct >= 100;
+    const dayLabel = d.toLocaleDateString('en-US', {weekday:'narrow'});
+    return `<div class="streak-day${done?' done':''}${isToday?' today':''}" title="${key}">${dayLabel}</div>`;
+  }).join('');
+}
+
+// Init target button
+document.querySelectorAll('.target-opt').forEach(o => {
+  if (parseInt(o.dataset.val) === state.target) o.classList.add('active');
+});
+
+renderGoalItems();
+renderActivity();
+renderStreak();
+updateRing();
+
+// Refresh every 30 seconds in case user does activity in another tab
+setInterval(() => { renderActivity(); updateRing(); }, 30000);
+</script>
+</body>
+</html>

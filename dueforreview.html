@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Due for Review — aceAcademy</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/aceAcademy/firebase-auth.js"></script>
+<script src="/aceAcademy/firestore.js"></script>
+<script src="auth-guard.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#060b18;--surface:#0d1526;--border:rgba(255,255,255,.07);--accent:#818cf8;--text:#e2e8f0;--muted:#475569;--font:'Inter',system-ui,sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+header{background:rgba(6,11,24,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:14px;height:62px;position:sticky;top:0;z-index:500}
+.brand{text-decoration:none;font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 10px;border-radius:8px;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.spacer{flex:1}
+.wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+h1{font-size:1.5rem;font-weight:900;margin-bottom:4px}
+.subtitle{color:var(--muted);font-size:.85rem;margin-bottom:28px}
+
+/* Notification banner */
+.notif-banner{background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.15));border:1px solid rgba(129,140,248,.3);border-radius:14px;padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.notif-icon{font-size:2rem;flex-shrink:0}
+.notif-text h3{font-size:.9rem;font-weight:700;margin-bottom:4px}
+.notif-text p{font-size:.78rem;color:var(--muted);line-height:1.4}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:.82rem;font-weight:700;cursor:pointer;transition:background .15s;flex-shrink:0}
+.btn:hover{background:#6366f1}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:500px){.stats{grid-template-columns:1fr 1fr}}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.stat-val{font-size:1.6rem;font-weight:900;color:var(--accent)}
+.stat-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+
+/* Section head */
+.sec-head{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-head::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Review item */
+.rev-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:border-color .15s}
+.rev-item:hover{border-color:rgba(129,140,248,.3)}
+.rev-icon{font-size:1.4rem;flex-shrink:0;width:40px;height:40px;border-radius:10px;background:rgba(129,140,248,.1);display:flex;align-items:center;justify-content:center}
+.rev-info{flex:1;min-width:0}
+.rev-label{font-size:.88rem;font-weight:700;margin-bottom:2px}
+.rev-meta{font-size:.72rem;color:var(--muted)}
+.rev-due{font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:6px}
+.due-now{background:rgba(239,68,68,.15);color:#ef4444}
+.due-soon{background:rgba(245,158,11,.15);color:#f59e0b}
+.due-later{background:rgba(34,197,94,.15);color:#22c55e}
+.review-btn{font-size:.75rem;font-weight:700;padding:6px 14px;border-radius:8px;border:1px solid rgba(129,140,248,.3);background:rgba(129,140,248,.1);color:var(--accent);cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap}
+.review-btn:hover{background:rgba(129,140,248,.25)}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:3rem;margin-bottom:12px}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">🎓 aceAcademy</a>
+  <a href="index.html" class="nav-link">← Home</a>
+  <div class="spacer"></div>
+  <a href="flashcards.html" class="nav-link">Flashcards</a>
+  <a href="alltools.html" class="nav-link">All Tools</a>
+</header>
+
+<div class="wrap">
+  <h1>🔁 Due for Review</h1>
+  <p class="subtitle">Spaced repetition items due today, plus topics you marked as "Learning" that need practice.</p>
+
+  <!-- Notification setup -->
+  <div class="notif-banner" id="notifBanner">
+    <div class="notif-icon">🔔</div>
+    <div class="notif-text">
+      <h3>Get notified when items are due</h3>
+      <p>Enable push notifications and aceAcademy will remind you on your phone or computer when review items are due — even when the site is closed.</p>
+    </div>
+    <button class="btn" id="notifBtn" onclick="requestNotifications()">Enable Notifications</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="st-due" style="color:#ef4444">0</div><div class="stat-lbl">Due Now</div></div>
+    <div class="stat"><div class="stat-val" id="st-soon" style="color:#f59e0b">0</div><div class="stat-lbl">Due This Week</div></div>
+    <div class="stat"><div class="stat-val" id="st-done" style="color:#22c55e">0</div><div class="stat-lbl">Reviewed Today</div></div>
+  </div>
+
+  <div class="sec-head">Due now</div>
+  <div id="dueNowList"></div>
+
+  <div class="sec-head" style="margin-top:24px">Coming up this week</div>
+  <div id="dueSoonList"></div>
+</div>
+
+<script>
+// ── Notifications ─────────────────────────────────────────────────────────────
+async function requestNotifications() {
+  if (!('Notification' in window)) {
+    alert('Your browser does not support notifications.');
+    return;
+  }
+  const permission = await Notification.requestPermission();
+  if (permission === 'granted') {
+    localStorage.setItem('ace_notif_enabled', '1');
+    updateNotifBanner();
+    scheduleReviewNotification();
+    new Notification('aceAcademy 🎓', {
+      body: 'Notifications enabled! You\'ll be reminded when review items are due.',
+      icon: '/aceAcademy/icon-192.png'
+    });
+  }
+}
+
+function scheduleReviewNotification() {
+  // Use service worker to schedule — fire a local notification if SW available
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'SCHEDULE_REVIEW_NOTIF',
+      dueCount: getDueCount()
+    });
+  }
+}
+
+function updateNotifBanner() {
+  const enabled = localStorage.getItem('ace_notif_enabled') === '1' && Notification.permission === 'granted';
+  const banner = document.getElementById('notifBanner');
+  const btn = document.getElementById('notifBtn');
+  if (enabled) {
+    banner.style.background = 'linear-gradient(135deg,rgba(34,197,94,.1),rgba(16,185,129,.1))';
+    banner.style.borderColor = 'rgba(34,197,94,.3)';
+    banner.querySelector('h3').textContent = '✅ Notifications enabled';
+    banner.querySelector('p').textContent = 'You\'ll get a reminder when review items are due. Check back here anytime.';
+    btn.textContent = 'Test Notification';
+    btn.onclick = () => new Notification('aceAcademy 🎓', { body: 'Test notification — review items are waiting!', icon: '/aceAcademy/icon-192.png' });
+  }
+}
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+function getDueItems() {
+  const now = Date.now();
+  const items = [];
+
+  // Flashcards due
+  try {
+    const cards = JSON.parse(localStorage.getItem('ace_flashcard_due') || '[]');
+    cards.forEach(c => {
+      if (!c.nextReview || c.nextReview <= now) {
+        items.push({ label: c.front || c.term || 'Flashcard', meta: c.deck || 'Flashcards', type: 'flashcard', dueAt: c.nextReview || 0, link: 'flashcards.html' });
+      }
+    });
+  } catch(e) {}
+
+  // Topics marked "learning" in mastery
+  try {
+    const mastery = JSON.parse(localStorage.getItem('ace_mastery') || '{}');
+    Object.entries(mastery).forEach(([key, val]) => {
+      if (val === 'learning') {
+        const parts = key.split('_');
+        const label = parts.slice(2).join(' ') || key;
+        const subj = parts[1] || 'Topic';
+        items.push({ label, meta: subj + ' · Marked as Learning', type: 'topic', dueAt: 0, link: 'curriculum.html' });
+      }
+    });
+  } catch(e) {}
+
+  // Open mistakes older than 2 days
+  try {
+    const mistakes = JSON.parse(localStorage.getItem('ace_mistake_journal') || '[]');
+    const twoDaysAgo = now - 2 * 86400000;
+    mistakes.filter(m => !m.resolved && new Date(m.date).getTime() < twoDaysAgo).forEach(m => {
+      items.push({ label: m.topic, meta: m.subject + ' · Mistake logged ' + new Date(m.date).toLocaleDateString(), type: 'mistake', dueAt: new Date(m.date).getTime(), link: 'mistakejournal.html' });
+    });
+  } catch(e) {}
+
+  return items;
+}
+
+function getDueCount() {
+  return getDueItems().filter(i => i.dueAt <= Date.now()).length;
+}
+
+const TYPE_ICONS = { flashcard: '🃏', topic: '📚', mistake: '❌' };
+
+function render() {
+  const items = getDueItems();
+  const now = Date.now();
+  const week = now + 7 * 86400000;
+
+  const dueNow = items.filter(i => i.dueAt <= now);
+  const dueSoon = items.filter(i => i.dueAt > now && i.dueAt <= week);
+
+  document.getElementById('st-due').textContent = dueNow.length;
+  document.getElementById('st-soon').textContent = dueSoon.length;
+
+  // Reviewed today count (from localStorage log)
+  try {
+    const reviewed = JSON.parse(localStorage.getItem('ace_reviewed_today') || '[]');
+    const today = new Date().toDateString();
+    const count = reviewed.filter(r => r.date === today).length;
+    document.getElementById('st-done').textContent = count;
+  } catch(e) {}
+
+  function itemHTML(item) {
+    const icon = TYPE_ICONS[item.type] || '📌';
+    const dueLabel = item.dueAt <= now ? '<span class="rev-due due-now">Due now</span>' : '<span class="rev-due due-soon">This week</span>';
+    return `<div class="rev-item">
+      <div class="rev-icon">${icon}</div>
+      <div class="rev-info">
+        <div class="rev-label">${item.label} ${dueLabel}</div>
+        <div class="rev-meta">${item.meta}</div>
+      </div>
+      <a href="${item.link}" class="review-btn">Review →</a>
+    </div>`;
+  }
+
+  const nowList = document.getElementById('dueNowList');
+  nowList.innerHTML = dueNow.length
+    ? dueNow.map(itemHTML).join('')
+    : '<div class="empty"><div class="empty-icon">🎉</div><p>Nothing due right now — you\'re all caught up!</p></div>';
+
+  const soonList = document.getElementById('dueSoonList');
+  soonList.innerHTML = dueSoon.length
+    ? dueSoon.map(itemHTML).join('')
+    : '<p style="color:var(--muted);font-size:.85rem;padding:12px 0">Nothing due this week.</p>';
+}
+
+updateNotifBanner();
+render();
+
+// Check if should prompt for notifications
+if (Notification.permission === 'default' && !localStorage.getItem('ace_notif_dismissed')) {
+  // Banner already visible
+} else if (Notification.permission === 'granted') {
+  updateNotifBanner();
+  scheduleReviewNotification();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mistake Journal — aceAcademy</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/aceAcademy/firebase-auth.js"></script>
+<script src="/aceAcademy/firestore.js"></script>
+<script src="auth-guard.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#060b18;--surface:#0d1526;--border:rgba(255,255,255,.07);--accent:#818cf8;--text:#e2e8f0;--muted:#475569;--radius:14px;--font:'Inter',system-ui,sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+header{background:rgba(6,11,24,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:14px;height:62px;position:sticky;top:0;z-index:500}
+.brand{text-decoration:none;font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 10px;border-radius:8px;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.spacer{flex:1}
+.wrap{max-width:860px;margin:0 auto;padding:32px 20px 80px}
+h1{font-size:1.5rem;font-weight:900;margin-bottom:4px}
+.subtitle{color:var(--muted);font-size:.85rem;margin-bottom:28px}
+
+/* Add mistake form */
+.add-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:28px}
+.add-card h2{font-size:.9rem;font-weight:700;margin-bottom:16px;color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+input,select,textarea{background:#111827;border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 13px;font-size:.85rem;font-family:var(--font);outline:none;transition:border-color .15s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:70px}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 22px;font-size:.85rem;font-weight:700;cursor:pointer;transition:background .15s}
+.btn:hover{background:#6366f1}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+
+/* Filters */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.filter-chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.filter-chip.active{background:rgba(129,140,248,.2);border-color:var(--accent);color:var(--accent)}
+.search-box{background:#111827;border:1px solid var(--border);color:var(--text);border-radius:20px;padding:6px 16px;font-size:.8rem;outline:none;min-width:180px;font-family:var(--font)}
+.search-box:focus{border-color:var(--accent)}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat-val{font-size:1.6rem;font-weight:900;color:var(--accent)}
+.stat-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+
+/* Journal entries */
+.entry-list{display:flex;flex-direction:column;gap:12px}
+.entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;transition:border-color .15s}
+.entry:hover{border-color:rgba(129,140,248,.3)}
+.entry.resolved{opacity:.55}
+.entry-top{display:flex;align-items:flex-start;gap:12px}
+.entry-badge{flex-shrink:0;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.entry-meta{flex:1;min-width:0}
+.entry-title{font-size:.9rem;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.entry-subject{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(129,140,248,.15);color:var(--accent)}
+.entry-date{font-size:.7rem;color:var(--muted)}
+.entry-note{font-size:.82rem;color:#94a3b8;margin-top:8px;line-height:1.5}
+.entry-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.entry-btn{font-size:.72rem;font-weight:600;padding:4px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+.entry-btn:hover{border-color:var(--accent);color:var(--accent)}
+.entry-btn.resolve{border-color:#22c55e33;color:#22c55e}
+.entry-btn.resolve:hover{background:rgba(34,197,94,.1)}
+.entry-btn.delete{border-color:#ef444433;color:#ef4444}
+.entry-btn.delete:hover{background:rgba(239,68,68,.1)}
+.resolved-badge{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(34,197,94,.15);color:#22c55e}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:3rem;margin-bottom:12px}
+.empty p{font-size:.9rem}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">🎓 aceAcademy</a>
+  <a href="index.html" class="nav-link">← Home</a>
+  <div class="spacer"></div>
+  <a href="alltools.html" class="nav-link">All Tools</a>
+</header>
+
+<div class="wrap">
+  <h1>📔 Mistake Journal</h1>
+  <p class="subtitle">Log mistakes, add notes, and track what you've fixed. Every mistake is a lesson.</p>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Total Logged</div></div>
+    <div class="stat-box"><div class="stat-val" id="st-open" style="color:#f59e0b">0</div><div class="stat-lbl">Still Open</div></div>
+    <div class="stat-box"><div class="stat-val" id="st-resolved" style="color:#22c55e">0</div><div class="stat-lbl">Resolved</div></div>
+    <div class="stat-box"><div class="stat-val" id="st-week">0</div><div class="stat-lbl">This Week</div></div>
+  </div>
+
+  <!-- Add form -->
+  <div class="add-card">
+    <h2>+ Log a Mistake</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Topic / Question</label>
+        <input id="mj-topic" placeholder="e.g. Quadratic formula, Cell respiration…">
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <select id="mj-subject">
+          <option value="Math">📐 Math</option>
+          <option value="Science">🔬 Science</option>
+          <option value="ELA">📖 ELA</option>
+          <option value="History">🏛 History</option>
+          <option value="CS">💻 CS</option>
+          <option value="Health">❤️ Health</option>
+          <option value="SAT/ACT">📝 SAT/ACT</option>
+          <option value="AP">🎓 AP</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>What went wrong? (optional)</label>
+      <textarea id="mj-note" placeholder="Describe the mistake or what you didn't understand…"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Source</label>
+        <select id="mj-source">
+          <option value="Test">Practice Test</option>
+          <option value="Worksheet">Worksheet</option>
+          <option value="Flashcard">Flashcard</option>
+          <option value="Homework">Homework</option>
+          <option value="Manual">Added Manually</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn" onclick="addMistake()">Log Mistake</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <span style="font-size:.75rem;color:var(--muted);font-weight:600">Filter:</span>
+    <div class="filter-chip active" data-filter="all" onclick="setFilter('all',this)">All</div>
+    <div class="filter-chip" data-filter="open" onclick="setFilter('open',this)">Open</div>
+    <div class="filter-chip" data-filter="resolved" onclick="setFilter('resolved',this)">Resolved</div>
+    <div class="filter-chip" data-filter="Math" onclick="setFilter('Math',this)">Math</div>
+    <div class="filter-chip" data-filter="Science" onclick="setFilter('Science',this)">Science</div>
+    <div class="filter-chip" data-filter="ELA" onclick="setFilter('ELA',this)">ELA</div>
+    <div class="filter-chip" data-filter="History" onclick="setFilter('History',this)">History</div>
+    <input class="search-box" id="mjSearch" placeholder="🔍 Search mistakes…" oninput="renderEntries()">
+  </div>
+
+  <!-- Entry list -->
+  <div class="entry-list" id="entryList"></div>
+</div>
+
+<script>
+const SUBJECT_ICONS = {Math:'📐',Science:'🔬',ELA:'📖',History:'🏛',CS:'💻',Health:'❤️','SAT/ACT':'📝',AP:'🎓',Other:'📌'};
+const SUBJECT_COLORS = {Math:'rgba(99,102,241,.2)',Science:'rgba(16,185,129,.2)',ELA:'rgba(245,158,11,.2)',History:'rgba(239,68,68,.2)',CS:'rgba(6,182,212,.2)',Health:'rgba(236,72,153,.2)','SAT/ACT':'rgba(139,92,246,.2)',AP:'rgba(251,191,36,.2)',Other:'rgba(100,116,139,.2)'};
+
+let mistakes = [];
+let activeFilter = 'all';
+
+function load() {
+  try { mistakes = JSON.parse(localStorage.getItem('ace_mistake_journal') || '[]'); } catch(e) { mistakes = []; }
+  // Also import from old sidebar format
+  try {
+    const old = JSON.parse(localStorage.getItem('ace_mistakes') || '[]');
+    old.forEach(m => {
+      if (!mistakes.find(x => x.topic === m.topic && x.date === m.date)) {
+        mistakes.push({ id: Date.now() + Math.random(), topic: m.topic || m.q || 'Unknown', subject: m.subject || 'Other', note: m.note || '', source: m.source || 'Manual', date: m.date || new Date().toISOString(), resolved: false });
+      }
+    });
+  } catch(e) {}
+}
+
+function save() {
+  localStorage.setItem('ace_mistake_journal', JSON.stringify(mistakes));
+  updateStats();
+}
+
+function addMistake() {
+  const topic = document.getElementById('mj-topic').value.trim();
+  if (!topic) { document.getElementById('mj-topic').focus(); return; }
+  mistakes.unshift({
+    id: Date.now(),
+    topic,
+    subject: document.getElementById('mj-subject').value,
+    note: document.getElementById('mj-note').value.trim(),
+    source: document.getElementById('mj-source').value,
+    date: new Date().toISOString(),
+    resolved: false
+  });
+  document.getElementById('mj-topic').value = '';
+  document.getElementById('mj-note').value = '';
+  save();
+  renderEntries();
+}
+
+function toggleResolve(id) {
+  const m = mistakes.find(x => x.id === id);
+  if (m) { m.resolved = !m.resolved; m.resolvedAt = m.resolved ? new Date().toISOString() : null; }
+  save(); renderEntries();
+}
+
+function deleteMistake(id) {
+  mistakes = mistakes.filter(x => x.id !== id);
+  save(); renderEntries();
+}
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderEntries();
+}
+
+function updateStats() {
+  const total = mistakes.length;
+  const resolved = mistakes.filter(m => m.resolved).length;
+  const open = total - resolved;
+  const week = mistakes.filter(m => {
+    const d = new Date(m.date);
+    return (Date.now() - d.getTime()) < 7 * 86400000;
+  }).length;
+  document.getElementById('st-total').textContent = total;
+  document.getElementById('st-open').textContent = open;
+  document.getElementById('st-resolved').textContent = resolved;
+  document.getElementById('st-week').textContent = week;
+}
+
+function renderEntries() {
+  const q = (document.getElementById('mjSearch').value || '').toLowerCase();
+  let filtered = mistakes.filter(m => {
+    if (activeFilter === 'open') return !m.resolved;
+    if (activeFilter === 'resolved') return m.resolved;
+    if (activeFilter !== 'all') return m.subject === activeFilter;
+    return true;
+  }).filter(m => !q || m.topic.toLowerCase().includes(q) || (m.note || '').toLowerCase().includes(q));
+
+  const list = document.getElementById('entryList');
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📔</div><p>No mistakes here yet.<br>That\'s either great news or you haven\'t logged any!</p></div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(m => {
+    const icon = SUBJECT_ICONS[m.subject] || '📌';
+    const color = SUBJECT_COLORS[m.subject] || 'rgba(100,116,139,.2)';
+    const date = new Date(m.date).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+    return `<div class="entry${m.resolved ? ' resolved' : ''}">
+      <div class="entry-top">
+        <div class="entry-badge" style="background:${color}">${icon}</div>
+        <div class="entry-meta">
+          <div class="entry-title">
+            ${m.topic}
+            <span class="entry-subject">${m.subject}</span>
+            ${m.resolved ? '<span class="resolved-badge">✓ Resolved</span>' : ''}
+          </div>
+          <div class="entry-date">${date} · from ${m.source}</div>
+          ${m.note ? `<div class="entry-note">${m.note}</div>` : ''}
+        </div>
+      </div>
+      <div class="entry-actions">
+        <button class="entry-btn resolve" onclick="toggleResolve(${m.id})">${m.resolved ? '↩ Reopen' : '✓ Mark Resolved'}</button>
+        <button class="entry-btn delete" onclick="deleteMistake(${m.id})">🗑 Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+load();
+updateStats();
+renderEntries();
+</script>
+</body>
+</html>
