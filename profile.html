@@ -285,6 +285,93 @@ function clearAIKey() {
   }
 }
 
+
+// ── Share Progress ─────────────────────────────────────────────────────────
+var _shareToken = localStorage.getItem('ace_share_token') || '';
+
+function getSharePrefs(){
+  return {
+    streak:   document.getElementById('shareStreak')?.checked !== false,
+    scores:   document.getElementById('shareScores')?.checked !== false,
+    badges:   document.getElementById('shareBadges')?.checked !== false,
+    subjects: document.getElementById('shareSubjects')?.checked !== false
+  };
+}
+
+function updateSharePrefs(){
+  if(!_shareToken) return;
+  pushShareProfile();
+}
+
+function buildPublicProfile(){
+  var name     = localStorage.getItem('ace_profile_name') || '';
+  var grade    = localStorage.getItem('ace_profile_grade') || '';
+  var streak   = JSON.parse(localStorage.getItem('ace_login_streak')||'{"count":0}').count||0;
+  var coins    = parseInt(localStorage.getItem('ace_coins')||'0');
+  var tests    = JSON.parse(localStorage.getItem('aceTestHistory')||'[]');
+  var subjects = JSON.parse(localStorage.getItem('ace_subjects')||'[]');
+  var badges   = JSON.parse(localStorage.getItem('ace_badges')||'[]');
+  var goals    = JSON.parse(localStorage.getItem('ace_goals')||'[]').filter(function(g){return (g.progress||0)>=100;}).length;
+  var avatar   = localStorage.getItem('ace_avatar')||'';
+  return { name, grade, streak, coins, tests: tests.slice(-30), subjects, badges, goals, avatar: avatar.startsWith('data:image')? '' : avatar, visible: getSharePrefs(), updatedAt: Date.now() };
+}
+
+function pushShareProfile(){
+  if(!_shareToken) return;
+  try {
+    var db = firebase.firestore();
+    db.collection('public_profiles').doc(_shareToken).set(buildPublicProfile())
+      .catch(function(e){ console.warn('Share push error', e); });
+  } catch(e) {}
+}
+
+function generateShareLink(){
+  var btn = document.getElementById('shareBtn');
+  btn.textContent = '⏳ Generating…'; btn.disabled = true;
+  if(!_shareToken){
+    _shareToken = Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
+    localStorage.setItem('ace_share_token', _shareToken);
+  }
+  pushShareProfile();
+  var url = window.location.origin + '/aceAcademy/share.html?id=' + _shareToken;
+  document.getElementById('shareLinkInput').value = url;
+  document.getElementById('shareLinkBox').style.display = '';
+  document.getElementById('revokeBtn').style.display = '';
+  btn.textContent = '✓ Link Active'; btn.disabled = false;
+}
+
+function copyShareLink(){
+  var inp = document.getElementById('shareLinkInput');
+  navigator.clipboard.writeText(inp.value).then(function(){
+    var btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(function(){ btn.textContent = 'Copy'; }, 2000);
+  });
+}
+
+function revokeShareLink(){
+  if(!confirm('Revoke your share link? Anyone with the current link will no longer be able to view your page.')) return;
+  try {
+    var db = firebase.firestore();
+    db.collection('public_profiles').doc(_shareToken).delete().catch(function(){});
+  } catch(e) {}
+  _shareToken = '';
+  localStorage.removeItem('ace_share_token');
+  document.getElementById('shareLinkBox').style.display = 'none';
+  document.getElementById('revokeBtn').style.display = 'none';
+  document.getElementById('shareBtn').textContent = '🔗 Generate Link';
+}
+
+function initShareUI(){
+  if(_shareToken){
+    var url = window.location.origin + '/aceAcademy/share.html?id=' + _shareToken;
+    document.getElementById('shareLinkInput').value = url;
+    document.getElementById('shareLinkBox').style.display = '';
+    document.getElementById('revokeBtn').style.display = '';
+    document.getElementById('shareBtn').textContent = '✓ Link Active';
+  }
+}
+
 function loadProfile() {
   var name     = localStorage.getItem('ace_profile_name') || '';
   var grade    = localStorage.getItem('ace_profile_grade') || '';
@@ -422,6 +509,7 @@ function saveProfile() {
 loadProfile();
 renderAnalytics();
 refreshAIKeyUI();
+initShareUI();
 
 function updateSyncUI(){
   var dot  = document.getElementById('syncDotLarge');
