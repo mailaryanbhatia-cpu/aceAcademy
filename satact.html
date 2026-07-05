@@ -126,6 +126,21 @@ h1{font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:4px}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="/aceAcademy/firebase-auth.js"></script>
 <script src="/aceAcademy/firestore.js"></script>
+
+<style id="ace-mobile-fix">
+@media(max-width:700px){
+  header,nav.topnav,.ace-nav{padding:0 14px!important;height:56px!important;gap:10px!important}
+  .tagline,.srch-wrap,.search-wrap{display:none!important}
+  .brand-name,.logo{font-size:1rem!important}
+  main,#mainContent,.main-content,.page-content{padding:14px 12px 80px!important}
+  .card,.tool-card,.stat-card,.feature-card{border-radius:10px!important}
+  h1{font-size:1.4rem!important}
+  h2{font-size:1.1rem!important}
+  table{font-size:.78rem}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr!important}
+  .flex-row{flex-direction:column!important}
+}
+</style>
 </head>
 <body>
 <nav class="topnav">
