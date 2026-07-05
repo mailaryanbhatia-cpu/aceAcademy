@@ -1013,6 +1013,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   <script src="/aceAcademy/nav-profile.js"></script>
   <script src="/aceAcademy/splash.js"></script>
 <script src="/aceAcademy/timer.js"></script>
+<link rel="stylesheet" href="/aceAcademy/mobile.css"/>
 </head>
 <body>
 
@@ -3300,6 +3301,7 @@ function printCurriculum() {
     });
   });
   html += '<script src="/aceAcademy/analytics.js"></script>
+<script src="/aceAcademy/onboarding.js"></script>
 </body></html>';
   const w = window.open('', '_blank');
   if(w){ w.document.write(html); w.document.close(); setTimeout(()=>w.print(),500); }

@@ -163,6 +163,7 @@ body{font-family:var(--font);background:var(--bg);color:#e2e8f0;margin:0}
       <a href="digest.html"   style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">📋 Weekly Digest</a>
       <a href="goals.html"    style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">🎯 Goals</a>
       <a href="flashcards.html" style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">🃏 Flashcards</a>
+      <button onclick="localStorage.removeItem('ace_onboarding_done_v2');if(typeof _aceOB!=='undefined')_aceOB.show();" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700;cursor:pointer">✦ Replay AI Tour</button>
       <a href="schedule-gen.html" style="background:#1e293b;color:#a5b4fc;text-decoration:none;padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:700">📅 Study Schedule</a>
     </div>
   </div>
@@ -421,5 +422,6 @@ loadProfile();
 renderAnalytics();
 refreshAIKeyUI();
 </script>
+<script src="/aceAcademy/onboarding.js"></script>
 </body>
 </html>

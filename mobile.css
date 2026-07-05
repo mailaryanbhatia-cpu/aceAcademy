@@ -1,0 +1,240 @@
+/* ═══════════════════════════════════════════════════════════════
+   mobile.css — aceAcademy pristine mobile experience
+   Included on every page. Overrides tool-specific styles.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Base touch targets & typography ─────────────────────────── */
+@media (max-width: 640px) {
+  /* Minimum touch target size */
+  button, .btn, a.btn, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Smooth scrolling & no horizontal overflow */
+  html, body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* All textareas comfortable on mobile */
+  textarea {
+    font-size: 16px !important; /* prevents iOS zoom */
+    line-height: 1.6;
+  }
+
+  /* All inputs */
+  input[type="text"], input[type="password"], input[type="email"],
+  input[type="number"], input[type="search"], select {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+
+  /* ── Nav ─────────────────────────────────────────────────────── */
+  nav, .nav, .navbar {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    padding: 8px 12px !important;
+  }
+
+  .nav-links, .nav-items {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    justify-content: center;
+  }
+
+  .nav-links a, .nav-items a, nav a {
+    font-size: .75rem !important;
+    padding: 6px 10px !important;
+    border-radius: 8px !important;
+    white-space: nowrap;
+  }
+
+  /* ── Page wrapper ─────────────────────────────────────────────── */
+  .page-wrap, .container, .wrap, [class*="wrap"], [class*="container"] {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* ── Cards & sections ─────────────────────────────────────────── */
+  .card, .section, .section-card, [class*="-card"], [class*="section"] {
+    border-radius: 14px !important;
+    padding: 16px !important;
+    margin-bottom: 14px !important;
+  }
+
+  /* ── Grids: force single column on small screens ──────────────── */
+  .stats-grid, .stat-row, [class*="grid"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .badge-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* ── Buttons: full width when stacked ─────────────────────────── */
+  .btn-row, .controls, [class*="btn-group"] {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .btn-full-mobile {
+    width: 100% !important;
+  }
+
+  /* ── Tabs: scrollable horizontal ─────────────────────────────── */
+  .tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    gap: 6px !important;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    font-size: .78rem !important;
+    padding: 7px 14px !important;
+  }
+
+  /* ── Hero sections ────────────────────────────────────────────── */
+  .hero, [class*="hero"] {
+    padding: 20px 16px !important;
+  }
+
+  .hero h1, [class*="hero"] h1 {
+    font-size: 1.3rem !important;
+  }
+
+  /* ── Flashcard specific ───────────────────────────────────────── */
+  .card-face {
+    font-size: 1rem !important;
+    padding: 20px !important;
+  }
+
+  /* ── Progress bars in rows ────────────────────────────────────── */
+  .prog-row {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+  .prog-label {
+    width: 100% !important;
+    white-space: normal !important;
+  }
+  .prog-track {
+    flex: 1 !important;
+  }
+
+  /* ── Debate tool ──────────────────────────────────────────────── */
+  .debate-arena, #debateArena {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Test tool ────────────────────────────────────────────────── */
+  .question-options label {
+    min-height: 48px !important;
+    padding: 12px 14px !important;
+    font-size: .9rem !important;
+  }
+
+  /* ── Essay grader ─────────────────────────────────────────────── */
+  .rubric-grid, [class*="rubric"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Improvement tracker chart ────────────────────────────────── */
+  .chart-wrap {
+    height: 160px !important;
+  }
+
+  /* ── Modal sizing ─────────────────────────────────────────────── */
+  .modal, #_ob_card {
+    max-width: calc(100vw - 24px) !important;
+    margin: 0 12px !important;
+    max-height: 90vh !important;
+    overflow-y: auto;
+  }
+
+  /* ── Stat boxes: 2 per row ────────────────────────────────────── */
+  .stat-box, .stat-card {
+    padding: 10px !important;
+    border-radius: 10px !important;
+  }
+  .stat-box .num, .stat-card .stat-num {
+    font-size: 1.2rem !important;
+  }
+  .stat-box .lbl, .stat-card .stat-label {
+    font-size: .65rem !important;
+  }
+
+  /* ── Onboarding card on mobile ────────────────────────────────── */
+  #_ob_card {
+    border-radius: 20px !important;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+  ._ob_header { padding: 20px 16px 0 !important; }
+  ._ob_content { padding: 0 16px 12px !important; }
+  ._ob_footer { padding: 10px 16px 20px !important; }
+  ._ob_icon { font-size: 2.2rem !important; }
+  ._ob_title { font-size: 1.1rem !important; }
+
+  /* ── Cornell notes / outline: textarea stacking ───────────────── */
+  .cornell-grid, [class*="cornell"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Fixed bottom nav padding ─────────────────────────────────── */
+  body {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* ── Floating action buttons ──────────────────────────────────── */
+  .fab, [class*="fab"] {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 16px !important;
+    width: 56px !important;
+    height: 56px !important;
+  }
+
+  /* ── Chip groups ──────────────────────────────────────────────── */
+  .m-chips, [class*="chips"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* ── Hide decorative elements on mobile to reduce clutter ──────── */
+  .desktop-only { display: none !important; }
+
+  /* ── Table responsiveness ─────────────────────────────────────── */
+  table { font-size: .78rem !important; }
+  th, td { padding: 8px 6px !important; }
+}
+
+/* Extra small phones */
+@media (max-width: 380px) {
+  .stats-grid, .stat-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .badge-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .tab {
+    font-size: .72rem !important;
+    padding: 6px 10px !important;
+  }
+}
+
+/* iOS notch / safe area support */
+@supports (padding: max(0px)) {
+  .page-wrap, .container {
+    padding-left: max(12px, env(safe-area-inset-left)) !important;
+    padding-right: max(12px, env(safe-area-inset-right)) !important;
+  }
+}
