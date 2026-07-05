@@ -456,7 +456,8 @@ function printBib() {
 </head><body>
   <h1>${title}</h1><h2>${style} Format · ${sorted.length} sources</h2>
   ${sorted.map(e=>`<div class="entry"><div class="cit">${buildCitation(e)}</div><div class="ann">${e.annotation}</div></div>`).join('')}
-  </body></html>`;
+  <script src="/aceAcademy/analytics.js"></script>
+</body></html>`;
   const w = window.open('', '_blank');
   w.document.write(html);
   w.document.close();

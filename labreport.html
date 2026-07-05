@@ -439,7 +439,8 @@ function printReport(){
   <pre>${d.conclusion||'—'}</pre>
   <p><strong>Sources of Error:</strong></p><pre>${d.errors||'—'}</pre>
   <p><strong>Improvements:</strong></p><pre>${d.improvements||'—'}</pre>
-  </body></html>`;
+  <script src="/aceAcademy/analytics.js"></script>
+</body></html>`;
   const w = window.open('','_blank');
   w.document.write(html);
   w.document.close();

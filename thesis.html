@@ -51,6 +51,8 @@ textarea{resize:vertical;min-height:64px}
   <script src="/aceAcademy/nav-profile.js"></script>
   <script src="/aceAcademy/splash.js"></script>
 <script src="/aceAcademy/timer.js"></script>
+<script src="/aceAcademy/claude-api.js"></script>
+<script src="/aceAcademy/analytics.js"></script>
 </head>
 <body>
 <header class="ace-header">
@@ -90,7 +92,10 @@ textarea{resize:vertical;min-height:64px}
       <label>3 Supporting Reasons / Points (one per line)</label>
       <textarea id="t-reasons" placeholder="1. The corrupt wealth of Tom Buchanan&#10;2. Gatsby's unethical means of accumulation&#10;3. Daisy's materialism as a barrier" style="min-height:80px"></textarea>
     </div>
-    <button class="btn ace-btn-primary" onclick="generate()">✨ Generate Thesis</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+      <button class="ace-btn-ghost" onclick="generate()">✨ Template Generate</button>
+      <button class="ace-btn" onclick="aiGenerateThesis()" id="aiThesisBtn" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">✦ AI Generate</button>
+    </div>
   </div>
 
   <div class="ace-card" id="resultCard" style="display:none">
@@ -227,6 +232,117 @@ function renderSaved(){
 }
 
 renderSaved();
+
+// ── Claude AI Thesis Generator ───────────────────────────────────────────────
+async function aiGenerateThesis(){
+  const topic   = document.getElementById('t-topic').value.trim();
+  const claim   = document.getElementById('t-claim').value.trim();
+  const reasons = document.getElementById('t-reasons').value.trim();
+  if(!topic){ alert('Please enter a topic first.'); return; }
+
+  const btn = document.getElementById('aiThesisBtn');
+  btn.disabled = true; btn.textContent = '✦ Generating...';
+
+  const resultCard = document.getElementById('resultCard');
+  const thesesOut  = document.getElementById('thesesOut');
+  resultCard.style.display = 'block';
+  thesesOut.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center">✦ Claude is crafting your thesis statements…</div>';
+
+  const systemPrompt = `You are an expert writing coach. You write precise, arguable thesis statements that are specific, analytical, and college-ready.`;
+
+  const userPrompt = `Write 3 distinct ${essayType} thesis statements for a student essay.
+
+Topic: ${topic}
+${claim ? 'Main claim/argument: ' + claim : ''}
+${reasons ? 'Key reasons/evidence: ' + reasons : ''}
+
+Requirements for each thesis:
+- Specific and arguable (not a fact, not vague)
+- Contains a "because" or subordinate clause showing reasoning  
+- Between 25-45 words
+- Appropriate for a high school/AP student
+- Each one takes a slightly different angle or structure
+
+Respond in this format:
+
+OPTION 1 — [type, e.g. "Claim + 3-point roadmap"]:
+[thesis statement]
+
+OPTION 2 — [type, e.g. "Concession + claim"]:
+[thesis statement]
+
+OPTION 3 — [type, e.g. "Analytical claim"]:
+[thesis statement]
+
+TIPS:
+[2-3 sentences of specific advice for making any of these stronger]`;
+
+  try {
+    const result = await aceAI.run(()=>aceAI.call(userPrompt, systemPrompt, 800));
+
+    // Parse the three options
+    const opts = [...result.matchAll(/OPTION\s+\d+[^:]*:\s*([^
+]+)
+([^O
+][^
+]*(?:
+(?!OPTION|
+TIPS)[^
+]+)*)/gi)];
+    const tipsMatch = result.match(/TIPS:\s*([\s\S]+)$/i);
+    const tips = tipsMatch ? tipsMatch[1].trim() : '';
+
+    let html = '';
+    if(opts.length === 0){
+      // Fallback: just show raw
+      html = `<div class="result-box"><div class="result-label">AI Generated</div><div class="thesis-text" style="white-space:pre-wrap">${result}</div></div>`;
+    } else {
+      opts.forEach((m,i)=>{
+        const label = m[0].match(/OPTION\s+\d+[^:]*:\s*(.+)/i)?.[1] || 'Option '+(i+1);
+        const thesis = (m[2]||'').trim();
+        html += `<div class="result-box">
+          <div class="result-label">Option ${i+1} — ${label}</div>
+          <div class="thesis-text">${thesis}</div>
+          <div class="result-actions">
+            <button class="btn-sm" onclick="navigator.clipboard.writeText(\`${thesis.replace(/`/g,"'")}\`)">📋 Copy</button>
+            <button class="btn-sm" onclick="saveThesis(\`${thesis.replace(/`/g,"'")}\`, \`${essayType}\`)">📌 Save</button>
+          </div>
+        </div>`;
+      });
+    }
+
+    if(tips){
+      html += `<div style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:14px;margin-top:6px;font-size:.85rem;color:#a5b4fc;line-height:1.7">
+        <strong>💡 Tips:</strong> ${tips}
+        <div style="margin-top:6px;font-size:.7rem;opacity:.6">✦ Powered by Claude AI</div>
+      </div>`;
+    }
+
+    thesesOut.innerHTML = html;
+
+    // Eval first option if found
+    if(opts.length > 0){
+      const evals = evaluate(opts[0][2]||'');
+      document.getElementById('evalOut').innerHTML = evals.map(e=>`
+        <div class="eval-row">
+          <span class="eval-label">${e.label}</span>
+          <div class="eval-bar"><div class="eval-fill" style="width:${e.score}%"></div></div>
+          <span class="eval-score">${e.score}</span>
+        </div>`).join('');
+    }
+  } catch(e) {
+    thesesOut.innerHTML = `<div style="color:#f87171;padding:16px">Error: ${e.message}</div>`;
+  }
+
+  btn.disabled = false; btn.textContent = '✦ AI Generate';
+}
+
+function saveThesis(text, type){
+  saved.push({text, type: type || essayType, date: new Date().toLocaleDateString()});
+  localStorage.setItem('ace_theses', JSON.stringify(saved));
+  renderSaved();
+}
+
 </script>
 </body>
 </html>

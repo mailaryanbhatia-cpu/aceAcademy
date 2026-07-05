@@ -302,7 +302,8 @@ function printNote() {
     <div class="notes"><div class="col-hdr">Notes</div><div class="content">${d.notes||''}</div></div>
   </div>
   <div class="summary"><div class="sum-hdr">Summary</div><div class="content">${d.summary||''}</div></div>
-  </body></html>`;
+  <script src="/aceAcademy/analytics.js"></script>
+</body></html>`;
   const w = window.open('', '_blank');
   w.document.write(html);
   w.document.close();

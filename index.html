@@ -3299,7 +3299,8 @@ function printCurriculum() {
       html += '</ul>';
     });
   });
-  html += '</body></html>';
+  html += '<script src="/aceAcademy/analytics.js"></script>
+</body></html>';
   const w = window.open('', '_blank');
   if(w){ w.document.write(html); w.document.close(); setTimeout(()=>w.print(),500); }
   else { alert('Pop-up blocked — allow pop-ups for this site to print.'); }
