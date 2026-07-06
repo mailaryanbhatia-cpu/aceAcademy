@@ -1,5 +1,5 @@
 /**
- * aceAcademy — Tool analytics tracker
+ * AcerAcademy — Tool analytics tracker
  * Auto-tracks page visits. Reads tool name from <title>.
  * Data stored in localStorage under 'ace_analytics'.
  */
@@ -10,7 +10,7 @@
   function setData(d){ localStorage.setItem(LS_KEY, JSON.stringify(d)); }
 
   function track(toolName){
-    if(!toolName || toolName==='aceAcademy') return;
+    if(!toolName || toolName==='AcerAcademy') return;
     const d = getData();
     if(!d[toolName]) d[toolName] = {visits:0, lastVisit:null, firstVisit:null};
     d[toolName].visits++;

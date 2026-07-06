@@ -70,7 +70,7 @@ function typeStream(el, text, speed, onDone){
 
 function stepWelcome(){
   return {
-    icon:'🎓', title:'Welcome to aceAcademy',
+    icon:'🎓', title:'Welcome to AcerAcademy',
     sub:'Your AI-powered AP study companion',
     body:'This tour shows you the AI features that make aceAcademy different. Each step has a live demo — try them!',
     grad:'linear-gradient(135deg,#6366f1,#8b5cf6)',

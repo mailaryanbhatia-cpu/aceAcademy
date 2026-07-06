@@ -1,4 +1,4 @@
-// aceAcademy — worksheets data
+// AcerAcademy — worksheets data
 
 const WORKSHEETS = {
   "6": {

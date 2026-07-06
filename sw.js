@@ -54,7 +54,7 @@ async function checkAndNotify() {
   if (hour < 18 || hour >= 22) return;
 
   self.registration.showNotification('🔥 Don\'t break your streak!', {
-    body: 'Open aceAcademy to keep your study streak alive.',
+    body: 'Open AcerAcademy to keep your study streak alive.',
     icon: '/icons/icon-192.png',
     badge: '/icons/icon-72.png',
     tag: 'streak-reminder',

@@ -1,4 +1,4 @@
-// aceAcademy — curriculum data (extracted from index.html)
+// AcerAcademy — curriculum data (extracted from index.html)
 // Edit this file to update subjects, units, topics, and practice problems.
 
 const SUBJECTS = [

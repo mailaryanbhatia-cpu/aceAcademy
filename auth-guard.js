@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   aceAcademy — Auth Guard (Firebase + localStorage)
+   AcerAcademy — Auth Guard (Firebase + localStorage)
 ═══════════════════════════════════════════════════════ */
 (function () {
   const LOGIN_URL = '/login.html';

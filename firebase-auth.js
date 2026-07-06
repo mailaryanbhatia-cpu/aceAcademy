@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   aceAcademy — Firebase Google Authentication
+   AcerAcademy — Firebase Google Authentication
    Include AFTER the Firebase SDK scripts.
 ═══════════════════════════════════════════════════════ */
 (function () {

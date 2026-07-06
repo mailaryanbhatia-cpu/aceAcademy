@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>aceAcademy — Progress</title>
+<title>AcerAcademy — Progress</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -136,7 +136,7 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="aceAcademy">
+  <meta name="apple-mobile-web-app-title" content="AcerAcademy">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <script src="/streak.js"></script>
   <script src="/sounds.js"></script>
@@ -844,7 +844,7 @@ render();
 
 // ── Export / Import / Clear ──────────────────────────────────
 function exportData(){
-  var data = { _version: 1, _exported: new Date().toISOString(), _app: 'aceAcademy' };
+  var data = { _version: 1, _exported: new Date().toISOString(), _app: 'AcerAcademy' };
   for(var i=0; i<localStorage.length; i++){
     var k = localStorage.key(i);
     data[k] = localStorage.getItem(k);
@@ -866,7 +866,7 @@ function importData(input){
   reader.onload = function(e){
     try {
       var data = JSON.parse(e.target.result);
-      if(data._app !== 'aceAcademy') throw new Error('Not an aceAcademy backup file.');
+      if(data._app !== 'AcerAcademy') throw new Error('Not an aceAcademy backup file.');
       var count = 0;
       Object.keys(data).forEach(function(k){
         if(k.startsWith('_')) return;
