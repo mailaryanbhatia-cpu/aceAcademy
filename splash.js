@@ -37,7 +37,7 @@
     var splash = document.createElement('div');
     splash.id = 'ace-splash';
     splash.innerHTML = [
-      '<img class="ace-sp-logo" src="/aceAcademy/icons/icon-192.png" alt="aceAcademy"/>',
+      '<img class="ace-sp-logo" src="/icons/icon-192.png" alt="aceAcademy"/>',
       '<div class="ace-sp-name">aceAcademy</div>',
       '<div class="ace-sp-sub">Your AP Study Platform</div>',
       '<div class="ace-sp-dots">',

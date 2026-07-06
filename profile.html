@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
-<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
+<link rel="stylesheet" href="/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>My Profile — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css"/>
-<link rel="manifest" href="/aceAcademy/manifest.json"/>
+<link rel="manifest" href="/manifest.json"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png"/>
+<link rel="apple-touch-icon" href="/icons/icon-192.png"/>
 <script src="theme.js"></script>
 <script src="streak.js"></script>
-<script src="/aceAcademy/analytics.js"></script>
+<script src="/analytics.js"></script>
 <script src="splash.js"></script>
 <style>
 body{font-family:var(--font);background:var(--bg);color:#e2e8f0;margin:0}
@@ -81,13 +81,13 @@ body{font-family:var(--font);background:var(--bg);color:#e2e8f0;margin:0}
 .prog-fill{height:100%;border-radius:99px}
 .prog-val{width:38px;font-size:.75rem;color:#64748b;text-align:right}
 </style>
-<script src="/aceAcademy/timer.js"></script>
+<script src="/timer.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="/aceAcademy/firebase-auth.js"></script>
-<script src="/aceAcademy/firestore.js"></script>
-<script src="/aceAcademy/sync-indicator.js"></script>
+<script src="/firebase-auth.js"></script>
+<script src="/firestore.js"></script>
+<script src="/sync-indicator.js"></script>
 
 <style id="ace-mobile-fix">
 @media(max-width:700px){
@@ -296,7 +296,7 @@ function generateShareLink(){
     localStorage.setItem('ace_share_token', _shareToken);
   }
   pushShareProfile();
-  var url = window.location.origin + '/aceAcademy/share.html?id=' + _shareToken;
+  var url = window.location.origin + '/share.html?id=' + _shareToken;
   document.getElementById('shareLinkInput').value = url;
   document.getElementById('shareLinkBox').style.display = '';
   document.getElementById('revokeBtn').style.display = '';
@@ -327,7 +327,7 @@ function revokeShareLink(){
 
 function initShareUI(){
   if(_shareToken){
-    var url = window.location.origin + '/aceAcademy/share.html?id=' + _shareToken;
+    var url = window.location.origin + '/share.html?id=' + _shareToken;
     document.getElementById('shareLinkInput').value = url;
     document.getElementById('shareLinkBox').style.display = '';
     document.getElementById('revokeBtn').style.display = '';
@@ -501,6 +501,6 @@ window.addEventListener('offline', updateSyncUI);
 document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateSyncUI,1500); });
 
 </script>
-<script src="/aceAcademy/onboarding.js"></script>
+<script src="/onboarding.js"></script>
 </body>
 </html>

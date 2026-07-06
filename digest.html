@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
-<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
+<link rel="stylesheet" href="/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Weekly Digest — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css"/>
-<link rel="manifest" href="/aceAcademy/manifest.json"/>
+<link rel="manifest" href="/manifest.json"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png"/>
+<link rel="apple-touch-icon" href="/icons/icon-192.png"/>
 <script src="theme.js"></script>
 <script src="streak.js"></script>
 <style>
@@ -49,7 +49,7 @@ h1{font-size:1.8rem;font-weight:900;margin:0 0 4px;background:linear-gradient(13
 .score-ok{background:rgba(245,158,11,.2);color:#f59e0b}
 .score-low{background:rgba(239,68,68,.2);color:#ef4444}
 </style>
-<script src="/aceAcademy/timer.js"></script>
+<script src="/timer.js"></script>
 </head>
 <body>
 <nav class="nav">
@@ -304,7 +304,7 @@ function shareDigest() {
   var text = '📋 My aceAcademy Week\n'
     + '🔥 Streak: ' + (streakD.count||0) + ' days\n'
     + '📝 Tests: ' + weekTests.length + (avgScore !== null ? ' (avg ' + avgScore + '%)' : '') + '\n'
-    + '🌐 aceAcademy: https://mailaryanbhatia-cpu.github.io/aceAcademy/';
+    + '🌐 aceAcademy: https://mailaryanbhatia-cpu.github.io/';
 
   if (navigator.share) {
     navigator.share({ title: 'My aceAcademy Weekly Digest', text: text });
@@ -317,6 +317,6 @@ function shareDigest() {
 
 renderDigest();
 </script>
-<script src="/aceAcademy/analytics.js"></script>
+<script src="/analytics.js"></script>
 </body>
 </html>

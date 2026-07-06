@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
 <head>
-<link rel="stylesheet" href="/aceAcademy/ace-shared.css">
+<link rel="stylesheet" href="/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lab Report Builder — aceAcademy</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="/aceAcademy/firebase-auth.js"></script>
-<script src="/aceAcademy/firestore.js"></script>
-<script src="/aceAcademy/sync-indicator.js"></script>
+<script src="/firebase-auth.js"></script>
+<script src="/firestore.js"></script>
+<script src="/sync-indicator.js"></script>
 <script src="auth-guard.js"></script>
 <link rel="stylesheet" href="ace-theme.css">
 <style>
@@ -91,18 +91,18 @@ table.data-table td input{border:none;background:transparent;color:var(--text);w
 .tab-content.active{display:block}
 </style>
 <script src="theme.js"></script>
-  <link rel="manifest" href="/aceAcademy/manifest.json">
+  <link rel="manifest" href="/manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="aceAcademy">
-  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
-  <script src="/aceAcademy/streak.js"></script>
-  <script src="/aceAcademy/sounds.js"></script>
-  <script src="/aceAcademy/coins.js"></script>
-  <script src="/aceAcademy/nav-profile.js"></script>
-  <script src="/aceAcademy/splash.js"></script>
-<script src="/aceAcademy/timer.js"></script>
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <script src="/streak.js"></script>
+  <script src="/sounds.js"></script>
+  <script src="/coins.js"></script>
+  <script src="/nav-profile.js"></script>
+  <script src="/splash.js"></script>
+<script src="/timer.js"></script>
 </head>
 <body>
 <header class="ace-header">
@@ -403,18 +403,18 @@ function printReport(){
   };
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${d.title||'Lab Report'}</title>
   <style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;color:#111;line-height:1.6}h1{font-size:1.5rem;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:4px}h2{font-size:1rem;color:#333;margin:20px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}p{margin-bottom:10px}table{width:100%;border-collapse:collapse;margin-bottom:12px}.meta{display:flex;gap:30px;flex-wrap:wrap;margin-bottom:20px;font-size:.9rem;color:#555}.meta span strong{color:#111}pre{white-space:pre-wrap;font-family:Georgia,serif;font-size:.9rem;margin-bottom:10px}@media print{body{margin:20px}}</style>
-    <link rel="manifest" href="/aceAcademy/manifest.json">
+    <link rel="manifest" href="/manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="aceAcademy">
-  <link rel="apple-touch-icon" href="/aceAcademy/icons/icon-192.png">
-  <script src="/aceAcademy/streak.js"></script>
-  <script src="/aceAcademy/sounds.js"></script>
-  <script src="/aceAcademy/coins.js"></script>
-  <script src="/aceAcademy/nav-profile.js"></script>
-  <script src="/aceAcademy/splash.js"></script>
-<script src="/aceAcademy/timer.js"></script>
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <script src="/streak.js"></script>
+  <script src="/sounds.js"></script>
+  <script src="/coins.js"></script>
+  <script src="/nav-profile.js"></script>
+  <script src="/splash.js"></script>
+<script src="/timer.js"></script>
 </head><body>
   <h1>${d.title||'Lab Report'}</h1>
   <div class="meta">
@@ -440,7 +440,7 @@ function printReport(){
   <pre>${d.conclusion||'—'}</pre>
   <p><strong>Sources of Error:</strong></p><pre>${d.errors||'—'}</pre>
   <p><strong>Improvements:</strong></p><pre>${d.improvements||'—'}</pre>
-  <script src="/aceAcademy/analytics.js"></script>
+  <script src="/analytics.js"></script>
 <div id="labSaveStatus" style="font-size:.75rem;color:#10b981;min-height:18px;margin-top:8px"></div>
 </body></html>`;
   const w = window.open('','_blank');

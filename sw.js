@@ -1,11 +1,11 @@
 const CACHE = 'ace-v2';
 const CORE = [
-  '/aceAcademy/',
-  '/aceAcademy/index.html',
-  '/aceAcademy/ace-theme.css',
-  '/aceAcademy/theme.js',
-  '/aceAcademy/streak.js',
-  '/aceAcademy/manifest.json'
+  '/',
+  '/index.html',
+  '/ace-theme.css',
+  '/theme.js',
+  '/streak.js',
+  '/manifest.json'
 ];
 
 self.addEventListener('install', e => {
@@ -55,22 +55,22 @@ async function checkAndNotify() {
 
   self.registration.showNotification('🔥 Don\'t break your streak!', {
     body: 'Open aceAcademy to keep your study streak alive.',
-    icon: '/aceAcademy/icons/icon-192.png',
-    badge: '/aceAcademy/icons/icon-72.png',
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-72.png',
     tag: 'streak-reminder',
     renotify: false,
-    data: { url: '/aceAcademy/' }
+    data: { url: '/' }
   });
 }
 
 // ── Notification click → open app ─────────────────────────────
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  const url = (e.notification.data && e.notification.data.url) || '/aceAcademy/';
+  const url = (e.notification.data && e.notification.data.url) || '/';
   e.waitUntil(
     self.clients.matchAll({ type: 'window' }).then(clients => {
       for (const c of clients) {
-        if (c.url.includes('/aceAcademy/') && 'focus' in c) return c.focus();
+        if (c.url.includes('/') && 'focus' in c) return c.focus();
       }
       return self.clients.openWindow(url);
     })

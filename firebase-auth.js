@@ -31,7 +31,7 @@
   window.aceSignOut = function () {
     return auth.signOut().then(function () {
       localStorage.removeItem('aceSession');
-      window.location.replace('/aceAcademy/login.html');
+      window.location.replace('/login.html');
     });
   };
 

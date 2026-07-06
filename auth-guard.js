@@ -2,7 +2,7 @@
    aceAcademy — Auth Guard (Firebase + localStorage)
 ═══════════════════════════════════════════════════════ */
 (function () {
-  const LOGIN_URL = '/aceAcademy/login.html';
+  const LOGIN_URL = '/login.html';
 
   // ── 1. Fast check: localStorage session ─────────────
   let session;

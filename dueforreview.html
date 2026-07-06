@@ -7,9 +7,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="/aceAcademy/firebase-auth.js"></script>
-<script src="/aceAcademy/firestore.js"></script>
-<script src="/aceAcademy/sync-indicator.js"></script>
+<script src="/firebase-auth.js"></script>
+<script src="/firestore.js"></script>
+<script src="/sync-indicator.js"></script>
 <script src="auth-guard.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -61,7 +61,7 @@ h1{font-size:1.5rem;font-weight:900;margin-bottom:4px}
 .empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .empty-icon{font-size:3rem;margin-bottom:12px}
 </style>
-<link rel="stylesheet" href="/aceAcademy/mobile.css"/>
+<link rel="stylesheet" href="/mobile.css"/>
 </head>
 <body>
 <header>
@@ -114,7 +114,7 @@ async function requestNotifications() {
     scheduleReviewNotification();
     new Notification('aceAcademy 🎓', {
       body: 'Notifications enabled! You\'ll be reminded when review items are due.',
-      icon: '/aceAcademy/icon-192.png'
+      icon: '/icon-192.png'
     });
   }
 }
@@ -139,7 +139,7 @@ function updateNotifBanner() {
     banner.querySelector('h3').textContent = '✅ Notifications enabled';
     banner.querySelector('p').textContent = 'You\'ll get a reminder when review items are due. Check back here anytime.';
     btn.textContent = 'Test Notification';
-    btn.onclick = () => new Notification('aceAcademy 🎓', { body: 'Test notification — review items are waiting!', icon: '/aceAcademy/icon-192.png' });
+    btn.onclick = () => new Notification('aceAcademy 🎓', { body: 'Test notification — review items are waiting!', icon: '/icon-192.png' });
   }
 }
 
@@ -243,6 +243,6 @@ if (Notification.permission === 'default' && !localStorage.getItem('ace_notif_di
   scheduleReviewNotification();
 }
 </script>
-<script src="/aceAcademy/analytics.js"></script>
+<script src="/analytics.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@
 
     // Build the pill
     var pill = document.createElement('a');
-    pill.href = '/aceAcademy/profile.html';
+    pill.href = '/profile.html';
     pill.title = 'My Profile';
     pill.style.cssText = [
       'display:inline-flex','align-items:center','gap:8px',
