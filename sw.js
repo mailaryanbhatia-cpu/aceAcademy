@@ -1,4 +1,4 @@
-const CACHE = 'ace-v3';
+const CACHE = 'ace-v4';
 const CORE = [
   '/',
   '/index.html',
