@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Historical Figure Bio Builder — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:28px 20px 16px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:5px}
+.hero p{color:var(--accent2);font-size:.92rem}
+.container{max-width:860px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:20px;margin-bottom:16px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;font-family:inherit;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-sm{padding:6px 14px;font-size:.78rem}
+.field-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:5px}
+input[type=text], input[type=number], textarea, select{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:.88rem;color:#fff;font-family:inherit;outline:none;transition:border .15s}
+input:focus, textarea:focus, select:focus{border-color:var(--accent)}
+textarea{resize:vertical}
+.field-row{display:grid;gap:12px;margin-bottom:14px}
+.two-col{grid-template-columns:1fr 1fr}
+.three-col{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:600px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* Section headers */
+.section-hdr{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--accent2);margin:18px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+
+/* Preview card */
+.bio-preview{background:linear-gradient(135deg,#0f172a,#1e1b4b);border-radius:14px;border:1px solid var(--accent);padding:24px;margin-bottom:16px}
+.bio-header{display:flex;gap:16px;align-items:flex-start;margin-bottom:18px}
+.bio-avatar{width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
+.bio-name{font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:3px}
+.bio-dates{font-size:.82rem;color:var(--accent2);margin-bottom:4px}
+.bio-role{font-size:.85rem;color:var(--muted)}
+.bio-section{margin-bottom:14px}
+.bio-section-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--accent2);margin-bottom:5px}
+.bio-section-body{font-size:.88rem;color:#fff;line-height:1.6}
+.bio-tag{display:inline-block;padding:3px 10px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:12px;font-size:.75rem;color:var(--accent2);margin:3px}
+.bio-quote{border-left:3px solid var(--accent);padding:8px 14px;margin:10px 0;font-style:italic;color:var(--accent2);font-size:.88rem;background:rgba(99,102,241,.07);border-radius:0 8px 8px 0}
+
+/* Famous figures quick-fill */
+.figure-chip{display:inline-block;padding:4px 11px;background:#111827;border:1.5px solid var(--border);border-radius:14px;font-size:.75rem;color:var(--muted);margin:3px;cursor:pointer;transition:all .15s}
+.figure-chip:hover{color:#fff;border-color:var(--accent)}
+
+/* Saved bios */
+.bio-saved{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.bio-saved:last-child{border:none}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="biobuild.html">Bio Builder</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🏛️ Historical Figure Bio Builder</h1>
+  <p>Build a structured biography card for any historical figure — who, when, where, what, why it matters.</p>
+</div>
+
+<div class="container">
+  <!-- Quick fill -->
+  <div class="card" style="padding:14px 18px">
+    <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Quick Fill a Famous Figure</div>
+    <div id="quickChips"></div>
+  </div>
+
+  <!-- Form -->
+  <div class="card">
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" onclick="clearForm()">Clear</button>
+      <button class="btn btn-outline btn-sm" onclick="exportBio()">⬇ Export</button>
+      <button class="btn btn-primary btn-sm" onclick="saveBio()">Save Bio</button>
+    </div>
+
+    <div class="section-hdr">Basic Information</div>
+    <div class="field-row two-col">
+      <div><label class="field-label">Full Name *</label><input type="text" id="f_name" placeholder="e.g. Abraham Lincoln" oninput="updatePreview()"></div>
+      <div><label class="field-label">Emoji / Symbol</label><input type="text" id="f_emoji" placeholder="e.g. 🎩" maxlength="4" oninput="updatePreview()"></div>
+    </div>
+    <div class="field-row three-col">
+      <div><label class="field-label">Birth Year</label><input type="text" id="f_born" placeholder="e.g. 1809" oninput="updatePreview()"></div>
+      <div><label class="field-label">Death Year</label><input type="text" id="f_died" placeholder="e.g. 1865 (or 'Present')" oninput="updatePreview()"></div>
+      <div><label class="field-label">Nationality / Region</label><input type="text" id="f_nat" placeholder="e.g. American" oninput="updatePreview()"></div>
+    </div>
+    <div class="field-row two-col">
+      <div><label class="field-label">Role / Occupation</label><input type="text" id="f_role" placeholder="e.g. 16th President of the U.S." oninput="updatePreview()"></div>
+      <div><label class="field-label">Historical Era / Period</label><input type="text" id="f_era" placeholder="e.g. American Civil War era" oninput="updatePreview()"></div>
+    </div>
+
+    <div class="section-hdr">Biography</div>
+    <div class="field-row" style="margin-bottom:12px">
+      <div><label class="field-label">Background — Who were they? Where did they come from?</label>
+      <textarea id="f_background" rows="3" placeholder="Early life, upbringing, education…" oninput="updatePreview()"></textarea></div>
+    </div>
+    <div class="field-row" style="margin-bottom:12px">
+      <div><label class="field-label">Major Accomplishments — What did they do?</label>
+      <textarea id="f_accomplish" rows="3" placeholder="Key events, achievements, inventions, writings, battles, decisions…" oninput="updatePreview()"></textarea></div>
+    </div>
+    <div class="field-row" style="margin-bottom:12px">
+      <div><label class="field-label">Challenges / Obstacles</label>
+      <textarea id="f_challenges" rows="2" placeholder="What difficulties did they face? Who opposed them?" oninput="updatePreview()"></textarea></div>
+    </div>
+    <div class="field-row" style="margin-bottom:12px">
+      <div><label class="field-label">Historical Impact — Why does this person matter?</label>
+      <textarea id="f_impact" rows="3" placeholder="How did they change history? What lasting effects did their life have?" oninput="updatePreview()"></textarea></div>
+    </div>
+
+    <div class="section-hdr">Analysis</div>
+    <div class="field-row two-col">
+      <div><label class="field-label">Famous Quote</label><input type="text" id="f_quote" placeholder='e.g. "Four score and seven years ago…"' oninput="updatePreview()"></div>
+      <div><label class="field-label">Allied / Opposed (key people)</label><input type="text" id="f_allies" placeholder="e.g. Frederick Douglass, Ulysses Grant" oninput="updatePreview()"></div>
+    </div>
+    <div class="field-row two-col">
+      <div><label class="field-label">Key Themes / Concepts (comma-separated)</label><input type="text" id="f_themes" placeholder="e.g. Slavery abolition, Union, Leadership" oninput="updatePreview()"></div>
+      <div><label class="field-label">Subject Area</label>
+        <select id="f_subj" oninput="updatePreview()">
+          <option value="">— Select —</option>
+          <option>World History</option><option>US History</option><option>European History</option>
+          <option>AP World History</option><option>AP US History</option><option>AP European History</option>
+          <option>Science</option><option>Literature</option><option>Philosophy</option><option>Economics</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div><label class="field-label">Connecting Question / Thesis (for essays)</label>
+      <textarea id="f_thesis" rows="2" placeholder="e.g. How did Lincoln's leadership reshape American democracy?" oninput="updatePreview()"></textarea></div>
+    </div>
+  </div>
+
+  <!-- Live Preview -->
+  <div class="section-hdr" style="padding:0 4px">Live Preview</div>
+  <div class="bio-preview" id="bioPreview">
+    <div style="text-align:center;color:var(--muted);padding:20px;font-size:.88rem">Fill in the form above to see your bio card here.</div>
+  </div>
+
+  <!-- Saved bios -->
+  <div class="card" id="savedCard" style="display:none;padding:14px 18px">
+    <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Saved Bios</div>
+    <div id="savedList"></div>
+  </div>
+</div>
+
+<script>
+const QUICK_FIGURES = [
+  {name:'Abraham Lincoln', emoji:'🎩', born:'1809', died:'1865', nat:'American', role:'16th President of the United States', era:'American Civil War',
+   background:'Born in a log cabin in Kentucky, Lincoln was largely self-educated. He worked as a lawyer and Illinois state legislator before entering national politics.',
+   accomplish:'Led the Union through the Civil War. Issued the Emancipation Proclamation (1863), which declared enslaved people in Confederate states free. Delivered the Gettysburg Address.',
+   challenges:'Faced enormous opposition from Confederate states, war weariness in the North, and personal grief including the death of his son Willie.',
+   impact:'Preserved the United States as one nation. Abolished slavery through the 13th Amendment. Redefined the nation\'s commitment to equality and democracy.',
+   quote:'"Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty."',
+   allies:'Frederick Douglass, Ulysses S. Grant, William Seward', themes:'Union, Slavery Abolition, Leadership, Democracy', subj:'US History',
+   thesis:'How did Lincoln\'s moral clarity and political skill navigate the nation through its most existential crisis?'},
+  {name:'Marie Curie', emoji:'⚗️', born:'1867', died:'1934', nat:'Polish-French', role:'Physicist & Chemist', era:'Industrial / Scientific Revolution',
+   background:'Born Maria Skłodowska in Warsaw (then Russian-controlled Poland). Moved to Paris to study at the Sorbonne, becoming the first woman to earn a physics degree there.',
+   accomplish:'Discovered polonium and radium. Won Nobel Prize in Physics (1903) and Chemistry (1911) — the first person to win in two different sciences. Pioneered research in radioactivity.',
+   challenges:'Faced gender discrimination in academia and was denied a position in the Polish Academy. Worked in extremely poor lab conditions.',
+   impact:'Her discoveries laid the foundation for nuclear physics and cancer treatments using radiation therapy.',
+   quote:'"Nothing in life is to be feared, it is only to be understood."',
+   allies:'Pierre Curie (husband/research partner)', themes:'Scientific discovery, Gender equality, Radioactivity', subj:'Science',
+   thesis:'How did Curie overcome gender barriers to revolutionize modern physics and chemistry?'},
+  {name:'Mahatma Gandhi', emoji:'🕊️', born:'1869', died:'1948', nat:'Indian', role:'Independence Leader & Activist', era:'Indian Independence Movement',
+   background:'Born in Porbandar, India. Trained as a lawyer in London. Developed his philosophy of nonviolent resistance (Satyagraha) while fighting discrimination in South Africa.',
+   accomplish:'Led India\'s independence movement against British rule. Organized the Salt March (1930). Championed civil disobedience as a political tool.',
+   challenges:'Imprisoned multiple times by British authorities. Faced internal divisions within the independence movement and opposition to his methods.',
+   impact:'Led India to independence in 1947. Inspired civil rights leaders worldwide, including Martin Luther King Jr. and Nelson Mandela.',
+   quote:'"Be the change you wish to see in the world."',
+   allies:'Jawaharlal Nehru, Kasturba Gandhi', themes:'Nonviolence, Independence, Civil disobedience, Colonial resistance', subj:'World History',
+   thesis:'How did Gandhi\'s philosophy of nonviolent resistance challenge colonial power and inspire global movements?'},
+  {name:'Cleopatra VII', emoji:'👑', born:'69 BC', died:'30 BC', nat:'Egyptian (Greek descent)', role:'Queen of Egypt', era:'Ancient Rome / Hellenistic Egypt',
+   background:'Last active ruler of the Ptolemaic Kingdom of Egypt. Spoke nine languages and was the first Ptolemaic ruler to learn Egyptian. Received advanced education in philosophy and mathematics.',
+   accomplish:'Allied with Julius Caesar and Mark Antony to maintain Egyptian independence. Ruled one of the most powerful kingdoms of the ancient world.',
+   challenges:'Opposed by her brother Ptolemy XIII, which led to civil war. Ultimately defeated by Octavian (Augustus Caesar) at the Battle of Actium.',
+   impact:'Symbolized the power of female leadership in the ancient world. Her death marked the end of the Hellenistic era and the absorption of Egypt into the Roman Empire.',
+   quote:'"I will not be triumphed over."', allies:'Julius Caesar, Mark Antony', themes:'Power, Gender, Egyptian civilization, Rome', subj:'World History',
+   thesis:'How did Cleopatra\'s political intelligence shape the balance of power between Egypt and Rome?'},
+  {name:'Martin Luther King Jr.', emoji:'✊', born:'1929', died:'1968', nat:'American', role:'Civil Rights Leader', era:'American Civil Rights Movement',
+   background:'Born in Atlanta, Georgia. Son of a Baptist minister. Earned a PhD in theology from Boston University. Became pastor of Dexter Avenue Baptist Church in Montgomery, Alabama.',
+   accomplish:'Led the Montgomery Bus Boycott (1955). Organized the March on Washington and delivered the "I Have a Dream" speech (1963). Helped pass the Civil Rights Act (1964) and Voting Rights Act (1965). Nobel Peace Prize 1964.',
+   challenges:'Faced violent opposition, FBI surveillance, imprisonment, and assassination threats. Opposed segregationist governments and some fellow activists.',
+   impact:'Transformed American society by dismantling legal segregation and expanding voting rights for Black Americans.',
+   quote:'"Injustice anywhere is a threat to justice everywhere."',
+   allies:'John Lewis, Rosa Parks, Bayard Rustin', themes:'Civil rights, Nonviolence, Racial equality, Democracy', subj:'US History',
+   thesis:'How did King\'s use of nonviolent protest force legal and social change in the American South?'},
+];
+
+function renderQuickChips(){
+  document.getElementById('quickChips').innerHTML = QUICK_FIGURES.map((f,i)=>
+    `<span class="figure-chip" onclick="quickFill(${i})">${f.emoji} ${f.name}</span>`
+  ).join('');
+}
+
+function quickFill(i){
+  const f = QUICK_FIGURES[i];
+  document.getElementById('f_name').value = f.name;
+  document.getElementById('f_emoji').value = f.emoji;
+  document.getElementById('f_born').value = f.born;
+  document.getElementById('f_died').value = f.died;
+  document.getElementById('f_nat').value = f.nat;
+  document.getElementById('f_role').value = f.role;
+  document.getElementById('f_era').value = f.era;
+  document.getElementById('f_background').value = f.background;
+  document.getElementById('f_accomplish').value = f.accomplish;
+  document.getElementById('f_challenges').value = f.challenges;
+  document.getElementById('f_impact').value = f.impact;
+  document.getElementById('f_quote').value = f.quote;
+  document.getElementById('f_allies').value = f.allies;
+  document.getElementById('f_themes').value = f.themes;
+  document.getElementById('f_subj').value = f.subj;
+  document.getElementById('f_thesis').value = f.thesis;
+  updatePreview();
+}
+
+function getData(){
+  return {
+    name:       document.getElementById('f_name').value.trim(),
+    emoji:      document.getElementById('f_emoji').value.trim() || '🏛️',
+    born:       document.getElementById('f_born').value.trim(),
+    died:       document.getElementById('f_died').value.trim(),
+    nat:        document.getElementById('f_nat').value.trim(),
+    role:       document.getElementById('f_role').value.trim(),
+    era:        document.getElementById('f_era').value.trim(),
+    background: document.getElementById('f_background').value.trim(),
+    accomplish: document.getElementById('f_accomplish').value.trim(),
+    challenges: document.getElementById('f_challenges').value.trim(),
+    impact:     document.getElementById('f_impact').value.trim(),
+    quote:      document.getElementById('f_quote').value.trim(),
+    allies:     document.getElementById('f_allies').value.trim(),
+    themes:     document.getElementById('f_themes').value.trim(),
+    subj:       document.getElementById('f_subj').value.trim(),
+    thesis:     document.getElementById('f_thesis').value.trim(),
+    ts: Date.now(),
+  };
+}
+
+function updatePreview(){
+  const d = getData();
+  if(!d.name){
+    document.getElementById('bioPreview').innerHTML='<div style="text-align:center;color:var(--muted);padding:20px;font-size:.88rem">Fill in the form above to see your bio card here.</div>';
+    return;
+  }
+  const dates = [d.born,d.died].filter(Boolean).join(' – ');
+  const tags = d.themes ? d.themes.split(',').map(t=>`<span class="bio-tag">${t.trim()}</span>`).join('') : '';
+
+  document.getElementById('bioPreview').innerHTML = `
+    <div class="bio-header">
+      <div class="bio-avatar">${d.emoji}</div>
+      <div>
+        <div class="bio-name">${esc(d.name)}</div>
+        ${dates?`<div class="bio-dates">${esc(dates)}</div>`:''}
+        ${d.role?`<div class="bio-role">${esc(d.role)}</div>`:''}
+        ${d.nat||d.era?`<div class="bio-role" style="margin-top:2px">${[d.nat,d.era].filter(Boolean).map(esc).join(' · ')}</div>`:''}
+      </div>
+    </div>
+    ${d.subj?`<div style="margin-bottom:10px"><span class="bio-tag" style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:#fde68a">📚 ${esc(d.subj)}</span></div>`:''}
+    ${d.background?`<div class="bio-section"><div class="bio-section-title">Background</div><div class="bio-section-body">${esc(d.background)}</div></div>`:''}
+    ${d.accomplish?`<div class="bio-section"><div class="bio-section-title">Major Accomplishments</div><div class="bio-section-body">${esc(d.accomplish)}</div></div>`:''}
+    ${d.challenges?`<div class="bio-section"><div class="bio-section-title">Challenges</div><div class="bio-section-body">${esc(d.challenges)}</div></div>`:''}
+    ${d.impact?`<div class="bio-section"><div class="bio-section-title">Historical Impact</div><div class="bio-section-body">${esc(d.impact)}</div></div>`:''}
+    ${d.quote?`<div class="bio-quote">${esc(d.quote)}</div>`:''}
+    ${d.allies?`<div class="bio-section"><div class="bio-section-title">Key People</div><div class="bio-section-body">${esc(d.allies)}</div></div>`:''}
+    ${tags?`<div style="margin-top:10px">${tags}</div>`:''}
+    ${d.thesis?`<div class="bio-section" style="margin-top:12px;padding:10px 14px;background:rgba(99,102,241,.1);border-radius:8px;border:1px solid rgba(99,102,241,.2)"><div class="bio-section-title">Essay / Discussion Question</div><div class="bio-section-body" style="font-style:italic">${esc(d.thesis)}</div></div>`:''}
+  `;
+}
+
+function clearForm(){
+  ['f_name','f_emoji','f_born','f_died','f_nat','f_role','f_era','f_background','f_accomplish','f_challenges','f_impact','f_quote','f_allies','f_themes','f_thesis'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f_subj').value='';
+  updatePreview();
+}
+
+function saveBio(){
+  const d = getData();
+  if(!d.name){alert('Enter a name first.');return;}
+  const hist = JSON.parse(localStorage.getItem('bio-hist')||'[]');
+  const idx = hist.findIndex(x=>x.name===d.name);
+  if(idx>=0) hist[idx]=d; else hist.unshift(d);
+  if(hist.length>30) hist.pop();
+  localStorage.setItem('bio-hist',JSON.stringify(hist));
+  renderSaved();
+  const btn = event.target; btn.textContent='✓ Saved!'; setTimeout(()=>btn.textContent='Save Bio',1500);
+}
+
+function loadBio(i){
+  const hist = JSON.parse(localStorage.getItem('bio-hist')||'[]');
+  const d = hist[i]; if(!d) return;
+  Object.entries(d).forEach(([k,v])=>{
+    const el = document.getElementById('f_'+k);
+    if(el) el.value = v||'';
+  });
+  updatePreview();
+}
+
+function deleteBio(i){
+  const hist = JSON.parse(localStorage.getItem('bio-hist')||'[]');
+  hist.splice(i,1);
+  localStorage.setItem('bio-hist',JSON.stringify(hist));
+  renderSaved();
+}
+
+function renderSaved(){
+  const hist = JSON.parse(localStorage.getItem('bio-hist')||'[]');
+  const card = document.getElementById('savedCard');
+  if(!hist.length){card.style.display='none';return;}
+  card.style.display='';
+  document.getElementById('savedList').innerHTML = hist.map((d,i)=>`
+    <div class="bio-saved">
+      <span class="figure-chip" onclick="loadBio(${i})">${d.emoji||'🏛️'} ${d.name}${d.born?' ('+d.born+')':''}</span>
+      <button onclick="deleteBio(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem">✕</button>
+    </div>`).join('');
+}
+
+function exportBio(){
+  const d = getData();
+  if(!d.name){alert('Fill in the name first.');return;}
+  const tags = d.themes ? d.themes.split(',').map(t=>`<span style="display:inline-block;padding:2px 9px;background:#ede9fe;color:#5b21b6;border-radius:10px;font-size:.75rem;margin:2px">${t.trim()}</span>`).join('') : '';
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${d.name} — Bio Card</title>
+  <style>body{font-family:Georgia,serif;max-width:750px;margin:40px auto;color:#111;font-size:13px;line-height:1.7}
+  .header{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px;border-bottom:2px solid #5b21b6;padding-bottom:14px}
+  .avatar{width:56px;height:56px;border-radius:50%;background:#5b21b6;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+  h1{color:#5b21b6;margin-bottom:2px;font-size:1.3rem}.dates{color:#555;font-size:.85rem}.role{font-size:.88rem;color:#333}
+  h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:#5b21b6;margin:16px 0 4px}
+  blockquote{border-left:3px solid #5b21b6;padding:8px 14px;margin:12px 0;font-style:italic;color:#444;background:#f5f3ff}
+  </style></head><body>
+  <div class="header"><div class="avatar">${d.emoji}</div><div>
+    <h1>${d.name}</h1>
+    ${[d.born,d.died].filter(Boolean).length?`<div class="dates">${[d.born,d.died].filter(Boolean).join(' – ')}</div>`:''}
+    ${d.role?`<div class="role">${d.role}</div>`:''}
+    ${d.nat||d.era?`<div class="role">${[d.nat,d.era].filter(Boolean).join(' · ')}</div>`:''}
+  </div></div>
+  ${d.subj?`<p><strong>Subject:</strong> ${d.subj}</p>`:''}
+  ${d.background?`<h2>Background</h2><p>${d.background}</p>`:''}
+  ${d.accomplish?`<h2>Major Accomplishments</h2><p>${d.accomplish}</p>`:''}
+  ${d.challenges?`<h2>Challenges</h2><p>${d.challenges}</p>`:''}
+  ${d.impact?`<h2>Historical Impact</h2><p>${d.impact}</p>`:''}
+  ${d.quote?`<blockquote>${d.quote}</blockquote>`:''}
+  ${d.allies?`<h2>Key People</h2><p>${d.allies}</p>`:''}
+  ${tags?`<h2>Key Themes</h2><p>${tags}</p>`:''}
+  ${d.thesis?`<h2>Essay / Discussion Question</h2><p><em>${d.thesis}</em></p>`:''}
+  </body></html>`;
+  const w=window.open('','_blank'); w.document.write(html); w.document.close();
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+
+renderQuickChips();
+renderSaved();
+</script>
+</body></html>

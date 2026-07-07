@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Map Quiz — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:28px 20px 16px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:5px}
+.hero p{color:var(--accent2);font-size:.92rem}
+.container{max-width:980px;margin:20px auto;padding:0 16px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:18px;margin-bottom:16px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;font-family:inherit;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--muted);transition:all .15s}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* Quiz layout */
+.quiz-layout{display:grid;grid-template-columns:1fr 260px;gap:14px}
+@media(max-width:700px){.quiz-layout{grid-template-columns:1fr}}
+#mapArea{background:#111827;border-radius:12px;border:1px solid var(--border);padding:10px;position:relative;min-height:360px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#mapArea svg{width:100%;height:auto;max-height:400px}
+
+/* Region styles */
+.region{fill:#1e3a5f;stroke:#2a3a55;stroke-width:1;cursor:pointer;transition:fill .15s}
+.region:hover{fill:#2d4f7c}
+.region.correct{fill:#065f46}
+.region.wrong{fill:#7f1d1d}
+.region.highlight{fill:#3730a3;animation:pulse 1s infinite alternate}
+@keyframes pulse{from{fill:#3730a3}to{fill:#4f46e5}}
+
+/* Right panel */
+.panel{}
+.question-box{background:#111827;border-radius:10px;border:1px solid var(--border);padding:14px;margin-bottom:10px;text-align:center}
+.q-prompt{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.q-name{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:8px}
+.q-instruction{font-size:.75rem;color:var(--accent2)}
+.score-row{display:flex;gap:8px;margin-bottom:10px}
+.score-box{flex:1;background:#111827;border-radius:8px;border:1px solid var(--border);padding:8px;text-align:center}
+.score-val{font-size:1.2rem;font-weight:800;color:#fff}
+.score-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase}
+.feedback{padding:10px;border-radius:8px;text-align:center;font-weight:700;font-size:.88rem;min-height:38px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.feedback.correct{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.3)}
+.feedback.wrong{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+.feedback.idle{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.missed-list{font-size:.75rem;max-height:120px;overflow-y:auto}
+.missed-item{padding:3px 0;border-bottom:1px solid var(--border);color:var(--muted)}
+.missed-item:last-child{border:none}
+
+/* Results */
+.result-big{font-size:2.8rem;font-weight:800;color:var(--accent2);text-align:center;margin-bottom:4px}
+.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.stat{flex:1;min-width:80px;background:rgba(99,102,241,.08);border-radius:10px;padding:10px 12px;text-align:center}
+.stat-val{font-size:1.2rem;font-weight:800;color:var(--accent2)}
+.stat-lbl{font-size:.68rem;color:var(--muted);margin-top:2px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="mapquiz.html">Map Quiz</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🗺️ Map Quiz</h1>
+  <p>Click the correct region on the map — US States, World Continents, or World Regions.</p>
+</div>
+
+<div class="container">
+  <!-- Mode selector -->
+  <div class="card" id="modeCard">
+    <div style="font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Choose a Quiz</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <button class="chip active" data-mode="us" onclick="selectMode('us',this)">🇺🇸 US Regions</button>
+      <button class="chip" data-mode="continents" onclick="selectMode('continents',this)">🌍 Continents</button>
+      <button class="chip" data-mode="world" onclick="selectMode('world',this)">🌐 World Regions</button>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="startQuiz()">▶ Start Quiz</button>
+    </div>
+  </div>
+
+  <!-- Quiz area -->
+  <div id="quizSection" style="display:none">
+    <div class="quiz-layout">
+      <div id="mapArea">
+        <svg id="mapSvg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="panel">
+        <div class="question-box">
+          <div class="q-prompt">Find this on the map:</div>
+          <div class="q-name" id="qName">—</div>
+          <div class="q-instruction">Click the correct region</div>
+        </div>
+        <div class="score-row">
+          <div class="score-box"><div class="score-val" id="scoreCorrect">0</div><div class="score-lbl">Correct</div></div>
+          <div class="score-box"><div class="score-val" id="scoreWrong">0</div><div class="score-lbl">Wrong</div></div>
+          <div class="score-box"><div class="score-val" id="scoreLeft">0</div><div class="score-lbl">Left</div></div>
+        </div>
+        <div class="feedback idle" id="feedback">Click a region to start</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:6px;font-weight:700">MISSED SO FAR</div>
+        <div class="missed-list" id="missedList"><div style="color:var(--muted);font-size:.75rem;padding:4px 0">None yet — keep going!</div></div>
+        <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="endQuiz()">End Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card" id="resultsCard" style="display:none">
+    <div class="result-big" id="finalScore">0/0</div>
+    <div style="text-align:center;color:var(--muted);font-size:.88rem;margin-bottom:10px" id="resultMsg"></div>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-val" id="resPct">0%</div><div class="stat-lbl">Accuracy</div></div>
+      <div class="stat"><div class="stat-val" id="resTime">0s</div><div class="stat-lbl">Time</div></div>
+    </div>
+    <div style="font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:6px" id="missedHeader"></div>
+    <div id="missedFinal" style="font-size:.8rem;color:var(--muted);line-height:1.8"></div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="startQuiz()">Retake</button>
+      <button class="btn btn-outline" onclick="showModeCard()">Change Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Map Data ──────────────────────────────────────────────────────────────────
+// Using simplified SVG paths — real geographic shapes
+
+const MAPS = {
+  continents: {
+    viewBox: '0 0 1000 500',
+    regions: [
+      {id:'na', name:'North America', path:'M 80 60 L 200 50 L 260 120 L 280 200 L 240 280 L 180 300 L 120 260 L 60 200 L 50 120 Z'},
+      {id:'sa', name:'South America', path:'M 180 310 L 260 300 L 300 370 L 290 460 L 240 490 L 190 460 L 160 390 Z'},
+      {id:'eu', name:'Europe',        path:'M 430 50 L 530 40 L 560 100 L 540 160 L 470 170 L 420 140 L 400 90 Z'},
+      {id:'af', name:'Africa',        path:'M 430 180 L 550 170 L 590 270 L 570 400 L 500 440 L 420 400 L 380 300 L 390 210 Z'},
+      {id:'as', name:'Asia',          path:'M 560 40 L 850 30 L 900 100 L 880 220 L 800 260 L 700 240 L 600 200 L 560 130 Z'},
+      {id:'oc', name:'Oceania',       path:'M 760 310 L 870 300 L 900 360 L 870 410 L 800 420 L 750 380 Z'},
+      {id:'an', name:'Antarctica',    path:'M 200 470 L 800 460 L 820 500 L 180 500 Z'},
+    ]
+  },
+  us: {
+    viewBox: '0 0 1000 620',
+    regions: [
+      {id:'ne', name:'Northeast',  path:'M 760 80 L 870 70 L 890 160 L 830 190 L 750 170 Z'},
+      {id:'se', name:'Southeast',  path:'M 650 200 L 870 180 L 880 330 L 800 360 L 680 340 L 630 280 Z'},
+      {id:'mw', name:'Midwest',    path:'M 430 100 L 750 90 L 760 210 L 640 230 L 430 220 Z'},
+      {id:'sw', name:'Southwest',  path:'M 200 220 L 440 230 L 450 380 L 380 420 L 200 400 Z'},
+      {id:'w',  name:'West',       path:'M 60 80 L 200 70 L 210 400 L 130 430 L 50 360 Z'},
+      {id:'ak', name:'Alaska',     path:'M 70 470 L 200 460 L 220 530 L 150 560 L 60 540 Z'},
+      {id:'hi', name:'Hawaii',     path:'M 280 500 L 380 490 L 390 540 L 310 550 Z'},
+    ]
+  },
+  world: {
+    viewBox: '0 0 1000 500',
+    regions: [
+      {id:'na',  name:'North America',  path:'M 60 50 L 220 40 L 270 160 L 240 270 L 150 290 L 60 220 Z'},
+      {id:'sa',  name:'South America',  path:'M 170 300 L 270 290 L 300 420 L 250 470 L 170 430 Z'},
+      {id:'we',  name:'Western Europe', path:'M 420 40 L 510 35 L 540 130 L 480 160 L 410 130 Z'},
+      {id:'ee',  name:'Eastern Europe', path:'M 510 35 L 600 30 L 620 130 L 550 150 L 510 130 Z'},
+      {id:'me',  name:'Middle East',    path:'M 520 160 L 650 150 L 670 250 L 590 270 L 510 240 Z'},
+      {id:'naf', name:'North Africa',   path:'M 380 170 L 610 160 L 620 290 L 390 300 Z'},
+      {id:'saf', name:'Sub-Saharan Africa',path:'M 390 300 L 610 290 L 600 450 L 480 480 L 380 440 Z'},
+      {id:'cas', name:'Central Asia',   path:'M 610 30 L 780 20 L 800 150 L 650 160 L 610 130 Z'},
+      {id:'eas', name:'East Asia',      path:'M 780 20 L 920 30 L 940 180 L 820 200 L 790 150 Z'},
+      {id:'sea', name:'Southeast Asia', path:'M 800 200 L 920 190 L 930 310 L 840 320 L 790 270 Z'},
+      {id:'sas', name:'South Asia',     path:'M 660 160 L 800 150 L 800 260 L 700 280 L 640 240 Z'},
+      {id:'oc',  name:'Oceania',        path:'M 810 330 L 960 320 L 970 420 L 870 440 L 800 400 Z'},
+    ]
+  }
+};
+
+let currentMode = 'us';
+let queue = [], qIdx = 0, correct = 0, wrong = 0;
+let missed = [], startTime = 0;
+let answered = false;
+
+function selectMode(mode, btn){
+  currentMode = mode;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function showModeCard(){
+  document.getElementById('modeCard').style.display='';
+  document.getElementById('quizSection').style.display='none';
+  document.getElementById('resultsCard').style.display='none';
+}
+
+function startQuiz(){
+  const map = MAPS[currentMode];
+  queue = shuffle([...map.regions]);
+  qIdx = 0; correct = 0; wrong = 0; missed = []; answered = false;
+  startTime = Date.now();
+
+  document.getElementById('modeCard').style.display='none';
+  document.getElementById('resultsCard').style.display='none';
+  document.getElementById('quizSection').style.display='';
+
+  buildMap();
+  updateScores();
+  nextQuestion();
+}
+
+function buildMap(){
+  const map = MAPS[currentMode];
+  const svg = document.getElementById('mapSvg');
+  svg.setAttribute('viewBox', map.viewBox);
+  svg.innerHTML = map.regions.map(r=>`
+    <path class="region" id="r-${r.id}" data-id="${r.id}" d="${r.path}" onclick="handleClick('${r.id}')">
+      <title>${r.name}</title>
+    </path>`).join('') +
+    map.regions.map(r=>{
+      // Compute centroid for label
+      const nums = r.path.match(/-?\d+\.?\d*/g).map(Number);
+      const xs=[],ys=[];
+      for(let i=0;i<nums.length;i+=2){if(nums[i+1]!==undefined){xs.push(nums[i]);ys.push(nums[i+1]);}}
+      const cx=xs.reduce((a,b)=>a+b,0)/xs.length;
+      const cy=ys.reduce((a,b)=>a+b,0)/ys.length;
+      return `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" style="font-size:10px;fill:rgba(255,255,255,0.5);pointer-events:none;font-family:Inter,sans-serif;font-weight:600">${r.name}</text>`;
+    }).join('');
+}
+
+function nextQuestion(){
+  if(qIdx >= queue.length){ showResults(); return; }
+  answered = false;
+  const r = queue[qIdx];
+  document.getElementById('qName').textContent = r.name;
+  document.getElementById('scoreLeft').textContent = queue.length - qIdx;
+  document.getElementById('feedback').className='feedback idle';
+  document.getElementById('feedback').textContent='Click the correct region';
+  // Reset colors
+  document.querySelectorAll('.region').forEach(el=>{
+    el.classList.remove('correct','wrong','highlight');
+  });
+  // Highlight the target slightly after a delay if struggling
+  clearTimeout(window._hintTimer);
+  window._hintTimer = setTimeout(()=>{
+    if(!answered) document.getElementById('r-'+r.id)?.classList.add('highlight');
+  }, 8000);
+}
+
+function handleClick(id){
+  if(answered) return;
+  answered = true;
+  clearTimeout(window._hintTimer);
+  const target = queue[qIdx];
+  const fb = document.getElementById('feedback');
+  if(id === target.id){
+    correct++;
+    document.getElementById('r-'+id).classList.add('correct');
+    fb.className='feedback correct'; fb.textContent='✓ Correct!';
+  } else {
+    wrong++;
+    missed.push(target.name);
+    document.getElementById('r-'+id).classList.add('wrong');
+    document.getElementById('r-'+target.id).classList.add('correct');
+    fb.className='feedback wrong'; fb.innerHTML=`✗ That was <strong>${MAPS[currentMode].regions.find(r=>r.id===id)?.name||id}</strong>`;
+    renderMissed();
+  }
+  updateScores();
+  qIdx++;
+  setTimeout(nextQuestion, 1400);
+}
+
+function updateScores(){
+  document.getElementById('scoreCorrect').textContent = correct;
+  document.getElementById('scoreWrong').textContent = wrong;
+  document.getElementById('scoreLeft').textContent = Math.max(0, queue.length - qIdx);
+}
+
+function renderMissed(){
+  const el = document.getElementById('missedList');
+  if(!missed.length){el.innerHTML='<div style="color:var(--muted);font-size:.75rem;padding:4px 0">None yet!</div>';return;}
+  el.innerHTML = missed.map(m=>`<div class="missed-item">✗ ${m}</div>`).join('');
+}
+
+function endQuiz(){ showResults(); }
+
+function showResults(){
+  document.getElementById('quizSection').style.display='none';
+  document.getElementById('resultsCard').style.display='';
+  const total = queue.length;
+  const pct = Math.round(correct/total*100);
+  const secs = Math.round((Date.now()-startTime)/1000);
+  document.getElementById('finalScore').textContent = correct+'/'+total;
+  document.getElementById('resultMsg').textContent = pct>=90?'Excellent! 🎉':pct>=70?'Good work! Keep practicing.':'Keep studying — you\'ll get there!';
+  document.getElementById('resPct').textContent = pct+'%';
+  document.getElementById('resTime').textContent = secs+'s';
+  if(missed.length){
+    document.getElementById('missedHeader').textContent='Missed: '+missed.length;
+    document.getElementById('missedFinal').textContent = missed.join(', ');
+  }
+}
+
+function shuffle(a){return a.sort(()=>Math.random()-.5);}
+</script>
+</body></html>

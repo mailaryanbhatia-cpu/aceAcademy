@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Periodic Table Explorer — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--muted:#b0bece;--border:#2a3a55;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:24px 20px 12px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.7rem;font-weight:800;color:#fff;margin-bottom:4px}
+.hero p{color:var(--accent2);font-size:.9rem}
+.container{max-width:1100px;margin:16px auto;padding:0 12px}
+
+/* Table */
+.pt-wrap{overflow-x:auto;padding-bottom:10px}
+.pt-grid{display:grid;grid-template-columns:repeat(18,1fr);gap:3px;min-width:720px}
+.el{border-radius:5px;padding:3px 2px;cursor:pointer;text-align:center;border:1.5px solid transparent;transition:all .12s;position:relative;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.el:hover{border-color:#fff;transform:scale(1.08);z-index:2}
+.el.selected{border-color:#fff;box-shadow:0 0 0 2px #fff}
+.el-num{font-size:.52rem;font-weight:700;opacity:.7;line-height:1}
+.el-sym{font-size:.85rem;font-weight:800;line-height:1.1}
+.el-name{font-size:.38rem;line-height:1;opacity:.75;margin-top:1px}
+.el-mass{font-size:.37rem;opacity:.6}
+.el-spacer{aspect-ratio:1}
+
+/* Category colors */
+.cat-alkali{background:#7f1d1d;color:#fca5a5}
+.cat-alkaline{background:#7c2d12;color:#fed7aa}
+.cat-lanthanide{background:#1e3a5f;color:#93c5fd}
+.cat-actinide{background:#1e1b4b;color:#c4b5fd}
+.cat-transition{background:#064e3b;color:#6ee7b7}
+.cat-post{background:#1a3a2a;color:#a7f3d0}
+.cat-metalloid{background:#365314;color:#d9f99d}
+.cat-nonmetal{background:#1c3461;color:#bfdbfe}
+.cat-noble{background:#4a1d96;color:#ddd6fe}
+.cat-unknown{background:#1f2937;color:#d1d5db}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.leg{display:flex;align-items:center;gap:5px;font-size:.7rem;font-weight:600;cursor:pointer;padding:3px 8px;border-radius:6px;border:1.5px solid transparent;transition:all .12s}
+.leg:hover,.leg.active{border-color:#fff}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* Detail panel */
+.detail-panel{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:20px;margin-bottom:16px;display:none}
+.detail-panel.visible{display:block}
+.dp-header{display:flex;gap:16px;align-items:center;margin-bottom:14px}
+.dp-symbol-big{font-size:3rem;font-weight:900;width:80px;height:80px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dp-name{font-size:1.4rem;font-weight:800;color:#fff}
+.dp-num{font-size:.85rem;color:var(--muted);margin-bottom:3px}
+.dp-cat{font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:8px;display:inline-block;margin-bottom:5px}
+.dp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:600px){.dp-grid{grid-template-columns:1fr 1fr}}
+.dp-stat{background:#111827;border-radius:8px;padding:10px 12px}
+.dp-stat-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:3px}
+.dp-stat-val{font-size:.95rem;font-weight:700;color:#fff}
+.dp-section{margin-bottom:12px}
+.dp-section-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--accent2);margin-bottom:5px}
+.dp-section-body{font-size:.85rem;color:#fff;line-height:1.6}
+.electron-config{font-family:monospace;font-size:.88rem;background:#111827;padding:8px 12px;border-radius:7px;color:var(--accent2)}
+
+/* Search */
+.search-row{display:flex;gap:10px;margin-bottom:12px}
+.pt-search{flex:1;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;color:#fff;font-size:.88rem;font-family:inherit;outline:none;transition:border .15s}
+.pt-search:focus{border-color:var(--accent)}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="periodictable.html">Periodic Table</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>⚗️ Periodic Table Explorer</h1>
+  <p>Click any element for detailed properties, electron configuration, and common uses.</p>
+</div>
+
+<div class="container">
+  <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+    <input class="pt-search" id="ptSearch" placeholder="Search element name or symbol…" oninput="searchElements()">
+  </div>
+
+  <!-- Legend / filter -->
+  <div class="legend" id="legend"></div>
+
+  <!-- Detail panel (shows when element clicked) -->
+  <div class="detail-panel" id="detailPanel">
+    <div class="dp-header">
+      <div class="dp-symbol-big" id="dp-symbig"></div>
+      <div>
+        <div class="dp-name" id="dp-name"></div>
+        <div class="dp-num" id="dp-num"></div>
+        <div class="dp-cat" id="dp-cat"></div>
+      </div>
+    </div>
+    <div class="dp-grid" id="dp-stats"></div>
+    <div class="dp-section"><div class="dp-section-title">Electron Configuration</div><div class="electron-config" id="dp-config"></div></div>
+    <div class="dp-section"><div class="dp-section-title">Description</div><div class="dp-section-body" id="dp-desc"></div></div>
+    <div class="dp-section"><div class="dp-section-title">Common Uses</div><div class="dp-section-body" id="dp-uses"></div></div>
+    <div class="dp-section"><div class="dp-section-title">Discovery</div><div class="dp-section-body" id="dp-discovery"></div></div>
+  </div>
+
+  <!-- Table -->
+  <div class="pt-wrap"><div class="pt-grid" id="ptGrid"></div></div>
+</div>
+
+<script>
+// Category metadata
+const CATS = {
+  alkali:     {label:'Alkali Metals',     cls:'cat-alkali'},
+  alkaline:   {label:'Alkaline Earth',    cls:'cat-alkaline'},
+  lanthanide: {label:'Lanthanides',       cls:'cat-lanthanide'},
+  actinide:   {label:'Actinides',         cls:'cat-actinide'},
+  transition: {label:'Transition Metals', cls:'cat-transition'},
+  post:       {label:'Post-Transition',   cls:'cat-post'},
+  metalloid:  {label:'Metalloids',        cls:'cat-metalloid'},
+  nonmetal:   {label:'Nonmetals',         cls:'cat-nonmetal'},
+  noble:      {label:'Noble Gases',       cls:'cat-noble'},
+  unknown:    {label:'Unknown',           cls:'cat-unknown'},
+};
+
+// Full element data: [num, sym, name, mass, cat, period, group, config, desc, uses, discovery]
+const ELEMENTS = [
+  [1,'H','Hydrogen',1.008,'nonmetal',1,1,'1s¹','The lightest and most abundant element in the universe. Colorless, odorless gas at room temperature.','Fuel cells, rocket fuel, chemical production, refining petroleum.','Discovered by Henry Cavendish in 1766.'],
+  [2,'He','Helium',4.003,'noble',1,18,'1s²','Second lightest element; inert noble gas. Does not react with other elements under normal conditions.','Balloons, MRI machines, cryogenics, welding.','Discovered spectroscopically in the sun by Janssen & Lockyer in 1868.'],
+  [3,'Li','Lithium',6.941,'alkali',2,1,'[He] 2s¹','Softest metal; reacts vigorously with water. Lightest metal known.','Batteries (lithium-ion), bipolar disorder medication, alloys.','Discovered by Johan Arfwedson in 1817.'],
+  [4,'Be','Beryllium',9.012,'alkaline',2,2,'[He] 2s²','Lightweight, rigid metal. Toxic — requires careful handling in industry.','X-ray windows, aerospace alloys, nuclear reactors.','Discovered by Louis-Nicolas Vauquelin in 1798.'],
+  [5,'B','Boron',10.81,'metalloid',2,13,'[He] 2s² 2p¹','Hard, black metalloid. Forms complex compounds with high strength.','Borosilicate glass, fiberglass, fertilizers, semiconductors.','Discovered by Gay-Lussac & Davy in 1808.'],
+  [6,'C','Carbon',12.011,'nonmetal',2,14,'[He] 2s² 2p²','Basis of all organic chemistry. Exists as diamond, graphite, graphene, and fullerenes.','Steel, plastics, fuels, pharmaceuticals, diamonds, electronics.','Known since antiquity.'],
+  [7,'N','Nitrogen',14.007,'nonmetal',2,15,'[He] 2s² 2p³','Makes up 78% of Earth\'s atmosphere. Essential for DNA and proteins.','Fertilizers, explosives, refrigeration, food preservation.','Discovered by Daniel Rutherford in 1772.'],
+  [8,'O','Oxygen',15.999,'nonmetal',2,16,'[He] 2s² 2p⁴','Third most abundant element in the universe. Essential for most life forms.','Breathing, combustion, steel production, water treatment.','Discovered by Carl Wilhelm Scheele in 1772.'],
+  [9,'F','Fluorine',18.998,'nonmetal',2,17,'[He] 2s² 2p⁵','Most reactive and electronegative element. Pale yellow gas.','Toothpaste (fluoride), Teflon, refrigerants, pharmaceuticals.','Isolated by Henri Moissan in 1886.'],
+  [10,'Ne','Neon',20.18,'noble',2,18,'[He] 2s² 2p⁶','Colorless inert gas that glows red-orange in electrical discharge.','Neon signs, lasers, cryogenics, television tubes.','Discovered by Ramsay & Travers in 1898.'],
+  [11,'Na','Sodium',22.99,'alkali',3,1,'[Ne] 3s¹','Soft, silvery metal. Reacts explosively with water. Essential for life.','Table salt (NaCl), soap, streetlights, nerve signal transmission.','Discovered by Humphry Davy in 1807.'],
+  [12,'Mg','Magnesium',24.305,'alkaline',3,2,'[Ne] 3s²','Lightweight, silvery-white metal. Burns with bright white flame.','Alloys (aircraft, car parts), fireworks, antacids, chlorophyll.','Isolated by Humphry Davy in 1808.'],
+  [13,'Al','Aluminum',26.982,'post',3,13,'[Ne] 3s² 3p¹','Third most abundant element in Earth\'s crust. Light and corrosion-resistant.','Cans, foil, aircraft, buildings, electrical wiring.','Isolated by Hans Christian Ørsted in 1825.'],
+  [14,'Si','Silicon',28.086,'metalloid',3,14,'[Ne] 3s² 3p²','Second most abundant element in Earth\'s crust. Semiconductor.','Computer chips, solar cells, glass, cement, electronics.','Isolated by Jöns Jacob Berzelius in 1823.'],
+  [15,'P','Phosphorus',30.974,'nonmetal',3,15,'[Ne] 3s² 3p³','Essential for DNA, cell membranes, and ATP. Highly reactive.','Fertilizers, matches, detergents, DNA backbone.','Discovered by Hennig Brand in 1669.'],
+  [16,'S','Sulfur',32.06,'nonmetal',3,16,'[Ne] 3s² 3p⁴','Yellow solid; one of the oldest known elements. Essential for proteins.','Sulfuric acid, fertilizers, rubber vulcanization, gunpowder.','Known since antiquity.'],
+  [17,'Cl','Chlorine',35.45,'nonmetal',3,17,'[Ne] 3s² 3p⁵','Greenish-yellow gas with pungent smell. Highly toxic in large quantities.','Water disinfection, PVC plastic, bleach, pharmaceuticals.','Discovered by Carl Wilhelm Scheele in 1774.'],
+  [18,'Ar','Argon',39.948,'noble',3,18,'[Ne] 3s² 3p⁶','Third most abundant gas in Earth\'s atmosphere. Completely inert.','Welding shield gas, incandescent light bulbs, wine preservation.','Discovered by Lord Rayleigh & William Ramsay in 1894.'],
+  [19,'K','Potassium',39.098,'alkali',4,1,'[Ar] 4s¹','Soft silvery metal; even more reactive than sodium. Essential electrolyte.','Fertilizers, gunpowder, medicine, banana nutrition.','Discovered by Humphry Davy in 1807.'],
+  [20,'Ca','Calcium',40.078,'alkaline',4,2,'[Ar] 4s²','Fifth most abundant element in Earth\'s crust. Essential for bones and teeth.','Concrete, cement, bones, antacids, dairy products.','Isolated by Humphry Davy in 1808.'],
+  [21,'Sc','Scandium',44.956,'transition',4,3,'[Ar] 3d¹ 4s²','Rare silvery-white metal; scarce in Earth\'s crust.','High-intensity lights, alloys for aerospace, baseball bats.','Discovered by Lars Fredrik Nilson in 1879.'],
+  [22,'Ti','Titanium',47.867,'transition',4,4,'[Ar] 3d² 4s²','Strong, lightweight metal with excellent corrosion resistance.','Aircraft, spacecraft, medical implants, sports equipment.','Discovered by William Gregor in 1791.'],
+  [23,'V','Vanadium',50.942,'transition',4,5,'[Ar] 3d³ 4s²','Hard silver-grey metal used mainly in alloys.','Steel alloys, vanadium redox batteries, catalysts.','Discovered by Andrés Manuel del Río in 1801.'],
+  [24,'Cr','Chromium',51.996,'transition',4,6,'[Ar] 3d⁵ 4s¹','Hard, lustrous metal. Gives stainless steel its corrosion resistance.','Chrome plating, stainless steel, dyes, leather tanning.','Discovered by Louis-Nicolas Vauquelin in 1798.'],
+  [25,'Mn','Manganese',54.938,'transition',4,7,'[Ar] 3d⁵ 4s²','Hard, brittle metal essential in steel production.','Steel alloys, dry-cell batteries, fertilizers, pigments.','Isolated by Johan Gottlieb Gahn in 1774.'],
+  [26,'Fe','Iron',55.845,'transition',4,8,'[Ar] 3d⁶ 4s²','Most abundant element on Earth by mass. Essential for life (hemoglobin).','Steel, construction, machinery, hemoglobin in blood.','Known since antiquity.'],
+  [27,'Co','Cobalt',58.933,'transition',4,9,'[Ar] 3d⁷ 4s²','Hard, lustrous silver-blue metal. Gives blue color to glass and ceramics.','Magnets, battery cathodes, blue pigments, superalloys.','Discovered by Georg Brandt in 1735.'],
+  [28,'Ni','Nickel',58.693,'transition',4,10,'[Ar] 3d⁸ 4s²','Hard, corrosion-resistant silver-white metal.','Stainless steel, coins, batteries, catalysts, plating.','Discovered by Axel Fredrik Cronstedt in 1751.'],
+  [29,'Cu','Copper',63.546,'transition',4,11,'[Ar] 3d¹⁰ 4s¹','Reddish metal; excellent electrical conductor. One of first metals used by humans.','Electrical wiring, plumbing, coins, antimicrobial surfaces.','Known since antiquity (≈8000 BCE).'],
+  [30,'Zn','Zinc',65.38,'transition',4,12,'[Ar] 3d¹⁰ 4s²','Blue-grey metal; essential micronutrient. Protects iron from corrosion.','Galvanizing steel, brass alloys, sunscreen, immune system.','Isolated by Andreas Sigismund Marggraf in 1746.'],
+  [31,'Ga','Gallium',69.723,'post',4,13,'[Ar] 3d¹⁰ 4s² 4p¹','Soft metal that melts at 29.8°C — melts in your hand.','LEDs, semiconductors, solar panels, thermometers.','Discovered by Paul Emile Lecoq de Boisbaudran in 1875.'],
+  [32,'Ge','Germanium',72.63,'metalloid',4,14,'[Ar] 3d¹⁰ 4s² 4p²','Semiconductor with properties between metals and nonmetals.','Fiber optics, infrared optics, semiconductors, transistors.','Discovered by Clemens Winkler in 1886.'],
+  [33,'As','Arsenic',74.922,'metalloid',4,15,'[Ar] 3d¹⁰ 4s² 4p³','Toxic metalloid; used historically as a poison.','Semiconductors, wood preservatives, pesticides, pharmaceuticals.','Known since the Middle Ages.'],
+  [34,'Se','Selenium',78.971,'nonmetal',4,16,'[Ar] 3d¹⁰ 4s² 4p⁴','Photoconductive nonmetal; essential trace element.','Solar cells, photocopiers, glass coloring, nutritional supplements.','Discovered by Jöns Jacob Berzelius in 1817.'],
+  [35,'Br','Bromine',79.904,'nonmetal',4,17,'[Ar] 3d¹⁰ 4s² 4p⁵','Reddish-brown liquid at room temperature; one of two liquid elements.','Flame retardants, photography, water treatment, sedatives.','Discovered by Antoine Jérôme Balard in 1826.'],
+  [36,'Kr','Krypton',83.798,'noble',4,18,'[Ar] 3d¹⁰ 4s² 4p⁶','Dense inert gas; much heavier than air.','Lighting, lasers, scientific measurement.','Discovered by Ramsay & Travers in 1898.'],
+  [37,'Rb','Rubidium',85.468,'alkali',5,1,'[Kr] 5s¹','Soft silvery-white metal; extremely reactive.','Atomic clocks, research, fireworks (purple color).','Discovered by Bunsen & Kirchhoff in 1861.'],
+  [38,'Sr','Strontium',87.62,'alkaline',5,2,'[Kr] 5s²','Soft yellowish metal; gives red color to fireworks.','Fireworks (red), magnets, CRT screens, bone cancer treatment.','Discovered by Adair Crawford in 1790.'],
+  [47,'Ag','Silver',107.868,'transition',5,11,'[Kr] 4d¹⁰ 5s¹','Best electrical and thermal conductor of all metals. Precious metal.','Jewelry, coins, electronics, antimicrobial coatings, photography.','Known since antiquity.'],
+  [50,'Sn','Tin',118.71,'post',5,14,'[Kr] 4d¹⁰ 5s² 5p²','Soft, silvery metal; resists corrosion. Produces a "tin cry" when bent.','Cans (tin plating), solder, bronze alloys, organ pipes.','Known since antiquity (≈3000 BCE).'],
+  [53,'I','Iodine',126.904,'nonmetal',5,17,'[Kr] 4d¹⁰ 5s² 5p⁵','Purple-black solid that sublimes to violet vapor. Essential for thyroid health.','Antiseptics, thyroid medication, X-ray contrast agents, nutrition.','Discovered by Bernard Courtois in 1811.'],
+  [54,'Xe','Xenon',131.293,'noble',5,18,'[Kr] 4d¹⁰ 5s² 5p⁶','Heavy, colorless inert gas. Used in powerful lamps.','Xenon headlights, ion propulsion, anesthesia, flash lamps.','Discovered by Ramsay & Travers in 1898.'],
+  [55,'Cs','Cesium',132.905,'alkali',6,1,'[Xe] 6s¹','Softest metal; melts at 28.5°C. Most reactive alkali metal.','Atomic clocks (GPS precision), drilling fluids, research.','Discovered by Bunsen & Kirchhoff in 1860.'],
+  [56,'Ba','Barium',137.327,'alkaline',6,2,'[Xe] 6s²','Soft silvery-white metal; highly reactive. Toxic.','Barium meals (X-ray imaging), fireworks (green), oil drilling.','Discovered by Humphry Davy in 1808.'],
+  [74,'W','Tungsten',183.84,'transition',6,6,'[Xe] 4f¹⁴ 5d⁴ 6s²','Highest melting point of any pure metal (3422°C).','Light bulb filaments, cutting tools, X-ray tubes, radiation shielding.','Discovered by Juan José Elhuyar in 1783.'],
+  [78,'Pt','Platinum',195.084,'transition',6,10,'[Xe] 4f¹⁴ 5d⁹ 6s¹','Dense, precious, corrosion-resistant silver-white metal.','Catalytic converters, jewelry, chemotherapy (cisplatin), electrodes.','Discovered by Antonio de Ulloa in 1748.'],
+  [79,'Au','Gold',196.967,'transition',6,11,'[Xe] 4f¹⁴ 5d¹⁰ 6s¹','Soft, dense, yellow precious metal. Does not tarnish or corrode.','Jewelry, electronics (contacts), currency, dentistry, nanotechnology.','Known since antiquity.'],
+  [80,'Hg','Mercury',200.59,'transition',6,12,'[Xe] 4f¹⁴ 5d¹⁰ 6s²','Only metal that is liquid at room temperature. Highly toxic.','Thermometers, barometers, fluorescent lamps, gold mining.','Known since antiquity.'],
+  [82,'Pb','Lead',207.2,'post',6,14,'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²','Dense, soft, toxic heavy metal. Once used widely in pipes and paint.','Batteries (car), radiation shielding, ammunition, weights.','Known since antiquity.'],
+  [86,'Rn','Radon',222,'noble',6,18,'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶','Radioactive colorless gas. Naturally occurring; can accumulate in buildings.','Cancer treatment (radon therapy), earthquake prediction research.','Discovered by Friedrich Ernst Dorn in 1900.'],
+  [88,'Ra','Radium',226,'alkaline',7,2,'[Rn] 7s²','Radioactive, luminescent silvery-white metal.','Cancer radiation therapy, historically in luminous paint.','Discovered by Marie & Pierre Curie in 1898.'],
+  [92,'U','Uranium',238.029,'actinide',7,0,'[Rn] 5f³ 6d¹ 7s²','Radioactive heavy metal. Fissionable isotope U-235 used in nuclear reactions.','Nuclear power plants, nuclear weapons, counterweights, radiation shielding.','Discovered by Martin Heinrich Klaproth in 1789.'],
+  [94,'Pu','Plutonium',244,'actinide',7,0,'[Rn] 5f⁶ 7s²','Radioactive transuranic metal. Fissile material for nuclear weapons and reactors.','Nuclear weapons, nuclear power, space power sources (RTGs).','Discovered by Glenn Seaborg et al. in 1940.'],
+];
+
+// Grid position: [row, col] (1-indexed)
+const POSITIONS = {
+  1:[1,1], 2:[1,18],
+  3:[2,1], 4:[2,2], 5:[2,13], 6:[2,14], 7:[2,15], 8:[2,16], 9:[2,17], 10:[2,18],
+  11:[3,1],12:[3,2],13:[3,13],14:[3,14],15:[3,15],16:[3,16],17:[3,17],18:[3,18],
+  19:[4,1],20:[4,2],21:[4,3],22:[4,4],23:[4,5],24:[4,6],25:[4,7],26:[4,8],27:[4,9],28:[4,10],29:[4,11],30:[4,12],31:[4,13],32:[4,14],33:[4,15],34:[4,16],35:[4,17],36:[4,18],
+  37:[5,1],38:[5,2],47:[5,11],50:[5,14],53:[5,17],54:[5,18],
+  55:[6,1],56:[6,2],74:[6,6],78:[6,10],79:[6,11],80:[6,12],82:[6,14],86:[6,18],
+  88:[7,2],92:[7,0],94:[7,0],
+  // Lanthanides row 9, actinides row 10 (handled separately)
+};
+
+let selectedEl = null;
+let filterCat = null;
+
+function buildTable(){
+  const grid = document.getElementById('ptGrid');
+  // Build 9-row x 18-col grid
+  const cells = Array.from({length:9*18}, ()=>null);
+
+  // Place elements
+  ELEMENTS.forEach(el=>{
+    const pos = POSITIONS[el[0]];
+    if(!pos||pos[1]===0) return; // skip actinides/lanthanides with no pos
+    const row=pos[0]-1, col=pos[1]-1;
+    cells[row*18+col] = el;
+  });
+
+  // Lanthanides row 8 (cols 3-17)
+  const lans = ELEMENTS.filter(e=>e[4]==='lanthanide');
+  lans.forEach((e,i)=>{ cells[8*18+(i+2)]=e; });
+
+  // Actinides row 9 (cols 3-17)
+  const acts = ELEMENTS.filter(e=>e[4]==='actinide');
+  acts.forEach((e,i)=>{ cells[(8+1)*18+(i+2)]=e; }); // row 10 doesn't exist in our 9-row grid — will skip
+
+  grid.innerHTML = '';
+
+  // Rows 1-7
+  for(let r=0;r<7;r++){
+    for(let c=0;c<18;c++){
+      const el=cells[r*18+c];
+      if(!el){ grid.appendChild(Object.assign(document.createElement('div'),{className:'el-spacer'})); continue; }
+      grid.appendChild(makeElDiv(el));
+    }
+  }
+  // Gap row
+  const gapDiv=document.createElement('div');gapDiv.style.gridColumn='1/-1';gapDiv.style.height='6px';grid.appendChild(gapDiv);
+  // Lanthanide row
+  for(let c=0;c<18;c++){
+    const el=c>=2&&c<2+lans.length?lans[c-2]:null;
+    if(!el){grid.appendChild(Object.assign(document.createElement('div'),{className:'el-spacer'}));continue;}
+    grid.appendChild(makeElDiv(el));
+  }
+}
+
+function makeElDiv(el){
+  const [num,sym,name,mass,cat]=el;
+  const catCls = CATS[cat]?.cls||'cat-unknown';
+  const div=document.createElement('div');
+  div.className=`el ${catCls}`;
+  div.id='el-'+num;
+  div.innerHTML=`<div class="el-num">${num}</div><div class="el-sym">${sym}</div><div class="el-name">${name.slice(0,7)}</div><div class="el-mass">${Number(mass).toFixed(1)}</div>`;
+  div.onclick=()=>showDetail(el);
+  if(filterCat && cat!==filterCat) div.style.opacity='0.2';
+  return div;
+}
+
+function buildLegend(){
+  const leg=document.getElementById('legend');
+  leg.innerHTML=Object.entries(CATS).map(([k,v])=>`
+    <span class="leg" data-cat="${k}" onclick="toggleFilter('${k}',this)">
+      <span class="leg-dot ${v.cls}"></span>${v.label}
+    </span>`).join('');
+}
+
+function toggleFilter(cat,btn){
+  if(filterCat===cat){filterCat=null;document.querySelectorAll('.leg').forEach(l=>l.classList.remove('active'));}
+  else{filterCat=cat;document.querySelectorAll('.leg').forEach(l=>l.classList.remove('active'));btn.classList.add('active');}
+  document.querySelectorAll('.el').forEach(el=>{
+    const elData=ELEMENTS.find(e=>el.id==='el-'+e[0]);
+    if(!elData) return;
+    el.style.opacity = (!filterCat||elData[4]===filterCat)?'1':'0.15';
+  });
+}
+
+function showDetail(el){
+  const [num,sym,name,mass,cat,period,group,config,desc,uses,discovery]=el;
+  selectedEl=num;
+  document.querySelectorAll('.el').forEach(e=>e.classList.remove('selected'));
+  document.getElementById('el-'+num)?.classList.add('selected');
+
+  const catInfo=CATS[cat]||{cls:'cat-unknown',label:'Unknown'};
+  const dp=document.getElementById('detailPanel');
+  dp.className='detail-panel visible';
+
+  const bigEl=document.getElementById('dp-symbig');
+  bigEl.textContent=sym;
+  bigEl.className=`dp-symbol-big ${catInfo.cls}`;
+  document.getElementById('dp-name').textContent=name;
+  document.getElementById('dp-num').textContent=`Atomic Number: ${num} · Period: ${period} · Group: ${group||'—'}`;
+  const catTag=document.getElementById('dp-cat');
+  catTag.textContent=catInfo.label;
+  catTag.className=`dp-cat ${catInfo.cls}`;
+  document.getElementById('dp-stats').innerHTML=[
+    ['Atomic Mass', mass+' u'],
+    ['State (STP)', cat==='noble'?'Gas':cat==='nonmetal'&&[35,80].includes(num)?num===35?'Liquid':'Liquid':'Solid/Gas varies'],
+    ['Category', catInfo.label],
+  ].map(([l,v])=>`<div class="dp-stat"><div class="dp-stat-label">${l}</div><div class="dp-stat-val">${v}</div></div>`).join('');
+  document.getElementById('dp-config').textContent=config;
+  document.getElementById('dp-desc').textContent=desc;
+  document.getElementById('dp-uses').textContent=uses;
+  document.getElementById('dp-discovery').textContent=discovery;
+
+  dp.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function searchElements(){
+  const q=document.getElementById('ptSearch').value.toLowerCase().trim();
+  ELEMENTS.forEach(el=>{
+    const match = !q || el[1].toLowerCase().includes(q)||el[2].toLowerCase().includes(q)||String(el[0]).includes(q);
+    const div=document.getElementById('el-'+el[0]);
+    if(div) div.style.opacity = match?'1':'0.1';
+  });
+  if(!q && !filterCat) document.querySelectorAll('.el').forEach(e=>e.style.opacity='1');
+}
+
+buildLegend();
+buildTable();
+</script>
+</body></html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Story Plot Diagram — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--amber:#fbbf24;--red:#f87171;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:28px 20px 16px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:5px}
+.hero p{color:var(--accent2);font-size:.92rem}
+.container{max-width:1000px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:20px;margin-bottom:18px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;font-family:inherit;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-sm{padding:6px 14px;font-size:.78rem}
+
+/* Pyramid SVG area */
+.pyramid-wrap{position:relative;margin-bottom:20px}
+canvas#pyramidCanvas{width:100%;border-radius:10px;display:block}
+
+/* Stage cards */
+.stages{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:700px){.stages{grid-template-columns:1fr 1fr}}
+.stage-card{border-radius:10px;border:2px solid var(--border);padding:12px;transition:border .15s;cursor:pointer}
+.stage-card.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.18)}
+.stage-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.stage-name{font-size:.92rem;font-weight:700;color:#fff;margin-bottom:6px}
+.stage-prompt{font-size:.73rem;color:var(--muted);line-height:1.4;margin-bottom:8px}
+.stage-ta{width:100%;background:#0b1120;border:1.5px solid var(--border);border-radius:7px;padding:8px;font-size:.8rem;color:#fff;font-family:inherit;resize:vertical;min-height:80px;outline:none;transition:border .15s}
+.stage-ta:focus{border-color:var(--accent)}
+.stage-wc{font-size:.65rem;color:var(--muted);text-align:right;margin-top:3px}
+
+/* Stage colors */
+.s0{border-color:#3b82f6}.s0 .stage-label{color:#93c5fd}
+.s1{border-color:#8b5cf6}.s1 .stage-label{color:#c4b5fd}
+.s2{border-color:#ef4444}.s2 .stage-label{color:#fca5a5}
+.s3{border-color:#f59e0b}.s3 .stage-label{color:#fde68a}
+.s4{border-color:#34d399}.s4 .stage-label{color:#6ee7b7}
+
+/* Title input */
+.title-row{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.title-input{flex:1;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:1rem;font-weight:700;color:#fff;outline:none;font-family:inherit;min-width:180px}
+.title-input:focus{border-color:var(--accent)}
+
+/* History */
+.hist-chip{display:inline-block;padding:4px 11px;background:#111827;border:1.5px solid var(--border);border-radius:14px;font-size:.75rem;color:var(--muted);margin:3px;cursor:pointer}
+.hist-chip:hover{color:#fff;border-color:var(--accent)}
+
+/* Characters */
+.char-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.char-input{background:#111827;border:1.5px solid var(--border);border-radius:7px;padding:7px 11px;font-size:.83rem;color:#fff;outline:none;font-family:inherit}
+.char-input:focus{border-color:var(--accent)}
+.char-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(99,102,241,.15);border:1px solid var(--accent);border-radius:14px;font-size:.78rem;color:var(--accent2)}
+.char-tag button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:0;line-height:1}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="plotdiagram.html">Plot Diagram</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>📖 Story Plot Diagram</h1>
+  <p>Map out any story using Freytag's Pyramid — exposition through resolution.</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <div class="title-row">
+      <input class="title-input" id="storyTitle" placeholder="Story / Book Title…" oninput="drawPyramid()">
+      <button class="btn btn-outline btn-sm" onclick="clearAll()">Clear</button>
+      <button class="btn btn-outline btn-sm" onclick="exportDiagram()">⬇ Export</button>
+      <button class="btn btn-primary btn-sm" onclick="saveStory()">Save</button>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Characters</div>
+      <div class="char-row" id="charTags"></div>
+      <div style="display:flex;gap:7px">
+        <input class="char-input" id="charInput" placeholder="Add character…" onkeydown="if(event.key==='Enter')addChar()">
+        <button class="btn btn-outline btn-sm" onclick="addChar()">+ Add</button>
+      </div>
+    </div>
+
+    <!-- Pyramid visual -->
+    <div class="pyramid-wrap">
+      <canvas id="pyramidCanvas" height="220"></canvas>
+    </div>
+
+    <!-- Stage cards -->
+    <div class="stages">
+      <div class="stage-card s0" id="sc0" onclick="focusStage(0)">
+        <div class="stage-label">Stage 1</div>
+        <div class="stage-name">Exposition</div>
+        <div class="stage-prompt">Introduce setting, characters, and background. What is the "normal world"?</div>
+        <textarea class="stage-ta" id="ta0" oninput="updateWC(0);drawPyramid()" placeholder="Set the scene…"></textarea>
+        <div class="stage-wc" id="wc0">0 words</div>
+      </div>
+      <div class="stage-card s1" id="sc1" onclick="focusStage(1)">
+        <div class="stage-label">Stage 2</div>
+        <div class="stage-name">Rising Action</div>
+        <div class="stage-prompt">Events and conflicts that build tension. What obstacles does the protagonist face?</div>
+        <textarea class="stage-ta" id="ta1" oninput="updateWC(1);drawPyramid()" placeholder="Build the tension…"></textarea>
+        <div class="stage-wc" id="wc1">0 words</div>
+      </div>
+      <div class="stage-card s2" id="sc2" onclick="focusStage(2)">
+        <div class="stage-label">Stage 3</div>
+        <div class="stage-name">Climax</div>
+        <div class="stage-prompt">The turning point — the highest moment of tension. What is the decisive moment?</div>
+        <textarea class="stage-ta" id="ta2" oninput="updateWC(2);drawPyramid()" placeholder="The peak moment…"></textarea>
+        <div class="stage-wc" id="wc2">0 words</div>
+      </div>
+      <div class="stage-card s3" id="sc3" onclick="focusStage(3)">
+        <div class="stage-label">Stage 4</div>
+        <div class="stage-name">Falling Action</div>
+        <div class="stage-prompt">Events after the climax as conflict unravels. How do things start to settle?</div>
+        <textarea class="stage-ta" id="ta3" oninput="updateWC(3);drawPyramid()" placeholder="Wind down the tension…"></textarea>
+        <div class="stage-wc" id="wc3">0 words</div>
+      </div>
+      <div class="stage-card s4" id="sc4" onclick="focusStage(4)">
+        <div class="stage-label">Stage 5</div>
+        <div class="stage-name">Resolution</div>
+        <div class="stage-prompt">The conflict is resolved. How does the story end? What is the new "normal"?</div>
+        <textarea class="stage-ta" id="ta4" oninput="updateWC(4);drawPyramid()" placeholder="Tie up loose ends…"></textarea>
+        <div class="stage-wc" id="wc4">0 words</div>
+      </div>
+    </div>
+
+    <!-- Theme & conflict -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div>
+        <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">Central Conflict</div>
+        <input style="width:100%;background:#111827;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:.85rem;font-family:inherit;outline:none" id="conflictIn" placeholder="e.g. Man vs. Nature, Man vs. Self…" oninput="drawPyramid()">
+      </div>
+      <div>
+        <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">Theme(s)</div>
+        <input style="width:100%;background:#111827;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:.85rem;font-family:inherit;outline:none" id="themeIn" placeholder="e.g. Courage, Betrayal, Coming of age…" oninput="drawPyramid()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved diagrams -->
+  <div class="card" id="histCard" style="display:none;padding:14px 20px">
+    <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Saved Stories</div>
+    <div id="histList"></div>
+  </div>
+</div>
+
+<script>
+const STAGE_COLORS = ['#3b82f6','#8b5cf6','#ef4444','#f59e0b','#34d399'];
+const STAGE_NAMES  = ['Exposition','Rising Action','Climax','Falling Action','Resolution'];
+let characters = [];
+let activeStage = -1;
+
+function updateWC(i){
+  const t = document.getElementById('ta'+i).value.trim();
+  document.getElementById('wc'+i).textContent = (t ? t.split(/\s+/).length : 0)+' words';
+}
+
+function focusStage(i){
+  activeStage = i;
+  document.querySelectorAll('.stage-card').forEach((c,j) => c.classList.toggle('active', j===i));
+  document.getElementById('ta'+i).focus();
+}
+
+function addChar(){
+  const inp = document.getElementById('charInput');
+  const name = inp.value.trim();
+  if(!name) return;
+  if(!characters.includes(name)) characters.push(name);
+  inp.value = '';
+  renderChars();
+}
+
+function removeChar(name){
+  characters = characters.filter(c=>c!==name);
+  renderChars();
+}
+
+function renderChars(){
+  document.getElementById('charTags').innerHTML = characters.map(c=>
+    `<span class="char-tag">${c}<button onclick="removeChar('${c.replace(/'/g,"\\'")}')">×</button></span>`
+  ).join('');
+}
+
+// ── Pyramid Canvas ────────────────────────────────────────────────────────────
+function drawPyramid(){
+  const canvas = document.getElementById('pyramidCanvas');
+  const W = canvas.offsetWidth || 800;
+  canvas.width = W * window.devicePixelRatio;
+  canvas.height = 220 * window.devicePixelRatio;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const w = W, h = 220;
+
+  ctx.clearRect(0,0,w,h);
+
+  // Gradient bg
+  const grad = ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'#111827');
+  grad.addColorStop(1,'#0b1120');
+  ctx.fillStyle = grad;
+  ctx.roundRect?ctx.roundRect(0,0,w,h,10):ctx.rect(0,0,w,h);
+  ctx.fill();
+
+  // Points for pyramid
+  const pad = 40, top = 30;
+  const pts = [
+    {x: pad,       y: h-40},  // 0 exposition (bottom left)
+    {x: w*0.28,    y: h*0.5}, // 1 rising action
+    {x: w*0.50,    y: top},   // 2 climax (top)
+    {x: w*0.72,    y: h*0.55},// 3 falling action
+    {x: w-pad,     y: h-40},  // 4 resolution (bottom right)
+  ];
+
+  // Draw lines between points
+  for(let i=0;i<pts.length-1;i++){
+    ctx.beginPath();
+    ctx.moveTo(pts[i].x, pts[i].y);
+    ctx.lineTo(pts[i+1].x, pts[i+1].y);
+    ctx.strokeStyle = STAGE_COLORS[i];
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+  }
+
+  // Fill area under pyramid
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, h-10);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[4].x, h-10);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(99,102,241,0.06)';
+  ctx.fill();
+
+  // Dots + labels
+  const labels = STAGE_NAMES;
+  pts.forEach((p,i)=>{
+    // Dot
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 6, 0, Math.PI*2);
+    ctx.fillStyle = STAGE_COLORS[i];
+    ctx.fill();
+    if(activeStage===i){
+      ctx.beginPath(); ctx.arc(p.x,p.y,10,0,Math.PI*2);
+      ctx.strokeStyle = STAGE_COLORS[i]; ctx.lineWidth=2; ctx.stroke();
+    }
+
+    // Label
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.fillStyle = STAGE_COLORS[i];
+    ctx.textAlign = 'center';
+    const ly = i===2 ? p.y - 16 : (i<2 ? p.y - 14 : p.y - 14);
+    ctx.fillText(labels[i], p.x, ly);
+
+    // Content preview
+    const ta = document.getElementById('ta'+i);
+    if(ta && ta.value.trim()){
+      const preview = ta.value.trim().slice(0,24) + (ta.value.length>24?'…':'');
+      ctx.font = '9px Inter, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText(preview, p.x, p.y+18);
+    }
+  });
+
+  // Title
+  const title = document.getElementById('storyTitle').value.trim();
+  if(title){
+    ctx.font = 'bold 13px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.textAlign = 'center';
+    ctx.fillText('"' + title + '"', w/2, h-12);
+  }
+}
+
+window.addEventListener('resize', drawPyramid);
+window.addEventListener('load', drawPyramid);
+
+// ── Save / Load ───────────────────────────────────────────────────────────────
+function getData(){
+  return {
+    title: document.getElementById('storyTitle').value,
+    stages: [0,1,2,3,4].map(i=>document.getElementById('ta'+i).value),
+    conflict: document.getElementById('conflictIn').value,
+    theme: document.getElementById('themeIn').value,
+    characters,
+    ts: Date.now(),
+  };
+}
+
+function setData(d){
+  document.getElementById('storyTitle').value = d.title||'';
+  [0,1,2,3,4].forEach(i=>{ document.getElementById('ta'+i).value=(d.stages||[])[i]||''; updateWC(i); });
+  document.getElementById('conflictIn').value = d.conflict||'';
+  document.getElementById('themeIn').value = d.theme||'';
+  characters = d.characters||[];
+  renderChars(); drawPyramid();
+}
+
+function saveStory(){
+  const d = getData();
+  if(!d.title.trim()){alert('Add a story title first.');return;}
+  const hist = JSON.parse(localStorage.getItem('pd-hist')||'[]');
+  const idx = hist.findIndex(x=>x.title===d.title);
+  if(idx>=0) hist[idx]=d; else hist.unshift(d);
+  if(hist.length>20) hist.pop();
+  localStorage.setItem('pd-hist', JSON.stringify(hist));
+  renderHist();
+  const btn = event.target; btn.textContent='✓ Saved!'; setTimeout(()=>btn.textContent='Save',1500);
+}
+
+function clearAll(){
+  if(!confirm('Clear this diagram?')) return;
+  document.getElementById('storyTitle').value='';
+  [0,1,2,3,4].forEach(i=>{document.getElementById('ta'+i).value='';updateWC(i);});
+  document.getElementById('conflictIn').value='';
+  document.getElementById('themeIn').value='';
+  characters=[]; renderChars(); drawPyramid();
+}
+
+function loadStory(idx){
+  const hist = JSON.parse(localStorage.getItem('pd-hist')||'[]');
+  if(hist[idx]) setData(hist[idx]);
+}
+
+function deleteStory(idx){
+  const hist = JSON.parse(localStorage.getItem('pd-hist')||'[]');
+  hist.splice(idx,1);
+  localStorage.setItem('pd-hist',JSON.stringify(hist));
+  renderHist();
+}
+
+function renderHist(){
+  const hist = JSON.parse(localStorage.getItem('pd-hist')||'[]');
+  const card = document.getElementById('histCard');
+  if(!hist.length){card.style.display='none';return;}
+  card.style.display='';
+  document.getElementById('histList').innerHTML = hist.map((d,i)=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span class="hist-chip" onclick="loadStory(${i})">📖 ${d.title||'Untitled'}</span>
+      <button onclick="deleteStory(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem">✕</button>
+    </div>`).join('');
+}
+
+function exportDiagram(){
+  const d = getData();
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${d.title||'Plot Diagram'}</title>
+  <style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;color:#111;font-size:13px;line-height:1.6}
+  h1{color:#4338ca;margin-bottom:4px}h2{color:#555;font-size:.85rem;margin-bottom:20px}
+  .stage{border-left:4px solid #4338ca;padding:10px 14px;margin-bottom:16px;background:#f8f9ff}
+  .stage-name{font-weight:700;color:#4338ca;font-size:.9rem;margin-bottom:4px}
+  .meta{display:flex;gap:20px;margin-bottom:16px;font-size:.82rem}
+  .meta div{background:#f0f0f0;padding:6px 10px;border-radius:6px}
+  </style></head><body>
+  <h1>${d.title||'Untitled Story'}</h1>
+  <h2>Plot Diagram — Freytag's Pyramid</h2>
+  <div class="meta">
+    <div><strong>Conflict:</strong> ${d.conflict||'—'}</div>
+    <div><strong>Theme:</strong> ${d.theme||'—'}</div>
+    ${d.characters.length?`<div><strong>Characters:</strong> ${d.characters.join(', ')}</div>`:''}
+  </div>
+  ${['Exposition','Rising Action','Climax','Falling Action','Resolution'].map((name,i)=>
+    `<div class="stage"><div class="stage-name">${i+1}. ${name}</div><p>${(d.stages[i]||'').replace(/\n/g,'<br>') || '<em>Not filled in</em>'}</p></div>`
+  ).join('')}
+  </body></html>`;
+  const w = window.open('','_blank');
+  w.document.write(html); w.document.close();
+}
+
+renderHist();
+</script>
+</body></html>
