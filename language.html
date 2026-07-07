@@ -42,6 +42,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* CATEGORY FILTER */
 .cat-bar{display:flex;gap:8px;padding:14px 24px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:#1a2540}
+.vocab-search-bar{padding:10px 24px;background:#1a2540;border-bottom:1px solid var(--border);display:none}
+.vocab-search-bar.visible{display:block}
+.vocab-search-wrap{position:relative;max-width:380px}
+.vocab-search-wrap input{width:100%;padding:8px 12px 8px 34px;background:#0d1628;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.87rem;outline:none;font-family:inherit;transition:border-color .15s}
+.vocab-search-wrap input:focus{border-color:var(--accent)}
+.vocab-search-wrap input::placeholder{color:#7a8fa8}
+.vocab-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#7a8fa8;pointer-events:none}
+.vocab-search-count{font-size:.75rem;color:#7a8fa8;margin-top:6px}
 .cat-btn{padding:5px 14px;border-radius:16px;border:1.5px solid var(--border);background:#1a2540;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
 .cat-btn:hover,.cat-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
 
@@ -238,6 +246,14 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 
 <!-- CATEGORY FILTER (hidden in writing/phrasebook) -->
 <div class="cat-bar" id="catBar"></div>
+
+<div class="vocab-search-bar" id="vocabSearchBar">
+  <div class="vocab-search-wrap">
+    <span class="vocab-search-icon">🔍</span>
+    <input type="text" id="vocabSearch" placeholder="Search words, meanings, romanization…" oninput="onVocabSearch()">
+  </div>
+  <div class="vocab-search-count" id="vocabSearchCount"></div>
+</div>
 
 <div class="main" id="mainArea"></div>
 
@@ -15730,12 +15746,25 @@ function setCat(c, btn){
 function render(){
   const cats = CATS[mode] || [];
   const catBar = document.getElementById('catBar');
+  const searchBar = document.getElementById('vocabSearchBar');
 
   if(cats.length === 0){
     catBar.style.display = 'none';
   } else {
     catBar.style.display = '';
     catBar.innerHTML = cats.map(c=>`<button class="cat-btn${activeCat===c?' active':''}" onclick="setCat('${c}',this)">${c==='all'?'All Categories':cap(c)}</button>`).join('');
+  }
+
+  // Show search bar in flashcards and phrasebook modes
+  if(searchBar){
+    if(mode==='flashcards' || mode==='phrasebook'){
+      searchBar.classList.add('visible');
+    } else {
+      searchBar.classList.remove('visible');
+      const inp = document.getElementById('vocabSearch');
+      if(inp) inp.value = '';
+      searchTerm = '';
+    }
   }
   renderContent();
 }
@@ -15751,7 +15780,25 @@ function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 
 function filteredVocab(){
   const v = LANGUAGES[lang].vocab;
-  return activeCat==='all' ? v : v.filter(w=>w.cat===activeCat);
+  let result = activeCat==='all' ? v : v.filter(w=>w.cat===activeCat);
+  if(searchTerm){
+    const q = searchTerm.toLowerCase();
+    result = result.filter(w=>
+      w.char.toLowerCase().includes(q) ||
+      w.rom.toLowerCase().includes(q) ||
+      w.meaning.toLowerCase().includes(q)
+    );
+  }
+  return result;
+}
+
+function onVocabSearch(){
+  searchTerm = document.getElementById('vocabSearch').value.trim();
+  renderContent();
+  const count = filteredVocab().length;
+  const el = document.getElementById('vocabSearchCount');
+  if(el && searchTerm) el.textContent = count + ' result' + (count!==1?'s':'')+' found';
+  else if(el) el.textContent = '';
 }
 
 // ═══════════════════════════════════════════════════════════════

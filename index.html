@@ -744,6 +744,11 @@ main#mainContent{flex:1;padding:0 36px 36px;}
     <span class="brand-name">Acer<span class="brand-accent">Academy</span></span>
   </a>
   <a href="alltools.html" class="nav-link">🛠 All Tools</a>
+  <div class="search-wrap" style="flex-shrink:0;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="headerSearch" placeholder="Search tools…" style="background:var(--surface);color:var(--text);width:190px;"
+      onkeydown="if(event.key==='Enter'&&this.value.trim())window.location='alltools.html?q='+encodeURIComponent(this.value.trim())">
+  </div>
   <div class="nav-spacer"></div>
   <span style="font-size:.82rem;color:#7a8fa8;font-weight:500;font-family:'Inter',system-ui,sans-serif;">Grades 6–12 Learning Platform</span>
   <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark</button>

@@ -607,6 +607,15 @@ function filterTools(){
 
   document.getElementById('noResults').classList.toggle('show', visible===0);
 }
+
+// Pre-fill search from URL param (e.g. ?q=essay)
+(function(){
+  const q = new URLSearchParams(window.location.search).get('q');
+  if(q){
+    const inp = document.getElementById('searchInput');
+    if(inp){ inp.value = q; filterTools(); }
+  }
+})();
 </script>
 </body>
 </html>
