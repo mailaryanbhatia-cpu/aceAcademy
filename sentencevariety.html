@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sentence Variety Coach — Ace Academy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:980px;margin:0 auto;padding:24px 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+h2{font-size:.85rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+textarea{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:12px;font-size:.92rem;width:100%;resize:vertical;line-height:1.6;font-family:inherit}
+textarea:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.9rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+/* Stats */
+.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.stat-chip{background:#0d1728;border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:80px}
+.stat-chip strong{display:block;font-size:1.2rem;font-weight:700;color:var(--accent2)}
+.stat-chip span{font-size:.7rem;color:var(--muted)}
+/* Type breakdown */
+.type-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.type-label{font-size:.82rem;width:130px;color:var(--text);flex-shrink:0}
+.type-track{flex:1;height:10px;background:var(--border);border-radius:5px;overflow:hidden}
+.type-fill{height:100%;border-radius:5px;transition:width .5s}
+.type-count{font-size:.8rem;color:var(--muted);width:40px;text-align:right;flex-shrink:0}
+/* Length chart (SVG) */
+#lenChart{width:100%;overflow:auto}
+/* Sentence list */
+.sent-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)33;font-size:.85rem}
+.sent-row:last-child{border:none}
+.sent-num{color:var(--muted);font-size:.75rem;width:20px;flex-shrink:0;margin-top:2px}
+.sent-badge{padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700;white-space:nowrap;flex-shrink:0}
+.sent-text{flex:1;line-height:1.5}
+.sent-words{color:var(--muted);font-size:.75rem;white-space:nowrap;flex-shrink:0}
+/* Highlighted starts */
+.repeat-start{background:#f59e0b33;color:#fcd34d;border-radius:3px;padding:0 2px}
+/* Tips */
+.tip{background:#0d1728;border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid var(--accent);font-size:.85rem;line-height:1.5}
+.tip strong{color:var(--accent2)}
+/* Grade */
+.grade-badge{display:inline-block;width:48px;height:48px;border-radius:50%;line-height:48px;text-align:center;font-size:1.4rem;font-weight:700}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>✍️ Sentence Variety Coach</h1>
+</div>
+<div class="container">
+  <div class="card">
+    <h2>Your Writing</h2>
+    <textarea id="textIn" rows="8" placeholder="Paste a paragraph or essay section to analyze sentence variety..."></textarea>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="analyze()">✍️ Analyze</button>
+      <button class="btn btn-ghost" onclick="loadSample()">Load Sample</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('textIn').value='';document.getElementById('results').style.display=''">Clear</button>
+    </div>
+  </div>
+
+  <div id="results" style="display:none">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+      <div class="grade-badge" id="gradeEl" style="background:#10b98133;color:#6ee7b7">A</div>
+      <div>
+        <div style="font-size:1rem;font-weight:700" id="gradeLabel">Excellent Variety</div>
+        <div style="font-size:.82rem;color:var(--muted)" id="gradeDesc"></div>
+      </div>
+    </div>
+
+    <div class="stat-row" id="statRow"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>📊 Sentence Types</h2>
+        <div id="typeBreakdown"></div>
+        <div style="margin-top:14px;font-size:.78rem;color:var(--muted);line-height:1.7">
+          <strong style="color:var(--text)">Simple</strong> — one independent clause<br/>
+          <strong style="color:var(--text)">Compound</strong> — joined with FANBOYS (for, and, nor, but, or, yet, so)<br/>
+          <strong style="color:var(--text)">Complex</strong> — has a subordinate clause (because, although, when, if...)<br/>
+          <strong style="color:var(--text)">Compound-Complex</strong> — both features
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📏 Sentence Lengths</h2>
+        <div id="lenChart"></div>
+        <div style="margin-top:10px;display:flex;gap:14px;font-size:.75rem;flex-wrap:wrap">
+          <span><span style="display:inline-block;width:10px;height:10px;background:#10b981;border-radius:2px;margin-right:3px"></span>Short (&lt;10)</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#6366f1;border-radius:2px;margin-right:3px"></span>Medium (10–20)</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;margin-right:3px"></span>Long (&gt;20)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>🔤 Opening Words</h2>
+        <div id="openingList"></div>
+      </div>
+      <div class="card">
+        <h2>💡 Suggestions</h2>
+        <div id="tipsList"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📋 Sentence Breakdown</h2>
+      <div id="sentBreakdown"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const COORD=new Set(['for','and','nor','but','or','yet','so']);
+const SUBORD=['although','because','since','while','when','if','unless','until','after','before','though','even though','as soon as','as long as','now that','once','wherever','whenever','whether','so that','provided that','in order that','given that','even if','rather than','whereas','inasmuch'];
+const TYPE_COLORS={simple:'#10b981',compound:'#6366f1',complex:'#f59e0b','compound-complex':'#ec4899'};
+
+function classifySentence(s){
+  const lower=s.toLowerCase();
+  let hasCoord=false,hasSubord=false;
+  // Check for FANBOYS between clauses (simplified: look for ", and", ", but", etc.)
+  COORD.forEach(c=>{if(new RegExp(',?\\s+'+c+'\\s+').test(lower))hasCoord=true;});
+  SUBORD.forEach(c=>{if(lower.includes(' '+c+' ')||lower.startsWith(c+' '))hasSubord=true;});
+  if(hasCoord&&hasSubord) return 'compound-complex';
+  if(hasCoord) return 'compound';
+  if(hasSubord) return 'complex';
+  return 'simple';
+}
+
+function firstWord(s){
+  const m=s.match(/^\W*(\w+)/);
+  return m?m[1].toLowerCase():'';
+}
+
+function analyze(){
+  const text=document.getElementById('textIn').value.trim();
+  if(!text){alert('Please enter some text.');return;}
+  const sentences=(text.match(/[^.!?]+[.!?]+/g)||[text]).map(s=>s.trim()).filter(s=>s.length>3);
+  if(!sentences.length){alert('No complete sentences found.');return;}
+
+  const data=sentences.map(s=>{
+    const words=s.split(/\s+/).filter(Boolean).length;
+    const type=classifySentence(s);
+    const start=firstWord(s);
+    const lenCat=words<10?'short':words<=20?'medium':'long';
+    return{s,words,type,start,lenCat};
+  });
+
+  const n=data.length;
+  const avgLen=Math.round(data.reduce((a,d)=>a+d.words,0)/n);
+  const minLen=Math.min(...data.map(d=>d.words));
+  const maxLen=Math.max(...data.map(d=>d.words));
+
+  // Type counts
+  const typeCounts={simple:0,compound:0,complex:0,'compound-complex':0};
+  data.forEach(d=>typeCounts[d.type]++);
+
+  // Start word frequency
+  const startFreq={};
+  data.forEach(d=>{startFreq[d.start]=(startFreq[d.start]||0)+1;});
+  const repeatStarts=Object.entries(startFreq).filter(([w,c])=>c>1).sort((a,b)=>b[1]-a[1]);
+
+  // Scores
+  const typeVariety=Object.values(typeCounts).filter(c=>c>0).length;
+  const lenVariety=[data.filter(d=>d.lenCat==='short').length,data.filter(d=>d.lenCat==='medium').length,data.filter(d=>d.lenCat==='long').length].filter(c=>c>0).length;
+  const startVariety=n>0?Object.keys(startFreq).length/n:1;
+  const repeatPenalty=repeatStarts.length;
+  let score=(typeVariety/4)*40+(lenVariety/3)*30+(Math.min(startVariety,1))*30-repeatPenalty*5;
+  score=Math.max(0,Math.min(100,score));
+  const grade=score>=90?'A':score>=80?'B':score>=70?'C':score>=60?'D':'F';
+  const gradeColor={A:'#10b981',B:'#84cc16',C:'#f59e0b',D:'#f97316',F:'#ef4444'}[grade];
+  const gradeLabels={A:'Excellent Variety',B:'Good Variety',C:'Moderate Variety',D:'Needs Work',F:'Very Repetitive'};
+  const gradeDescs={A:'Your sentences show strong structural variety.',B:'Good mix of types. A few more complex sentences would help.',C:'Consider varying your sentence types and lengths more.',D:'Too many sentences of the same type and length.',F:'Almost all sentences share the same structure. Major revision recommended.'};
+
+  document.getElementById('gradeEl').textContent=grade;
+  document.getElementById('gradeEl').style.background=gradeColor+'33';
+  document.getElementById('gradeEl').style.color=gradeColor;
+  document.getElementById('gradeLabel').textContent=gradeLabels[grade];
+  document.getElementById('gradeDesc').textContent=gradeDescs[grade];
+
+  // Stats
+  document.getElementById('statRow').innerHTML=`
+    <div class="stat-chip"><strong>${n}</strong><span>Sentences</span></div>
+    <div class="stat-chip"><strong>${avgLen}</strong><span>Avg Words</span></div>
+    <div class="stat-chip"><strong>${minLen}–${maxLen}</strong><span>Word Range</span></div>
+    <div class="stat-chip"><strong>${typeVariety}/4</strong><span>Types Used</span></div>
+    <div class="stat-chip"><strong>${Math.round(score)}</strong><span>Variety Score</span></div>
+  `;
+
+  // Type breakdown
+  const TYPE_LABELS={simple:'Simple',compound:'Compound',complex:'Complex','compound-complex':'Compound-Complex'};
+  document.getElementById('typeBreakdown').innerHTML=Object.entries(typeCounts).map(([t,c])=>`
+    <div class="type-bar">
+      <span class="type-label">${TYPE_LABELS[t]}</span>
+      <div class="type-track"><div class="type-fill" style="width:${n>0?c/n*100:0}%;background:${TYPE_COLORS[t]}"></div></div>
+      <span class="type-count">${c}</span>
+    </div>
+  `).join('');
+
+  // Length chart SVG
+  const BAR_W=Math.max(8,Math.min(24,Math.floor(300/n)));
+  const maxW=Math.max(...data.map(d=>d.words));
+  const H=80;
+  const lenColors={short:'#10b981',medium:'#6366f1',long:'#f59e0b'};
+  const svgW=Math.max(300,(BAR_W+4)*n+20);
+  let bars='';
+  data.forEach((d,i)=>{
+    const h=Math.max(4,Math.round((d.words/maxW)*H));
+    bars+=`<rect x="${10+i*(BAR_W+4)}" y="${H-h+10}" width="${BAR_W}" height="${h}" fill="${lenColors[d.lenCat]}" rx="2" title="${d.words} words">
+      <title>S${i+1}: ${d.words} words</title></rect>`;
+  });
+  document.getElementById('lenChart').innerHTML=`<svg width="${svgW}" height="${H+24}" style="display:block">
+    ${bars}
+    <text x="10" y="${H+22}" font-size="9" fill="#b0bece">1</text>
+    <text x="${10+(n-1)*(BAR_W+4)}" y="${H+22}" font-size="9" fill="#b0bece">${n}</text>
+    <text x="${svgW/2}" y="${H+22}" font-size="9" fill="#b0bece" text-anchor="middle">Sentence #</text>
+  </svg>`;
+
+  // Opening words
+  const openHtml=repeatStarts.length
+    ? repeatStarts.map(([w,c])=>`<div style="display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)22;font-size:.85rem">
+        <span style="background:#f59e0b33;color:#fcd34d;border-radius:4px;padding:1px 7px;font-weight:600">${w}</span>
+        <span style="color:var(--muted)">used ${c} times</span>
+      </div>`).join('')
+    : '<div style="color:var(--muted);font-size:.85rem">✅ Great! No repeated sentence starters.</div>';
+  document.getElementById('openingList').innerHTML=openHtml;
+
+  // Tips
+  const tips=[];
+  if(typeCounts.simple/n>0.6) tips.push({t:'Add Complex Sentences',d:'Over 60% of your sentences are simple. Try adding subordinating clauses (because, although, when, if) to create complex sentences.'});
+  if(typeCounts.compound/n<0.1&&n>4) tips.push({t:'Use Compound Sentences',d:'Connect related ideas with coordinating conjunctions (FANBOYS): for, and, nor, but, or, yet, so — preceded by a comma.'});
+  if(typeCounts.complex/n<0.1&&n>4) tips.push({t:'Add Subordinate Clauses',d:'Start some sentences with words like "Although," "Because," "Since," or "While" to add complexity.'});
+  if(data.filter(d=>d.lenCat==='long').length/n>0.5) tips.push({t:'Break Up Long Sentences',d:'Too many long sentences (20+ words) can fatigue the reader. Try splitting some into shorter, punchier statements.'});
+  if(data.filter(d=>d.lenCat==='short').length/n>0.5) tips.push({t:'Expand Short Sentences',d:'Many of your sentences are very short. Combine related short sentences or add descriptive phrases.'});
+  if(repeatStarts.length>2) tips.push({t:'Vary Sentence Openings',d:`"${repeatStarts[0][0]}" starts ${repeatStarts[0][1]} sentences. Try opening with a verb, adverb, prepositional phrase, or subordinate clause instead.`});
+  if(!tips.length) tips.push({t:'Keep it up!',d:'Your sentences show good structural variety. Consider reading your work aloud to check for flow.'});
+  document.getElementById('tipsList').innerHTML=tips.map(t=>`<div class="tip"><strong>${t.t}</strong><br/>${t.d}</div>`).join('');
+
+  // Sentence breakdown
+  document.getElementById('sentBreakdown').innerHTML=data.map((d,i)=>`
+    <div class="sent-row">
+      <span class="sent-num">${i+1}</span>
+      <span class="sent-badge" style="background:${TYPE_COLORS[d.type]}33;color:${TYPE_COLORS[d.type]}">${TYPE_LABELS[d.type]}</span>
+      <span class="sent-badge" style="background:${lenColors[d.lenCat]}22;color:${lenColors[d.lenCat]}">${d.lenCat}</span>
+      <span class="sent-text">${escHtml(d.s)}</span>
+      <span class="sent-words">${d.words}w</span>
+    </div>
+  `).join('');
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+
+const TYPE_LABELS={simple:'Simple',compound:'Compound',complex:'Complex','compound-complex':'Compound-Complex'};
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function loadSample(){
+  document.getElementById('textIn').value=`The student studied hard. She read every chapter. She took good notes. She felt prepared. The test was difficult. She answered each question carefully and checked her work when she finished. Although she was nervous at first, she calmed down once she started reading the questions. The results came back the next day. She passed.`;
+}
+</script>
+</body>
+</html>

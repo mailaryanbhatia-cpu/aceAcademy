@@ -1,386 +1,917 @@
 <!DOCTYPE html>
-<html data-theme="dark" lang="en">
+<html lang="en">
 <head>
-<link rel="stylesheet" href="/ace-shared.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Statistics Calculator — aceAcademy</title>
-<link rel="stylesheet" href="ace-theme.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Statistics Calculator — Ace Academy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
-nav.topnav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
-nav.topnav::-webkit-scrollbar{display:none}
-.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
-.logo span{color:var(--accent)}
-.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:.15s}
-.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
-.nav-link.active{background:rgba(99,102,241,.18);color:var(--accent)}
-.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:26px 36px 20px;border-bottom:1px solid var(--border)}
-.hero h1{font-size:1.5rem;font-weight:900}.hero h1 span{color:var(--accent)}
-.hero p{color:var(--muted2);font-size:.83rem;margin-top:4px}
-.container{max-width:860px;margin:0 auto;padding:24px 20px 60px}
-.input-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:22px;margin-bottom:22px}
-.input-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:8px;display:block}
-.data-input{width:100%;padding:12px 14px;background:#0d1628;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.95rem;font-family:'Consolas',monospace;outline:none;transition:.15s;resize:vertical;min-height:70px}
-.data-input:focus{border-color:var(--accent2)}
-.data-input::placeholder{color:#8899aa}
-.input-hint{font-size:.72rem;color:var(--muted2);margin-top:6px}
-.btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.btn{padding:9px 18px;border-radius:9px;border:none;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
-.btn-primary{background:var(--accent2);color:#fff}.btn-primary:hover{background:#5254d8}
-.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted2)}.btn-ghost:hover{border-color:var(--accent2);color:var(--accent)}
-.samples{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.sample-btn{padding:4px 10px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted2);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
-.sample-btn:hover{border-color:var(--accent2);color:var(--accent)}
-
-/* Results */
-.results{display:none}
-.results.show{display:block}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px}
-.stat-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;text-align:center}
-.stat-value{font-size:1.4rem;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums}
-.stat-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-top:4px}
-.stat-card.highlight{border-color:var(--accent2);background:rgba(99,102,241,.08)}
-
-/* Sorted data */
-.section-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:10px}
-.sorted-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:16px;font-family:'Consolas',monospace;font-size:.85rem;line-height:1.8;word-break:break-all;color:#b8c4d8}
-.sorted-card .q-mark{color:var(--accent2);font-weight:800}
-
-/* Box plot */
-.boxplot-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
-.boxplot-card svg{width:100%;height:auto;display:block}
-
-/* Frequency table */
-.freq-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px;overflow-x:auto}
-.freq-table{width:100%;border-collapse:collapse;font-size:.82rem}
-.freq-table th{text-align:left;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);padding:6px 12px;border-bottom:1px solid var(--border)}
-.freq-table td{padding:7px 12px;border-bottom:1px solid #1a2a45;color:#b8c4d8}
-.freq-table tr:last-child td{border-bottom:none}
-.bar-cell{min-width:120px}
-.freq-bar{height:8px;border-radius:4px;background:var(--accent2);transition:width .4s}
-.error-msg{background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;color:#f87171;font-size:.85rem;margin-top:10px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:980px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{font-size:.85rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+h3{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:10px}
+label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:4px}
+input,select{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:.88rem;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+/* Tabs */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px}
+.tab{padding:8px 14px;border-radius:7px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:.82rem;font-weight:600;transition:.15s}
+.tab.active{background:var(--accent);color:#fff}
+/* Results table */
+.res-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.res-table td{padding:7px 12px;border-bottom:1px solid var(--border)33}
+.res-table td:first-child{color:var(--muted);width:55%}
+.res-table td:last-child{font-weight:700;color:var(--accent2);font-family:monospace;font-size:.9rem}
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:700px){.g2,.g3{grid-template-columns:1fr}}
+/* Formula box */
+.formula{background:#0d1728;border-radius:8px;padding:12px;border-left:3px solid var(--accent);font-size:.85rem;margin-bottom:12px;font-family:monospace;color:var(--accent2)}
+/* SVG charts */
+.chart-wrap{background:#0d1728;border-radius:10px;padding:10px;border:1px solid var(--border);overflow-x:auto}
+/* Result badges */
+.res-badge{display:inline-block;padding:3px 10px;border-radius:8px;font-weight:700;font-size:.88rem}
+/* Highlight */
+.hl{color:var(--accent2);font-weight:700}
+/* Sections within tab */
+.section{background:#0d1728;border-radius:10px;padding:16px;margin-bottom:12px;border:1px solid var(--border)55}
+.section h3{font-size:.85rem;color:var(--accent2);font-weight:700;margin-bottom:12px}
+/* Row layout */
+.row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px}
+.row .field{flex:1;min-width:100px}
+/* Interpretation box */
+.interp{background:#6366f115;border:1px solid var(--accent)44;border-radius:8px;padding:12px;font-size:.85rem;line-height:1.6;margin-top:10px}
 </style>
-<script src="theme.js"></script>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AcerAcademy">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <script src="/streak.js"></script>
-  <script src="/sounds.js"></script>
-  <script src="/coins.js"></script>
-  <script src="/nav-profile.js"></script>
-  <script src="/splash.js"></script>
-<script src="/timer.js"></script>
 </head>
 <body>
-<header class="ace-header">
-  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
-  <a href="index.html" class="ace-nav-link">← Home</a>
-  
-  <div class="ace-spacer"></div>
-  <a href="alltools.html" class="ace-nav-link">All Tools</a>
-</header>
-<div class="hero">
-  <h1>📊 Statistics <span>Calculator</span></h1>
-  <p>Enter a dataset and instantly get mean, median, mode, standard deviation, IQR, quartiles, box plot, and frequency table.</p>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📊 Statistics Calculator</h1>
 </div>
-<div class="ace-wrap">
-  <div class="input-card">
-    <label class="input-label">Enter Your Data</label>
-    <textarea class="data-input" id="dataInput" placeholder="Enter numbers separated by commas or spaces&#10;e.g.  12, 15, 11, 18, 14, 15, 9, 22, 15, 10"></textarea>
-    <div class="input-hint">Separate values with commas, spaces, or newlines. Up to 500 values.</div>
-    <div id="errMsg"></div>
-    <div class="ace-btn-row">
-      <button class="btn ace-btn-primary" onclick="calculate()">📊 Calculate</button>
-      <button class="btn ace-btn-ghost" onclick="clearAll()">✕ Clear</button>
+<div class="container">
+<div class="tabs">
+  <button class="tab active" onclick="showTab('desc')">📋 Descriptive</button>
+  <button class="tab" onclick="showTab('prob')">🎲 Probability</button>
+  <button class="tab" onclick="showTab('normal')">🔔 Normal Dist.</button>
+  <button class="tab" onclick="showTab('regr')">📈 Regression</button>
+  <button class="tab" onclick="showTab('conf')">📏 Confidence Intervals</button>
+  <button class="tab" onclick="showTab('hypo')">🧪 Hypothesis Tests</button>
+</div>
+
+<!-- TAB: Descriptive -->
+<div id="tab-desc">
+  <div class="card">
+    <h2>Enter Data</h2>
+    <label>Data values (comma or space separated)</label>
+    <input id="d-data" placeholder="e.g. 4, 7, 13, 2, 1, 9, 7, 5" style="margin-bottom:12px"/>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="calcDesc()">Calculate</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('d-data').value='12,15,18,22,19,14,20,17,13,16,21,25,11,23,14'">Sample Data</button>
     </div>
-    <div class="samples">
-      <span style="font-size:.7rem;color:var(--muted2);align-self:center">Sample datasets:</span>
-      <button class="sample-ace-btn" onclick="loadSample('test')">Test Scores</button>
-      <button class="sample-ace-btn" onclick="loadSample('heights')">Heights (cm)</button>
-      <button class="sample-ace-btn" onclick="loadSample('temp')">Temperatures</button>
-      <button class="sample-ace-btn" onclick="loadSample('random')">Random (n=20)</button>
+  </div>
+  <div id="desc-results" style="display:none">
+    <div class="g2">
+      <div class="card">
+        <h2>Descriptive Statistics</h2>
+        <table class="res-table" id="desc-table"></table>
+      </div>
+      <div class="card">
+        <h2>5-Number Summary</h2>
+        <table class="res-table" id="five-table"></table>
+        <div style="margin-top:14px">
+          <h2>Box Plot</h2>
+          <div class="chart-wrap" id="boxplot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Histogram</h2>
+      <div class="chart-wrap" id="histogram"></div>
+    </div>
+    <div class="card">
+      <h2>Frequency Table</h2>
+      <div id="freqTable"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Probability -->
+<div id="tab-prob" style="display:none">
+  <div class="g2">
+    <div>
+      <div class="section">
+        <h3>🔢 Combinations &amp; Permutations</h3>
+        <div class="row">
+          <div class="field"><label>n (total)</label><input id="cp-n" type="number" min="0" value="10"/></div>
+          <div class="field"><label>r (choose)</label><input id="cp-r" type="number" min="0" value="3"/></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn btn-primary" onclick="calcCP()">Calculate</button>
+        </div>
+        <div id="cp-result"></div>
+        <div class="formula" style="margin-top:10px">C(n,r) = n! / (r!(n−r)!) &nbsp;|&nbsp; P(n,r) = n! / (n−r)!</div>
+      </div>
+
+      <div class="section">
+        <h3>📊 Basic Probability</h3>
+        <div class="row">
+          <div class="field"><label>Favorable outcomes</label><input id="bp-fav" type="number" min="0" value="3"/></div>
+          <div class="field"><label>Total outcomes</label><input id="bp-tot" type="number" min="1" value="10"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="calcBasicProb()" style="margin-bottom:10px">Calculate</button>
+        <div id="bp-result"></div>
+      </div>
+
+      <div class="section">
+        <h3>🎯 Expected Value</h3>
+        <label style="margin-bottom:6px">Enter value:probability pairs (e.g. 10:0.3, 20:0.5, -5:0.2)</label>
+        <input id="ev-data" placeholder="10:0.3, 20:0.5, -5:0.2" style="margin-bottom:10px"/>
+        <button class="btn btn-primary" onclick="calcEV()">Calculate E(X)</button>
+        <div id="ev-result" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section">
+        <h3>🎲 Binomial Distribution</h3>
+        <div class="row">
+          <div class="field"><label>n (trials)</label><input id="bin-n" type="number" min="0" value="10"/></div>
+          <div class="field"><label>p (success prob)</label><input id="bin-p" type="number" min="0" max="1" step="0.01" value="0.5"/></div>
+          <div class="field"><label>k (successes)</label><input id="bin-k" type="number" min="0" value="4"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="calcBinom()" style="margin-bottom:10px">Calculate</button>
+        <div id="bin-result"></div>
+        <div class="formula" style="margin-top:10px">P(X=k) = C(n,k) × pᵏ × (1−p)ⁿ⁻ᵏ</div>
+      </div>
+
+      <div class="section">
+        <h3>🔢 Factorial</h3>
+        <div class="row">
+          <div class="field"><label>n</label><input id="fact-n" type="number" min="0" max="20" value="5"/></div>
+          <button class="btn btn-primary" onclick="calcFact()" style="align-self:flex-end">n!</button>
+        </div>
+        <div id="fact-result"></div>
+      </div>
+
+      <div class="section">
+        <h3>➕ Addition &amp; Multiplication Rules</h3>
+        <div class="row">
+          <div class="field"><label>P(A)</label><input id="pr-a" type="number" step="0.01" min="0" max="1" value="0.4"/></div>
+          <div class="field"><label>P(B)</label><input id="pr-b" type="number" step="0.01" min="0" max="1" value="0.3"/></div>
+          <div class="field"><label>P(A∩B)</label><input id="pr-ab" type="number" step="0.01" min="0" max="1" value="0.1"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="calcProb()" style="margin-bottom:10px">Calculate</button>
+        <div id="prob-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Normal Distribution -->
+<div id="tab-normal" style="display:none">
+  <div class="g2">
+    <div>
+      <div class="section">
+        <h3>🔔 Find Probability</h3>
+        <div class="row">
+          <div class="field"><label>μ (mean)</label><input id="nd-mu" type="number" value="100" step="any"/></div>
+          <div class="field"><label>σ (std dev)</label><input id="nd-sigma" type="number" value="15" min="0.001" step="any"/></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Type</label>
+            <select id="nd-type" onchange="updateNDInputs()">
+              <option value="lt">P(X &lt; a)</option>
+              <option value="gt">P(X &gt; a)</option>
+              <option value="between">P(a &lt; X &lt; b)</option>
+              <option value="inv">Find x given percentile</option>
+            </select>
+          </div>
+        </div>
+        <div id="nd-inputs" class="row">
+          <div class="field"><label id="nd-a-label">a</label><input id="nd-a" type="number" value="115" step="any"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="calcNormal()" style="margin-bottom:10px">Calculate</button>
+        <div id="nd-result"></div>
+      </div>
+
+      <div class="section">
+        <h3>📐 Z-Score Calculator</h3>
+        <div class="row">
+          <div class="field"><label>x (value)</label><input id="zs-x" type="number" value="115" step="any"/></div>
+          <div class="field"><label>μ (mean)</label><input id="zs-mu" type="number" value="100" step="any"/></div>
+          <div class="field"><label>σ (std dev)</label><input id="zs-sigma" type="number" value="15" step="any"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="calcZScore()" style="margin-bottom:10px">Calculate</button>
+        <div id="zs-result"></div>
+      </div>
+
+      <div class="section">
+        <h3>📊 Empirical Rule (68-95-99.7)</h3>
+        <div class="row">
+          <div class="field"><label>μ</label><input id="er-mu" type="number" value="100" step="any"/></div>
+          <div class="field"><label>σ</label><input id="er-sigma" type="number" value="15" step="any"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="calcEmpirical()" style="margin-bottom:10px">Show</button>
+        <div id="er-result"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0">
+      <h2>Bell Curve</h2>
+      <div class="chart-wrap" id="bellCurve"></div>
+      <div id="bellCaption" style="font-size:.8rem;color:var(--muted);margin-top:8px;text-align:center"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Regression -->
+<div id="tab-regr" style="display:none">
+  <div class="card">
+    <h2>Enter X and Y Data</h2>
+    <div class="g2" style="margin-bottom:12px">
+      <div><label>X values</label><input id="reg-x" placeholder="1, 2, 3, 4, 5"/></div>
+      <div><label>Y values</label><input id="reg-y" placeholder="2, 4, 5, 4, 5"/></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="calcRegr()">Calculate</button>
+      <button class="btn btn-ghost" onclick="loadRegrSample()">Sample Data</button>
+    </div>
+  </div>
+  <div id="regr-results" style="display:none">
+    <div class="g2">
+      <div class="card">
+        <h2>Results</h2>
+        <table class="res-table" id="regr-table"></table>
+        <div id="regr-interp" class="interp" style="margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <h2>Scatter Plot + Regression Line</h2>
+        <div class="chart-wrap" id="scatterPlot"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Residuals</h2>
+      <table class="res-table" id="residTable"></table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Confidence Intervals -->
+<div id="tab-conf" style="display:none">
+  <div class="g2">
+    <div class="section">
+      <h3>📏 Z-Interval (σ known)</h3>
+      <div class="row"><div class="field"><label>Sample mean (x̄)</label><input id="zi-xbar" type="number" value="52.5" step="any"/></div></div>
+      <div class="row">
+        <div class="field"><label>σ (pop std dev)</label><input id="zi-sigma" type="number" value="8.3" step="any"/></div>
+        <div class="field"><label>n (sample size)</label><input id="zi-n" type="number" value="40" min="1"/></div>
+      </div>
+      <div class="row"><div class="field"><label>Confidence level</label>
+        <select id="zi-cl"><option value="0.90">90%</option><option value="0.95" selected>95%</option><option value="0.99">99%</option></select>
+      </div></div>
+      <button class="btn btn-primary" onclick="calcZInterval()" style="margin-bottom:10px">Calculate</button>
+      <div id="zi-result"></div>
+      <div class="formula" style="margin-top:10px">x̄ ± z* × (σ/√n)</div>
+    </div>
+
+    <div class="section">
+      <h3>📏 T-Interval (σ unknown)</h3>
+      <div class="row"><div class="field"><label>Sample mean (x̄)</label><input id="ti-xbar" type="number" value="47.2" step="any"/></div></div>
+      <div class="row">
+        <div class="field"><label>s (sample std dev)</label><input id="ti-s" type="number" value="9.1" step="any"/></div>
+        <div class="field"><label>n (sample size)</label><input id="ti-n" type="number" value="25" min="2"/></div>
+      </div>
+      <div class="row"><div class="field"><label>Confidence level</label>
+        <select id="ti-cl"><option value="0.90">90%</option><option value="0.95" selected>95%</option><option value="0.99">99%</option></select>
+      </div></div>
+      <button class="btn btn-primary" onclick="calcTInterval()" style="margin-bottom:10px">Calculate</button>
+      <div id="ti-result"></div>
+      <div class="formula" style="margin-top:10px">x̄ ± t* × (s/√n), df = n−1</div>
     </div>
   </div>
 
-  <div class="results" id="results">
-    <div class="stats-grid" id="statsGrid"></div>
-    <div class="section-title">📦 Box Plot (5-Number Summary)</div>
-    <div class="boxplot-card" id="boxplotCard"></div>
-    <div class="section-title">📋 Sorted Data</div>
-    <div class="sorted-card" id="sortedData"></div>
-    <div class="section-title">📈 Frequency Table</div>
-    <div class="freq-card" id="freqTable"></div>
+  <div class="section">
+    <h3>📊 Sample Size Calculator</h3>
+    <div class="g3">
+      <div class="field"><label>Margin of error (E)</label><input id="ss-e" type="number" value="3" step="any"/></div>
+      <div class="field"><label>σ (or estimate)</label><input id="ss-sigma" type="number" value="10" step="any"/></div>
+      <div class="field"><label>Confidence level</label>
+        <select id="ss-cl"><option value="0.90">90%</option><option value="0.95" selected>95%</option><option value="0.99">99%</option></select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcSampleSize()" style="margin-top:10px;margin-bottom:10px">Calculate n</button>
+    <div id="ss-result"></div>
+    <div class="formula">n = (z* × σ / E)²</div>
   </div>
 </div>
 
-  <div class="ace-card" id="savedDatasetsCard" style="display:none">
-    <h2 style="margin-bottom:12px">📊 Saved Datasets</h2>
-    <div id="savedDatasetsList" style="display:flex;flex-direction:column;gap:8px"></div>
-    <button class="ace-btn-ghost" onclick="localStorage.removeItem('ace_statscalc_datasets');renderSavedDatasets()" style="margin-top:12px;font-size:.8rem">Clear All</button>
+<!-- TAB: Hypothesis Tests -->
+<div id="tab-hypo" style="display:none">
+  <div class="g2">
+    <div class="section">
+      <h3>🧪 One-Sample Z-Test (σ known)</h3>
+      <div class="row"><div class="field"><label>Null hypothesis μ₀</label><input id="zt-mu0" type="number" value="100" step="any"/></div></div>
+      <div class="row">
+        <div class="field"><label>x̄ (sample mean)</label><input id="zt-xbar" type="number" value="104.5" step="any"/></div>
+        <div class="field"><label>σ (pop std dev)</label><input id="zt-sigma" type="number" value="15" step="any"/></div>
+        <div class="field"><label>n</label><input id="zt-n" type="number" value="36" min="1"/></div>
+      </div>
+      <div class="row"><div class="field"><label>Alternative hypothesis</label>
+        <select id="zt-tail">
+          <option value="two">μ ≠ μ₀ (two-tailed)</option>
+          <option value="right">μ &gt; μ₀ (right-tailed)</option>
+          <option value="left">μ &lt; μ₀ (left-tailed)</option>
+        </select>
+      </div></div>
+      <div class="row"><div class="field"><label>Significance level α</label>
+        <select id="zt-alpha"><option value="0.10">0.10</option><option value="0.05" selected>0.05</option><option value="0.01">0.01</option></select>
+      </div></div>
+      <button class="btn btn-primary" onclick="calcZTest()" style="margin-bottom:10px">Run Test</button>
+      <div id="zt-result"></div>
+    </div>
+
+    <div class="section">
+      <h3>🧪 One-Sample T-Test (σ unknown)</h3>
+      <div class="row"><div class="field"><label>Null hypothesis μ₀</label><input id="tt-mu0" type="number" value="50" step="any"/></div></div>
+      <div class="row">
+        <div class="field"><label>x̄ (sample mean)</label><input id="tt-xbar" type="number" value="53.4" step="any"/></div>
+        <div class="field"><label>s (sample std dev)</label><input id="tt-s" type="number" value="8.2" step="any"/></div>
+        <div class="field"><label>n</label><input id="tt-n" type="number" value="20" min="2"/></div>
+      </div>
+      <div class="row"><div class="field"><label>Alternative hypothesis</label>
+        <select id="tt-tail">
+          <option value="two">μ ≠ μ₀ (two-tailed)</option>
+          <option value="right">μ &gt; μ₀ (right-tailed)</option>
+          <option value="left">μ &lt; μ₀ (left-tailed)</option>
+        </select>
+      </div></div>
+      <div class="row"><div class="field"><label>Significance level α</label>
+        <select id="tt-alpha"><option value="0.10">0.10</option><option value="0.05" selected>0.05</option><option value="0.01">0.01</option></select>
+      </div></div>
+      <button class="btn btn-primary" onclick="calcTTest()" style="margin-bottom:10px">Run Test</button>
+      <div id="tt-result"></div>
+    </div>
   </div>
+
+  <div class="section">
+    <h3>📖 Chebyshev's Theorem</h3>
+    <div class="row">
+      <div class="field"><label>k (# of std devs, k&gt;1)</label><input id="ch-k" type="number" value="2" min="1.01" step="0.1"/></div>
+    </div>
+    <button class="btn btn-primary" onclick="calcChebyshev()" style="margin-bottom:10px">Calculate</button>
+    <div id="ch-result"></div>
+    <div class="formula">P(|X−μ| &lt; kσ) ≥ 1 − 1/k²</div>
+  </div>
+</div>
+</div>
 
 <script>
-const SAMPLES = {
-  test: [72,85,91,68,77,84,90,63,88,75,82,79,95,61,87,73,80,92,66,78],
-  heights: [162,170,158,175,168,180,155,172,165,178,160,171,167,174,163],
-  temp: [32,35,28,41,38,29,44,31,36,40,27,33,39,42,30,37,43,26,34,45],
-  random: Array.from({length:20}, () => Math.round(Math.random()*90+10))
-};
+// ——— Utilities ———
+function parseNums(s){ return s.split(/[\s,]+/).map(Number).filter(n=>!isNaN(n)&&n!==undefined) }
+function fmt(n,d=4){ if(n===undefined||isNaN(n)) return '—'; if(Math.abs(n)<1e-10&&n!==0) return n.toExponential(3); return parseFloat(n.toFixed(d)).toString() }
+function fmtP(p){ return fmt(p,4)+' ('+(p*100).toFixed(2)+'%)' }
+function pct(n,d=2){ return (n*100).toFixed(d)+'%' }
 
-function loadSample(key) {
-  document.getElementById('dataInput').value = SAMPLES[key].join(', ');
-  calculate();
+// Normal distribution
+function erf(x){const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;const sign=x<0?-1:1;x=Math.abs(x);const t=1/(1+p*x);const y=1-((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);return sign*y}
+function normalCDF(x){ return (1+erf(x/Math.sqrt(2)))/2 }
+function normalPDF(x){ return Math.exp(-x*x/2)/Math.sqrt(2*Math.PI) }
+function invNorm(p){ // rational approximation
+  if(p<=0) return -Infinity; if(p>=1) return Infinity;
+  const a=[-3.969683028665376e1,2.209460984245205e2,-2.759285104469687e2,1.383577518672690e2,-3.066479806614716e1,2.506628277459239e0];
+  const b=[-5.447609879822406e1,1.615858368580409e2,-1.556989798598866e2,6.680131188771972e1,-1.328068155288572e1];
+  const c=[-7.784894002430293e-3,-3.223964580411365e-1,-2.400758277161838,2.549732539343734,4.374664141464968,-2.938163982698783];
+  const d=[7.784695709041462e-3,3.224671290700398e-1,2.445134137142996,3.754408661907416];
+  const p_low=0.02425, p_high=1-p_low;
+  if(p<p_low){ const q=Math.sqrt(-2*Math.log(p)); return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+  if(p<=p_high){ const q=p-0.5,r=q*q; return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1); }
+  const q=Math.sqrt(-2*Math.log(1-p)); return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
 }
 
-function parseData() {
-  const raw = document.getElementById('dataInput').value;
-  const nums = raw.split(/[\s,\n]+/).filter(s => s.trim()).map(Number);
-  if (nums.some(isNaN)) throw new Error('All values must be numbers.');
-  if (nums.length < 2) throw new Error('Enter at least 2 values.');
-  if (nums.length > 500) throw new Error('Maximum 500 values.');
-  return nums;
+// T-distribution critical value approximation
+function tCritical(df, alpha, tails){
+  const p = tails===2 ? 1-alpha/2 : 1-alpha;
+  // Use approximation: for large df, ~z; for small df, use lookup table values
+  const T_TABLE = {
+    1:[6.314,12.706,63.657],2:[2.920,4.303,9.925],3:[2.353,3.182,5.841],4:[2.132,2.776,4.604],
+    5:[2.015,2.571,4.032],6:[1.943,2.447,3.707],7:[1.895,2.365,3.499],8:[1.860,2.306,3.355],
+    9:[1.833,2.262,3.250],10:[1.812,2.228,3.169],15:[1.753,2.131,2.947],20:[1.725,2.086,2.845],
+    25:[1.708,2.060,2.787],30:[1.697,2.042,2.750],40:[1.684,2.021,2.704],60:[1.671,2.000,2.660],
+    120:[1.658,1.980,2.617],1000:[1.645,1.960,2.576]
+  };
+  const alphaIdx = alpha<=0.011?2:alpha<=0.051?1:0;
+  const dfs=Object.keys(T_TABLE).map(Number).sort((a,b)=>a-b);
+  const closest=dfs.reduce((a,b)=>Math.abs(b-df)<Math.abs(a-df)?b:a);
+  return T_TABLE[closest][alphaIdx];
 }
 
-function clearAll() {
-  document.getElementById('dataInput').value = '';
-  document.getElementById('errMsg').innerHTML = '';
-  document.getElementById('results').classList.remove('show');
+// T p-value approximation (rough but useful)
+function tPValue(t, df, tails){
+  // Use normal approximation for large df, otherwise rough approximation
+  const absT=Math.abs(t);
+  // Very rough using normal
+  const p_one = 1 - normalCDF(absT);
+  return tails===2 ? Math.min(1, p_one*2) : p_one;
 }
 
-function calculate() {
-  const errEl = document.getElementById('errMsg');
-  errEl.innerHTML = '';
-  let data;
-  try { data = parseData(); } catch(e) {
-    errEl.innerHTML = `<div class="error-msg">⚠ ${e.message}</div>`;
-    return;
-  }
-  const sorted = [...data].sort((a,b) => a-b);
-  const n = sorted.length;
-  const sum = sorted.reduce((a,b) => a+b, 0);
-  const mean = sum / n;
-  const variance = sorted.reduce((a,b) => a + (b-mean)**2, 0) / n;
-  const stddev = Math.sqrt(variance);
-  const sampleStddev = n > 1 ? Math.sqrt(sorted.reduce((a,b) => a + (b-mean)**2, 0) / (n-1)) : 0;
-  const median = getPercentile(sorted, 50);
-  const q1 = getPercentile(sorted, 25);
-  const q3 = getPercentile(sorted, 75);
-  const iqr = q3 - q1;
-  const min = sorted[0], max = sorted[n-1];
-  const range = max - min;
-  const mode = getMode(sorted);
-
-  // Render stats grid
-  const stats = [
-    {label:'Count (n)', val:n, hi:false},
-    {label:'Sum', val:fmt(sum), hi:false},
-    {label:'Mean', val:fmt(mean), hi:true},
-    {label:'Median', val:fmt(median), hi:true},
-    {label:'Mode', val:mode, hi:false},
-    {label:'Min', val:fmt(min), hi:false},
-    {label:'Max', val:fmt(max), hi:false},
-    {label:'Range', val:fmt(range), hi:false},
-    {label:'Q1', val:fmt(q1), hi:false},
-    {label:'Q3', val:fmt(q3), hi:false},
-    {label:'IQR', val:fmt(iqr), hi:true},
-    {label:'Population σ', val:fmt(stddev), hi:true},
-    {label:'Sample s', val:fmt(sampleStddev), hi:false},
-    {label:'Variance σ²', val:fmt(variance), hi:false},
-  ];
-  document.getElementById('statsGrid').innerHTML = stats.map(s =>
-    `<div class="stat-card${s.hi?' highlight':''}">
-      <div class="stat-value">${s.val}</div>
-      <div class="stat-label">${s.label}</div>
-    </div>`
-  ).join('');
-
-  // Box plot SVG
-  renderBoxPlot(min, q1, median, q3, max, sorted);
-
-  // Sorted data
-  const marked = sorted.map((v,i) => {
-    let cls = '';
-    if (v === min || v === max) cls = ' style="color:#f87171;font-weight:700"';
-    else if (Math.abs(v - median) < 0.001) cls = ' style="color:var(--accent);font-weight:700"';
-    return `<span${cls}>${v}</span>`;
+// ——— Tab switching ———
+function showTab(t){
+  ['desc','prob','normal','regr','conf','hypo'].forEach(id=>{
+    document.getElementById('tab-'+id).style.display=id===t?'block':'none';
   });
-  document.getElementById('sortedData').innerHTML = marked.join(' · ');
-
-  // Frequency table
-  renderFreqTable(sorted, n);
-
-  document.getElementById('results').classList.add('show');
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    el.classList.toggle('active',['desc','prob','normal','regr','conf','hypo'][i]===t);
+  });
 }
 
-function getPercentile(sorted, p) {
-  const n = sorted.length;
-  const idx = (p/100) * (n-1);
-  const lo = Math.floor(idx), hi = Math.ceil(idx);
-  return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+// ——— Descriptive Stats ———
+function calcDesc(){
+  const data = parseNums(document.getElementById('d-data').value);
+  if(data.length<2){alert('Enter at least 2 values.');return;}
+  const n=data.length;
+  const sorted=[...data].sort((a,b)=>a-b);
+  const sum=data.reduce((s,x)=>s+x,0);
+  const mean=sum/n;
+  const vp=data.reduce((s,x)=>s+(x-mean)**2,0)/n;
+  const vs=data.reduce((s,x)=>s+(x-mean)**2,0)/(n-1);
+  const sdp=Math.sqrt(vp), sds=Math.sqrt(vs);
+  const q1=perc(sorted,25),q2=perc(sorted,50),q3=perc(sorted,75);
+  const iqr=q3-q1;
+  const lo=q1-1.5*iqr, hi=q3+1.5*iqr;
+  const outliers=sorted.filter(x=>x<lo||x>hi);
+  const freq={}; data.forEach(x=>{freq[x]=(freq[x]||0)+1});
+  const maxF=Math.max(...Object.values(freq));
+  const modes=Object.keys(freq).filter(k=>freq[k]===maxF).map(Number);
+  const cv=mean!==0?sds/Math.abs(mean)*100:0;
+  // Skewness (Pearson's)
+  const skew=n>2?data.reduce((s,x)=>s+((x-mean)/sds)**3,0)*n/((n-1)*(n-2)):0;
+
+  // Geometric mean (positive values only)
+  const allPos=data.every(x=>x>0);
+  const gm=allPos?Math.exp(data.reduce((s,x)=>s+Math.log(x),0)/n):null;
+
+  document.getElementById('desc-table').innerHTML=[
+    ['Count (n)', n],['Sum', fmt(sum)],['Mean (x̄)', fmt(mean)],
+    ['Geometric Mean', gm?fmt(gm):'N/A (non-positive)'],['Median', fmt(q2)],
+    ['Mode', modes.length===Object.keys(freq).length?'None (all unique)':modes.join(', ')],
+    ['Range', fmt(sorted[n-1]-sorted[0])],['Variance (pop σ²)', fmt(vp)],
+    ['Variance (sample s²)', fmt(vs)],['Std Dev (pop σ)', fmt(sdp)],
+    ['Std Dev (sample s)', fmt(sds)],['Coeff. of Variation', fmt(cv)+'%'],
+    ['Skewness', fmt(skew)+(Math.abs(skew)<0.5?' (symmetric)':skew>0?' (right skewed)':' (left skewed)')],
+  ].map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+
+  document.getElementById('five-table').innerHTML=[
+    ['Min', fmt(sorted[0])],['Q1 (25th percentile)', fmt(q1)],['Median (Q2)', fmt(q2)],
+    ['Q3 (75th percentile)', fmt(q3)],['Max', fmt(sorted[n-1])],['IQR (Q3−Q1)', fmt(iqr)],
+    ['Lower Fence (Q1−1.5×IQR)', fmt(lo)],['Upper Fence (Q3+1.5×IQR)', fmt(hi)],
+    ['Outliers', outliers.length?outliers.join(', '):'None']
+  ].map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+
+  renderBoxPlot(sorted,q1,q2,q3,sorted[0],sorted[n-1],lo,hi,outliers);
+  renderHistogram(data);
+  renderFreqTable(data,freq);
+  document.getElementById('desc-results').style.display='block';
 }
 
-function getMode(sorted) {
-  const freq = {};
-  sorted.forEach(v => freq[v] = (freq[v]||0)+1);
-  const max = Math.max(...Object.values(freq));
-  const modes = Object.keys(freq).filter(k => freq[k] === max).map(Number);
-  if (modes.length === sorted.length) return 'No mode';
-  if (modes.length > 4) return modes.slice(0,3).join(', ') + '…';
-  return modes.join(', ');
+function perc(sorted,p){
+  const idx=(p/100)*(sorted.length-1);
+  const lo=Math.floor(idx),hi=Math.ceil(idx);
+  return lo===hi?sorted[lo]:sorted[lo]*(hi-idx)+sorted[hi]*(idx-lo);
 }
 
-function fmt(n) {
-  if (Number.isInteger(n)) return n.toString();
-  return parseFloat(n.toFixed(4)).toString();
-}
-
-function renderBoxPlot(min, q1, med, q3, max, sorted) {
-  const W = 600, H = 160, PAD = 40, BY = 80, BH = 40;
-  const span = max - min || 1;
-  const sc = v => PAD + ((v - min) / span) * (W - 2*PAD);
-
-  // Outlier detection (1.5 IQR rule)
-  const iqr = q3 - q1;
-  const loFence = q1 - 1.5*iqr, hiFence = q3 + 1.5*iqr;
-  const outliers = sorted.filter(v => v < loFence || v > hiFence);
-  const whiskerLo = sorted.find(v => v >= loFence) ?? min;
-  const whiskerHi = [...sorted].reverse().find(v => v <= hiFence) ?? max;
-
-  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
-
+function renderBoxPlot(sorted,q1,q2,q3,min,max,lf,uf,outliers){
+  const W=480,H=80,PAD=30;
+  const rng=max-min||1;
+  const sc=x=>PAD+(x-min)/rng*(W-2*PAD);
+  const whiskerLow=Math.max(min,lf),whiskerHigh=Math.min(max,uf);
+  let svg=`<svg width="${W}" height="${H+40}" style="display:block">`;
   // Axis line
-  svg += `<line x1="${PAD}" y1="${BY+BH/2+20}" x2="${W-PAD}" y2="${BY+BH/2+20}" stroke="var(--border)" stroke-width="1.5"/>`;
-
-  // Tick marks and labels
-  const ticks = 5;
-  for (let i=0;i<=ticks;i++) {
-    const v = min + (i/ticks)*(max-min);
-    const x = sc(v);
-    svg += `<line x1="${x}" y1="${BY+BH/2+16}" x2="${x}" y2="${BY+BH/2+24}" stroke="#8899aa" stroke-width="1"/>`;
-    svg += `<text x="${x}" y="${BY+BH/2+36}" fill="#7a8fa8" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">${fmt(v)}</text>`;
-  }
-
+  svg+=`<line x1="${PAD}" y1="${H/2+20}" x2="${W-PAD}" y2="${H/2+20}" stroke="#2a3a55" stroke-width="1"/>`;
   // Whiskers
-  svg += `<line x1="${sc(whiskerLo)}" y1="${BY+BH/2}" x2="${sc(q1)}" y2="${BY+BH/2}" stroke="#7a8fa8" stroke-width="2" stroke-dasharray="4,2"/>`;
-  svg += `<line x1="${sc(q3)}" y1="${BY+BH/2}" x2="${sc(whiskerHi)}" y2="${BY+BH/2}" stroke="#7a8fa8" stroke-width="2" stroke-dasharray="4,2"/>`;
-  svg += `<line x1="${sc(whiskerLo)}" y1="${BY+12}" x2="${sc(whiskerLo)}" y2="${BY+BH-12}" stroke="#7a8fa8" stroke-width="2"/>`;
-  svg += `<line x1="${sc(whiskerHi)}" y1="${BY+12}" x2="${sc(whiskerHi)}" y2="${BY+BH-12}" stroke="#7a8fa8" stroke-width="2"/>`;
-
-  // IQR box
-  const bx = sc(q1), bw = sc(q3)-sc(q1);
-  svg += `<rect x="${bx}" y="${BY}" width="${bw}" height="${BH}" rx="4" fill="rgba(99,102,241,0.25)" stroke="var(--accent2)" stroke-width="2"/>`;
-
-  // Median line
-  svg += `<line x1="${sc(med)}" y1="${BY}" x2="${sc(med)}" y2="${BY+BH}" stroke="var(--accent)" stroke-width="2.5"/>`;
-
-  // Outlier dots
-  outliers.forEach(v => {
-    svg += `<circle cx="${sc(v)}" cy="${BY+BH/2}" r="5" fill="none" stroke="#f87171" stroke-width="2"/>`;
-  });
-
+  svg+=`<line x1="${sc(whiskerLow)}" y1="${H/2+20}" x2="${sc(q1)}" y2="${H/2+20}" stroke="#6366f1" stroke-width="2"/>`;
+  svg+=`<line x1="${sc(q3)}" y1="${H/2+20}" x2="${sc(whiskerHigh)}" y2="${H/2+20}" stroke="#6366f1" stroke-width="2"/>`;
+  svg+=`<line x1="${sc(whiskerLow)}" y1="${H/2+20-8}" x2="${sc(whiskerLow)}" y2="${H/2+20+8}" stroke="#6366f1" stroke-width="2"/>`;
+  svg+=`<line x1="${sc(whiskerHigh)}" y1="${H/2+20-8}" x2="${sc(whiskerHigh)}" y2="${H/2+20+8}" stroke="#6366f1" stroke-width="2"/>`;
+  // Box
+  svg+=`<rect x="${sc(q1)}" y="${H/2+20-16}" width="${sc(q3)-sc(q1)}" height="32" fill="#6366f122" stroke="#6366f1" stroke-width="1.5"/>`;
+  // Median
+  svg+=`<line x1="${sc(q2)}" y1="${H/2+20-16}" x2="${sc(q2)}" y2="${H/2+20+16}" stroke="#a5b4fc" stroke-width="2.5"/>`;
+  // Outliers
+  outliers.forEach(o=>{ svg+=`<circle cx="${sc(o)}" cy="${H/2+20}" r="4" fill="#ef4444" stroke="#ef4444"/>` });
   // Labels
-  const labels = [{v:min,l:'Min'},{v:q1,l:'Q1'},{v:med,l:'Median'},{v:q3,l:'Q3'},{v:max,l:'Max'}];
-  labels.forEach(({v,l}) => {
-    svg += `<text x="${sc(v)}" y="${BY-8}" fill="#b8c4d8" font-size="9" font-weight="700" text-anchor="middle" font-family="Inter,sans-serif">${l}: ${fmt(v)}</text>`;
+  [[min,'min'],[q1,'Q1'],[q2,'Q2'],[q3,'Q3'],[max,'max']].forEach(([v,l])=>{
+    svg+=`<text x="${sc(v)}" y="${H+38}" text-anchor="middle" fill="#b0bece" font-size="10">${fmt(v,2)}</text>`;
+    svg+=`<text x="${sc(v)}" y="12" text-anchor="middle" fill="#a5b4fc" font-size="9">${l}</text>`;
   });
-
-  svg += `</svg>`;
-  document.getElementById('boxplotCard').innerHTML = svg;
+  svg+='</svg>';
+  document.getElementById('boxplot').innerHTML=svg;
 }
 
-function renderFreqTable(sorted, n) {
-  const freq = {};
-  sorted.forEach(v => freq[v] = (freq[v]||0)+1);
-  const maxF = Math.max(...Object.values(freq));
-  const entries = Object.entries(freq).sort((a,b) => Number(a[0])-Number(b[0]));
-  let cum = 0;
-  const rows = entries.map(([v,f]) => {
-    cum += f;
-    const pct = ((f/n)*100).toFixed(1);
-    const cumPct = ((cum/n)*100).toFixed(1);
-    const barW = Math.round((f/maxF)*100);
-    return `<tr>
-      <td>${v}</td>
-      <td>${f}</td>
-      <td>${pct}%</td>
-      <td>${cum}</td>
-      <td>${cumPct}%</td>
-      <td class="bar-cell"><div class="freq-bar" style="width:${barW}%"></div></td>
-    </tr>`;
+function renderHistogram(data){
+  const n=data.length;
+  const bins=Math.ceil(Math.log2(n)+1);
+  const min=Math.min(...data),max=Math.max(...data);
+  const bw=(max-min)/bins||1;
+  const counts=Array(bins).fill(0);
+  data.forEach(x=>{const b=Math.min(bins-1,Math.floor((x-min)/bw));counts[b]++;});
+  const maxC=Math.max(...counts);
+  const W=480,H=120,PAD=30,BAR_PAD=2;
+  const barW=(W-2*PAD)/bins-BAR_PAD;
+  let svg=`<svg width="${W}" height="${H+40}" style="display:block">`;
+  counts.forEach((c,i)=>{
+    const bh=c/maxC*(H-10);
+    const x=PAD+i*(W-2*PAD)/bins;
+    const y=H-bh+10;
+    svg+=`<rect x="${x+BAR_PAD/2}" y="${y}" width="${barW}" height="${bh}" fill="#6366f188" stroke="#6366f1" stroke-width="1" rx="2"><title>${fmt(min+i*bw,2)}–${fmt(min+(i+1)*bw,2)}: ${c}</title></rect>`;
+    svg+=`<text x="${x+barW/2+BAR_PAD/2}" y="${y-3}" text-anchor="middle" fill="#a5b4fc" font-size="9">${c}</text>`;
+    if(i%Math.max(1,Math.floor(bins/5))===0) svg+=`<text x="${x+BAR_PAD/2}" y="${H+28}" fill="#b0bece" font-size="9" text-anchor="middle">${fmt(min+i*bw,2)}</text>`;
   });
-  document.getElementById('freqTable').innerHTML = `
-    <table class="freq-table">
-      <thead><tr><th>Value</th><th>Frequency</th><th>Rel. Freq.</th><th>Cumulative</th><th>Cum. %</th><th>Bar</th></tr></thead>
-      <tbody>${rows.join('')}</tbody>
-    </table>`;
+  svg+=`<line x1="${PAD}" y1="${H+10}" x2="${W-PAD}" y2="${H+10}" stroke="#2a3a55"/>`;
+  svg+=`<text x="${W/2}" y="${H+40}" fill="#b0bece" font-size="10" text-anchor="middle">Value</text>`;
+  svg+='</svg>';
+  document.getElementById('histogram').innerHTML=svg;
 }
 
-// ── localStorage: save datasets ──────────────────────────────────────────────
-const LS_STATS = 'ace_statscalc_history';
-const LS_DATASETS = 'ace_statscalc_datasets';
-
-function saveDataset(name, data, results){
-  const datasets = JSON.parse(localStorage.getItem(LS_DATASETS)||'[]');
-  datasets.unshift({name:name||'Dataset '+(datasets.length+1), data, results:results||{}, date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
-  if(datasets.length>8)datasets.pop();
-  localStorage.setItem(LS_DATASETS, JSON.stringify(datasets));
-  renderSavedDatasets();
+function renderFreqTable(data,freq){
+  const sorted=Object.keys(freq).map(Number).sort((a,b)=>a-b);
+  const n=data.length;
+  let cum=0;
+  document.getElementById('freqTable').innerHTML=`<table class="res-table"><tr><th>Value</th><th>Frequency</th><th>Rel. Freq.</th><th>Cumulative</th></tr>`+
+  sorted.map(v=>{cum+=freq[v];return`<tr><td>${v}</td><td>${freq[v]}</td><td>${pct(freq[v]/n)}</td><td>${pct(cum/n)}</td></tr>`}).join('')+'</table>';
 }
 
-function renderSavedDatasets(){
-  const datasets=JSON.parse(localStorage.getItem(LS_DATASETS)||'[]');
-  const card=document.getElementById('savedDatasetsCard');
-  if(!card)return;
-  if(!datasets.length){card.style.display='none';return;}
-  card.style.display='block';
-  document.getElementById('savedDatasetsList').innerHTML=datasets.map((d,i)=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);cursor:pointer" onclick="loadDataset(${i})">
-      <div style="flex:1">
-        <div style="font-size:.85rem;font-weight:700">${d.name}</div>
-        <div style="font-size:.72rem;color:var(--muted)">${d.data} · ${d.date}${d.results.n?' · n='+d.results.n:''}</div>
-      </div>
-      <button style="border:none;background:none;color:#f87171;cursor:pointer;font-size:.85rem" onclick="event.stopPropagation();deleteDataset(${i})">✕</button>
-    </div>`).join('');
+// ——— Probability ———
+function fact(n){ if(n<0) return NaN; let r=1; for(let i=2;i<=n;i++) r*=i; return r }
+function C(n,r){ if(r>n||r<0) return 0; return fact(n)/(fact(r)*fact(n-r)) }
+function P(n,r){ if(r>n||r<0) return 0; return fact(n)/fact(n-r) }
+
+function calcCP(){
+  const n=+document.getElementById('cp-n').value;
+  const r=+document.getElementById('cp-r').value;
+  const c=C(n,r),p=P(n,r);
+  document.getElementById('cp-result').innerHTML=`<table class="res-table">
+    <tr><td>C(${n},${r}) — Combinations</td><td>${c.toLocaleString()}</td></tr>
+    <tr><td>P(${n},${r}) — Permutations</td><td>${p.toLocaleString()}</td></tr>
+    <tr><td>n!</td><td>${n<=20?fact(n).toLocaleString():'Too large'}</td></tr>
+    <tr><td>r!</td><td>${r<=20?fact(r).toLocaleString():'Too large'}</td></tr>
+  </table>`;
 }
 
-function loadDataset(i){
-  const datasets=JSON.parse(localStorage.getItem(LS_DATASETS)||'[]');
-  if(!datasets[i])return;
-  const input=document.getElementById('dataInput')||document.querySelector('textarea');
-  if(input)input.value=datasets[i].data;
+function calcBasicProb(){
+  const f=+document.getElementById('bp-fav').value;
+  const t=+document.getElementById('bp-tot').value;
+  const p=f/t;
+  document.getElementById('bp-result').innerHTML=`<table class="res-table">
+    <tr><td>P(event)</td><td>${fmt(p)} = ${f}/${t}</td></tr>
+    <tr><td>P(complement)</td><td>${fmt(1-p)} = ${t-f}/${t}</td></tr>
+    <tr><td>Decimal</td><td>${fmt(p,6)}</td></tr>
+    <tr><td>Percentage</td><td>${pct(p)}</td></tr>
+    <tr><td>Odds for</td><td>${f} : ${t-f}</td></tr>
+  </table>`;
 }
 
-function deleteDataset(i){
-  const datasets=JSON.parse(localStorage.getItem(LS_DATASETS)||'[]');
-  datasets.splice(i,1);
-  localStorage.setItem(LS_DATASETS,JSON.stringify(datasets));
-  renderSavedDatasets();
+function calcEV(){
+  const str=document.getElementById('ev-data').value;
+  const pairs=str.split(',').map(s=>{const [v,p]=s.split(':').map(Number);return{v,p}}).filter(x=>!isNaN(x.v)&&!isNaN(x.p));
+  if(!pairs.length){alert('Enter value:probability pairs separated by commas');return;}
+  const ev=pairs.reduce((s,x)=>s+x.v*x.p,0);
+  const totalP=pairs.reduce((s,x)=>s+x.p,0);
+  document.getElementById('ev-result').innerHTML=`<table class="res-table">
+    ${pairs.map(x=>`<tr><td>V=${x.v}, P=${x.p}</td><td>${fmt(x.v*x.p)}</td></tr>`).join('')}
+    <tr><td>Σ Probabilities</td><td>${fmt(totalP)} ${Math.abs(totalP-1)<0.01?'✅':'⚠ should sum to 1'}</td></tr>
+    <tr><td><strong>E(X)</strong></td><td><strong>${fmt(ev)}</strong></td></tr>
+  </table>`;
 }
 
-// Patch calculate to auto-save
-const _origCalc=calculate;
-function calculate(){
-  _origCalc();
-  const input=document.getElementById('dataInput')||document.querySelector('textarea');
-  if(input&&input.value.trim()){
-    const nums=input.value.trim().split(/[,\s
-]+/).map(Number).filter(n=>!isNaN(n));
-    if(nums.length>=2){
-      const n=nums.length, mean=nums.reduce((a,b)=>a+b,0)/n;
-      saveDataset(null, input.value.trim().substring(0,60)+'...', {n, mean:Math.round(mean*100)/100});
-    }
+function calcBinom(){
+  const n=+document.getElementById('bin-n').value;
+  const p=+document.getElementById('bin-p').value;
+  const k=+document.getElementById('bin-k').value;
+  const pExact=C(n,k)*Math.pow(p,k)*Math.pow(1-p,n-k);
+  let pAtMost=0; for(let i=0;i<=k;i++) pAtMost+=C(n,i)*Math.pow(p,i)*Math.pow(1-p,n-i);
+  let pAtLeast=0; for(let i=k;i<=n;i++) pAtLeast+=C(n,i)*Math.pow(p,i)*Math.pow(1-p,n-i);
+  const mu=n*p,sigma=Math.sqrt(n*p*(1-p));
+  document.getElementById('bin-result').innerHTML=`<table class="res-table">
+    <tr><td>P(X = ${k})</td><td>${fmt(pExact,6)}</td></tr>
+    <tr><td>P(X ≤ ${k})</td><td>${fmt(pAtMost,6)}</td></tr>
+    <tr><td>P(X ≥ ${k})</td><td>${fmt(pAtLeast,6)}</td></tr>
+    <tr><td>P(X > ${k})</td><td>${fmt(1-pAtMost,6)}</td></tr>
+    <tr><td>Mean μ = np</td><td>${fmt(mu)}</td></tr>
+    <tr><td>Std Dev σ = √(np(1−p))</td><td>${fmt(sigma)}</td></tr>
+    <tr><td>C(${n},${k})</td><td>${C(n,k).toLocaleString()}</td></tr>
+  </table>`;
+}
+
+function calcFact(){
+  const n=+document.getElementById('fact-n').value;
+  if(n>20){document.getElementById('fact-result').innerHTML='<span style="color:var(--muted)">Too large to display exactly. Use logarithms.</span>';return;}
+  document.getElementById('fact-result').innerHTML=`<div class="res-table"><tr><td>${n}!</td><td style="color:var(--accent2);font-weight:700">${fact(n).toLocaleString()}</td></tr></div>`;
+}
+
+function calcProb(){
+  const a=+document.getElementById('pr-a').value;
+  const b=+document.getElementById('pr-b').value;
+  const ab=+document.getElementById('pr-ab').value;
+  document.getElementById('prob-result').innerHTML=`<table class="res-table">
+    <tr><td>P(A ∪ B) Addition Rule</td><td>${fmt(a+b-ab)}</td></tr>
+    <tr><td>P(A ∩ B) given</td><td>${fmt(ab)}</td></tr>
+    <tr><td>P(A|B) Conditional</td><td>${b>0?fmt(ab/b):'undefined'}</td></tr>
+    <tr><td>P(B|A) Conditional</td><td>${a>0?fmt(ab/a):'undefined'}</td></tr>
+    <tr><td>Independent? P(A)×P(B)</td><td>${fmt(a*b)} ${Math.abs(a*b-ab)<0.001?'≈ P(A∩B) ✅ Yes':'≠ P(A∩B) ❌ No'}</td></tr>
+    <tr><td>P(A only)</td><td>${fmt(a-ab)}</td></tr>
+    <tr><td>P(B only)</td><td>${fmt(b-ab)}</td></tr>
+  </table>`;
+}
+
+// ——— Normal Distribution ———
+let bellShade = {lo:-4,hi:4};
+function updateNDInputs(){
+  const t=document.getElementById('nd-type').value;
+  const cont=document.getElementById('nd-inputs');
+  if(t==='between') cont.innerHTML=`<div class="field"><label>a (lower)</label><input id="nd-a" type="number" value="85" step="any"/></div><div class="field"><label>b (upper)</label><input id="nd-b" type="number" value="115" step="any"/></div>`;
+  else if(t==='inv') cont.innerHTML=`<div class="field"><label>Percentile (0–1)</label><input id="nd-a" type="number" value="0.9" step="0.01" min="0.001" max="0.999"/></div>`;
+  else cont.innerHTML=`<div class="field"><label id="nd-a-label">a</label><input id="nd-a" type="number" value="115" step="any"/></div>`;
+}
+
+function calcNormal(){
+  const mu=+document.getElementById('nd-mu').value;
+  const sigma=+document.getElementById('nd-sigma').value;
+  const t=document.getElementById('nd-type').value;
+  const a=+document.getElementById('nd-a').value;
+  if(sigma<=0){alert('σ must be > 0');return;}
+  let result,rows=[],shade={lo:-4,hi:4};
+
+  if(t==='lt'){
+    const z=(a-mu)/sigma; const p=normalCDF(z);
+    result=p; shade={lo:-4,hi:z};
+    rows=[['a',fmt(a)],['z = (a−μ)/σ',fmt(z)],['P(X < '+fmt(a,2)+')',fmtP(p)]];
+  } else if(t==='gt'){
+    const z=(a-mu)/sigma; const p=1-normalCDF(z);
+    result=p; shade={lo:z,hi:4};
+    rows=[['a',fmt(a)],['z = (a−μ)/σ',fmt(z)],['P(X > '+fmt(a,2)+')',fmtP(p)]];
+  } else if(t==='between'){
+    const b=+document.getElementById('nd-b').value;
+    const za=(a-mu)/sigma,zb=(b-mu)/sigma;
+    const p=normalCDF(zb)-normalCDF(za);
+    result=p; shade={lo:za,hi:zb};
+    rows=[['a',fmt(a)],['b',fmt(b)],['z_a',fmt(za)],['z_b',fmt(zb)],['P('+fmt(a,2)+' < X < '+fmt(b,2)+')',fmtP(p)]];
+  } else {
+    const z=invNorm(a); const x=mu+z*sigma;
+    rows=[['Percentile',pct(a)],['z-score',fmt(z)],['x = μ + z×σ',fmt(x)]];
+    shade={lo:-4,hi:z};
   }
+  document.getElementById('nd-result').innerHTML=`<table class="res-table">${rows.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('')}</table>`;
+  renderBellCurve(shade.lo,shade.hi,mu,sigma);
 }
 
-window.addEventListener('DOMContentLoaded',()=>renderSavedDatasets());
+function calcZScore(){
+  const x=+document.getElementById('zs-x').value;
+  const mu=+document.getElementById('zs-mu').value;
+  const sigma=+document.getElementById('zs-sigma').value;
+  if(sigma<=0){alert('σ must be > 0');return;}
+  const z=(x-mu)/sigma;
+  const pLt=normalCDF(z),pGt=1-pLt;
+  document.getElementById('zs-result').innerHTML=`<table class="res-table">
+    <tr><td>z = (x−μ)/σ</td><td>${fmt(z)}</td></tr>
+    <tr><td>P(X &lt; ${x})</td><td>${fmtP(pLt)}</td></tr>
+    <tr><td>P(X &gt; ${x})</td><td>${fmtP(pGt)}</td></tr>
+    <tr><td>Percentile</td><td>${pct(pLt)}</td></tr>
+  </table>`;
+  renderBellCurve(-4,z,mu,sigma);
+}
 
+function calcEmpirical(){
+  const mu=+document.getElementById('er-mu').value;
+  const s=+document.getElementById('er-sigma').value;
+  document.getElementById('er-result').innerHTML=`<table class="res-table">
+    <tr><td>μ ± 1σ  (${fmt(mu-s,2)} to ${fmt(mu+s,2)})</td><td>≈ 68%</td></tr>
+    <tr><td>μ ± 2σ  (${fmt(mu-2*s,2)} to ${fmt(mu+2*s,2)})</td><td>≈ 95%</td></tr>
+    <tr><td>μ ± 3σ  (${fmt(mu-3*s,2)} to ${fmt(mu+3*s,2)})</td><td>≈ 99.7%</td></tr>
+    <tr><td>Within 1σ below mean</td><td>≈ 34%</td></tr>
+    <tr><td>Below μ − 2σ or above μ + 2σ</td><td>≈ 5%</td></tr>
+  </table>`;
+  renderBellCurve(-3,3,mu,s);
+}
+
+function renderBellCurve(shadeLo,shadeHi,mu,sigma){
+  const W=380,H=120,PAD=20;
+  const xLo=-4,xHi=4,range=xHi-xLo;
+  const sc=z=>PAD+(z-xLo)/range*(W-2*PAD);
+  const sy=y=>H-y*(H-PAD*1.5)-PAD*0.5;
+  const STEPS=120;
+  // Bell curve points
+  let curvePath='', shadePoints='';
+  const zArr=Array.from({length:STEPS+1},(_,i)=>xLo+i*range/STEPS);
+  const pdfArr=zArr.map(z=>normalPDF(z));
+  const maxPDF=Math.max(...pdfArr);
+  curvePath='M'+zArr.map((z,i)=>`${sc(z)},${sy(pdfArr[i]/maxPDF)}`).join(' L');
+  // Shade
+  const shadeZ=zArr.filter(z=>z>=shadeLo&&z<=shadeHi);
+  if(shadeZ.length){
+    const shadeFirst=sc(Math.max(xLo,shadeLo));
+    const shadeLast=sc(Math.min(xHi,shadeHi));
+    const shadePts=shadeZ.map(z=>`${sc(z)},${sy(normalPDF(z)/maxPDF)}`).join(' L');
+    shadePoints=`M${shadeFirst},${sy(0)} L${shadePts} L${shadeLast},${sy(0)} Z`;
+  }
+  let svg=`<svg width="${W}" height="${H+30}" style="display:block">`;
+  if(shadePoints) svg+=`<path d="${shadePoints}" fill="#6366f144" stroke="none"/>`;
+  svg+=`<path d="${curvePath}" fill="none" stroke="#6366f1" stroke-width="2"/>`;
+  svg+=`<line x1="${PAD}" y1="${sy(0)}" x2="${W-PAD}" y2="${sy(0)}" stroke="#2a3a55"/>`;
+  [-3,-2,-1,0,1,2,3].forEach(z=>{
+    svg+=`<line x1="${sc(z)}" y1="${sy(0)}" x2="${sc(z)}" y2="${sy(0)+5}" stroke="#2a3a55"/>`;
+    svg+=`<text x="${sc(z)}" y="${H+24}" fill="#b0bece" font-size="9" text-anchor="middle">${z}</text>`;
+  });
+  if(shadeLo>-4&&shadeLo<4) svg+=`<line x1="${sc(shadeLo)}" y1="${PAD}" x2="${sc(shadeLo)}" y2="${sy(0)}" stroke="#a5b4fc" stroke-dasharray="3,2"/>`;
+  if(shadeHi>-4&&shadeHi<4) svg+=`<line x1="${sc(shadeHi)}" y1="${PAD}" x2="${sc(shadeHi)}" y2="${sy(0)}" stroke="#a5b4fc" stroke-dasharray="3,2"/>`;
+  svg+=`<text x="${W/2}" y="${H+36}" fill="#b0bece" font-size="9" text-anchor="middle">z-scores</text>`;
+  svg+='</svg>';
+  document.getElementById('bellCurve').innerHTML=svg;
+  document.getElementById('bellCaption').textContent=`μ = ${mu}, σ = ${sigma}`;
+}
+
+// ——— Regression ———
+function loadRegrSample(){
+  document.getElementById('reg-x').value='1,2,3,4,5,6,7,8,9,10';
+  document.getElementById('reg-y').value='2.1,3.8,5.2,6.9,8.1,10.3,11.5,13.2,14.8,16.1';
+}
+
+function calcRegr(){
+  const xs=parseNums(document.getElementById('reg-x').value);
+  const ys=parseNums(document.getElementById('reg-y').value);
+  if(xs.length<2||xs.length!==ys.length){alert('Enter equal-length X and Y sets (at least 2 pairs).');return;}
+  const n=xs.length;
+  const mx=xs.reduce((s,x)=>s+x,0)/n, my=ys.reduce((s,y)=>s+y,0)/n;
+  const sxy=xs.reduce((s,x,i)=>s+(x-mx)*(ys[i]-my),0);
+  const sxx=xs.reduce((s,x)=>s+(x-mx)**2,0);
+  const syy=ys.reduce((s,y)=>s+(y-my)**2,0);
+  const slope=sxy/sxx, intercept=my-slope*mx;
+  const r=sxy/Math.sqrt(sxx*syy);
+  const r2=r*r;
+  const se=Math.sqrt(ys.reduce((s,y,i)=>s+(y-(slope*xs[i]+intercept))**2,0)/(n-2));
+
+  document.getElementById('regr-results').style.display='block';
+  document.getElementById('regr-table').innerHTML=[
+    ['n (pairs)',n],['Mean x̄',fmt(mx)],['Mean ȳ',fmt(my)],
+    ['Slope (b₁)',fmt(slope)],['Intercept (b₀)',fmt(intercept)],
+    ['Equation','ŷ = '+fmt(slope)+'x + '+fmt(intercept)],
+    ['Pearson r',fmt(r)],['R² (coefficient of det.)',fmt(r2)+' ('+pct(r2)+' variance explained)'],
+    ['Std Error (se)',fmt(se)],
+    ['Correlation strength',Math.abs(r)>=0.9?'Very strong':Math.abs(r)>=0.7?'Strong':Math.abs(r)>=0.5?'Moderate':Math.abs(r)>=0.3?'Weak':'Very weak'],
+    ['Direction',r>0?'Positive (↗)':'Negative (↘)']
+  ].map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+  document.getElementById('regr-interp').innerHTML=`For each 1-unit increase in x, y changes by <strong style="color:var(--accent2)">${fmt(slope)}</strong> on average. The model explains <strong style="color:var(--accent2)">${pct(r2)}</strong> of the variability in y.`;
+
+  // Scatter plot
+  const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+  const W=380,H=200,P=35;
+  const sx=x=>P+(x-minX)/(maxX-minX||1)*(W-2*P);
+  const sy=y=>H+P-(y-minY)/(maxY-minY||1)*(H);
+  let svg=`<svg width="${W}" height="${H+2*P}" style="display:block">`;
+  svg+=`<line x1="${P}" y1="${H+P}" x2="${W-P}" y2="${H+P}" stroke="#2a3a55"/>`;
+  svg+=`<line x1="${P}" y1="${P}" x2="${P}" y2="${H+P}" stroke="#2a3a55"/>`;
+  // Regression line
+  const rx1=minX,rx2=maxX,ry1=slope*rx1+intercept,ry2=slope*rx2+intercept;
+  svg+=`<line x1="${sx(rx1)}" y1="${sy(ry1)}" x2="${sx(rx2)}" y2="${sy(ry2)}" stroke="#10b981" stroke-width="2"/>`;
+  xs.forEach((x,i)=>{ svg+=`<circle cx="${sx(x)}" cy="${sy(ys[i])}" r="4" fill="#6366f1" stroke="#a5b4fc" stroke-width="1"><title>(${x}, ${ys[i]})</title></circle>` });
+  // Axis labels
+  [minX,maxX].forEach(x=>{ svg+=`<text x="${sx(x)}" y="${H+P+14}" fill="#b0bece" font-size="9" text-anchor="middle">${fmt(x,2)}</text>` });
+  [minY,maxY].forEach(y=>{ svg+=`<text x="${P-4}" y="${sy(y)+3}" fill="#b0bece" font-size="9" text-anchor="end">${fmt(y,2)}</text>` });
+  svg+=`<text x="${W/2}" y="${H+2*P-2}" fill="#b0bece" font-size="9" text-anchor="middle">x</text>`;
+  svg+=`<text x="10" y="${P+H/2}" fill="#b0bece" font-size="9" text-anchor="middle" transform="rotate(-90,10,${P+H/2})">y</text>`;
+  svg+='</svg>';
+  document.getElementById('scatterPlot').innerHTML=svg;
+
+  // Residuals
+  document.getElementById('residTable').innerHTML='<tr><th>x</th><th>y</th><th>ŷ</th><th>Residual (y−ŷ)</th></tr>'+
+    xs.map((x,i)=>{const yhat=slope*x+intercept;const res=ys[i]-yhat;return`<tr><td>${x}</td><td>${ys[i]}</td><td>${fmt(yhat)}</td><td style="color:${res>=0?'#6ee7b7':'#fca5a5'}">${fmt(res)}</td></tr>`}).join('');
+}
+
+// ——— Confidence Intervals ———
+const Z_CRIT={0.90:1.645,0.95:1.960,0.99:2.576};
+function renderCI(xbar,ME,cl,extra){
+  return `<table class="res-table">
+    <tr><td>x̄</td><td>${fmt(xbar)}</td></tr>
+    <tr><td>Margin of Error (ME)</td><td>± ${fmt(ME)}</td></tr>
+    <tr><td>${cl*100}% Confidence Interval</td><td><strong>(${fmt(xbar-ME)}, ${fmt(xbar+ME)})</strong></td></tr>
+    ${extra||''}
+  </table><div class="interp">We are <strong>${cl*100}%</strong> confident that the true population mean lies between <strong>${fmt(xbar-ME)}</strong> and <strong>${fmt(xbar+ME)}</strong>.</div>`;
+}
+
+function calcZInterval(){
+  const xbar=+document.getElementById('zi-xbar').value;
+  const sigma=+document.getElementById('zi-sigma').value;
+  const n=+document.getElementById('zi-n').value;
+  const cl=+document.getElementById('zi-cl').value;
+  const z=Z_CRIT[cl];
+  const se=sigma/Math.sqrt(n);
+  const ME=z*se;
+  document.getElementById('zi-result').innerHTML=renderCI(xbar,ME,cl,
+    `<tr><td>z* critical value</td><td>${z}</td></tr><tr><td>SE = σ/√n</td><td>${fmt(se)}</td></tr>`);
+}
+
+function calcTInterval(){
+  const xbar=+document.getElementById('ti-xbar').value;
+  const s=+document.getElementById('ti-s').value;
+  const n=+document.getElementById('ti-n').value;
+  const cl=+document.getElementById('ti-cl').value;
+  const df=n-1;
+  const alpha=1-cl;
+  const t=tCritical(df,alpha,2);
+  const se=s/Math.sqrt(n);
+  const ME=t*se;
+  document.getElementById('ti-result').innerHTML=renderCI(xbar,ME,cl,
+    `<tr><td>df = n−1</td><td>${df}</td></tr><tr><td>t* critical value</td><td>${fmt(t)}</td></tr><tr><td>SE = s/√n</td><td>${fmt(se)}</td></tr>`);
+}
+
+function calcSampleSize(){
+  const E=+document.getElementById('ss-e').value;
+  const sigma=+document.getElementById('ss-sigma').value;
+  const cl=+document.getElementById('ss-cl').value;
+  const z=Z_CRIT[cl];
+  const n=Math.ceil((z*sigma/E)**2);
+  document.getElementById('ss-result').innerHTML=`<table class="res-table">
+    <tr><td>z*</td><td>${z}</td></tr>
+    <tr><td>σ</td><td>${sigma}</td></tr>
+    <tr><td>E (margin of error)</td><td>${E}</td></tr>
+    <tr><td>n = (z*σ/E)²</td><td><strong>${n}</strong></td></tr>
+  </table><div class="interp">You need at least <strong>${n}</strong> subjects for a ${cl*100}% CI with margin of error ≤ ${E}.</div>`;
+}
+
+// ——— Hypothesis Tests ———
+function renderTest(stat,pVal,alpha,tail,statLabel){
+  const reject=pVal<alpha;
+  const conclusion=reject?`<span style="color:#fca5a5">❌ Reject H₀</span>. There is sufficient evidence to support the alternative hypothesis (p = ${fmt(pVal,4)} < α = ${alpha}).`
+    :`<span style="color:#6ee7b7">✅ Fail to Reject H₀</span>. There is insufficient evidence to reject the null hypothesis (p = ${fmt(pVal,4)} ≥ α = ${alpha}).`;
+  return `<table class="res-table">
+    <tr><td>${statLabel}</td><td>${fmt(stat,4)}</td></tr>
+    <tr><td>p-value (${tail==='two'?'two-tailed':tail==='right'?'right-tailed':'left-tailed'})</td><td>${fmt(pVal,4)}</td></tr>
+    <tr><td>α (significance level)</td><td>${alpha}</td></tr>
+    <tr><td>Decision</td><td>${reject?'Reject H₀':'Fail to Reject H₀'}</td></tr>
+  </table><div class="interp">${conclusion}</div>`;
+}
+
+function calcZTest(){
+  const mu0=+document.getElementById('zt-mu0').value;
+  const xbar=+document.getElementById('zt-xbar').value;
+  const sigma=+document.getElementById('zt-sigma').value;
+  const n=+document.getElementById('zt-n').value;
+  const tail=document.getElementById('zt-tail').value;
+  const alpha=+document.getElementById('zt-alpha').value;
+  const z=(xbar-mu0)/(sigma/Math.sqrt(n));
+  let p;
+  if(tail==='two') p=2*(1-normalCDF(Math.abs(z)));
+  else if(tail==='right') p=1-normalCDF(z);
+  else p=normalCDF(z);
+  document.getElementById('zt-result').innerHTML=`<table class="res-table">
+    <tr><td>H₀: μ = ${mu0}</td><td>H₁: μ ${tail==='two'?'≠':tail==='right'?'>':'<'} ${mu0}</td></tr>
+    <tr><td>SE = σ/√n</td><td>${fmt(sigma/Math.sqrt(n))}</td></tr>
+  </table>`+renderTest(z,p,alpha,tail,'z-statistic');
+}
+
+function calcTTest(){
+  const mu0=+document.getElementById('tt-mu0').value;
+  const xbar=+document.getElementById('tt-xbar').value;
+  const s=+document.getElementById('tt-s').value;
+  const n=+document.getElementById('tt-n').value;
+  const tail=document.getElementById('tt-tail').value;
+  const alpha=+document.getElementById('tt-alpha').value;
+  const df=n-1;
+  const t=(xbar-mu0)/(s/Math.sqrt(n));
+  let p=tPValue(t,df,tail==='two'?2:1);
+  if(tail==='left') p=normalCDF(t);
+  document.getElementById('tt-result').innerHTML=`<table class="res-table">
+    <tr><td>H₀: μ = ${mu0}</td><td>H₁: μ ${tail==='two'?'≠':tail==='right'?'>':'<'} ${mu0}</td></tr>
+    <tr><td>df = n−1</td><td>${df}</td></tr>
+    <tr><td>SE = s/√n</td><td>${fmt(s/Math.sqrt(n))}</td></tr>
+  </table>`+renderTest(t,p,alpha,tail,'t-statistic');
+}
+
+function calcChebyshev(){
+  const k=+document.getElementById('ch-k').value;
+  if(k<=1){document.getElementById('ch-result').innerHTML='<span style="color:var(--muted)">k must be greater than 1</span>';return;}
+  const p=1-1/(k*k);
+  document.getElementById('ch-result').innerHTML=`<table class="res-table">
+    <tr><td>k</td><td>${k}</td></tr>
+    <tr><td>P(|X−μ| &lt; ${k}σ) ≥</td><td>${fmt(p)} (${pct(p)} of data)</td></tr>
+    <tr><td>At most outside</td><td>${pct(1-p)}</td></tr>
+  </table><div class="interp">At least <strong>${pct(p)}</strong> of any data set lies within ${fmt(k)} standard deviations of the mean — regardless of the distribution shape.</div>`;
+}
+
+// Initial bell curve
+renderBellCurve(-4,1.0,100,15);
 </script>
-<script src="/analytics.js"></script>
 </body>
 </html>

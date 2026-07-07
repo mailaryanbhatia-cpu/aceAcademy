@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Passive Voice Detector — Ace Academy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:960px;margin:0 auto;padding:24px 16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+h2{font-size:.85rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+textarea{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:12px;font-size:.92rem;width:100%;resize:vertical;line-height:1.6;font-family:inherit}
+textarea:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.9rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+/* Stats bar */
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.stat-chip{background:#0d1728;border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center}
+.stat-chip strong{display:block;font-size:1.3rem;font-weight:700;color:var(--accent2)}
+.stat-chip span{font-size:.72rem;color:var(--muted)}
+/* Highlighted output */
+.highlighted-text{line-height:2;font-size:.92rem;background:#0d1728;border-radius:10px;padding:16px;border:1px solid var(--border);min-height:120px}
+.passive-mark{background:#ef444433;color:#fca5a5;border-radius:4px;padding:1px 4px;border-bottom:2px solid #ef4444;cursor:pointer;position:relative}
+.passive-mark:hover{background:#ef444455}
+/* Sentence list */
+.sent-item{padding:12px 14px;background:#0d1728;border-radius:8px;margin-bottom:8px;border-left:4px solid transparent}
+.sent-item.has-passive{border-left-color:#ef4444}
+.sent-item.clean{border-left-color:#10b981}
+.sent-original{font-size:.88rem;line-height:1.5;margin-bottom:6px}
+.sent-rewrite{font-size:.85rem;color:#6ee7b7;background:#10b98115;border-radius:6px;padding:6px 10px;margin-top:6px}
+.sent-rewrite strong{color:#6ee7b7;font-size:.75rem;display:block;margin-bottom:2px}
+.passive-phrase{background:#ef444433;color:#fca5a5;border-radius:3px;padding:0 3px}
+/* Score meter */
+.meter-bar{height:8px;border-radius:4px;background:var(--border);margin:6px 0;overflow:hidden}
+.meter-fill{height:100%;border-radius:4px;transition:width .5s}
+.tip-box{background:#6366f115;border:1px solid var(--accent);border-radius:10px;padding:14px;margin-top:16px}
+.tip-box h3{font-size:.82rem;color:var(--accent2);font-weight:700;margin-bottom:8px}
+.tip-box li{font-size:.83rem;color:var(--muted);margin-bottom:5px;margin-left:14px}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>🔍 Passive Voice Detector</h1>
+</div>
+<div class="container">
+  <div class="card">
+    <h2>Your Text</h2>
+    <textarea id="textIn" rows="8" placeholder="Paste your essay or paragraph here..."></textarea>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="analyze()">🔍 Analyze</button>
+      <button class="btn btn-ghost" onclick="loadSample()">Load Sample</button>
+      <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    </div>
+  </div>
+
+  <div id="results" style="display:none">
+    <div class="stat-row">
+      <div class="stat-chip"><strong id="s-total">0</strong><span>Sentences</span></div>
+      <div class="stat-chip"><strong id="s-passive">0</strong><span>Passive</span></div>
+      <div class="stat-chip"><strong id="s-pct">0%</strong><span>% Passive</span></div>
+      <div class="stat-chip"><strong id="s-score">A</strong><span>Voice Score</span></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>📝 Highlighted Text</h2>
+        <div class="highlighted-text" id="highlightedText"></div>
+        <div class="tip-box" style="margin-top:12px">
+          <h3>Passive Voice Score</h3>
+          <div class="meter-bar"><div class="meter-fill" id="meter" style="background:#10b981;width:100%"></div></div>
+          <div id="scoreDesc" style="font-size:.8rem;color:var(--muted);margin-top:4px"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📋 Sentence-by-Sentence</h2>
+        <div id="sentList"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>💡 Active Voice Tips</h2>
+      <div class="tip-box">
+        <h3>How to fix passive voice</h3>
+        <ul id="tipList">
+          <li>Identify who or what is performing the action</li>
+          <li>Move the actor to the subject position</li>
+          <li>Replace the be-verb + past participle with a direct action verb</li>
+          <li>Example: "The test was taken by students" → "Students took the test"</li>
+          <li>Some passive voice is acceptable when the actor is unknown or unimportant</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const IRREG = new Set(['written','known','shown','given','taken','made','done','seen','found','told','asked','left','gone','come','put','run','spoken','broken','brought','built','bought','caught','chosen','drawn','driven','eaten','fallen','felt','flown','forgotten','frozen','gotten','grown','heard','held','hidden','kept','laid','led','let','lit','lost','met','paid','ridden','risen','said','sat','sent','set','shut','slept','spent','stood','stolen','struck','swept','taught','thought','thrown','understood','worn','won','beaten','bitten','blown','born','bound','bred','burst','clung','crept','cut','dealt','dug','dreamt','drunk','dwelt','fed','fought','fled','ground','hung','hurt','knelt','leapt','learnt','lent','lain','meant','proven','quit','read','rung','sold','sewn','shaken','shone','shot','shrunk','sung','sunk','slid','smelt','sought','spread','sprung','stuck','stung','strung','sworn','swum','swung','torn','upset','woken','wound','woven','wept','withheld','forbade','forbidden','foreseen','forgiven','frozen']);
+
+const BE_RX = /\b(am|is|are|was|were|be|been|being)\b/gi;
+
+function isPastParticiple(w){
+  if(!w) return false;
+  const lw=w.toLowerCase().replace(/[^a-z]/g,'');
+  if(IRREG.has(lw)) return true;
+  if(lw.length>3&&lw.endsWith('ed')) return true;
+  if(lw.endsWith('en')&&lw.length>4) return true;
+  return false;
+}
+
+function findPassiveSpans(text){
+  const spans=[];
+  // Match: [be verb] [optional adverb] [optional adverb] [past participle]
+  const rx=/\b(am|is|are|was|were|be|been|being)\s+(?:(\w+ly)\s+)?(?:(\w+)\s+)?(\w+)\b/gi;
+  let m;
+  while((m=rx.exec(text))!==null){
+    const beVerb=m[1];
+    const adv=m[2];
+    const extra=m[3];
+    const last=m[4];
+    // Check if last word is a past participle
+    if(isPastParticiple(last)||(extra&&isPastParticiple(extra))){
+      const actualPP=isPastParticiple(last)?last:(extra||'');
+      spans.push({start:m.index,end:m.index+m[0].length,full:m[0],be:beVerb,pp:actualPP});
+    }
+  }
+  return spans;
+}
+
+function splitSentences(text){
+  return text.match(/[^.!?]+[.!?]+/g)||[text];
+}
+
+function suggestActive(sentence,beVerb,pp){
+  // Try to find "by X" and suggest rewrite
+  const byMatch=sentence.match(/by\s+([\w\s]+?)(?:\.|,|$)/i);
+  if(byMatch){
+    const actor=byMatch[1].trim();
+    return `Consider: Move "${actor}" to the subject and replace "${beVerb} ${pp}" with a direct verb.`;
+  }
+  return `Identify who or what is doing the action and make them the subject.`;
+}
+
+function analyze(){
+  const text=document.getElementById('textIn').value.trim();
+  if(!text){alert('Please enter some text.');return;}
+  const sentences=splitSentences(text);
+  let passiveCount=0;
+  const sentResults=[];
+
+  sentences.forEach(s=>{
+    const spans=findPassiveSpans(s);
+    const hasPassive=spans.length>0;
+    if(hasPassive) passiveCount++;
+    sentResults.push({sent:s.trim(),spans,hasPassive});
+  });
+
+  const total=sentences.length;
+  const pct=total>0?Math.round(passiveCount/total*100):0;
+  let grade,color,desc;
+  if(pct<=10){grade='A';color='#10b981';desc='Excellent! Very little passive voice.';}
+  else if(pct<=20){grade='B';color='#84cc16';desc='Good. Mostly active voice.';}
+  else if(pct<=35){grade='C';color='#f59e0b';desc='Moderate. Try to convert some passive sentences.';}
+  else if(pct<=50){grade='D';color='#f97316';desc='High passive usage. Consider revising.';}
+  else{grade='F';color='#ef4444';desc='Very high passive voice. Major revision recommended.';}
+
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-passive').textContent=passiveCount;
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('s-score').textContent=grade;
+  document.getElementById('s-score').style.color=color;
+  document.getElementById('meter').style.width=Math.max(5,100-pct)+'%';
+  document.getElementById('meter').style.background=color;
+  document.getElementById('scoreDesc').textContent=desc;
+
+  // Highlighted text
+  let ht=text;
+  const allSpans=findPassiveSpans(text);
+  // Replace from end to start to preserve indices
+  [...allSpans].reverse().forEach(sp=>{
+    ht=ht.slice(0,sp.start)+'<span class="passive-mark" title="Passive: '+sp.full.replace(/"/g,'')+'">'+escHtml(sp.full)+'</span>'+ht.slice(sp.end);
+  });
+  document.getElementById('highlightedText').innerHTML=ht.replace(/\n/g,'<br/>');
+
+  // Sentence list
+  document.getElementById('sentList').innerHTML=sentResults.map((r,i)=>{
+    let dispSent=escHtml(r.sent);
+    r.spans.forEach(sp=>{
+      dispSent=dispSent.replace(escHtml(sp.full),`<span class="passive-phrase">${escHtml(sp.full)}</span>`);
+    });
+    const rewrite=r.hasPassive&&r.spans.length?suggestActive(r.sent,r.spans[0].be,r.spans[0].pp):'';
+    return `<div class="sent-item${r.hasPassive?' has-passive':' clean'}">
+      <div style="display:flex;gap:6px;align-items:flex-start">
+        <span style="font-size:.75rem;background:${r.hasPassive?'#ef444433':'#10b98133'};color:${r.hasPassive?'#fca5a5':'#6ee7b7'};border-radius:4px;padding:1px 6px;white-space:nowrap">${r.hasPassive?'⚠ Passive':'✓ Active'}</span>
+        <div class="sent-original">${dispSent}</div>
+      </div>
+      ${rewrite?`<div class="sent-rewrite"><strong>💡 Suggestion:</strong>${rewrite}</div>`:''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function loadSample(){
+  document.getElementById('textIn').value=`The experiment was conducted by the researchers over three months. Data was collected from 150 participants. The results were analyzed using statistical software. It was found that the new method was preferred by most users. The report was written by the lead scientist and was reviewed by three colleagues. Errors were identified and corrections were made before the final version was submitted.`;
+}
+
+function clearAll(){
+  document.getElementById('textIn').value='';
+  document.getElementById('results').style.display='none';
+}
+</script>
+</body>
+</html>
