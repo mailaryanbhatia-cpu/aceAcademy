@@ -134,8 +134,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   body{background:#1a2540}
   .worksheet-wrap{max-width:100%;display:block!important}
   .problem-card{break-inside:avoid;border:1px solid #ccc;margin-bottom:12px}
-  .answer-key{border:2px solid #333;margin-top:20px}
-  .answer-key .ak-header{background:#333}
+  .answer-key{border:2px solid #b0bece;margin-top:20px}
+  .answer-key .ak-header{background:#b0bece}
   .answer-key .ak-body{display:block!important}
   .ws-btn{display:none}
 }
@@ -349,7 +349,7 @@ function openWorksheet(grade, subj, unitIdx, topicIdx){
               <button class="tool-btn" id="erase-${i}" title="Eraser" onclick="setTool('${i}','eraser')">⬜</button>
               <div style="width:1px;height:22px;background:var(--border);margin:0 2px"></div>
               <span style="font-size:.7rem;color:var(--muted);font-weight:600">Color:</span>
-              <div class="color-swatch active" style="background:#1e293b" onclick="setColor('${i}','#1e293b',this)" title="Black"></div>
+              <div class="color-swatch active" style="background:#ffffff" onclick="setColor('${i}','#ffffff',this)" title="Black"></div>
               <div class="color-swatch" style="background:#2563eb" onclick="setColor('${i}','#2563eb',this)" title="Blue"></div>
               <div class="color-swatch" style="background:#dc2626" onclick="setColor('${i}','#dc2626',this)" title="Red"></div>
               <div class="color-swatch" style="background:#16a34a" onclick="setColor('${i}','#16a34a',this)" title="Green"></div>
@@ -474,13 +474,13 @@ buildSidebar(6);
 .np-body{flex:1;display:flex;flex-direction:column;min-height:0;}
 .np-textarea{flex:1;width:100%;border:none;outline:none;resize:none;
   padding:14px 16px;font-size:.88rem;font-family:inherit;line-height:1.6;
-  color:#333;background:#fafafa;min-height:240px;}
+  color:#b0bece;background:#fafafa;min-height:240px;}
 .np-footer{display:flex;align-items:center;justify-content:space-between;
   padding:8px 12px;border-top:1px solid #eee;background:#1a2540;flex-shrink:0;}
 .np-wordcount{font-size:.72rem;color:#aaa;}
 .np-foot-btns{display:flex;gap:6px;}
 .np-foot-btn{font-size:.72rem;padding:4px 10px;border:1px solid #ddd;border-radius:8px;
-  background:#1a2540;cursor:pointer;color:#555;transition:all .15s;}
+  background:#1a2540;cursor:pointer;color:#b0bece;transition:all .15s;}
 .np-foot-btn:hover{background:#f5f5ff;border-color:var(--accent,#6c63ff);color:var(--accent,#6c63ff);}
 .np-foot-btn.danger:hover{background:#fff0f0;border-color:#f06;color:#f06;}
 @media(max-width:420px){
@@ -875,7 +875,7 @@ const _canvasState = {};
 
 function getState(id) {
   if (!_canvasState[id]) {
-    _canvasState[id] = { tool:'pen', color:'#1e293b', size:2, drawing:false, history:[], lastX:0, lastY:0 };
+    _canvasState[id] = { tool:'pen', color:'#ffffff', size:2, drawing:false, history:[], lastX:0, lastY:0 };
   }
   return _canvasState[id];
 }

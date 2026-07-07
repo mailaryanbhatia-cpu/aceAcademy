@@ -59,7 +59,7 @@ nav.topnav::-webkit-scrollbar{display:none}
 .add-btn{padding:8px 13px;border-radius:8px;border:none;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;transition:.15s;white-space:nowrap}
 .item-list{margin-top:8px;display:flex;flex-direction:column;gap:5px}
 .item-tag{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px;font-size:.78rem;font-weight:600;background:#111c32;border:1px solid #2a3a55}
-.item-del{border:none;background:transparent;color:#3d4f6e;cursor:pointer;font-size:.7rem;margin-left:auto;transition:.15s}
+.item-del{border:none;background:transparent;color:#8899aa;cursor:pointer;font-size:.7rem;margin-left:auto;transition:.15s}
 .item-del:hover{color:#f87171}
 
 /* Venn SVG */
@@ -474,16 +474,16 @@ function renderVennHistory(){
   var el = document.getElementById('vennHistory');
   if(!el) return;
   var saved = JSON.parse(localStorage.getItem(VENN_KEY)||'[]');
-  if(!saved.length){ el.innerHTML='<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">No saved diagrams yet.</div>'; return; }
+  if(!saved.length){ el.innerHTML='<div style="color:#b0bece;font-size:.82rem;text-align:center;padding:12px">No saved diagrams yet.</div>'; return; }
   el.innerHTML = saved.map((d,i)=>`
-    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+    <div style="background:#0f172a;border:1px solid #ffffff;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
       <div>
         <div style="font-weight:700;color:#e2e8f0;font-size:.85rem">${d.title}</div>
         <div style="font-size:.75rem;color:#64748b;margin-top:2px">${d.leftL} vs ${d.rightL} · ${d.date}</div>
       </div>
       <div style="display:flex;gap:6px">
         <button onclick="loadVennDiagram(${i})" style="background:rgba(99,102,241,.15);border:none;border-radius:6px;color:#a5b4fc;padding:5px 10px;font-size:.75rem;cursor:pointer">Load</button>
-        <button onclick="deleteVennDiagram(${i})" style="background:none;border:1px solid #1e293b;border-radius:6px;color:#64748b;padding:5px 10px;font-size:.75rem;cursor:pointer">✕</button>
+        <button onclick="deleteVennDiagram(${i})" style="background:none;border:1px solid #ffffff;border-radius:6px;color:#64748b;padding:5px 10px;font-size:.75rem;cursor:pointer">✕</button>
       </div>
     </div>`).join('');
 }

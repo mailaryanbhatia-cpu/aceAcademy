@@ -501,15 +501,15 @@ function renderEqHistory(){
   var hist = JSON.parse(localStorage.getItem(EQ_KEY)||'[]');
   var total = hist.length;
   document.getElementById('eqSolvedCount').textContent = total;
-  if(!hist.length){ el.innerHTML='<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">No equations solved yet.</div>'; return; }
+  if(!hist.length){ el.innerHTML='<div style="color:#b0bece;font-size:.82rem;text-align:center;padding:12px">No equations solved yet.</div>'; return; }
   el.innerHTML = hist.slice(0,10).map(h=>`
-    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer"
+    <div style="background:#0f172a;border:1px solid #ffffff;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer"
       onclick="document.getElementById('equationInput')&&(document.getElementById('equationInput').value='${h.expr.replace(/'/g,"\'")}')">
       <div>
         <div style="font-family:monospace;color:#a5b4fc;font-size:.85rem">${h.expr}</div>
         <div style="font-size:.78rem;color:#10b981;margin-top:2px">= ${h.result}</div>
       </div>
-      <div style="font-size:.7rem;color:#475569">${h.date}</div>
+      <div style="font-size:.7rem;color:#b0bece">${h.date}</div>
     </div>`).join('');
 }
 

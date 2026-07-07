@@ -18,22 +18,22 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:#e2e8f0;overflow:hidden;height:100vh;display:flex;flex-direction:column}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#0f172a;border-bottom:1px solid #1e293b;flex-shrink:0;z-index:10}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#0f172a;border-bottom:1px solid #ffffff;flex-shrink:0;z-index:10}
 .nav a{color:#e2e8f0;text-decoration:none;font-weight:700;font-size:1rem}
-.toolbar{display:flex;align-items:center;gap:6px;padding:8px 16px;background:#0f172a;border-bottom:1px solid #1e293b;flex-shrink:0;flex-wrap:wrap;z-index:10}
-.tool-group{display:flex;gap:4px;align-items:center;padding-right:10px;margin-right:6px;border-right:1px solid #1e293b}
+.toolbar{display:flex;align-items:center;gap:6px;padding:8px 16px;background:#0f172a;border-bottom:1px solid #ffffff;flex-shrink:0;flex-wrap:wrap;z-index:10}
+.tool-group{display:flex;gap:4px;align-items:center;padding-right:10px;margin-right:6px;border-right:1px solid #ffffff}
 .tool-group:last-child{border-right:none}
-.tool-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid #334155;background:transparent;color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .15s;flex-shrink:0}
+.tool-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid #b0bece;background:transparent;color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .15s;flex-shrink:0}
 .tool-btn:hover{border-color:#6366f1;color:#a5b4fc}
 .tool-btn.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
 .tool-btn span{font-size:.72rem;font-weight:800}
 .color-btn{width:26px;height:26px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:border-color .15s;flex-shrink:0}
 .color-btn.active{border-color:#e2e8f0}
-.size-slider{-webkit-appearance:none;appearance:none;width:70px;height:4px;border-radius:99px;background:#334155;outline:none;cursor:pointer}
+.size-slider{-webkit-appearance:none;appearance:none;width:70px;height:4px;border-radius:99px;background:#b0bece;outline:none;cursor:pointer}
 .size-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#6366f1;cursor:pointer}
 .size-preview{width:16px;height:16px;border-radius:50%;background:#6366f1;flex-shrink:0;transition:width .1s,height .1s}
-.toolbar label{font-size:.72rem;color:#475569;white-space:nowrap}
-.action-btn{padding:6px 14px;border-radius:8px;border:1.5px solid #334155;background:transparent;color:#94a3b8;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.toolbar label{font-size:.72rem;color:#b0bece;white-space:nowrap}
+.action-btn{padding:6px 14px;border-radius:8px;border:1.5px solid #b0bece;background:transparent;color:#94a3b8;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
 .action-btn:hover{border-color:#6366f1;color:#a5b4fc}
 .action-btn.save{border-color:#10b981;color:#10b981}
 .action-btn.save:hover{background:rgba(16,185,129,.1)}
@@ -70,8 +70,8 @@ canvas.text-mode{cursor:text}
   <a href="index.html">🎓 aceAcademy</a>
   <div style="font-weight:800;font-size:.95rem;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🖊 Whiteboard</div>
   <div style="display:flex;gap:10px;align-items:center">
-    <a href="alltools.html" style="color:#94a3b8;text-decoration:none;font-size:.85rem">All Tools</a>
-    <a href="index.html" style="color:#94a3b8;text-decoration:none;font-size:.85rem">Home</a>
+    <a href="alltools.html" style="color:#b0bece;text-decoration:none;font-size:.85rem">All Tools</a>
+    <a href="index.html" style="color:#b0bece;text-decoration:none;font-size:.85rem">Home</a>
   </div>
 </nav>
 
@@ -95,7 +95,7 @@ canvas.text-mode{cursor:text}
     <div class="color-btn" style="background:#10b981" onclick="setColor('#10b981',this)" title="Green"></div>
     <div class="color-btn" style="background:#3b82f6" onclick="setColor('#3b82f6',this)" title="Blue"></div>
     <div class="color-btn" style="background:#ef4444" onclick="setColor('#ef4444',this)" title="Red"></div>
-    <input type="color" id="customColor" value="#e2e8f0" oninput="setColor(this.value,null)" style="width:26px;height:26px;border-radius:50%;border:2px solid #334155;cursor:pointer;background:transparent;padding:0"/>
+    <input type="color" id="customColor" value="#e2e8f0" oninput="setColor(this.value,null)" style="width:26px;height:26px;border-radius:50%;border:2px solid #b0bece;cursor:pointer;background:transparent;padding:0"/>
   </div>
   <!-- Size -->
   <div class="tool-group">
@@ -107,7 +107,7 @@ canvas.text-mode{cursor:text}
   <div class="tool-group opacity-wrap">
     <label>Opacity</label>
     <input type="range" class="size-slider" id="opacitySlider" min="10" max="100" value="100" oninput="setOpacity(this.value)"/>
-    <span style="font-size:.72rem;color:#475569;width:30px" id="opacityLabel">100%</span>
+    <span style="font-size:.72rem;color:#b0bece;width:30px" id="opacityLabel">100%</span>
   </div>
   <!-- Actions -->
   <div class="tool-group">
@@ -123,7 +123,7 @@ canvas.text-mode{cursor:text}
 <canvas id="board"></canvas>
 
 <!-- Text input overlay -->
-<textarea id="textInput" style="display:none;position:fixed;background:#1e293b;border:2px solid #6366f1;border-radius:6px;color:#e2e8f0;padding:6px 10px;font-size:16px;font-family:inherit;resize:none;z-index:99;min-width:150px" rows="2"></textarea>
+<textarea id="textInput" style="display:none;position:fixed;background:#ffffff;border:2px solid #6366f1;border-radius:6px;color:#e2e8f0;padding:6px 10px;font-size:16px;font-family:inherit;resize:none;z-index:99;min-width:150px" rows="2"></textarea>
 
 <script>
 var canvas = document.getElementById('board');
@@ -318,7 +318,7 @@ function loadBoardFromStorage(userAction){
 
 function showToast(msg){
   var t=document.createElement('div');
-  t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid #334155;color:#e2e8f0;font-size:.83rem;padding:10px 20px;border-radius:10px;z-index:9999;box-shadow:0 4px 20px #0004';
+  t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:1px solid #b0bece;color:#e2e8f0;font-size:.83rem;padding:10px 20px;border-radius:10px;z-index:9999;box-shadow:0 4px 20px #0004';
   t.textContent=msg; document.body.appendChild(t);
   setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';},2500);
   setTimeout(()=>t.remove(),3000);

@@ -16,7 +16,7 @@
 .student-name{font-size:1.5rem;font-weight:900;color:#e2e8f0;margin:0 0 4px}
 .student-sub{font-size:.85rem;color:#94a3b8;margin:0 0 16px}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-bottom:20px}
-.stat-box{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:14px;text-align:center}
+.stat-box{background:#0f172a;border:1px solid #ffffff;border-radius:12px;padding:14px;text-align:center}
 .stat-num{font-size:1.5rem;font-weight:900}
 .stat-lbl{font-size:.7rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
 .section-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
@@ -25,15 +25,15 @@
 .badge-pill{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;font-size:.82rem;font-weight:700;border:1.5px solid}
 .prog-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .prog-label{font-size:.82rem;color:#e2e8f0;width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prog-track{flex:1;height:8px;background:#1e293b;border-radius:99px;overflow:hidden}
+.prog-track{flex:1;height:8px;background:#ffffff;border-radius:99px;overflow:hidden}
 .prog-fill{height:100%;border-radius:99px}
 .prog-val{font-size:.78rem;color:#94a3b8;width:38px;text-align:right}
-.share-footer{text-align:center;padding:24px 0 0;border-top:1px solid #1e293b;margin-top:8px}
-.powered{font-size:.78rem;color:#475569;margin-bottom:12px}
+.share-footer{text-align:center;padding:24px 0 0;border-top:1px solid #ffffff;margin-top:8px}
+.powered{font-size:.78rem;color:#b0bece;margin-bottom:12px}
 .join-btn{display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:12px 28px;border-radius:12px;font-weight:800;font-size:.9rem}
-.loading{text-align:center;padding:80px 20px;color:#475569}
+.loading{text-align:center;padding:80px 20px;color:#b0bece}
 .error-state{text-align:center;padding:60px 20px}
-.privacy-note{font-size:.72rem;color:#334155;text-align:center;margin-top:12px}
+.privacy-note{font-size:.72rem;color:#b0bece;text-align:center;margin-top:12px}
 </style>
 </head>
 <body>
@@ -149,7 +149,7 @@ function renderProfile(data){
       html += '<div title="'+t.subject+': '+(t.pct||0)+'%" style="flex:1;height:'+h+'px;background:'+color+';border-radius:4px 4px 0 0;min-width:12px;opacity:.85"></div>';
     });
     html += '</div>';
-    html += '<div style="display:flex;justify-content:space-between;font-size:.7rem;color:#475569;margin-top:4px"><span>Older</span><span>Recent</span></div>';
+    html += '<div style="display:flex;justify-content:space-between;font-size:.7rem;color:#b0bece;margin-top:4px"><span>Older</span><span>Recent</span></div>';
     html += '</div>';
   }
 

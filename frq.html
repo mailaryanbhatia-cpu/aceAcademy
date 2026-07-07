@@ -60,7 +60,7 @@ nav.topnav::-webkit-scrollbar{display:none}
 .response-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);margin-bottom:8px}
 .response-ta{width:100%;min-height:180px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:var(--text);font-size:.88rem;font-family:inherit;padding:14px;resize:vertical;outline:none;line-height:1.6;transition:border-color .15s}
 .response-ta:focus{border-color:#6366f1}
-.response-ta::placeholder{color:#3d4f6e}
+.response-ta::placeholder{color:#8899aa}
 
 /* Rubric */
 .rubric-section{margin-top:20px;background:#0d1628;border-radius:12px;padding:18px}
@@ -624,15 +624,15 @@ function renderFrqStats(){
   var avg = stats.totalMax ? Math.round(stats.totalScore/stats.totalMax*100) : 0;
   el.innerHTML = `
     <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+      <div style="background:#0f172a;border:1px solid #ffffff;border-radius:10px;padding:12px 16px;text-align:center">
         <div style="font-size:1.3rem;font-weight:900;color:#6366f1">${stats.attempts}</div>
         <div style="font-size:.72rem;color:#64748b;font-weight:700">FRQs Done</div>
       </div>
-      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+      <div style="background:#0f172a;border:1px solid #ffffff;border-radius:10px;padding:12px 16px;text-align:center">
         <div style="font-size:1.3rem;font-weight:900;color:#10b981">${avg}%</div>
         <div style="font-size:.72rem;color:#64748b;font-weight:700">Avg Score</div>
       </div>
-      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px 16px;text-align:center">
+      <div style="background:#0f172a;border:1px solid #ffffff;border-radius:10px;padding:12px 16px;text-align:center">
         <div style="font-size:1.3rem;font-weight:900;color:#f59e0b">${stats.bestPct}%</div>
         <div style="font-size:.72rem;color:#64748b;font-weight:700">Best Score</div>
       </div>

@@ -14,7 +14,7 @@
 .section-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:20px}
 .section-title{font-size:.95rem;font-weight:800;color:#a5b4fc;margin:0 0 18px;display:flex;align-items:center;gap:8px}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.tab{background:#0f172a;border:1.5px solid #1e293b;border-radius:99px;padding:8px 18px;font-size:.82rem;font-weight:700;color:#64748b;cursor:pointer;transition:all .2s}
+.tab{background:#0f172a;border:1.5px solid #ffffff;border-radius:99px;padding:8px 18px;font-size:.82rem;font-weight:700;color:#64748b;cursor:pointer;transition:all .2s}
 .tab.active{background:rgba(99,102,241,.15);border-color:#6366f1;color:#a5b4fc}
 .tab-panel{display:none}.tab-panel.active{display:block}
 /* Chart */
@@ -22,13 +22,13 @@
 canvas{width:100%!important}
 /* Stats row */
 .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
-.stat-box{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:14px;text-align:center}
+.stat-box{background:#0f172a;border:1px solid #ffffff;border-radius:12px;padding:14px;text-align:center}
 .stat-box .num{font-size:1.4rem;font-weight:900}
 .stat-box .lbl{font-size:.72rem;color:#64748b;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 /* Progress bars */
 .prog-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .prog-label{font-size:.82rem;color:#e2e8f0;width:140px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prog-track{flex:1;height:8px;background:#1e293b;border-radius:99px;overflow:hidden}
+.prog-track{flex:1;height:8px;background:#ffffff;border-radius:99px;overflow:hidden}
 .prog-fill{height:100%;border-radius:99px;transition:width .6s}
 .prog-val{font-size:.8rem;color:#94a3b8;width:40px;text-align:right}
 /* Correlation dots */
@@ -48,7 +48,7 @@ canvas{width:100%!important}
 /* AI section */
 .ai-insight{background:rgba(99,102,241,.07);border:1.5px solid rgba(99,102,241,.3);border-radius:14px;padding:18px}
 .ai-out{font-size:.87rem;line-height:1.8;color:#cbd5e1;white-space:pre-wrap;min-height:60px}
-.empty{color:#475569;font-size:.85rem;text-align:center;padding:24px}
+.empty{color:#b0bece;font-size:.85rem;text-align:center;padding:24px}
 </style>
 </head>
 <body>
@@ -185,7 +185,7 @@ function renderTrends(){
     var y = H-10-((v/100)*(H-40));
     ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(30,y); ctx.lineTo(W-10,y); ctx.stroke();
-    ctx.fillStyle='#475569'; ctx.font='10px system-ui'; ctx.fillText(v+'%',2,y+4);
+    ctx.fillStyle='#b0bece'; ctx.font='10px system-ui'; ctx.fillText(v+'%',2,y+4);
   });
 
   // Gradient fill
@@ -251,14 +251,14 @@ function renderPredictions(){
       <div class="pred-bar">
         <div>
           <div class="pred-now">Now: ${current}%</div>
-          <div style="background:#1e293b;border-radius:99px;height:8px;width:200px;margin-top:6px">
+          <div style="background:#ffffff;border-radius:99px;height:8px;width:200px;margin-top:6px">
             <div style="width:${current}%;background:linear-gradient(90deg,#6366f1,#8b5cf6);height:8px;border-radius:99px"></div>
           </div>
         </div>
         <div class="pred-arrow">→</div>
         <div>
           <div class="pred-future">30 days: ${future30}%</div>
-          <div style="background:#1e293b;border-radius:99px;height:8px;width:200px;margin-top:6px">
+          <div style="background:#ffffff;border-radius:99px;height:8px;width:200px;margin-top:6px">
             <div style="width:${pctBar}%;background:linear-gradient(90deg,#10b981,#06b6d4);height:8px;border-radius:99px"></div>
           </div>
         </div>

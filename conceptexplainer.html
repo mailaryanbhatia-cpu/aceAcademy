@@ -498,9 +498,9 @@ function renderCexpRecent(){
   }
   if(recent.length){
     html += '<div style="font-size:.8rem;font-weight:700;color:#94a3b8;margin:'+(favs.length?'14px':'0')+'px 0 8px">🕐 Recent</div>';
-    html += recent.slice(0,6).map(r=>`<div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="loadConcept('${r.concept.replace(/'/g,"\'")}')"><span style="color:#a5b4fc;font-size:.85rem;font-weight:600">${r.concept}</span><span style="font-size:.72rem;color:#475569">${r.date}</span></div>`).join('');
+    html += recent.slice(0,6).map(r=>`<div style="background:#0f172a;border:1px solid #ffffff;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="loadConcept('${r.concept.replace(/'/g,"\'")}')"><span style="color:#a5b4fc;font-size:.85rem;font-weight:600">${r.concept}</span><span style="font-size:.72rem;color:#b0bece">${r.date}</span></div>`).join('');
   }
-  el.innerHTML = html || '<div style="color:#475569;font-size:.82rem;text-align:center;padding:12px">Explore concepts to see them here.</div>';
+  el.innerHTML = html || '<div style="color:#b0bece;font-size:.82rem;text-align:center;padding:12px">Explore concepts to see them here.</div>';
 }
 function loadConcept(concept){
   var inp = document.getElementById('conceptInput')||document.getElementById('topicInput');

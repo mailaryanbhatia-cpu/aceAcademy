@@ -71,7 +71,7 @@ main{flex:1;padding:24px 28px;overflow-y:auto;min-width:0}
 .mini-month-name{font-size:.78rem;font-weight:800;color:#a5b4fc;text-transform:uppercase;letter-spacing:.5px}
 .mini-month-count{font-size:.65rem;color:var(--muted2);font-weight:600}
 .mini-days-header{display:grid;grid-template-columns:repeat(7,1fr);padding:4px 6px 2px}
-.mini-day-name{text-align:center;font-size:.55rem;font-weight:700;color:#3d5070;text-transform:uppercase}
+.mini-day-name{text-align:center;font-size:.55rem;font-weight:700;color:#b0bece;text-transform:uppercase}
 .mini-cells{display:grid;grid-template-columns:repeat(7,1fr);padding:0 6px 8px;gap:1px}
 .mini-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-radius:5px;cursor:pointer;transition:background .1s;padding:2px 1px;position:relative;min-height:22px}
 .mini-cell:hover{background:rgba(99,102,241,.18)}
@@ -409,7 +409,7 @@ function renderYear() {
         dayGoals.slice(0, 4).forEach(g => {
           const dot = document.createElement('div');
           dot.className = 'mini-dot';
-          dot.style.background = g.done ? '#3d5070' : (SUBJECT_COLORS[g.subject] || '#64748b');
+          dot.style.background = g.done ? '#b0bece' : (SUBJECT_COLORS[g.subject] || '#64748b');
           dots.appendChild(dot);
         });
         cell.appendChild(dots);
@@ -439,7 +439,7 @@ function showTooltip(e, dateStr, dayGoals) {
   const label = dt.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
   let html = `<div class="tt-date">${label}</div>`;
   if (dayGoals.length === 0) {
-    html += `<div class="tt-goal" style="color:#3d5070">Click to add a goal</div>`;
+    html += `<div class="tt-goal" style="color:#b0bece">Click to add a goal</div>`;
   } else {
     dayGoals.slice(0, 4).forEach(g => {
       html += `<div class="tt-goal">${g.done ? '✓ ' : '• '}${escHtml(g.title)}</div>`;
