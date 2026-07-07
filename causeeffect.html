@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cause & Effect Chain — Ace Academy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.85rem}
+.top-bar h1{font-size:1rem;font-weight:700}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:.82rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-danger{background:#7f1d1d;color:#fca5a5;border:none}
+.btn-danger:hover{background:#991b1b}
+.btn-sm{padding:5px 11px;font-size:.78rem}
+.sep{width:1px;height:24px;background:var(--border)}
+input,select,textarea{background:#0d1728;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.85rem}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:3px}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:280px 1fr;height:calc(100vh - 52px)}
+@media(max-width:700px){.layout{grid-template-columns:1fr;height:auto}}
+.sidebar{background:var(--card);border-right:1px solid var(--border);padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.sidebar h3{font-size:.82rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.main-panel{overflow:auto;padding:20px;position:relative}
+
+/* Type badges */
+.type-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700}
+.t-root{background:#ef444433;color:#fca5a5;border:1px solid #ef444466}
+.t-cause{background:#f59e0b33;color:#fcd34d;border:1px solid #f59e0b66}
+.t-effect{background:#6366f133;color:#a5b4fc;border:1px solid #6366f166}
+.t-long{background:#10b98133;color:#6ee7b7;border:1px solid #10b98166}
+.t-factor{background:#8b5cf633;color:#c4b5fd;border:1px solid #8b5cf666}
+.t-consequence{background:#ec489933;color:#f9a8d4;border:1px solid #ec489966}
+
+/* Node cards in sidebar */
+.node-card{background:#0d1728;border-radius:8px;padding:10px 12px;border-left:3px solid var(--accent);cursor:pointer;margin-bottom:6px}
+.node-card.selected{border-left-color:#fff;background:#1a2540}
+.node-card .nc-text{font-size:.85rem;font-weight:600;margin-bottom:3px}
+.node-card .nc-meta{font-size:.72rem;color:var(--muted)}
+
+/* Chain diagram */
+#diagram{min-height:400px;position:relative}
+#diag-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+
+.ce-node{position:absolute;cursor:pointer;z-index:2}
+.ce-box{border-radius:10px;padding:10px 14px;font-size:.85rem;font-weight:600;border:2px solid transparent;transition:.15s;min-width:130px;max-width:180px;text-align:center;line-height:1.35}
+.ce-node.selected .ce-box{border-color:rgba(255,255,255,.7)!important;box-shadow:0 0 0 3px rgba(255,255,255,.12)}
+.ce-node:hover .ce-box{filter:brightness(1.1)}
+.ce-type{font-size:.68rem;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;opacity:.8}
+.ce-text{word-break:break-word}
+.ce-node .node-actions{position:absolute;top:-10px;right:-10px;display:none;gap:3px}
+.ce-node:hover .node-actions,.ce-node.selected .node-actions{display:flex}
+.nact{width:20px;height:20px;border-radius:50%;border:none;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;font-weight:700}
+.nact-add{background:#10b981;color:#fff}
+.nact-del{background:#ef4444;color:#fff}
+.nact-edit{background:#6366f1;color:#fff}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:.75rem}
+
+/* Chains list */
+.chain-item{display:flex;align-items:center;gap:6px;padding:7px 10px;background:#0d1728;border-radius:8px;margin-bottom:5px;cursor:pointer;border:1px solid transparent}
+.chain-item.active{border-color:var(--accent)}
+.chain-item span{flex:1;font-size:.82rem;font-weight:600}
+
+/* Add node modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;width:360px;max-width:95vw}
+.modal h3{font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--accent2)}
+.form-row{margin-bottom:12px}
+.modal-btns{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+
+/* Saved */
+.saved-item{display:flex;align-items:center;gap:6px;padding:6px 8px;background:#0d1728;border-radius:8px;margin-bottom:5px;font-size:.78rem}
+.saved-item span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+@media print{
+  .top-bar,.sidebar{display:none!important}
+  .layout{grid-template-columns:1fr}
+  .main-panel{padding:0}
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>🔗 Cause &amp; Effect Chain Builder</h1>
+  <div class="sep"></div>
+  <button class="btn btn-primary" onclick="newChain()">+ New Chain</button>
+  <button class="btn btn-ghost" onclick="openAddModal('root')">+ Root Cause</button>
+  <button class="btn btn-ghost" onclick="openAddModal('child')" id="addEffectBtn" disabled>+ Add Effect</button>
+  <div class="sep"></div>
+  <button class="btn btn-ghost" onclick="resetLayout()">⊞ Re-layout</button>
+  <button class="btn btn-ghost" onclick="exportChain()">⬇ Export</button>
+  <button class="btn btn-primary" onclick="saveChains()">💾 Save</button>
+</div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div>
+      <h3>📋 Chains</h3>
+      <div id="chainsList"></div>
+    </div>
+
+    <div>
+      <h3>🎨 Node Legend</h3>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <span class="type-badge t-root">Root Cause</span>
+        <span class="type-badge t-cause">Contributing Cause</span>
+        <span class="type-badge t-effect">Immediate Effect</span>
+        <span class="type-badge t-long">Long-term Effect</span>
+        <span class="type-badge t-factor">Factor</span>
+        <span class="type-badge t-consequence">Consequence</span>
+      </div>
+    </div>
+
+    <div>
+      <h3>📌 Selected Node</h3>
+      <div id="selectedInfo" style="color:var(--muted);font-size:.8rem">Click a node to select it</div>
+    </div>
+
+    <div>
+      <h3>💾 Saved</h3>
+      <div id="savedList"><span style="color:var(--muted);font-size:.78rem">No saves</span></div>
+    </div>
+
+    <div style="font-size:.75rem;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:12px">
+      <strong style="color:var(--text)">Tips:</strong><br/>
+      Click a node to select, then click <em>+ Add Effect</em> to branch from it.<br/>
+      Hover a node for edit/delete buttons.<br/>
+      Press <kbd style="background:#0d1728;padding:1px 4px;border-radius:3px">R</kbd> to re-layout.
+    </div>
+  </div>
+
+  <!-- Main diagram panel -->
+  <div class="main-panel" id="mainPanel">
+    <div id="emptyState" style="text-align:center;color:var(--muted);padding:80px 20px">
+      <div style="font-size:3rem;margin-bottom:12px">🔗</div>
+      <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Build a Cause &amp; Effect Chain</div>
+      <div style="font-size:.85rem">Click <strong>+ New Chain</strong> to start, then add a root cause and chain of effects.</div>
+    </div>
+    <div id="diagram" style="display:none">
+      <svg id="diag-svg"></svg>
+    </div>
+  </div>
+</div>
+
+<!-- Add Node Modal -->
+<div class="modal-overlay" id="addModal" style="display:none">
+  <div class="modal">
+    <h3 id="modalTitle">Add Node</h3>
+    <div class="form-row">
+      <label>Text</label>
+      <textarea id="m_text" rows="2" style="width:100%" placeholder="Describe the cause or effect..."></textarea>
+    </div>
+    <div class="form-row">
+      <label>Type</label>
+      <select id="m_type" style="width:100%">
+        <option value="root">Root Cause</option>
+        <option value="cause">Contributing Cause</option>
+        <option value="effect" selected>Immediate Effect</option>
+        <option value="long">Long-term Effect</option>
+        <option value="factor">Factor</option>
+        <option value="consequence">Consequence</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmAdd()">Add Node</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Node Modal -->
+<div class="modal-overlay" id="editModal" style="display:none">
+  <div class="modal">
+    <h3>Edit Node</h3>
+    <div class="form-row">
+      <label>Text</label>
+      <textarea id="em_text" rows="2" style="width:100%"></textarea>
+    </div>
+    <div class="form-row">
+      <label>Type</label>
+      <select id="em_type" style="width:100%">
+        <option value="root">Root Cause</option>
+        <option value="cause">Contributing Cause</option>
+        <option value="effect">Immediate Effect</option>
+        <option value="long">Long-term Effect</option>
+        <option value="factor">Factor</option>
+        <option value="consequence">Consequence</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// State
+let chains = [];       // [{id, title, nodes:[{id,text,type,parentId,x,y}]}]
+let activeChainId = null;
+let selectedNodeId = null;
+let nextId = 1;
+let modalMode = 'root'; // 'root' or 'child'
+let editingNodeId = null;
+
+// Type config
+const TYPES = {
+  root:        {label:'Root Cause',     cls:'t-root',        bg:'#ef444422', border:'#ef4444', color:'#fca5a5'},
+  cause:       {label:'Contributing',   cls:'t-cause',       bg:'#f59e0b22', border:'#f59e0b', color:'#fcd34d'},
+  effect:      {label:'Immediate Effect',cls:'t-effect',    bg:'#6366f122', border:'#6366f1', color:'#a5b4fc'},
+  long:        {label:'Long-term',      cls:'t-long',        bg:'#10b98122', border:'#10b981', color:'#6ee7b7'},
+  factor:      {label:'Factor',         cls:'t-factor',      bg:'#8b5cf622', border:'#8b5cf6', color:'#c4b5fd'},
+  consequence: {label:'Consequence',    cls:'t-consequence', bg:'#ec489922', border:'#ec4899', color:'#f9a8d4'},
+};
+
+function getChain(){ return chains.find(c=>c.id===activeChainId) }
+
+function newChain(){
+  const title = prompt('Chain title (e.g. "Causes of WWI"):','Chain '+(chains.length+1));
+  if(!title) return;
+  const c = {id:'c'+(nextId++), title, nodes:[]};
+  chains.push(c);
+  activeChainId = c.id;
+  selectedNodeId = null;
+  renderChainsList();
+  renderDiagram();
+}
+
+function switchChain(id){
+  activeChainId = id;
+  selectedNodeId = null;
+  renderChainsList();
+  renderDiagram();
+}
+
+function deleteChain(id){
+  if(!confirm('Delete this chain?')) return;
+  chains = chains.filter(c=>c.id!==id);
+  if(activeChainId===id) activeChainId = chains.length?chains[0].id:null;
+  renderChainsList();
+  renderDiagram();
+}
+
+function renderChainsList(){
+  const el = document.getElementById('chainsList');
+  if(!chains.length){el.innerHTML='<span style="color:var(--muted);font-size:.8rem">No chains yet</span>';return;}
+  el.innerHTML = chains.map(c=>`
+    <div class="chain-item${c.id===activeChainId?' active':''}" onclick="switchChain('${c.id}')">
+      <span>🔗 ${c.text||c.title}</span>
+      <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteChain('${c.id}')">✕</button>
+    </div>
+  `).join('');
+}
+
+// Modal
+function openAddModal(mode){
+  modalMode = mode;
+  if(mode==='child' && !selectedNodeId){ alert('Select a node first to add an effect from it.'); return; }
+  if(!activeChainId){ alert('Create a chain first.'); return; }
+  document.getElementById('modalTitle').textContent = mode==='root'?'Add Root Cause':'Add Effect / Branch';
+  document.getElementById('m_text').value='';
+  if(mode==='root') document.getElementById('m_type').value='root';
+  else document.getElementById('m_type').value='effect';
+  document.getElementById('addModal').style.display='flex';
+  setTimeout(()=>document.getElementById('m_text').focus(),50);
+}
+
+function closeModal(){ document.getElementById('addModal').style.display='none'; }
+
+function confirmAdd(){
+  const text = document.getElementById('m_text').value.trim();
+  const type = document.getElementById('m_type').value;
+  if(!text){ alert('Please enter some text.'); return; }
+  const chain = getChain();
+  if(!chain) return;
+  const node = {id:'n'+(nextId++), text, type, parentId: modalMode==='child'?selectedNodeId:null, x:0, y:0};
+  chain.nodes.push(node);
+  closeModal();
+  computeLayout(chain);
+  selectedNodeId = node.id;
+  renderDiagram();
+  updateSelectedInfo();
+}
+
+function openEditModal(id){
+  editingNodeId = id;
+  const chain = getChain();
+  const n = chain&&chain.nodes.find(x=>x.id===id);
+  if(!n) return;
+  document.getElementById('em_text').value = n.text;
+  document.getElementById('em_type').value = n.type;
+  document.getElementById('editModal').style.display='flex';
+  setTimeout(()=>document.getElementById('em_text').focus(),50);
+}
+
+function closeEditModal(){ document.getElementById('editModal').style.display='none'; editingNodeId=null; }
+
+function confirmEdit(){
+  const text = document.getElementById('em_text').value.trim();
+  const type = document.getElementById('em_type').value;
+  if(!text) return;
+  const chain = getChain();
+  const n = chain&&chain.nodes.find(x=>x.id===editingNodeId);
+  if(n){ n.text=text; n.type=type; }
+  closeEditModal();
+  computeLayout(chain);
+  renderDiagram();
+}
+
+function deleteNode(id){
+  const chain = getChain();
+  if(!chain) return;
+  if(!confirm('Delete this node and all its children?')) return;
+  deleteSubtree(chain, id);
+  if(selectedNodeId===id) selectedNodeId=null;
+  computeLayout(chain);
+  renderDiagram();
+  updateSelectedInfo();
+}
+
+function deleteSubtree(chain, id){
+  chain.nodes.filter(n=>n.parentId===id).forEach(n=>deleteSubtree(chain, n.id));
+  chain.nodes = chain.nodes.filter(n=>n.id!==id);
+}
+
+// Layout: left-to-right tree
+// Assign depth = column, then vertical positions by order
+function computeLayout(chain){
+  if(!chain||!chain.nodes.length) return;
+  const COL_W = 220, ROW_H = 120;
+
+  // BFS order
+  const roots = chain.nodes.filter(n=>!n.parentId);
+  const depths = {}; // id -> depth
+  const order = [];  // BFS
+  const queue = roots.map(n=>({n, depth:0}));
+  const visited = new Set();
+  while(queue.length){
+    const {n, depth} = queue.shift();
+    if(visited.has(n.id)) continue;
+    visited.add(n.id);
+    depths[n.id] = depth;
+    order.push(n.id);
+    chain.nodes.filter(x=>x.parentId===n.id).forEach(c=>queue.push({n:c, depth:depth+1}));
+  }
+
+  // Group by depth
+  const byDepth = {};
+  order.forEach(id=>{
+    const d=depths[id];
+    if(!byDepth[d]) byDepth[d]=[];
+    byDepth[d].push(id);
+  });
+
+  // Assign positions
+  const START_X=20, START_Y=30;
+  Object.keys(byDepth).forEach(d=>{
+    const ids = byDepth[d];
+    ids.forEach((id,i)=>{
+      const n = chain.nodes.find(x=>x.id===id);
+      if(n){
+        n.x = START_X + parseInt(d)*COL_W;
+        n.y = START_Y + i*ROW_H;
+      }
+    });
+  });
+
+  // Compute diagram size
+  const maxX = Math.max(...chain.nodes.map(n=>n.x))+200;
+  const maxY = Math.max(...chain.nodes.map(n=>n.y))+100;
+  const diag = document.getElementById('diagram');
+  if(diag){ diag.style.width=maxX+'px'; diag.style.height=maxY+'px'; }
+}
+
+function resetLayout(){
+  const chain = getChain();
+  if(chain){ computeLayout(chain); renderDiagram(); }
+}
+
+// Render
+function renderDiagram(){
+  const chain = getChain();
+  const emptyEl = document.getElementById('emptyState');
+  const diagEl  = document.getElementById('diagram');
+
+  if(!chain||!chain.nodes.length){
+    if(chain){ emptyEl.style.display='none'; diagEl.style.display='block'; }
+    else { emptyEl.style.display='block'; diagEl.style.display='none'; }
+    document.getElementById('diag-svg').innerHTML='';
+    diagEl.querySelectorAll('.ce-node').forEach(e=>e.remove());
+    document.getElementById('addEffectBtn').disabled=!selectedNodeId;
+    return;
+  }
+
+  emptyEl.style.display='none';
+  diagEl.style.display='block';
+
+  // Draw arrows
+  let svgHtml='';
+  chain.nodes.forEach(n=>{
+    if(!n.parentId) return;
+    const parent = chain.nodes.find(x=>x.id===n.parentId);
+    if(!parent) return;
+    const x1=parent.x+170, y1=parent.y+40;
+    const x2=n.x,          y2=n.y+40;
+    const mx=(x1+x2)/2;
+    const tc = TYPES[n.type];
+    svgHtml+=`<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" stroke="${tc.border}" stroke-width="2" fill="none" stroke-opacity=".6"/>
+    <polygon points="${x2},${y2} ${x2-8},${y2-5} ${x2-8},${y2+5}" fill="${tc.border}" opacity=".6"/>`;
+  });
+  document.getElementById('diag-svg').innerHTML=svgHtml;
+
+  // Render node divs
+  const existing={};
+  diagEl.querySelectorAll('.ce-node').forEach(d=>{existing[d.dataset.id]=d});
+  // Remove stale
+  Object.keys(existing).forEach(id=>{if(!chain.nodes.find(n=>n.id===id))existing[id].remove()});
+
+  chain.nodes.forEach(n=>{
+    const tc = TYPES[n.type]||TYPES.effect;
+    let div = existing[n.id];
+    if(!div){
+      div = document.createElement('div');
+      div.className='ce-node';
+      div.dataset.id=n.id;
+      div.innerHTML=`<div class="ce-box">
+        <div class="ce-type" style="color:${tc.color}">${tc.label}</div>
+        <div class="ce-text"></div>
+      </div>
+      <div class="node-actions">
+        <button class="nact nact-edit" onclick="event.stopPropagation();openEditModal('${n.id}')" title="Edit">✏</button>
+        <button class="nact nact-add" onclick="event.stopPropagation();selectDiagNode('${n.id}');openAddModal('child')" title="Add effect">+</button>
+        <button class="nact nact-del" onclick="event.stopPropagation();deleteNode('${n.id}')" title="Delete">×</button>
+      </div>`;
+      div.addEventListener('click',()=>selectDiagNode(n.id));
+      diagEl.appendChild(div);
+    }
+    const box = div.querySelector('.ce-box');
+    const typeDiv = div.querySelector('.ce-type');
+    const textDiv = div.querySelector('.ce-text');
+    box.style.background=tc.bg;
+    box.style.borderColor=tc.border+'88';
+    typeDiv.style.color=tc.color;
+    typeDiv.textContent=tc.label;
+    textDiv.textContent=n.text;
+    textDiv.style.color='#fff';
+    div.style.left=n.x+'px';
+    div.style.top=n.y+'px';
+    div.classList.toggle('selected',n.id===selectedNodeId);
+  });
+
+  document.getElementById('addEffectBtn').disabled=!selectedNodeId;
+}
+
+function selectDiagNode(id){
+  selectedNodeId=id;
+  document.querySelectorAll('.ce-node').forEach(d=>d.classList.toggle('selected',d.dataset.id===id));
+  document.getElementById('addEffectBtn').disabled=false;
+  updateSelectedInfo();
+}
+
+function updateSelectedInfo(){
+  const el=document.getElementById('selectedInfo');
+  const chain=getChain();
+  if(!selectedNodeId||!chain){el.innerHTML='<span style="color:var(--muted)">Click a node to select it</span>';return;}
+  const n=chain.nodes.find(x=>x.id===selectedNodeId);
+  if(!n){el.innerHTML='';return;}
+  const tc=TYPES[n.type]||TYPES.effect;
+  const children=chain.nodes.filter(x=>x.parentId===selectedNodeId).length;
+  el.innerHTML=`<div class="type-badge ${tc.cls}" style="margin-bottom:6px">${tc.label}</div>
+  <div style="font-size:.85rem;font-weight:600;margin-bottom:4px">${n.text}</div>
+  <div style="font-size:.75rem;color:var(--muted)">${children} child node${children!==1?'s':''}</div>`;
+}
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT') return;
+  if(e.key==='r'||e.key==='R') resetLayout();
+  if((e.key==='Delete'||e.key==='Backspace')&&selectedNodeId){ deleteNode(selectedNodeId); }
+  if(e.key==='n') openAddModal('child');
+  if(e.key==='Escape'){closeModal();closeEditModal();}
+});
+
+// Save / Load
+function saveChains(){
+  const saves=JSON.parse(localStorage.getItem('ce-saves')||'[]');
+  const label=chains.map(c=>c.title).join(', ').slice(0,60)||'Untitled';
+  saves.unshift({label,ts:new Date().toLocaleString(),chains:JSON.parse(JSON.stringify(chains)),nextId});
+  if(saves.length>10) saves.pop();
+  localStorage.setItem('ce-saves',JSON.stringify(saves));
+  renderSaved();
+  alert('Saved!');
+}
+
+function loadSave(i){
+  const saves=JSON.parse(localStorage.getItem('ce-saves')||'[]');
+  const s=saves[i];
+  if(!s)return;
+  chains=s.chains;nextId=s.nextId;
+  activeChainId=chains.length?chains[0].id:null;
+  selectedNodeId=null;
+  if(activeChainId) computeLayout(getChain());
+  renderChainsList();
+  renderDiagram();
+  renderSaved();
+}
+
+function deleteSave(i){
+  const saves=JSON.parse(localStorage.getItem('ce-saves')||'[]');
+  saves.splice(i,1);
+  localStorage.setItem('ce-saves',JSON.stringify(saves));
+  renderSaved();
+}
+
+function renderSaved(){
+  const saves=JSON.parse(localStorage.getItem('ce-saves')||'[]');
+  const el=document.getElementById('savedList');
+  if(!saves.length){el.innerHTML='<span style="color:var(--muted);font-size:.78rem">No saves</span>';return;}
+  el.innerHTML=saves.map((s,i)=>`
+    <div class="saved-item">
+      <span title="${s.label}">${s.label}</span>
+      <button class="btn btn-ghost" style="padding:2px 6px;font-size:.7rem" onclick="loadSave(${i})">Load</button>
+      <button class="btn btn-danger" style="padding:2px 6px;font-size:.7rem" onclick="deleteSave(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function exportChain(){
+  const chain=getChain();
+  if(!chain||!chain.nodes.length){alert('Nothing to export.');return;}
+  let text=`CAUSE & EFFECT CHAIN: ${chain.title}\n${'='.repeat(40)}\n\n`;
+
+  function printNode(id,depth){
+    const n=chain.nodes.find(x=>x.id===id);
+    if(!n)return;
+    const tc=TYPES[n.type];
+    text+='  '.repeat(depth)+`[${tc.label}] ${n.text}\n`;
+    chain.nodes.filter(x=>x.parentId===id).forEach(c=>printNode(c.id,depth+1));
+  }
+  chain.nodes.filter(n=>!n.parentId).forEach(n=>printNode(n.id,0));
+
+  const blob=new Blob([text],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`cause-effect-${chain.title.replace(/\s+/g,'-')}.txt`;
+  a.click();
+}
+
+// Close modals on overlay click
+document.getElementById('addModal').addEventListener('click',e=>{if(e.target===document.getElementById('addModal'))closeModal()});
+document.getElementById('editModal').addEventListener('click',e=>{if(e.target===document.getElementById('editModal'))closeEditModal()});
+
+// Init
+renderSaved();
+</script>
+</body>
+</html>
