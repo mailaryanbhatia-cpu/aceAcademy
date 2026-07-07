@@ -1,410 +1,598 @@
 <!DOCTYPE html>
-<html data-theme="dark" lang="en">
+<html lang="en">
 <head>
-<link rel="stylesheet" href="/ace-shared.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Study Schedule Generator — aceAcademy</title>
-<link rel="stylesheet" href="ace-theme.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Study Schedule Builder — Ace Academy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
 <style>
-:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706}
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
-.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px;white-space:nowrap}.logo span{color:var(--accent2)}
-.nav-link{text-decoration:none;color:var(--muted);font-size:.82rem;padding:5px 9px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}.nav-link.active{color:var(--accent);font-weight:700}
-.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
-.hero h1{font-size:1.9rem;font-weight:800;margin-bottom:6px}
-.hero p{opacity:.85;max-width:520px;margin:0 auto;font-size:.95rem}
-.container{max-width:900px;margin:24px auto;padding:0 20px}
-.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
-.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
-.field{display:flex;flex-direction:column;gap:5px}
-.field.full{grid-column:1/-1}
-label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-input,select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;color:var(--text);background:#fff;outline:none}
-input:focus,select:focus{border-color:var(--accent)}
-.btn{padding:10px 24px;border-radius:9px;border:none;cursor:pointer;font-size:.9rem;font-weight:700;margin-top:14px}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#3730a3}
-.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent);margin-left:8px}.btn-outline:hover{background:#eff6ff}
-
-.subj-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.subj-tag{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.83rem;font-weight:600;color:var(--muted);transition:.15s}
-.subj-tag.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
-
-/* Schedule output */
-.schedule-wrap{display:none}
-.week-header{font-size:1rem;font-weight:800;color:var(--accent);margin:18px 0 10px;border-left:3px solid var(--accent);padding-left:10px}
-.day-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;flex-wrap:wrap}
-.day-label{font-size:.8rem;font-weight:700;color:var(--muted);min-width:80px;padding-top:8px;flex-shrink:0}
-.day-tasks{display:flex;gap:8px;flex-wrap:wrap;flex:1}
-.task-chip{padding:6px 12px;border-radius:20px;font-size:.82rem;font-weight:600;white-space:nowrap}
-.rest-chip{padding:6px 12px;border-radius:20px;font-size:.82rem;font-weight:600;background:#f3f4f6;color:var(--muted)}
-.exam-day{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-weight:700;color:var(--red);font-size:.88rem}
-
-.intensity-row{display:flex;gap:6px;align-items:center;margin-bottom:10px;font-size:.82rem;color:var(--muted)}
-.int-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-
-@media print{.topnav,.hero,.card:first-of-type,.btn{display:none!important}.schedule-wrap{display:block!important}body{background:#fff}}
-
-  input,select{background:#1a1a2e;color:var(--text);border-color:var(--border)}
-  .subj-tag{background:#1a1a2e}.topnav{background:#12121f;border-color:var(--border)}
-}
-
-[data-theme="dark"]{--bg:#0b1120;--card:#1a2540;--text:#e8edf5;--muted:#7a8fa8;--border:#2a3a55;--surface:#111827}
-[data-theme="dark"] body{background:var(--bg);color:var(--text)}
-[data-theme="dark"] .topnav,[data-theme="dark"] nav.topnav{background:#0f1a2e;border-color:var(--border)}
-[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#1a2540;color:var(--text);border-color:var(--border)}
-[data-theme="dark"] .card,[data-theme="dark"] .add-form{background:#1a2540;border-color:var(--border)}
-[data-theme="dark"] .card-face{background:#1a2540;border-color:var(--border)}
-[data-theme="dark"] .modal,[data-theme="dark"] .drawer{background:#1a2540}
-[data-theme="dark"] .deck-btn{background:#1a2540;color:var(--muted);border-color:var(--border)}
-[data-theme="dark"] .tab.active{background:#111827}
-[data-theme="dark"] .school-table,[data-theme="dark"] .school-table th{background:#0f1a2e;color:var(--text)}
-[data-theme="dark"] .school-table td{border-color:var(--border)}
-.theme-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:.85rem;color:var(--muted);margin-left:auto;flex-shrink:0}
-</style>
-<script src="theme.js"></script>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AcerAcademy">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <script src="/streak.js"></script>
-  <script src="/sounds.js"></script>
-  <script src="/coins.js"></script>
-  <script src="/nav-profile.js"></script>
-  <script src="/splash.js"></script>
-<script src="/timer.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="/firebase-auth.js"></script>
-<script src="/firestore.js"></script>
-<script src="/sync-indicator.js"></script>
-
-<style id="ace-mobile-fix">
-@media(max-width:700px){
-  header,nav.topnav,.ace-nav{padding:0 14px!important;height:56px!important;gap:10px!important}
-  .tagline,.srch-wrap,.search-wrap{display:none!important}
-  .brand-name,.logo{font-size:1rem!important}
-  main,#mainContent,.main-content,.page-content{padding:14px 12px 80px!important}
-  .card,.tool-card,.stat-card,.feature-card{border-radius:10px!important}
-  h1{font-size:1.4rem!important}
-  h2{font-size:1.1rem!important}
-  table{font-size:.78rem}
-  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr!important}
-  .flex-row{flex-direction:column!important}
-}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:1100px;margin:0 auto;padding:20px}
+h2{font-size:1rem;font-weight:600;color:var(--accent2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+input,select,textarea{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:.9rem;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+label{font-size:.82rem;color:var(--muted);display:block;margin-bottom:4px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.9rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-danger{background:#7f1d1d;color:#fca5a5}
+.btn-danger:hover{background:#991b1b}
+.btn-sm{padding:5px 12px;font-size:.8rem}
+/* Exam list */
+.exam-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#0d1728;border-radius:8px;margin-bottom:8px;border-left:4px solid var(--accent)}
+.exam-row .er-name{flex:1;font-weight:600}
+.exam-row .er-date{color:var(--muted);font-size:.85rem;white-space:nowrap}
+.exam-row .er-pri{font-size:.75rem;padding:2px 8px;border-radius:12px;font-weight:700;white-space:nowrap}
+.pri-high{background:#7f1d1d;color:#fca5a5}
+.pri-med{background:#78350f;color:#fcd34d}
+.pri-low{background:#14532d;color:#86efac}
+/* Hours grid */
+.hours-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day-col{text-align:center}
+.day-col label{font-size:.78rem;margin-bottom:6px}
+.day-col input{text-align:center;padding:6px 4px}
+/* Calendar */
+.cal-grid{display:grid;gap:6px}
+.cal-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-day{background:#0d1728;border-radius:8px;padding:8px;min-height:90px;border:1px solid var(--border)}
+.cal-day.today{border-color:var(--accent)}
+.cal-day.past{opacity:.45}
+.cal-day-header{font-size:.72rem;color:var(--muted);font-weight:700;margin-bottom:4px;display:flex;justify-content:space-between}
+.cal-chip{font-size:.7rem;padding:2px 6px;border-radius:5px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.cal-day-label{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:4px}
+.cal-day-label span{text-align:center;font-size:.75rem;color:var(--muted);font-weight:700}
+/* List view */
+.list-day{margin-bottom:16px}
+.list-day h4{font-size:.88rem;font-weight:700;color:var(--accent2);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.list-block{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0d1728;border-radius:8px;margin-bottom:6px}
+.list-block .lb-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.list-block .lb-subj{font-weight:600;flex:1}
+.list-block .lb-hrs{font-size:.82rem;color:var(--muted);white-space:nowrap}
+.list-block .lb-note{font-size:.78rem;color:var(--muted)}
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:20px}
+.tab{padding:8px 18px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:.88rem;font-weight:600}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* Color swatches for subjects */
+.COLORS-hint{font-size:.75rem;color:var(--muted);margin-top:6px}
+/* Summary bar */
+.summary-bar{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.summary-chip{background:#0d1728;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:.82rem}
+.summary-chip strong{display:block;font-size:1.1rem;color:var(--accent2)}
+/* Exam color dots */
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.empty-state{text-align:center;color:var(--muted);padding:40px;font-size:.9rem}
 </style>
 </head>
 <body>
-<header class="ace-header">
-  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
-  <a href="index.html" class="ace-nav-link">← Home</a>
-  
-  <div class="ace-spacer"></div>
-  <a href="alltools.html" class="ace-nav-link">All Tools</a>
-</header>
-
-<div class="hero">
-  <h1>📅 Study Schedule Generator</h1>
-  <p>Enter your exam date and subjects — get a personalised day-by-day study plan automatically.</p>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📅 Study Schedule Builder</h1>
 </div>
 
 <div class="container">
-  <div class="card">
-    <h2>Build Your Plan</h2>
-    <div class="form-grid">
-      <div class="field">
-        <label>Exam / Test Date</label>
-        <input type="date" id="examDate">
+
+<!-- Setup Section -->
+<div id="setupSection">
+  <div class="grid2">
+    <!-- Exams/Deadlines -->
+    <div class="card">
+      <h2>📚 Exams &amp; Deadlines</h2>
+      <div style="display:grid;gap:10px;margin-bottom:12px">
+        <div>
+          <label>Subject / Exam Name</label>
+          <input id="ei_name" placeholder="e.g. AP Biology, Essay Draft"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label>Date</label>
+            <input id="ei_date" type="date"/>
+          </div>
+          <div>
+            <label>Priority</label>
+            <select id="ei_pri">
+              <option value="high">🔴 High</option>
+              <option value="med" selected>🟡 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label>Notes (optional)</label>
+          <input id="ei_notes" placeholder="e.g. Focus on chapters 5–9"/>
+        </div>
+        <button class="btn btn-primary" onclick="addExam()">+ Add Exam / Deadline</button>
       </div>
-      <div class="field">
-        <label>Daily Study Time</label>
-        <select id="dailyHours">
-          <option value="1">1 hour / day</option>
-          <option value="2" selected>2 hours / day</option>
-          <option value="3">3 hours / day</option>
-          <option value="4">4 hours / day</option>
-        </select>
+      <div id="examList"><div class="empty-state">No exams added yet</div></div>
+    </div>
+
+    <!-- Available Hours -->
+    <div class="card">
+      <h2>⏱️ Available Hours Per Day</h2>
+      <div class="hours-grid" style="margin-bottom:16px">
+        <div class="day-col"><label>Mon</label><input id="h0" type="number" min="0" max="16" value="2" step="0.5"/></div>
+        <div class="day-col"><label>Tue</label><input id="h1" type="number" min="0" max="16" value="2" step="0.5"/></div>
+        <div class="day-col"><label>Wed</label><input id="h2" type="number" min="0" max="16" value="2" step="0.5"/></div>
+        <div class="day-col"><label>Thu</label><input id="h3" type="number" min="0" max="16" value="2" step="0.5"/></div>
+        <div class="day-col"><label>Fri</label><input id="h4" type="number" min="0" max="16" value="1.5" step="0.5"/></div>
+        <div class="day-col"><label>Sat</label><input id="h5" type="number" min="0" max="16" value="3" step="0.5"/></div>
+        <div class="day-col"><label>Sun</label><input id="h6" type="number" min="0" max="16" value="3" step="0.5"/></div>
       </div>
-      <div class="field">
-        <label>Study Style</label>
-        <select id="studyStyle">
-          <option value="balanced">Balanced (rotate subjects daily)</option>
-          <option value="deep">Deep dive (one subject per day)</option>
-          <option value="cramming">Intensive (last-week focus)</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Rest Days</label>
-        <select id="restDays">
-          <option value="sun">Sundays only</option>
-          <option value="sat">Saturdays only</option>
-          <option value="both" selected>Weekends off</option>
-          <option value="none">No rest days</option>
-        </select>
-      </div>
-      <div class="field full">
-        <label>Subjects to Study</label>
-        <div class="subj-tags" id="subjTags">
-          <div class="subj-tag selected" onclick="toggleSubj(this,'Math')">➕ Math</div>
-          <div class="subj-tag selected" onclick="toggleSubj(this,'Science')">🔬 Science</div>
-          <div class="subj-tag selected" onclick="toggleSubj(this,'English')">📖 English</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'History')">🌍 History</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'CS')">💻 CS</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'AP Calculus')">∫ AP Calc</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'AP Biology')">🧬 AP Bio</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'AP Chemistry')">⚗️ AP Chem</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'AP Physics')">⚡ AP Physics</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'AP History')">📜 AP History</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'AP English')">✍️ AP English</div>
-          <div class="subj-tag" onclick="toggleSubj(this,'Languages')">🗣️ Languages</div>
+      <h2 style="margin-top:8px">📅 Schedule Range</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div>
+          <label>Start Date</label>
+          <input id="s_start" type="date"/>
+        </div>
+        <div>
+          <label>End Date (optional)</label>
+          <input id="s_end" type="date" placeholder="auto"/>
         </div>
       </div>
-      <div class="field full" id="apImportRow">
-        <label>Import from AP Countdown <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(auto-fills exam date & subjects)</span></label>
-        <div id="apExamList" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+      <h2>⚙️ Options</h2>
+      <div style="display:grid;gap:10px;margin-bottom:16px">
+        <div>
+          <label>Buffer days before exam</label>
+          <select id="opt_buffer">
+            <option value="0">0 — study right up to the day</option>
+            <option value="1" selected>1 — light review day before</option>
+            <option value="2">2 — two rest/review days</option>
+          </select>
+        </div>
+        <div>
+          <label>Allocation method</label>
+          <select id="opt_alloc">
+            <option value="urgency">Urgency-weighted (closer exam = more time)</option>
+            <option value="equal">Equal split per active subject</option>
+            <option value="priority">Priority-weighted (High &gt; Med &gt; Low)</option>
+          </select>
+        </div>
       </div>
-      <div class="field full">
-        <label>Student Name (optional)</label>
-        <input type="text" id="studentName" placeholder="e.g. Alex">
-      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="generate()">✨ Generate Schedule</button>
     </div>
-    <button class="btn btn-primary" onclick="generateSchedule()">📅 Generate Schedule</button>
-    <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
-  </div>
-
-  <div class="schedule-wrap" id="scheduleWrap">
-    <div class="card" id="scheduleOut"></div>
   </div>
 </div>
 
+<!-- Schedule Output -->
+<div id="scheduleSection" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+    <h2 style="margin:0">📅 Your Study Plan</h2>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="showSetup()">← Edit Setup</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportPlan()">⬇ Export</button>
+      <button class="btn btn-primary btn-sm" onclick="saveToStorage()">💾 Save</button>
+    </div>
+  </div>
+
+  <div class="summary-bar" id="summaryBar"></div>
+
+  <!-- Legend -->
+  <div id="legend" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px"></div>
+
+  <div class="tabs">
+    <button class="tab active" id="tab-cal" onclick="switchView('cal')">📆 Calendar</button>
+    <button class="tab" id="tab-list" onclick="switchView('list')">📋 Daily List</button>
+  </div>
+
+  <div id="calView"></div>
+  <div id="listView" style="display:none"></div>
+
+  <!-- Saved schedules -->
+  <div class="card" style="margin-top:24px">
+    <h2>💾 Saved Schedules</h2>
+    <div id="savedList"><div class="empty-state">No saved schedules</div></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
 <script>
-function toggleSubj(el, name){ el.classList.toggle('selected'); }
-
-function getSelectedSubjects(){
-  return [...document.querySelectorAll('.subj-tag.selected')].map(el=>el.textContent.trim().replace(/^[^\w]+/,'').trim());
-}
-
-const COLORS = [
-  {bg:'#dbeafe',text:'#1e40af'},{bg:'#d1fae5',text:'#065f46'},{bg:'#fce7f3',text:'#9d174d'},
-  {bg:'#fef3c7',text:'#78350f'},{bg:'#ede9fe',text:'#4c1d95'},{bg:'#fee2e2',text:'#7f1d1d'},
-  {bg:'#cffafe',text:'#164e63'},{bg:'#fef9c3',text:'#713f12'},{bg:'#f0fdf4',text:'#14532d'},
-  {bg:'#fdf2f8',text:'#701a75'},{bg:'#fff7ed',text:'#7c2d12'},{bg:'#f0f9ff',text:'#0c4a6e'},
+const PAL = [
+  '#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6',
+  '#06b6d4','#f97316','#ec4899','#14b8a6','#a855f7',
+  '#84cc16','#0ea5e9','#fb923c','#e879f9','#4ade80'
 ];
 
-function generateSchedule(){
-  const examDate = document.getElementById('examDate').value;
-  if(!examDate){ alert('Please select an exam date.'); return; }
+let exams = [];
+let planData = null; // {days:[{date,dayOfWeek,blocks:[{subj,hrs,note,color,examDate}]}]}
+
+// ——— Exam management ———
+function addExam(){
+  const name = document.getElementById('ei_name').value.trim();
+  const date = document.getElementById('ei_date').value;
+  const pri  = document.getElementById('ei_pri').value;
+  const notes= document.getElementById('ei_notes').value.trim();
+  if(!name||!date){alert('Please fill in subject and date.');return;}
+  const color = PAL[exams.length % PAL.length];
+  exams.push({name,date,pri,notes,color});
+  document.getElementById('ei_name').value='';
+  document.getElementById('ei_notes').value='';
+  renderExams();
+}
+
+function removeExam(i){
+  exams.splice(i,1);
+  // re-assign colors
+  exams.forEach((e,idx)=>{e.color=PAL[idx%PAL.length]});
+  renderExams();
+}
+
+function renderExams(){
+  const el = document.getElementById('examList');
+  if(!exams.length){el.innerHTML='<div class="empty-state">No exams added yet</div>';return;}
+  el.innerHTML = exams.map((e,i)=>`
+    <div class="exam-row" style="border-left-color:${e.color}">
+      <span class="dot" style="background:${e.color}"></span>
+      <span class="er-name">${e.name}</span>
+      <span class="er-date">${fmtDate(e.date)}</span>
+      <span class="er-pri pri-${e.pri}">${e.pri.toUpperCase()}</span>
+      <button class="btn btn-danger btn-sm" onclick="removeExam(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function fmtDate(ds){
+  const d=new Date(ds+'T12:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+function fmtDateShort(ds){
+  const d=new Date(ds+'T12:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+// ——— Schedule generation ———
+function getHours(){
+  return [0,1,2,3,4,5,6].map(i=>parseFloat(document.getElementById('h'+i).value)||0);
+}
+
+function dateStr(d){
+  return d.toISOString().split('T')[0];
+}
+
+function addDays(d,n){
+  const r=new Date(d);r.setDate(r.getDate()+n);return r;
+}
+
+function generate(){
+  if(!exams.length){alert('Add at least one exam or deadline first.');return;}
+  const hoursPerDow = getHours(); // [Mon..Sun] = dow 1..0 in JS
+  const buffer = parseInt(document.getElementById('opt_buffer').value);
+  const alloc  = document.getElementById('opt_alloc').value;
+
+  const startVal = document.getElementById('s_start').value;
+  const endVal   = document.getElementById('s_end').value;
+
+  // Sort exams by date
+  const sortedExams = [...exams].sort((a,b)=>a.date.localeCompare(b.date));
 
   const today = new Date(); today.setHours(0,0,0,0);
-  const exam = new Date(examDate); exam.setHours(0,0,0,0);
-  const daysLeft = Math.round((exam - today) / 86400000);
+  const startDate = startVal ? new Date(startVal+'T00:00:00') : today;
 
-  if(daysLeft < 1){ alert('Please select a future date.'); return; }
-
-  const subjects = getSelectedSubjects();
-  if(!subjects.length){ alert('Select at least one subject.'); return; }
-
-  const hours = parseInt(document.getElementById('dailyHours').value);
-  const style = document.getElementById('studyStyle').value;
-  const restDays = document.getElementById('restDays').value;
-  const name = document.getElementById('studentName').value;
-
-  // Assign colors to subjects
-  const subjColors = {};
-  subjects.forEach((s,i)=>{ subjColors[s] = COLORS[i % COLORS.length]; });
-
-  // Build day-by-day plan
-  const plan = [];
-  let subjIdx = 0;
-
-  for(let i=0; i<daysLeft; i++){
-    const d = new Date(today); d.setDate(today.getDate()+i);
-    const dow = d.getDay(); // 0=Sun,6=Sat
-    const isWeekend = dow===0||dow===6;
-    const isRest = (restDays==='both'&&isWeekend)||(restDays==='sun'&&dow===0)||(restDays==='sat'&&dow===6);
-    const isExam = i===daysLeft-1;
-
-    const dayLabel = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-
-    if(isExam){
-      plan.push({label:dayLabel, tasks:['EXAM DAY'], isExam:true});
-      continue;
-    }
-    if(isRest){
-      plan.push({label:dayLabel, tasks:[], isRest:true});
-      continue;
-    }
-
-    // Determine urgency
-    const pctDone = i/daysLeft;
-    const isLastWeek = daysLeft-i <= 7;
-
-    let todaySubjs = [];
-    if(style==='balanced'){
-      // Rotate subjects, fit within hours
-      const slotsPerHour = 1;
-      const slots = Math.max(1, Math.min(hours, subjects.length));
-      for(let s=0; s<slots; s++){
-        todaySubjs.push(subjects[(subjIdx+s)%subjects.length]);
-      }
-      subjIdx = (subjIdx+slots)%subjects.length;
-    } else if(style==='deep'){
-      todaySubjs = [subjects[subjIdx%subjects.length]];
-      subjIdx++;
-    } else { // cramming
-      if(isLastWeek){
-        // All subjects every day
-        todaySubjs = [...subjects];
-      } else {
-        const slots = Math.max(1, Math.min(2, subjects.length));
-        for(let s=0;s<slots;s++) todaySubjs.push(subjects[(subjIdx+s)%subjects.length]);
-        subjIdx=(subjIdx+slots)%subjects.length;
-      }
-    }
-
-    // Add review tag if close to exam
-    const tasks = todaySubjs.map(s=>{
-      if(isLastWeek && style!=='deep') return s+' (Review)';
-      return s;
-    });
-
-    plan.push({label:dayLabel, tasks, isExam:false, isRest:false});
+  // End date = last exam date
+  let endDate;
+  if(endVal){
+    endDate = new Date(endVal+'T00:00:00');
+  } else {
+    const lastExam = new Date(sortedExams[sortedExams.length-1].date+'T00:00:00');
+    endDate = lastExam;
   }
 
-  // Group into weeks
+  // Build day list
+  const days = [];
+  let cur = new Date(startDate);
+  while(cur <= endDate){
+    const dow = cur.getDay(); // 0=Sun..6=Sat
+    // Map to our array: Mon=0..Sun=6
+    const hi = dow===0?6:dow-1;
+    const hrs = hoursPerDow[hi];
+    days.push({date:dateStr(cur), dow, hrs, blocks:[]});
+    cur = addDays(cur,1);
+  }
+
+  if(!days.length){alert('No days in range.');return;}
+
+  // For each day, figure out which exams are still upcoming (not yet passed buffer)
+  // Then allocate hours among active exams
+
+  const priWeights = {high:3, med:1.5, low:1};
+
+  days.forEach(day=>{
+    if(day.hrs<=0){day.blocks=[];return;}
+    const dayDate = new Date(day.date+'T00:00:00');
+
+    // Active exams: exam date minus buffer >= today (i.e., not yet past)
+    const active = sortedExams.filter(e=>{
+      const examD = new Date(e.date+'T00:00:00');
+      const cutoff = addDays(examD, -buffer);
+      return dayDate <= cutoff;
+    });
+
+    if(!active.length){day.blocks=[];return;}
+
+    // Compute weights
+    let weights = active.map(e=>{
+      const examD = new Date(e.date+'T00:00:00');
+      const daysLeft = Math.max(1, Math.round((examD - dayDate)/(1000*60*60*24)));
+      if(alloc==='urgency') return {e, w: 1/daysLeft};
+      if(alloc==='priority') return {e, w: priWeights[e.pri]};
+      return {e, w:1}; // equal
+    });
+
+    const totalW = weights.reduce((s,x)=>s+x.w,0);
+    day.blocks = weights.map(({e,w})=>{
+      const hrs = Math.round((w/totalW)*day.hrs*10)/10;
+      if(hrs<0.25) return null;
+      const examD = new Date(e.date+'T00:00:00');
+      const daysLeft = Math.round((examD - dayDate)/(1000*60*60*24));
+      const note = daysLeft===0?'📝 Exam today!'
+                 : daysLeft===1?'🔔 Tomorrow!'
+                 : daysLeft<=3?`⚡ ${daysLeft} days left`
+                 : '';
+      return {subj:e.name, hrs, color:e.color, examDate:e.date, note};
+    }).filter(Boolean);
+  });
+
+  planData = {days, generated: new Date().toISOString()};
+  renderSchedule();
+  document.getElementById('setupSection').style.display='none';
+  document.getElementById('scheduleSection').style.display='block';
+  renderSaved();
+}
+
+function renderSchedule(){
+  if(!planData) return;
+  const {days} = planData;
+
+  // Summary
+  const totalHrs = days.reduce((s,d)=>s+d.hrs,0);
+  const studyDays = days.filter(d=>d.blocks.length).length;
+  const subjects = [...new Set(exams.map(e=>e.name))];
+  document.getElementById('summaryBar').innerHTML = `
+    <div class="summary-chip"><strong>${days.length}</strong> Days Planned</div>
+    <div class="summary-chip"><strong>${studyDays}</strong> Study Days</div>
+    <div class="summary-chip"><strong>${totalHrs.toFixed(1)}</strong> Total Hours</div>
+    <div class="summary-chip"><strong>${exams.length}</strong> Exam${exams.length!==1?'s':''}</div>
+  `;
+
+  // Legend
+  document.getElementById('legend').innerHTML = exams.map(e=>`
+    <span style="display:flex;align-items:center;gap:5px;font-size:.8rem;background:#0d1728;padding:4px 10px;border-radius:6px;border:1px solid var(--border)">
+      <span class="dot" style="background:${e.color}"></span>${e.name} <span style="color:var(--muted)">(${fmtDateShort(e.date)})</span>
+    </span>
+  `).join('');
+
+  renderCal();
+  renderList();
+}
+
+const DOW_LABELS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DOW_LABELS_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function renderCal(){
+  const {days} = planData;
+  if(!days.length) return;
+
+  // Build calendar weeks
+  const todayStr = dateStr(new Date());
+  const startDate = new Date(days[0].date+'T00:00:00');
+
+  // Pad to start of week (Sun)
+  const paddingStart = startDate.getDay(); // 0=Sun
+  const endDate = new Date(days[days.length-1].date+'T00:00:00');
+  const paddingEnd = 6 - endDate.getDay();
+
+  // Create a lookup
+  const dayMap = {};
+  days.forEach(d=>{dayMap[d.date]=d});
+
+  // Build grid of date strings (with null for padding)
+  const grid = [];
+  for(let i=0;i<paddingStart;i++) grid.push(null);
+  let cur = new Date(startDate);
+  while(cur <= endDate){
+    grid.push(dateStr(cur));
+    cur = addDays(cur,1);
+  }
+  for(let i=0;i<paddingEnd;i++) grid.push(null);
+
+  // Split into weeks
   const weeks = [];
-  for(let i=0; i<plan.length; i+=7){
-    weeks.push(plan.slice(i,i+7));
-  }
+  for(let i=0;i<grid.length;i+=7) weeks.push(grid.slice(i,i+7));
 
-  let html = `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-    <div>
-      <div style="font-size:1.2rem;font-weight:800">${name?name+"'s ":''}Study Schedule</div>
-      <div style="font-size:.85rem;color:var(--muted)">${daysLeft} days until exam · ${hours}h/day · ${subjects.length} subject${subjects.length!==1?'s':''}</div>
-    </div>
-    <div class="intensity-row">
-      ${subjects.map((s,i)=>`<span class="int-dot" style="background:${subjColors[s].bg};border:1.5px solid ${subjColors[s].text}"></span> ${s}`).join(' &nbsp;')}
-    </div>
-  </div>`;
+  let html = '<div class="cal-day-label">';
+  DOW_LABELS.forEach(d=>`<span>${d}</span>`).forEach(s=>{html+=s});
+  html += '</div><div class="cal-grid">';
 
-  weeks.forEach((week, wi)=>{
-    html += `<div class="week-header">Week ${wi+1}</div>`;
-    week.forEach(day=>{
-      if(day.isExam){
-        html += `<div class="exam-day">🎯 ${day.label} — EXAM DAY! Get good sleep, eat well, review notes.</div>`;
-      } else if(day.isRest){
-        html += `<div class="day-row"><span class="day-label">${day.label}</span><span class="rest-chip">🌿 Rest Day</span></div>`;
-      } else {
-        html += `<div class="day-row"><span class="day-label">${day.label}</span><div class="day-tasks">`;
-        day.tasks.forEach(t=>{
-          const baseName = t.replace(' (Review)','').replace(' (Cram)','');
-          const col = subjColors[baseName]||{bg:'#e5e7eb',text:'#374151'};
-          const isReview = t.includes('Review');
-          html += `<span class="task-chip" style="background:${col.bg};color:${col.text};border:1px solid ${col.text}40">${t}</span>`;
+  weeks.forEach(week=>{
+    html += '<div class="cal-week">';
+    week.forEach(ds=>{
+      if(!ds){html+='<div class="cal-day" style="opacity:.1"></div>';return;}
+      const day = dayMap[ds];
+      const isToday = ds===todayStr;
+      const isPast  = ds < todayStr;
+      let cls='cal-day';
+      if(isToday) cls+=' today';
+      if(isPast)  cls+=' past';
+      const dateObj = new Date(ds+'T12:00:00');
+      const dayN = dateObj.getDate();
+      const mon  = dateObj.toLocaleDateString('en-US',{month:'short'});
+      html += `<div class="${cls}">
+        <div class="cal-day-header">
+          <span>${dayN===1||dayN===dateObj.getDate()&&day&&day.blocks.length?mon+' ':''}${dayN}</span>
+          ${day&&day.hrs>0?`<span style="color:var(--muted);font-size:.65rem">${day.hrs}h</span>`:''}
+        </div>`;
+      if(day && day.blocks.length){
+        day.blocks.forEach(b=>{
+          html+=`<div class="cal-chip" style="background:${b.color}22;color:${b.color};border:1px solid ${b.color}44" title="${b.subj} — ${b.hrs}h">${b.subj.length>12?b.subj.slice(0,10)+'…':b.subj} ${b.hrs}h</div>`;
         });
-        html += `</div></div>`;
+        // Exam markers
+        exams.forEach(e=>{
+          if(e.date===ds) html+=`<div class="cal-chip" style="background:#ef444422;color:#fca5a5;border:1px solid #ef444466">📝 ${e.name.slice(0,8)} EXAM</div>`;
+        });
+      } else if(day){
+        // Exam markers even on 0-hour days
+        exams.forEach(e=>{
+          if(e.date===ds) html+=`<div class="cal-chip" style="background:#ef444422;color:#fca5a5;border:1px solid #ef444466">📝 EXAM</div>`;
+        });
       }
+      html += '</div>';
     });
+    html += '</div>';
   });
-
-  // Tips section
-  html += `<div style="margin-top:20px;padding:14px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
-    <div style="font-size:.88rem;font-weight:700;margin-bottom:8px">📌 Study Tips</div>
-    <div style="font-size:.82rem;color:var(--muted);line-height:1.7">
-      • Start each session by reviewing yesterday's material (5 min)<br>
-      • Use the Pomodoro technique: 25 min focus → 5 min break<br>
-      • In the last week, do full practice tests under timed conditions<br>
-      • Sleep at least 8 hours — memory consolidation happens during sleep<br>
-      • On exam day: light review only, no new material
-    </div>
-  </div>`;
-
-  document.getElementById('scheduleOut').innerHTML = html;
-  document.getElementById('scheduleWrap').style.display = 'block';
-  document.getElementById('scheduleWrap').scrollIntoView({behavior:'smooth',block:'start'});
-
-  // Persist inputs so the schedule survives a page refresh
-  localStorage.setItem('ace_schedule', JSON.stringify({
-    examDate,
-    hours: document.getElementById('dailyHours').value,
-    style: document.getElementById('studyStyle').value,
-    restDays: document.getElementById('restDays').value,
-    name: document.getElementById('studentName').value,
-    subjects: getSelectedSubjects(),
-    savedAt: Date.now()
-  }));
+  html += '</div>';
+  document.getElementById('calView').innerHTML = html;
 }
 
-function loadAPExams(){
-  try{
-    const exams = JSON.parse(localStorage.getItem('ace_ap_exams')||'[]');
-    const el = document.getElementById('apExamList');
-    if(!exams.length){ el.innerHTML='<span style="font-size:.82rem;color:var(--muted)">No AP exams found in AP Countdown.</span>'; return; }
-    el.innerHTML = exams.map(e=>{
-      const daysLeft = Math.ceil((new Date(e.date)-new Date())/86400000);
-      const urgency = daysLeft < 30 ? 'background:#fef2f2;border-color:#fca5a5;color:#b91c1c' : daysLeft < 90 ? 'background:#fef3c7;border-color:#fde68a;color:#b45309' : 'background:#dbeafe;border-color:#93c5fd;color:#1e40af';
-            return `<button style="padding:6px 14px;border-radius:20px;border:1.5px solid;cursor:pointer;font-size:.82rem;font-weight:700;${urgency}" onclick="useAPExam('${e.subj.replace(/'/g,'')}','${e.date}')">${e.subj} · ${daysLeft}d</button>`;
-    }).join('');
-  }catch(e){}
-}
-
-function useAPExam(subj, date){
-  document.getElementById('examDate').value = date;
-  // Try to select the matching subject tag
-  document.querySelectorAll('.subj-tag').forEach(tag=>{
-    if(tag.textContent.toLowerCase().includes(subj.toLowerCase())){
-      tag.classList.add('selected');
-    }
-  });
-  // Scroll to generate
-  document.getElementById('examDate').scrollIntoView({behavior:'smooth',block:'center'});
-}
-
-loadAPExams();
-
-// Restore last generated schedule on page load
-(function(){
-  try {
-    var saved = JSON.parse(localStorage.getItem('ace_schedule')||'null');
-    if(!saved || !saved.examDate) return;
-
-    // Restore field values
-    document.getElementById('examDate').value = saved.examDate;
-    if(saved.hours) document.getElementById('dailyHours').value = saved.hours;
-    if(saved.style) document.getElementById('studyStyle').value = saved.style;
-    if(saved.restDays) document.getElementById('restDays').value = saved.restDays;
-    if(saved.name) document.getElementById('studentName').value = saved.name;
-
-    // Restore subject selections
-    if(saved.subjects && saved.subjects.length){
-      document.querySelectorAll('.subj-tag').forEach(function(tag){
-        tag.classList.remove('selected');
-        saved.subjects.forEach(function(s){
-          if(tag.textContent.includes(s)) tag.classList.add('selected');
-        });
+function renderList(){
+  const {days} = planData;
+  const todayStr = dateStr(new Date());
+  let html = '';
+  days.forEach(d=>{
+    const dateObj = new Date(d.date+'T12:00:00');
+    const isToday = d.date===todayStr;
+    const isPast  = d.date < todayStr;
+    const examsToday = exams.filter(e=>e.date===d.date);
+    if(!d.blocks.length && !examsToday.length) return;
+    const dayLabel = dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    html += `<div class="list-day" style="${isPast?'opacity:.5':''}">
+      <h4>${isToday?'🎯 TODAY — ':''}${dayLabel}${d.hrs>0?` (${d.hrs}h available)`:''}</h4>`;
+    if(examsToday.length){
+      examsToday.forEach(e=>{
+        html+=`<div class="list-block" style="border:1px solid #ef4444;background:#7f1d1d22">
+          <span style="font-size:1rem">📝</span>
+          <span class="lb-subj" style="color:#fca5a5">${e.name} — EXAM DAY</span>
+        </div>`;
       });
     }
+    d.blocks.forEach(b=>{
+      html+=`<div class="list-block">
+        <span class="lb-color" style="background:${b.color}"></span>
+        <span class="lb-subj">${b.subj}</span>
+        <span class="lb-hrs">${b.hrs}h</span>
+        ${b.note?`<span class="lb-note">${b.note}</span>`:''}
+      </div>`;
+    });
+    html += '</div>';
+  });
+  if(!html) html='<div class="empty-state">No study days to show</div>';
+  document.getElementById('listView').innerHTML = html;
+}
 
-    // Re-generate the schedule silently
-    generateSchedule();
+function switchView(v){
+  document.getElementById('calView').style.display   = v==='cal'?'block':'none';
+  document.getElementById('listView').style.display  = v==='list'?'block':'none';
+  document.getElementById('tab-cal').className  = 'tab'+(v==='cal'?' active':'');
+  document.getElementById('tab-list').className = 'tab'+(v==='list'?' active':'');
+}
 
-    // Show a subtle restored notice
-    var notice = document.createElement('div');
-    notice.textContent = '↩ Schedule restored from last session';
-    notice.style.cssText = 'font-size:.75rem;color:var(--muted);text-align:center;margin-top:8px;padding:6px';
-    var wrap = document.getElementById('scheduleWrap');
-    if(wrap) wrap.insertAdjacentElement('afterend', notice);
-    setTimeout(function(){ notice.style.display='none'; }, 4000);
-  } catch(e) {}
+function showSetup(){
+  document.getElementById('setupSection').style.display='block';
+  document.getElementById('scheduleSection').style.display='none';
+}
+
+// ——— Save / Load ———
+function saveToStorage(){
+  const saved = JSON.parse(localStorage.getItem('sched-saves')||'[]');
+  const label = exams.map(e=>e.name).join(', ').slice(0,60);
+  const ts = new Date().toLocaleString();
+  saved.unshift({label, ts, exams:JSON.parse(JSON.stringify(exams)),
+    hours:[0,1,2,3,4,5,6].map(i=>parseFloat(document.getElementById('h'+i).value)||0),
+    start:document.getElementById('s_start').value,
+    end:document.getElementById('s_end').value,
+    buffer:document.getElementById('opt_buffer').value,
+    alloc:document.getElementById('opt_alloc').value,
+    plan:planData});
+  if(saved.length>10) saved.pop();
+  localStorage.setItem('sched-saves', JSON.stringify(saved));
+  renderSaved();
+  alert('Schedule saved!');
+}
+
+function loadSave(i){
+  const saved = JSON.parse(localStorage.getItem('sched-saves')||'[]');
+  const s = saved[i];
+  if(!s) return;
+  exams = s.exams;
+  renderExams();
+  s.hours.forEach((h,idx)=>{document.getElementById('h'+idx).value=h});
+  document.getElementById('s_start').value = s.start||'';
+  document.getElementById('s_end').value   = s.end||'';
+  document.getElementById('opt_buffer').value = s.buffer||'1';
+  document.getElementById('opt_alloc').value  = s.alloc||'urgency';
+  if(s.plan){
+    planData = s.plan;
+    renderSchedule();
+    document.getElementById('setupSection').style.display='none';
+    document.getElementById('scheduleSection').style.display='block';
+  } else {
+    document.getElementById('setupSection').style.display='block';
+    document.getElementById('scheduleSection').style.display='none';
+  }
+}
+
+function deleteSave(i){
+  const saved = JSON.parse(localStorage.getItem('sched-saves')||'[]');
+  saved.splice(i,1);
+  localStorage.setItem('sched-saves', JSON.stringify(saved));
+  renderSaved();
+}
+
+function renderSaved(){
+  const saved = JSON.parse(localStorage.getItem('sched-saves')||'[]');
+  const el = document.getElementById('savedList');
+  if(!el) return;
+  if(!saved.length){el.innerHTML='<div class="empty-state">No saved schedules</div>';return;}
+  el.innerHTML = saved.map((s,i)=>`
+    <div class="exam-row" style="border-left-color:var(--accent)">
+      <span class="er-name">${s.label}</span>
+      <span class="er-date" style="font-size:.75rem">${s.ts}</span>
+      <button class="btn btn-ghost btn-sm" onclick="loadSave(${i})">Load</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteSave(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+// ——— Export ———
+function exportPlan(){
+  if(!planData) return;
+  const {days} = planData;
+  let text = 'STUDY SCHEDULE\nGenerated: '+new Date().toLocaleString()+'\n\n';
+  text += 'EXAMS:\n';
+  exams.forEach(e=>{text+=`  • ${e.name} — ${fmtDate(e.date)} [${e.pri.toUpperCase()}]\n`});
+  text += '\nDAILY PLAN:\n';
+  days.forEach(d=>{
+    if(!d.blocks.length) return;
+    const dateObj = new Date(d.date+'T12:00:00');
+    text += dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+`  (${d.hrs}h)\n`;
+    d.blocks.forEach(b=>{text+=`    ${b.subj}: ${b.hrs}h${b.note?' '+b.note:''}\n`});
+    exams.filter(e=>e.date===d.date).forEach(e=>{text+=`    *** ${e.name} EXAM ***\n`});
+  });
+  const blob = new Blob([text],{type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'study-schedule.txt';
+  a.click();
+}
+
+// ——— Init ———
+(function init(){
+  const today = new Date();
+  document.getElementById('s_start').value = dateStr(today);
+  renderSaved();
 })();
 </script>
-<script src="/analytics.js"></script>
 </body>
 </html>
