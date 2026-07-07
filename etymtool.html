@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vocabulary Etymology Tool — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--amber:#fbbf24;--red:#f87171;--pink:#f472b6;--teal:#2dd4bf;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:860px;margin:28px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+
+/* Search */
+.search-row{display:flex;gap:10px}
+.word-input{flex:1;background:#111827;border:2px solid var(--border);border-radius:10px;padding:12px 16px;font-size:1.05rem;color:#fff;outline:none;font-family:inherit;transition:border .15s}
+.word-input:focus{border-color:var(--accent)}
+.btn{padding:10px 22px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.88rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-sm{padding:5px 12px;font-size:.75rem;border-radius:7px}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+
+/* Word result header */
+.word-hero{margin-bottom:18px}
+.word-title{font-size:2rem;font-weight:800;color:#fff}
+.word-pron{font-size:.95rem;color:var(--muted);margin-top:2px;font-style:italic}
+.pos-tag{display:inline-block;padding:3px 10px;border-radius:8px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-right:5px;margin-top:6px}
+.pos-noun{background:rgba(99,102,241,.2);color:var(--accent2)}
+.pos-verb{background:rgba(52,211,153,.15);color:var(--green)}
+.pos-adj{background:rgba(251,191,36,.15);color:var(--amber)}
+.pos-adv{background:rgba(244,114,182,.15);color:var(--pink)}
+
+/* Breakdown grid */
+.breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:18px}
+.part-box{background:#111827;border-radius:10px;border:1px solid var(--border);padding:14px}
+.part-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px}
+.part-value{font-size:1rem;font-weight:700;color:#fff;margin-bottom:2px}
+.part-meaning{font-size:.78rem;color:var(--muted)}
+.origin-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.25);border-radius:8px;padding:4px 10px;font-size:.78rem;color:var(--teal);font-weight:700}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab{padding:8px 16px;border-radius:8px 8px 0 0;cursor:pointer;font-size:.83rem;font-weight:700;color:var(--muted);border:none;background:transparent;transition:all .15s}
+.tab.active{color:#fff;background:rgba(99,102,241,.15);border-bottom:2px solid var(--accent)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* Related words */
+.word-chip{display:inline-block;padding:5px 12px;background:#111827;border:1.5px solid var(--border);border-radius:20px;font-size:.82rem;color:#fff;margin:3px;cursor:pointer;transition:all .15s}
+.word-chip:hover{border-color:var(--accent);color:var(--accent2)}
+
+/* Root tree */
+.root-tree{display:flex;flex-direction:column;gap:6px}
+.root-item{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:#111827;border-radius:8px;border:1px solid var(--border)}
+.root-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.root-word{font-weight:700;color:#fff;font-size:.9rem}
+.root-def{font-size:.78rem;color:var(--muted);margin-top:2px}
+
+/* History */
+.hist-chip{display:inline-block;padding:4px 11px;background:#111827;border:1.5px solid var(--border);border-radius:16px;font-size:.78rem;color:var(--muted);margin:3px;cursor:pointer;transition:all .15s}
+.hist-chip:hover{color:#fff;border-color:var(--accent)}
+
+/* Tip */
+.tip{font-size:.75rem;color:var(--muted);margin-top:10px}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state .big{font-size:2.5rem;margin-bottom:8px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="etymtool.html">Etymology</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🔤 Vocabulary Etymology Tool</h1>
+  <p>Break any word into its roots, prefixes, and suffixes — and find every related word.</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <div class="search-row">
+      <input class="word-input" id="wordInput" type="text" placeholder="Enter a word (e.g. telescope, biology, transport)…" onkeydown="if(event.key==='Enter')lookup()">
+      <button class="btn btn-primary" onclick="lookup()">Analyze</button>
+    </div>
+    <div class="tip">Try: <span class="hist-chip" onclick="tryWord('telescope')">telescope</span><span class="hist-chip" onclick="tryWord('biology')">biology</span><span class="hist-chip" onclick="tryWord('transport')">transport</span><span class="hist-chip" onclick="tryWord('democracy')">democracy</span><span class="hist-chip" onclick="tryWord('photograph')">photograph</span><span class="hist-chip" onclick="tryWord('sympathy')">sympathy</span><span class="hist-chip" onclick="tryWord('chronology')">chronology</span><span class="hist-chip" onclick="tryWord('geography')">geography</span></div>
+  </div>
+
+  <div id="histCard" class="card" style="display:none;padding:14px 20px">
+    <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Recent</div>
+    <div id="histList"></div>
+  </div>
+
+  <div id="resultCard" class="card" style="display:none">
+    <div class="word-hero">
+      <div class="word-title" id="rWord"></div>
+      <div class="word-pron" id="rPron"></div>
+      <div id="rPos"></div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <span id="rOriginBadge" class="origin-badge"></span>
+      <div style="margin-top:8px;font-size:.88rem;color:var(--muted);line-height:1.6" id="rOriginNote"></div>
+    </div>
+
+    <div class="breakdown" id="rBreakdown"></div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('related',this)">Related Words</button>
+      <button class="tab" onclick="switchTab('roots',this)">Root Family</button>
+      <button class="tab" onclick="switchTab('tips',this)">Memory Tips</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-related">
+      <div id="rRelated"></div>
+    </div>
+    <div class="tab-panel" id="tab-roots">
+      <div id="rRoots"></div>
+    </div>
+    <div class="tab-panel" id="tab-tips">
+      <div id="rTips"></div>
+    </div>
+  </div>
+
+  <div id="notFound" class="card" style="display:none">
+    <div class="empty-state">
+      <div class="big">🔍</div>
+      <div style="font-size:.95rem;font-weight:700;color:#fff;margin-bottom:4px">Word not in database</div>
+      <div style="font-size:.82rem;color:var(--muted)">Try a different spelling, or use the root/prefix search below.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Master Etymology Database ────────────────────────────────────────────────
+const PREFIXES = {
+  'a':      {meaning:'not, without',     origin:'Greek',    examples:['amoral','atypical','asymmetry']},
+  'ab':     {meaning:'away from',        origin:'Latin',    examples:['absent','abstract','abnormal']},
+  'ad':     {meaning:'toward, to',       origin:'Latin',    examples:['adhere','advance','admit']},
+  'ante':   {meaning:'before',           origin:'Latin',    examples:['antebellum','anterior','antecedent']},
+  'anti':   {meaning:'against, opposite',origin:'Greek',    examples:['antiwar','antibody','antidote']},
+  'aqua':   {meaning:'water',            origin:'Latin',    examples:['aquatic','aquarium','aqueduct']},
+  'astro':  {meaning:'star, space',      origin:'Greek',    examples:['astronaut','astronomy','astrology']},
+  'auto':   {meaning:'self',             origin:'Greek',    examples:['autobiography','automatic','automobile']},
+  'bi':     {meaning:'two',              origin:'Latin',    examples:['bicycle','bilingual','bisect']},
+  'bio':    {meaning:'life',             origin:'Greek',    examples:['biology','biography','biome']},
+  'chron':  {meaning:'time',             origin:'Greek',    examples:['chronology','chronic','anachronism']},
+  'circum': {meaning:'around',           origin:'Latin',    examples:['circumference','circumnavigate','circumstance']},
+  'co':     {meaning:'together, with',   origin:'Latin',    examples:['cooperate','coexist','coincide']},
+  'com':    {meaning:'together, with',   origin:'Latin',    examples:['combine','compile','compress']},
+  'con':    {meaning:'together, with',   origin:'Latin',    examples:['connect','confirm','construct']},
+  'contra': {meaning:'against',          origin:'Latin',    examples:['contradict','contrast','controversy']},
+  'counter':{meaning:'against, opposite',origin:'Latin',    examples:['counteract','counterpart','counterclockwise']},
+  'de':     {meaning:'down, away from',  origin:'Latin',    examples:['decrease','degrade','deactivate']},
+  'demi':   {meaning:'half',             origin:'French',   examples:['demigod','demitasse','demilitarize']},
+  'demo':   {meaning:'people',           origin:'Greek',    examples:['democracy','demographic','demonstration']},
+  'dis':    {meaning:'not, opposite',    origin:'Latin',    examples:['disagree','displace','disorder']},
+  'dys':    {meaning:'bad, difficult',   origin:'Greek',    examples:['dyslexia','dystopia','dysfunction']},
+  'e':      {meaning:'out of, from',     origin:'Latin',    examples:['eject','emit','evade']},
+  'eco':    {meaning:'environment, home',origin:'Greek',    examples:['ecology','ecosystem','economics']},
+  'en':     {meaning:'in, into, cause',  origin:'Latin',    examples:['enable','encode','enforce']},
+  'ex':     {meaning:'out of, former',   origin:'Latin',    examples:['export','exclude','exhale']},
+  'extra':  {meaning:'beyond, outside',  origin:'Latin',    examples:['extraordinary','extraterrestrial','extracurricular']},
+  'geo':    {meaning:'earth',            origin:'Greek',    examples:['geography','geology','geometry']},
+  'hemi':   {meaning:'half',             origin:'Greek',    examples:['hemisphere','hemicycle']},
+  'hydr':   {meaning:'water',            origin:'Greek',    examples:['hydrogen','hydraulic','dehydrate']},
+  'hyper':  {meaning:'over, excessive',  origin:'Greek',    examples:['hyperactive','hyperbole','hypertension']},
+  'hypo':   {meaning:'under, below',     origin:'Greek',    examples:['hypothesis','hypoglycemia','hypocrite']},
+  'il':     {meaning:'not',              origin:'Latin',    examples:['illegal','illogical','illiterate']},
+  'im':     {meaning:'not, into',        origin:'Latin',    examples:['impossible','import','immoral']},
+  'in':     {meaning:'not, into',        origin:'Latin',    examples:['invisible','include','infer']},
+  'inter':  {meaning:'between, among',   origin:'Latin',    examples:['interact','international','interrupt']},
+  'intra':  {meaning:'within',           origin:'Latin',    examples:['intravenous','intramural','intracellular']},
+  'ir':     {meaning:'not',              origin:'Latin',    examples:['irrational','irregular','irresponsible']},
+  'macro':  {meaning:'large',            origin:'Greek',    examples:['macroeconomics','macroscopic','macrocosm']},
+  'mal':    {meaning:'bad, badly',       origin:'Latin',    examples:['malfunction','malnutrition','malice']},
+  'mega':   {meaning:'great, million',   origin:'Greek',    examples:['megaphone','megalomaniac','megabyte']},
+  'meta':   {meaning:'beyond, change',   origin:'Greek',    examples:['metamorphosis','metaphor','metaphysics']},
+  'micro':  {meaning:'small',            origin:'Greek',    examples:['microscope','microwave','microbe']},
+  'mid':    {meaning:'middle',           origin:'Old Eng.', examples:['midterm','midpoint','midnight']},
+  'mis':    {meaning:'wrongly, badly',   origin:'Old Eng.', examples:['mistake','misplace','misspell']},
+  'mono':   {meaning:'one, single',      origin:'Greek',    examples:['monologue','monotone','monarchy']},
+  'multi':  {meaning:'many',             origin:'Latin',    examples:['multiply','multitask','multicultural']},
+  'neo':    {meaning:'new',              origin:'Greek',    examples:['neonatal','neoclassical','neologism']},
+  'non':    {meaning:'not',              origin:'Latin',    examples:['nonfiction','nonprofit','nonstop']},
+  'omni':   {meaning:'all',              origin:'Latin',    examples:['omnivore','omnipotent','omniscient']},
+  'over':   {meaning:'above, too much',  origin:'Old Eng.', examples:['overreact','overcome','overflow']},
+  'pan':    {meaning:'all, every',       origin:'Greek',    examples:['pandemic','panorama','pantheon']},
+  'para':   {meaning:'beside, beyond',   origin:'Greek',    examples:['parallel','paragraph','paramedic']},
+  'per':    {meaning:'through',          origin:'Latin',    examples:['perforate','persist','pervade']},
+  'peri':   {meaning:'around',           origin:'Greek',    examples:['perimeter','peripheral','periscope']},
+  'philo':  {meaning:'love of',          origin:'Greek',    examples:['philosophy','philharmonic','philanthropist']},
+  'photo':  {meaning:'light',            origin:'Greek',    examples:['photograph','photosynthesis','photon']},
+  'poly':   {meaning:'many',             origin:'Greek',    examples:['polygon','polynomial','polyglot']},
+  'post':   {meaning:'after',            origin:'Latin',    examples:['postpone','postwar','postgraduate']},
+  'pre':    {meaning:'before',           origin:'Latin',    examples:['preview','predict','prehistoric']},
+  'pro':    {meaning:'before, forward',  origin:'Latin',    examples:['progress','produce','project']},
+  'proto':  {meaning:'first',            origin:'Greek',    examples:['prototype','protocol','protagonist']},
+  'pseudo': {meaning:'false',            origin:'Greek',    examples:['pseudonym','pseudoscience','pseudocode']},
+  're':     {meaning:'again, back',      origin:'Latin',    examples:['replay','return','rebuild']},
+  'retro':  {meaning:'backward',         origin:'Latin',    examples:['retrospect','retrogress','retroactive']},
+  'semi':   {meaning:'half, partly',     origin:'Latin',    examples:['semicircle','semifinal','semiconductor']},
+  'sol':    {meaning:'sun, alone',       origin:'Latin',    examples:['solar','solitude','soliloquy']},
+  'sub':    {meaning:'under, below',     origin:'Latin',    examples:['subway','submarine','subtitle']},
+  'super':  {meaning:'above, beyond',    origin:'Latin',    examples:['supernatural','superstar','superior']},
+  'sym':    {meaning:'together',         origin:'Greek',    examples:['sympathy','symphony','symmetry']},
+  'syn':    {meaning:'together',         origin:'Greek',    examples:['synonym','synthesis','synchronize']},
+  'tele':   {meaning:'distant, far',     origin:'Greek',    examples:['telescope','telephone','television']},
+  'terra':  {meaning:'earth, land',      origin:'Latin',    examples:['terrain','terrestrial','territory']},
+  'therm':  {meaning:'heat',             origin:'Greek',    examples:['thermometer','thermostat','thermal']},
+  'trans':  {meaning:'across, through',  origin:'Latin',    examples:['transport','transform','translate']},
+  'tri':    {meaning:'three',            origin:'Latin',    examples:['triangle','trilogy','tricycle']},
+  'ultra':  {meaning:'beyond, extreme',  origin:'Latin',    examples:['ultraviolet','ultrasound','ultramarathon']},
+  'un':     {meaning:'not, reverse',     origin:'Old Eng.', examples:['undo','unhappy','unfair']},
+  'under':  {meaning:'below, too little',origin:'Old Eng.', examples:['underestimate','undermine','underwater']},
+  'uni':    {meaning:'one',              origin:'Latin',    examples:['uniform','universe','unicorn']},
+  'xen':    {meaning:'foreign, strange', origin:'Greek',    examples:['xenophobia','xenolith']},
+  'zoo':    {meaning:'animal',           origin:'Greek',    examples:['zoology','zodiac','zoonotic']},
+};
+
+const ROOTS = {
+  'aud':    {meaning:'hear',       origin:'Latin', examples:['audible','audience','auditorium','audit']},
+  'bene':   {meaning:'good, well', origin:'Latin', examples:['benefit','benevolent','benefactor']},
+  'cap':    {meaning:'take, seize',origin:'Latin', examples:['capture','capital','captain']},
+  'cede':   {meaning:'go, yield',  origin:'Latin', examples:['recede','precede','concede','secede']},
+  'chron':  {meaning:'time',       origin:'Greek', examples:['chronology','chronicle','synchronize']},
+  'cide':   {meaning:'kill',       origin:'Latin', examples:['homicide','pesticide','suicide','genocide']},
+  'clud':   {meaning:'close, shut',origin:'Latin', examples:['include','exclude','conclude','preclude']},
+  'cogn':   {meaning:'know',       origin:'Latin', examples:['recognize','cognitive','incognito']},
+  'corp':   {meaning:'body',       origin:'Latin', examples:['corporation','corpse','corporal']},
+  'crat':   {meaning:'rule, power',origin:'Greek', examples:['democrat','bureaucrat','autocrat']},
+  'cred':   {meaning:'believe',    origin:'Latin', examples:['credit','credible','incredible','creed']},
+  'cycl':   {meaning:'circle',     origin:'Greek', examples:['bicycle','cycle','encyclopedia']},
+  'dict':   {meaning:'say, tell',  origin:'Latin', examples:['dictionary','predict','contradict','dictate']},
+  'duc':    {meaning:'lead',       origin:'Latin', examples:['conduct','produce','reduce','educate']},
+  'fac':    {meaning:'make, do',   origin:'Latin', examples:['factory','manufacture','facilitate']},
+  'fer':    {meaning:'carry, bear',origin:'Latin', examples:['transfer','refer','fertile','differ']},
+  'fin':    {meaning:'end, limit', origin:'Latin', examples:['final','infinite','finish','define']},
+  'fix':    {meaning:'fasten',     origin:'Latin', examples:['prefix','suffix','fixture','affix']},
+  'flect':  {meaning:'bend',       origin:'Latin', examples:['reflect','deflect','inflect','flexible']},
+  'form':   {meaning:'shape',      origin:'Latin', examples:['reform','uniform','transform','inform']},
+  'fract':  {meaning:'break',      origin:'Latin', examples:['fraction','fracture','refract','infraction']},
+  'gen':    {meaning:'birth, kind',origin:'Greek', examples:['generate','generation','genre','genetics']},
+  'grad':   {meaning:'step, walk', origin:'Latin', examples:['gradient','grade','degrade','upgrade']},
+  'graph':  {meaning:'write',      origin:'Greek', examples:['paragraph','photograph','biography','graphic']},
+  'gress':  {meaning:'step, walk', origin:'Latin', examples:['progress','congress','digress','transgress']},
+  'hab':    {meaning:'have, hold', origin:'Latin', examples:['habitat','inhabit','habit','exhibit']},
+  'ject':   {meaning:'throw',      origin:'Latin', examples:['project','reject','inject','object']},
+  'junct':  {meaning:'join',       origin:'Latin', examples:['junction','conjunct','disjunct','adjunct']},
+  'loc':    {meaning:'place',      origin:'Latin', examples:['location','local','relocate','allocate']},
+  'log':    {meaning:'word, study',origin:'Greek', examples:['biology','geology','dialogue','logic']},
+  'luc':    {meaning:'light',      origin:'Latin', examples:['lucid','translucent','elucidate']},
+  'man':    {meaning:'hand',       origin:'Latin', examples:['manual','manufacture','manipulate','manicure']},
+  'mand':   {meaning:'order',      origin:'Latin', examples:['command','demand','mandate','reprimand']},
+  'mit':    {meaning:'send',       origin:'Latin', examples:['transmit','submit','permit','commit']},
+  'mob':    {meaning:'move',       origin:'Latin', examples:['mobile','automobile','immobile']},
+  'morph':  {meaning:'shape, form',origin:'Greek', examples:['metamorphosis','morphology','amorphous']},
+  'mot':    {meaning:'move',       origin:'Latin', examples:['motion','motor','promote','emotion']},
+  'mut':    {meaning:'change',     origin:'Latin', examples:['mutate','mutation','commute','transmute']},
+  'narr':   {meaning:'tell',       origin:'Latin', examples:['narrate','narrative','narrator']},
+  'nat':    {meaning:'born, birth',origin:'Latin', examples:['native','natural','prenatal','innate']},
+  'nom':    {meaning:'name, law',  origin:'Greek', examples:['astronomy','economy','nominal','taxonomy']},
+  'opt':    {meaning:'eye, best',  origin:'Greek', examples:['optical','optimum','optician']},
+  'path':   {meaning:'feeling',    origin:'Greek', examples:['sympathy','empathy','pathetic','apathy']},
+  'ped':    {meaning:'foot, child',origin:'Greek', examples:['pedal','pedestrian','pediatric','expedition']},
+  'phil':   {meaning:'love',       origin:'Greek', examples:['philosophy','philanthropist','bibliophile']},
+  'phon':   {meaning:'sound',      origin:'Greek', examples:['telephone','microphone','symphony','phonics']},
+  'photo':  {meaning:'light',      origin:'Greek', examples:['photograph','photosynthesis','photoelectric']},
+  'plac':   {meaning:'please',     origin:'Latin', examples:['placid','implacable','complacent']},
+  'poli':   {meaning:'city, state',origin:'Greek', examples:['politics','metropolitan','police','policy']},
+  'port':   {meaning:'carry',      origin:'Latin', examples:['transport','portable','import','export']},
+  'pos':    {meaning:'place, put', origin:'Latin', examples:['deposit','compose','position','propose']},
+  'psych':  {meaning:'mind',       origin:'Greek', examples:['psychology','psychiatry','psyche']},
+  'rupt':   {meaning:'break',      origin:'Latin', examples:['erupt','interrupt','disrupt','bankrupt']},
+  'scop':   {meaning:'see, watch', origin:'Greek', examples:['telescope','microscope','horoscope','periscope']},
+  'scrib':  {meaning:'write',      origin:'Latin', examples:['scribble','describe','prescribe','subscribe']},
+  'sect':   {meaning:'cut',        origin:'Latin', examples:['section','bisect','dissect','intersect']},
+  'sens':   {meaning:'feel',       origin:'Latin', examples:['sense','sensitive','consensus','resent']},
+  'sign':   {meaning:'mark, seal', origin:'Latin', examples:['signature','signify','signal','designate']},
+  'sol':    {meaning:'sun, alone', origin:'Latin', examples:['solar','solitary','soliloquy','desolate']},
+  'son':    {meaning:'sound',      origin:'Latin', examples:['sound','sonic','resonance','consonant']},
+  'spec':   {meaning:'see, look',  origin:'Latin', examples:['spectator','inspect','respect','perspective']},
+  'spir':   {meaning:'breathe',    origin:'Latin', examples:['spirit','inspire','expire','respiration']},
+  'struct':  {meaning:'build',     origin:'Latin', examples:['structure','construct','instruct','destruct']},
+  'tain':   {meaning:'hold',       origin:'Latin', examples:['contain','retain','maintain','obtain']},
+  'temp':   {meaning:'time',       origin:'Latin', examples:['temporal','temporary','contemporary','tempo']},
+  'ten':    {meaning:'hold, stretch',origin:'Latin',examples:['tension','extend','attention','tendon']},
+  'terr':   {meaning:'earth, land',origin:'Latin', examples:['territory','terrain','terrestrial','extraterrestrial']},
+  'tort':   {meaning:'twist',      origin:'Latin', examples:['torture','contort','distort','extort']},
+  'tract':  {meaning:'pull, drag', origin:'Latin', examples:['tractor','attract','distract','contract']},
+  'val':    {meaning:'strength, worth',origin:'Latin',examples:['value','valid','prevalent','equivalent']},
+  'ven':    {meaning:'come',       origin:'Latin', examples:['convention','prevent','adventure','revenue']},
+  'verb':   {meaning:'word',       origin:'Latin', examples:['verbal','verbose','proverb','adverb']},
+  'vers':   {meaning:'turn',       origin:'Latin', examples:['reverse','diverse','convert','universe']},
+  'vid':    {meaning:'see',        origin:'Latin', examples:['video','evident','provide','supervise']},
+  'vis':    {meaning:'see',        origin:'Latin', examples:['vision','visible','supervise','revise']},
+  'vit':    {meaning:'life',       origin:'Latin', examples:['vital','vitamin','revive','survive']},
+  'voc':    {meaning:'call, voice',origin:'Latin', examples:['vocal','advocate','invoke','vocabulary']},
+  'vol':    {meaning:'will, wish', origin:'Latin', examples:['voluntary','volunteer','revolt','benevolent']},
+  'vor':    {meaning:'eat greedily',origin:'Latin',examples:['devour','carnivore','herbivore','omnivore']},
+};
+
+const SUFFIXES = {
+  'able':  {meaning:'capable of, worthy of', origin:'Latin', examples:['capable','readable','lovable','breakable']},
+  'age':   {meaning:'action, result',        origin:'French',examples:['damage','marriage','passage','storage']},
+  'al':    {meaning:'relating to',           origin:'Latin', examples:['natural','musical','logical','personal']},
+  'ance':  {meaning:'state, quality',        origin:'Latin', examples:['balance','distance','performance','tolerance']},
+  'ant':   {meaning:'performing, agent',     origin:'Latin', examples:['servant','assistant','dominant','defiant']},
+  'ar':    {meaning:'relating to',           origin:'Latin', examples:['lunar','solar','singular','muscular']},
+  'ary':   {meaning:'relating to, place',    origin:'Latin', examples:['dictionary','military','necessary','elementary']},
+  'ate':   {meaning:'having, cause to be',   origin:'Latin', examples:['activate','moderate','accurate','graduate']},
+  'ation': {meaning:'action, state',         origin:'Latin', examples:['nation','creation','education','information']},
+  'cracy': {meaning:'government, rule',      origin:'Greek', examples:['democracy','bureaucracy','aristocracy']},
+  'cy':    {meaning:'state, quality',        origin:'Latin', examples:['accuracy','privacy','fluency','democracy']},
+  'dom':   {meaning:'place, state',          origin:'Old Eng',examples:['freedom','kingdom','wisdom','boredom']},
+  'ed':    {meaning:'past tense, having',    origin:'Old Eng',examples:['walked','colored','educated']},
+  'en':    {meaning:'cause to be, made of',  origin:'Old Eng',examples:['golden','wooden','frighten','lighten']},
+  'ence':  {meaning:'state, quality',        origin:'Latin', examples:['confidence','difference','excellence']},
+  'er':    {meaning:'one who, more',         origin:'Old Eng',examples:['teacher','runner','writer','faster']},
+  'ful':   {meaning:'full of',               origin:'Old Eng',examples:['hopeful','careful','powerful','grateful']},
+  'fy':    {meaning:'to make',               origin:'Latin', examples:['simplify','clarify','magnify','justify']},
+  'graphy':{meaning:'writing, study',        origin:'Greek', examples:['biography','geography','photography']},
+  'hood':  {meaning:'state, quality',        origin:'Old Eng',examples:['childhood','neighborhood','brotherhood']},
+  'ible':  {meaning:'capable of',            origin:'Latin', examples:['visible','flexible','responsible','possible']},
+  'ic':    {meaning:'relating to',           origin:'Greek', examples:['historic','geographic','magnetic','comic']},
+  'ify':   {meaning:'to make',               origin:'Latin', examples:['identify','notify','satisfy','classify']},
+  'ing':   {meaning:'action, ongoing',       origin:'Old Eng',examples:['running','learning','building']},
+  'ion':   {meaning:'action, result',        origin:'Latin', examples:['action','tension','occasion','nation']},
+  'ism':   {meaning:'belief, system',        origin:'Greek', examples:['capitalism','realism','optimism','criticism']},
+  'ist':   {meaning:'one who practices',     origin:'Greek', examples:['artist','scientist','journalist','activist']},
+  'ity':   {meaning:'state, quality',        origin:'Latin', examples:['ability','clarity','diversity','equality']},
+  'ive':   {meaning:'having, tending to',    origin:'Latin', examples:['active','creative','massive','impressive']},
+  'ize':   {meaning:'to make, to practice',  origin:'Greek', examples:['organize','realize','apologize','modernize']},
+  'less':  {meaning:'without',               origin:'Old Eng',examples:['careless','hopeless','endless','fearless']},
+  'log':   {meaning:'word, study',           origin:'Greek', examples:['catalog','dialog','monolog','epilog']},
+  'logy':  {meaning:'study of',              origin:'Greek', examples:['biology','geology','psychology','technology']},
+  'ly':    {meaning:'in the manner of',      origin:'Old Eng',examples:['quickly','happily','softly','clearly']},
+  'ment':  {meaning:'action, result',        origin:'Latin', examples:['movement','government','treatment','argument']},
+  'ness':  {meaning:'state of',              origin:'Old Eng',examples:['happiness','darkness','kindness','weakness']},
+  'ology': {meaning:'study of',              origin:'Greek', examples:['biology','geology','psychology','anthropology']},
+  'or':    {meaning:'one who',               origin:'Latin', examples:['actor','doctor','professor','senator']},
+  'ory':   {meaning:'place, serving for',    origin:'Latin', examples:['laboratory','observatory','category','history']},
+  'ous':   {meaning:'having, full of',       origin:'Latin', examples:['famous','generous','nervous','dangerous']},
+  'phobia':{meaning:'fear of',               origin:'Greek', examples:['claustrophobia','xenophobia','arachnophobia']},
+  'ship':  {meaning:'state, skill',          origin:'Old Eng',examples:['friendship','leadership','scholarship','hardship']},
+  'some':  {meaning:'characterized by',      origin:'Old Eng',examples:['awesome','handsome','troublesome','quarrelsome']},
+  'tion':  {meaning:'action, state',         origin:'Latin', examples:['action','education','solution','station']},
+  'ture':  {meaning:'action, result',        origin:'Latin', examples:['culture','structure','future','nature']},
+  'ward':  {meaning:'in direction of',       origin:'Old Eng',examples:['forward','backward','inward','outward']},
+  'wise':  {meaning:'in the manner of',      origin:'Old Eng',examples:['likewise','otherwise','clockwise','lengthwise']},
+  'y':     {meaning:'having, characterized', origin:'Old Eng',examples:['rainy','cloudy','funny','stormy']},
+};
+
+// ── Word Database ─────────────────────────────────────────────────────────────
+// Each entry: {parts:[{type,value,meaning}], origin, originNote, pos, pronunciation, related, tips}
+const WORDS = {
+  'telescope':  {parts:[{t:'prefix',v:'tele',m:'far, distant'},{t:'root',v:'scope',m:'see, watch'}],origin:'Greek',originNote:'From Greek tēle (far) + skopein (to look). First coined in 1611.',pos:['noun'],pronunciation:'/ˈtɛl.ɪ.skəʊp/',related:['microscope','periscope','television','telegraph','horoscope','stethoscope'],tips:['Think: a telescope lets you see things far away (tele = far, scope = see)']},
+  'biology':    {parts:[{t:'root',v:'bio',m:'life'},{t:'suffix',v:'logy',m:'study of'}],origin:'Greek',originNote:'From Greek bios (life) + logos (word/study). Coined in the early 1800s.',pos:['noun'],pronunciation:'/baɪˈɒl.ə.dʒi/',related:['biography','biome','biochemistry','ecology','geology','psychology','zoology'],tips:['Bio = life (biography is writing about a life), logy = study (like geology = study of earth)']},
+  'transport':  {parts:[{t:'prefix',v:'trans',m:'across, through'},{t:'root',v:'port',m:'carry'}],origin:'Latin',originNote:'From Latin transportare: trans (across) + portare (to carry).',pos:['noun','verb'],pronunciation:'/ˈtræns.pɔːrt/',related:['portable','import','export','deport','report','portfolio','transportation'],tips:['Trans = across (transgender, translate), port = carry (portable = can be carried)']},
+  'democracy':  {parts:[{t:'root',v:'demo',m:'people'},{t:'suffix',v:'cracy',m:'government, rule'}],origin:'Greek',originNote:'From Greek dēmos (people) + kratos (strength/rule). Ancient Athens coined the term ~507 BC.',pos:['noun'],pronunciation:'/dɪˈmɒk.rə.si/',related:['demographic','democrat','bureaucracy','aristocracy','autocracy','epidemic'],tips:['Demo = people (demographics counts people), cracy = rule (autocracy = self-rule)']},
+  'photograph': {parts:[{t:'root',v:'photo',m:'light'},{t:'root',v:'graph',m:'write, record'}],origin:'Greek',originNote:'From Greek phōs/phōtos (light) + graphein (to write). Term coined 1839.',pos:['noun','verb'],pronunciation:'/ˈfəʊ.tə.ɡrɑːf/',related:['photography','photosynthesis','photon','paragraph','biography','autograph','telegraph'],tips:['Photo = light (a camera captures light), graph = write/record (a signature is your autograph)']},
+  'sympathy':   {parts:[{t:'prefix',v:'sym',m:'together, with'},{t:'root',v:'path',m:'feeling'}],origin:'Greek',originNote:'From Greek sympatheia: syn (together) + pathos (feeling). You feel along with someone.',pos:['noun'],pronunciation:'/ˈsɪm.pə.θi/',related:['empathy','apathy','pathetic','sympathy','antipathy','geography','telepathy'],tips:['Sym/syn = together, path = feeling. Empathy (em = in) means feeling inside someone else\'s experience.']},
+  'chronology': {parts:[{t:'root',v:'chron',m:'time'},{t:'root',v:'log',m:'word, study'},{t:'suffix',v:'y',m:'quality, action'}],origin:'Greek',originNote:'From Greek khronos (time) + logos (study). Ordering events in time.',pos:['noun'],pronunciation:'/krəˈnɒl.ə.dʒi/',related:['chronic','anachronism','synchronize','chronicle','chronometer','biology','geology'],tips:['Chron = time (think chronometer = time measurer), logo = study/word']},
+  'geography':  {parts:[{t:'prefix',v:'geo',m:'earth'},{t:'root',v:'graph',m:'write, record'},{t:'suffix',v:'y',m:'action, result'}],origin:'Greek',originNote:'From Greek gē (earth) + graphein (to write/describe). The "writing" of the earth.',pos:['noun'],pronunciation:'/dʒiˈɒɡ.rə.fi/',related:['geology','geometry','geopolitics','biography','photography','paragraph','demography'],tips:['Geo = earth (geometry measures the earth), graph/graphy = writing (biography = life writing)']},
+  'microscope': {parts:[{t:'prefix',v:'micro',m:'small'},{t:'root',v:'scope',m:'see, watch'}],origin:'Greek',originNote:'From Greek mikros (small) + skopein (to look). Invented in the late 1500s.',pos:['noun'],pronunciation:'/ˈmaɪ.krə.skəʊp/',related:['microbe','microwave','telescope','periscope','stethoscope','horoscope','microscopy'],tips:['Micro = small, scope = look. A microscope lets you look at tiny (micro) things.']},
+  'autobiography':{parts:[{t:'prefix',v:'auto',m:'self'},{t:'root',v:'bio',m:'life'},{t:'root',v:'graph',m:'write'}],origin:'Greek',originNote:'Auto (self) + bios (life) + graphein (to write) = writing of one\'s own life.',pos:['noun'],pronunciation:'/ˌɔː.tə.baɪˈɒɡ.rə.fi/',related:['biography','automatic','automobile','biology','photograph','autograph','bibliography'],tips:['Auto = self (automatic acts by itself), bio = life, graphy = writing']},
+  'metamorphosis':{parts:[{t:'prefix',v:'meta',m:'change, beyond'},{t:'root',v:'morph',m:'shape, form'}],origin:'Greek',originNote:'From Greek meta (change) + morphē (form). A complete change in shape or character.',pos:['noun'],pronunciation:'/ˌmet.əˈmɔː.fə.sɪs/',related:['morphology','amorphous','metaphor','metabolism','transform','reform','uniform'],tips:['Meta = change/beyond, morph = shape. A caterpillar changes shape into a butterfly.']},
+  'contradict':  {parts:[{t:'prefix',v:'contra',m:'against'},{t:'root',v:'dict',m:'say, tell'}],origin:'Latin',originNote:'From Latin contra (against) + dicere (to say). To say the opposite.',pos:['verb'],pronunciation:'/ˌkɒn.trəˈdɪkt/',related:['predict','dictate','dictionary','verdict','benediction','edict','indict'],tips:['Contra = against (contrast), dict = say (a dictionary tells you what words say)']},
+  'circumference':{parts:[{t:'prefix',v:'circum',m:'around'},{t:'root',v:'fer',m:'carry, bear'}],origin:'Latin',originNote:'From Latin circum (around) + ferre (to carry). The distance carried around a circle.',pos:['noun'],pronunciation:'/səˈkʌm.fər.əns/',related:['circumnavigate','circumstance','transfer','fertile','reference','conference','differ'],tips:['Circum = around (circumnavigate = sail around), fer = carry (transfer = carry across)']},
+  'interrupt':   {parts:[{t:'prefix',v:'inter',m:'between'},{t:'root',v:'rupt',m:'break'}],origin:'Latin',originNote:'From Latin inter (between) + rumpere (to break). To break in between.',pos:['verb'],pronunciation:'/ˌɪn.təˈrʌpt/',related:['erupt','disrupt','bankrupt','corrupt','intersect','international','interact'],tips:['Inter = between (international = between nations), rupt = break (disrupt = break apart)']},
+  'philosophy':  {parts:[{t:'prefix',v:'philo',m:'love of'},{t:'root',v:'soph',m:'wisdom'},{t:'suffix',v:'y',m:'quality'}],origin:'Greek',originNote:'From Greek philos (loving) + sophia (wisdom). Literally "love of wisdom."',pos:['noun'],pronunciation:'/fɪˈlɒs.ə.fi/',related:['philanthropist','philosopher','bibliography','sophisticated','sophomore'],tips:['Philo = love (philanthropist loves humans), soph = wisdom (sophomore = "wise fool")']},
+  'invisible':   {parts:[{t:'prefix',v:'in',m:'not'},{t:'root',v:'vis',m:'see'},{t:'suffix',v:'ible',m:'capable of'}],origin:'Latin',originNote:'From Latin in (not) + visibilis (able to be seen). Not able to be seen.',pos:['adj'],pronunciation:'/ɪnˈvɪz.ɪ.bəl/',related:['vision','visible','supervise','revise','video','visual','visor','evidence'],tips:['In = not (inactive), vis = see (vision), ible = able to (flexible = able to flex)']},
+  'predict':     {parts:[{t:'prefix',v:'pre',m:'before'},{t:'root',v:'dict',m:'say, tell'}],origin:'Latin',originNote:'From Latin prae (before) + dicere (to say). To say what will happen before it does.',pos:['verb'],pronunciation:'/prɪˈdɪkt/',related:['predict','preview','prevent','dictate','contradict','verdict','dictionary'],tips:['Pre = before (preview = view before), dict = say (dictate = say to be written)']},
+  'malfunction': {parts:[{t:'prefix',v:'mal',m:'bad, badly'},{t:'root',v:'funct',m:'perform, work'},{t:'suffix',v:'ion',m:'action, state'}],origin:'Latin',originNote:'From Latin malus (bad) + functionem (performance). To work badly or not at all.',pos:['noun','verb'],pronunciation:'/ˌmæl.ˈfʌŋk.ʃən/',related:['malnutrition','malice','function','dysfunction','functional','malevolent'],tips:['Mal = bad (malice = bad intent), function = work (dysfunction = bad functioning)']},
+  'export':      {parts:[{t:'prefix',v:'ex',m:'out of'},{t:'root',v:'port',m:'carry'}],origin:'Latin',originNote:'From Latin ex (out) + portare (carry). To carry goods out of a country.',pos:['noun','verb'],pronunciation:'/ˈek.spɔːrt/',related:['import','transport','deport','portable','report','portfolio','portal'],tips:['Ex = out (exit), port = carry (import = carry in, export = carry out)']},
+  'international':{parts:[{t:'prefix',v:'inter',m:'between'},{t:'root',v:'nat',m:'born, birth'},{t:'suffix',v:'al',m:'relating to'}],origin:'Latin',originNote:'Inter (between) + natio (nation, from "being born"). Between nations.',pos:['adj'],pronunciation:'/ˌɪn.təˈnæʃ.ən.əl/',related:['international','national','native','innate','prenatal','nation','interact'],tips:['Inter = between, nat = born (native = where you were born), al = relating to']},
+  'hyperactive': {parts:[{t:'prefix',v:'hyper',m:'over, excessive'},{t:'root',v:'act',m:'do, perform'},{t:'suffix',v:'ive',m:'tending to'}],origin:'Greek/Latin',originNote:'Hyper (Greek: over) + Latin activus (doing). Excessively active.',pos:['adj'],pronunciation:'/ˌhaɪ.pərˈæk.tɪv/',related:['hypertext','hyperbole','hypertension','active','activate','react','action'],tips:['Hyper = over (hyperventilate = breathe too much), active = doing']},
+  'omnivore':    {parts:[{t:'prefix',v:'omni',m:'all'},{t:'root',v:'vor',m:'eat greedily'}],origin:'Latin',originNote:'From Latin omnis (all) + vorare (to devour). Eats everything.',pos:['noun'],pronunciation:'/ˈɒm.nɪ.vɔːr/',related:['omnipotent','omniscient','carnivore','herbivore','devour','voracious'],tips:['Omni = all (omniscient = knows all), vor = eat (devour, carnivore = meat eater)']},
+  'submarine':   {parts:[{t:'prefix',v:'sub',m:'under, below'},{t:'root',v:'mar',m:'sea'},{t:'suffix',v:'ine',m:'relating to'}],origin:'Latin',originNote:'From Latin sub (under) + mare (sea). A vessel that travels under the sea.',pos:['noun','adj'],pronunciation:'/ˈsʌb.mə.riːn/',related:['submerge','subway','marine','maritime','submarine','terrestrial','aquatic'],tips:['Sub = under (subway = under the road), marine = sea (maritime = relating to the sea)']},
+  'revolution':  {parts:[{t:'prefix',v:'re',m:'back, again'},{t:'root',v:'vol',m:'roll, turn'},{t:'suffix',v:'tion',m:'action, state'}],origin:'Latin',originNote:'From Latin revolutio: re (back) + volvere (to roll). A turning back or over.',pos:['noun'],pronunciation:'/ˌrev.əˈluː.ʃən/',related:['revolve','involve','evolve','revolution','evolution','solution','pollution'],tips:['Re = back, vol = turn (revolve = turn around), tion = action']},
+  'astronomy':   {parts:[{t:'prefix',v:'astro',m:'star, space'},{t:'root',v:'nom',m:'law, name'},{t:'suffix',v:'y',m:'field, study'}],origin:'Greek',originNote:'From Greek astron (star) + nomos (law). The law/study of the stars.',pos:['noun'],pronunciation:'/əˈstrɒn.ə.mi/',related:['astronaut','astrology','economy','taxonomy','astronomy','astrophysics'],tips:['Astro = star (astronaut travels to stars), nomy = law/order (taxonomy = ordering of names)']},
+};
+
+// ── Lookup logic ──────────────────────────────────────────────────────────────
+let history = JSON.parse(localStorage.getItem('etym-hist')||'[]');
+
+function tryWord(w){ document.getElementById('wordInput').value=w; lookup(); }
+
+function lookup(){
+  const raw = document.getElementById('wordInput').value.trim().toLowerCase();
+  if(!raw) return;
+  document.getElementById('resultCard').style.display='none';
+  document.getElementById('notFound').style.display='none';
+
+  const data = WORDS[raw];
+  if(!data){ document.getElementById('notFound').style.display=''; updateHist(raw); return; }
+
+  // Save history
+  updateHist(raw);
+
+  // Fill result
+  document.getElementById('rWord').textContent = raw;
+  document.getElementById('rPron').textContent = data.pronunciation||'';
+  document.getElementById('rPos').innerHTML = (data.pos||[]).map(p=>`<span class="pos-tag pos-${p}">${p}</span>`).join('');
+  document.getElementById('rOriginBadge').innerHTML = `🌍 ${data.origin} origin`;
+  document.getElementById('rOriginNote').textContent = data.originNote||'';
+
+  // Breakdown
+  document.getElementById('rBreakdown').innerHTML = data.parts.map(p=>`
+    <div class="part-box">
+      <div class="part-label">${p.t}</div>
+      <div class="part-value">${p.v}-</div>
+      <div class="part-meaning">"${p.m}"</div>
+    </div>`).join('');
+
+  // Related words
+  document.getElementById('rRelated').innerHTML = (data.related||[]).map(w=>`<span class="word-chip" onclick="tryWord('${w}')">${w}</span>`).join('')
+    || '<div style="color:var(--muted);font-size:.84rem">No related words found.</div>';
+
+  // Root family — show all words sharing any root with this word
+  const rootFamily = [];
+  data.parts.forEach(p=>{
+    const db = p.t==='prefix'?PREFIXES:p.t==='root'?ROOTS:SUFFIXES;
+    const entry = db[p.v];
+    if(entry) rootFamily.push({part:p.v,meaning:p.m,origin:entry.origin,examples:entry.examples||[]});
+  });
+  document.getElementById('rRoots').innerHTML = rootFamily.map(r=>`
+    <div class="root-item">
+      <div class="root-icon">🔗</div>
+      <div>
+        <div class="root-word">${r.part}- &nbsp;<span style="color:var(--muted);font-weight:400;font-size:.8rem">"${r.meaning}" · ${r.origin}</span></div>
+        <div class="root-def">Also in: ${r.examples.map(e=>`<span class="word-chip" onclick="tryWord('${e}')" style="padding:2px 8px;font-size:.75rem">${e}</span>`).join('')}</div>
+      </div>
+    </div>`).join('') || '<div style="color:var(--muted);font-size:.84rem">No root data found.</div>';
+
+  // Memory tips
+  document.getElementById('rTips').innerHTML = (data.tips||['No memory tips available for this word.']).map(t=>`
+    <div style="background:#111827;border-radius:9px;border:1px solid var(--border);padding:12px 14px;margin-bottom:8px;font-size:.87rem;line-height:1.6;color:#fff">
+      💡 ${t}
+    </div>`).join('');
+
+  document.getElementById('resultCard').style.display='';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab')[0].classList.add('active');
+  document.getElementById('tab-related').classList.add('active');
+}
+
+function updateHist(w){
+  history = [w,...history.filter(x=>x!==w)].slice(0,12);
+  localStorage.setItem('etym-hist',JSON.stringify(history));
+  renderHist();
+}
+
+function renderHist(){
+  if(!history.length){document.getElementById('histCard').style.display='none';return;}
+  document.getElementById('histCard').style.display='';
+  document.getElementById('histList').innerHTML = history.map(w=>`<span class="hist-chip" onclick="tryWord('${w}')">${w}</span>`).join('');
+}
+
+function switchTab(id, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+renderHist();
+</script>
+</body></html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Figurative Language Finder — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.btn{padding:9px 22px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.88rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:11px 26px;font-size:.93rem;border-radius:11px}
+label{font-size:.75rem;font-weight:700;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+textarea{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:12px;font-size:.9rem;font-family:inherit;color:#fff;outline:none;resize:vertical;transition:border .15s;line-height:1.7}
+textarea:focus{border-color:var(--accent)}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted);font-weight:600}
+.legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* Highlighted output */
+.output-area{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;font-size:.93rem;line-height:2.1;color:#fff;margin-bottom:14px}
+.fig-mark{border-radius:4px;padding:1px 3px;cursor:pointer;position:relative;font-weight:600;transition:opacity .15s}.fig-mark:hover{opacity:.8}
+
+/* Colors for each device */
+.fig-simile      {background:rgba(251,191,36,.22); color:#fde68a;border-bottom:2px solid #fbbf24}
+.fig-metaphor    {background:rgba(99,102,241,.22); color:#c7d2fe;border-bottom:2px solid #818cf8}
+.fig-personification{background:rgba(52,211,153,.18);color:#6ee7b7;border-bottom:2px solid #34d399}
+.fig-hyperbole   {background:rgba(248,113,113,.18);color:#fca5a5;border-bottom:2px solid #f87171}
+.fig-alliteration{background:rgba(167,139,250,.2); color:#ddd6fe;border-bottom:2px solid #a78bfa}
+.fig-onomatopoeia{background:rgba(45,212,191,.18); color:#99f6e4;border-bottom:2px solid #2dd4bf}
+.fig-oxymoron    {background:rgba(244,114,182,.2); color:#fbcfe8;border-bottom:2px solid #f472b6}
+.fig-anaphora    {background:rgba(234,179,8,.18);  color:#fef08a;border-bottom:2px solid #eab308}
+.fig-irony       {background:rgba(14,165,233,.18); color:#bae6fd;border-bottom:2px solid #0ea5e9}
+.fig-imagery     {background:rgba(163,230,53,.15); color:#d9f99d;border-bottom:2px solid #a3e635}
+
+/* Tooltip popup */
+.fig-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.75rem;color:#fff;white-space:nowrap;z-index:100;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.5);max-width:240px;white-space:normal;text-align:left;line-height:1.4;display:none}
+.fig-mark:hover .fig-tooltip{display:block}
+
+/* Findings panel */
+.finding{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;background:#111827;border-radius:9px;border:1px solid var(--border);margin-bottom:8px}
+.finding-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.finding-type{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.finding-quote{font-size:.85rem;font-style:italic;color:var(--muted);margin-bottom:3px}
+.finding-exp{font-size:.8rem;color:#fff;line-height:1.5}
+
+/* Summary bar */
+.summary-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.sum-chip{padding:4px 12px;border-radius:16px;font-size:.75rem;font-weight:700}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.tab{padding:7px 14px;border-radius:8px 8px 0 0;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--muted);border:none;background:transparent;transition:all .15s}
+.tab.active{color:#fff;background:rgba(99,102,241,.15);border-bottom:2px solid var(--accent)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+.empty-findings{text-align:center;padding:24px;color:var(--muted);font-size:.85rem}
+.wc{font-size:.72rem;color:var(--muted);text-align:right;margin-top:4px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="figlang.html">Fig. Language</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🎨 Figurative Language Finder</h1>
+  <p>Paste any text — similes, metaphors, hyperbole, and more get highlighted automatically.</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <label>PASTE YOUR TEXT</label>
+    <textarea id="textIn" rows="8" placeholder="Paste a poem, story excerpt, speech, or any passage here…&#10;&#10;Example: The wind whispered secrets through the trees. She ran faster than the speed of light. Peter Piper picked a peck of pickled peppers." oninput="updateWC()"></textarea>
+    <div class="wc" id="wc">0 words</div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-big" onclick="analyze()">🔍 Find Figurative Language</button>
+      <button class="btn btn-outline" onclick="loadSample()">Try Sample Text</button>
+      <button class="btn btn-outline" onclick="clearAll()">Clear</button>
+    </div>
+  </div>
+
+  <div id="resultsSection" style="display:none">
+    <!-- Legend -->
+    <div class="card" style="padding:14px 20px">
+      <div class="legend" id="legend"></div>
+      <div class="summary-chips" id="summaryChips"></div>
+    </div>
+
+    <!-- Highlighted text + findings tabs -->
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('highlighted',this)">Highlighted Text</button>
+        <button class="tab" onclick="switchTab('findings',this)">All Findings</button>
+        <button class="tab" onclick="switchTab('study',this)">Study Guide</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-highlighted">
+        <div class="output-area" id="highlightedOutput"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-findings">
+        <div id="findingsList"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-study">
+        <div id="studyGuide"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Figurative Language Definitions ──────────────────────────────────────────
+const DEVICES = {
+  simile:      {label:'Simile',       color:'#fbbf24', bg:'fig-simile',       icon:'💛', def:'A comparison using "like" or "as"'},
+  metaphor:    {label:'Metaphor',     color:'#818cf8', bg:'fig-metaphor',     icon:'💜', def:'A direct comparison without "like" or "as" — saying one thing IS another'},
+  personification:{label:'Personification',color:'#34d399',bg:'fig-personification',icon:'💚',def:'Giving human qualities to non-human things'},
+  hyperbole:   {label:'Hyperbole',    color:'#f87171', bg:'fig-hyperbole',    icon:'❤️', def:'An extreme exaggeration used for emphasis or effect'},
+  alliteration:{label:'Alliteration', color:'#a78bfa', bg:'fig-alliteration', icon:'🟣', def:'Repetition of the same consonant sound at the start of nearby words'},
+  onomatopoeia:{label:'Onomatopoeia', color:'#2dd4bf', bg:'fig-onomatopoeia', icon:'🩵', def:'A word that imitates the sound it describes'},
+  oxymoron:    {label:'Oxymoron',     color:'#f472b6', bg:'fig-oxymoron',     icon:'🩷', def:'Two contradictory terms placed together'},
+  anaphora:    {label:'Anaphora',     color:'#eab308', bg:'fig-anaphora',     icon:'🟡', def:'Repetition of a word or phrase at the beginning of successive clauses'},
+  irony:       {label:'Irony',        color:'#0ea5e9', bg:'fig-irony',        icon:'🔵', def:'Saying the opposite of what is meant, or when outcome contradicts expectation'},
+  imagery:     {label:'Imagery',      color:'#a3e635', bg:'fig-imagery',      icon:'🟢', def:'Vivid descriptive language that appeals to the senses'},
+};
+
+const ONOMATOPOEIA_LIST = new Set(['buzz','hiss','crash','bang','clang','clatter','crackle','creak','drip','fizz','flutter','gargle','giggle','growl','grumble','gurgle','hiccup','howl','hum','jingle','moan','mumble','murmur','pop','pitter-patter','ping','puff','purr','rattle','roar','rumble','rustle','screech','sizzle','slam','slap','slash','snap','snarl','sneeze','sniff','snore','splash','splatter','splutter','squeak','squeal','stomp','swoosh','thud','thump','tick','tinkle','twitter','vroom','wheeze','whimper','whine','whir','whisper','whoosh','yelp','zip','zoom','bark','chirp','clap','clunk','coo','crack','crunch','drizzle','drum','flap','flick','gush','hoot','meow','moo','neigh','oink','oink','plop','poof','pounce','prickle','quack','rip','scratch','shriek','slurp','smack','squish','stutter','swish','tap','twang','twinkle','wail','warble','yap']);
+
+const OXYMORON_LIST = [
+  ['bittersweet'],['clearly confused'],['deafening silence'],['living dead'],['open secret'],
+  ['original copy'],['pretty ugly'],['only choice'],['awfully good'],['terribly pleased'],
+  ['alone together'],['act naturally'],['found missing'],['seriously funny'],['old news'],
+  ['jumbo shrimp'],['cold fire'],['freezing hot'],['dark light'],['cruel kindness'],
+  ['silent scream'],['organized chaos'],['sweet sorrow'],['bitter joy'],['loud silence'],
+];
+
+const HYPERBOLE_PATTERNS = [
+  /\b(million|billion|trillion|thousand)\s+times\b/gi,
+  /\b(died?|dying)\s+of\s+(laughter|embarrassment|boredom|hunger|thirst|shame)/gi,
+  /\b(forever|never\s+in\s+a\s+million\s+years|end\s+of\s+the\s+world|whole\s+world)\b/gi,
+  /\b(starving|famished|exhausted|destroyed|explode[ds]?|killing\s+me|world\s+is\s+ending)\b/gi,
+  /\bfaster\s+than\s+(a\s+speeding\s+bullet|light|lightning|sound|the\s+wind)\b/gi,
+  /\btaller?\s+than\s+(a\s+mountain|the\s+sky|a\s+skyscraper|mount\s+everest)\b/gi,
+  /\b(waited?\s+an?\s+eternity|took?\s+forever|waited?\s+forever)\b/gi,
+  /\b(could\s+eat\s+a\s+horse|eaten?\s+a\s+horse)\b/gi,
+  /\b(cried?\s+a\s+(river|ocean|sea|flood))\b/gi,
+  /\b(move\s+mountains?|carried?\s+the\s+world)\b/gi,
+  /\b(thousand|million)\s+(times|years|miles|miles\s+away)\b/gi,
+  /\b(my\s+bag\s+weighs?\s+a\s+ton|heavier\s+than\s+a\s+ton)\b/gi,
+];
+
+const IMAGERY_PATTERNS = [
+  /\b(golden|crimson|scarlet|azure|ivory|ebony|emerald|violet|alabaster|obsidian)\s+\w+/gi,
+  /\b(fragrant|pungent|smoky|musty|sweet-smelling|stench|aroma|perfume)\b/gi,
+  /\b(velvety|silky|rough|jagged|smooth|coarse|gritty|soft)\s+(touch|feel|skin|fur|surface)/gi,
+  /\b(bitter|salty|sour|sweet|tangy|savory|peppery)\s+(taste|flavor|tongue|mouth)/gi,
+  /\b(thunderous|melodious|haunting|piercing|gentle)\s+(sound|voice|melody|cry|song)/gi,
+  /the\s+(sun|moon|stars?\b.*)\s+(blazed?|glowed?|shimmered?|danced?|burned?|wept?|smiled?|watched?)/gi,
+];
+
+const PERSONIFICATION_VERBS = ['whispered','shouted','danced','cried','laughed','smiled','frowned','moaned','groaned','sang','wept','sighed','gasped','breathed','dreamed','thought','felt','saw','heard','spoke','talked','walked','ran','slept','woke','died','lived','loved','hated','feared','hoped','wished','wanted','needed','tried','worked','played','rested','watched','waited','called','answered','asked','replied','promised','refused','agreed','decided','chose','remembered','forgot','wondered','worried','celebrated','mourned','fought','surrendered'];
+const NON_HUMAN = ['wind','sun','moon','stars?','sky','cloud','shadow','tree|trees','rain','storm','ocean|sea','river|stream|brook','mountain|hill','forest|woods','darkness','light','fire','thunder','lightning','snow','ice','flower|flowers','leaf|leaves','wave|waves','earth|ground|soil','time','death','night','morning|dawn','evening|dusk','winter|spring|summer|autumn|fall','hope','fear','joy|happiness','sorrow|grief','fate|destiny','silence','memory|memories'];
+
+const SAMPLE_TEXT = `The old house groaned and moaned as the winter wind whispered secrets through its cracked walls. Emily had been waiting for a million years, or so it felt, for the letter that would change everything.
+
+Outside, the snow danced gracefully across the frozen yard, and the bare oak trees reached their skeletal arms toward the pale sky. The silence was deafening.
+
+She was so hungry she could eat a horse. When the clock finally struck noon — bang! — she rushed to the door faster than the speed of light.
+
+"We shall fight on the beaches, we shall fight on the landing grounds, we shall fight in the fields and in the streets," she read aloud from the old speech. It was bittersweet to think about those distant, deafening-silent days.
+
+The golden sunlight melted into the horizon like warm honey poured over stone. Somewhere, a stream gurgled and chattered over the smooth pebbles below.`;
+
+function loadSample(){ document.getElementById('textIn').value=SAMPLE_TEXT; updateWC(); }
+function clearAll(){ document.getElementById('textIn').value=''; updateWC(); document.getElementById('resultsSection').style.display='none'; }
+function updateWC(){ const t=document.getElementById('textIn').value.trim(); document.getElementById('wc').textContent=(t?t.split(/\s+/).length:0)+' words'; }
+
+// ── Analysis Engine ───────────────────────────────────────────────────────────
+let findings = [];
+
+function analyze(){
+  const text = document.getElementById('textIn').value;
+  if(!text.trim()){ alert('Please paste some text first.'); return; }
+
+  findings = [];
+  detectSimiles(text);
+  detectMetaphors(text);
+  detectPersonification(text);
+  detectHyperbole(text);
+  detectAlliteration(text);
+  detectOnomatopoeia(text);
+  detectOxymorons(text);
+  detectAnaphora(text);
+  detectIrony(text);
+  detectImagery(text);
+
+  // Sort by position
+  findings.sort((a,b)=>a.start-b.start);
+
+  renderResults(text);
+  document.getElementById('resultsSection').style.display='';
+}
+
+function detectSimiles(text){
+  // "like a/an/the ..." and "as ___ as"
+  const re1 = /(\b\w[\w\s,]{0,20}?)\s+(like\s+(?:a\s+|an\s+|the\s+)?\w[\w\s]{2,25})/gi;
+  const re2 = /\bas\s+\w+\s+as\s+(?:a\s+|an\s+|the\s+)?\w[\w\s]{1,20}/gi;
+  let m;
+  while((m=re1.exec(text))!==null){
+    // Filter: exclude "I like", "you like", "would like" (preference, not comparison)
+    if(/\b(i|you|we|they|he|she|it|would|could|should|might)\s+like\b/i.test(m[0])) continue;
+    addFinding('simile',m[0],m.index,text,'Comparison using "like"');
+  }
+  while((m=re2.exec(text))!==null){
+    addFinding('simile',m[0],m.index,text,'Comparison using "as...as"');
+  }
+}
+
+function detectMetaphors(text){
+  // "X is/was/are/were a/an Y" where Y is unlikely literal (no numbers, short)
+  const re = /\b([A-Za-z]\w{1,20})\s+(is|was|are|were|became|become)\s+(?:a\s+|an\s+|the\s+)?([A-Za-z]\w{1,20})\b/g;
+  let m;
+  const literalWords = new Set(['not','very','quite','just','so','too','also','still','already','now','then','here','there','this','that','these','those','who','what','where','when','why','how','its','his','her','our','your','their','my','about','because','although']);
+  while((m=re.exec(text))!==null){
+    const subj=m[1].toLowerCase(), obj=m[3].toLowerCase();
+    if(literalWords.has(subj)||literalWords.has(obj)) continue;
+    if(/\d/.test(m[0])) continue;
+    // Must be comparing clearly different categories — heuristic: skip obvious non-metaphors
+    const CONCRETE=['table','chair','car','book','house','door','window','phone','computer','tree','flower'];
+    const isPlausible = !CONCRETE.includes(subj) || !CONCRETE.includes(obj);
+    if(!isPlausible) continue;
+    addFinding('metaphor',m[0],m.index,text,`"${m[1]}" is described as "${m[3]}" — a direct comparison`);
+  }
+}
+
+function detectPersonification(text){
+  const verbPat = new RegExp(`\\b(${PERSONIFICATION_VERBS.join('|')})\\b`,'gi');
+  const nonHumanPat = new RegExp(`\\b(${NON_HUMAN.join('|')})\\b`,'gi');
+  const sentences = splitSentences(text);
+  sentences.forEach(({s,offset})=>{
+    const hasNonHuman = nonHumanPat.test(s); nonHumanPat.lastIndex=0;
+    const hasVerb     = verbPat.test(s);     verbPat.lastIndex=0;
+    if(hasNonHuman && hasVerb){
+      // Find the specific non-human noun + verb
+      const nhm = nonHumanPat.exec(s); nonHumanPat.lastIndex=0;
+      const vbm = verbPat.exec(s); verbPat.lastIndex=0;
+      if(nhm&&vbm){
+        const snippet = s.slice(0,80).trim();
+        addFinding('personification',snippet,offset,text,`"${nhm[0]}" performs the human action of "${vbm[0]}"`);
+      }
+    }
+  });
+}
+
+function detectHyperbole(text){
+  HYPERBOLE_PATTERNS.forEach(re=>{
+    re.lastIndex=0;
+    let m;
+    while((m=re.exec(text))!==null) addFinding('hyperbole',m[0],m.index,text,'Extreme exaggeration for emphasis');
+  });
+}
+
+function detectAlliteration(text){
+  // Find groups of 3+ consecutive words starting with same letter
+  const sentences = splitSentences(text);
+  sentences.forEach(({s,offset})=>{
+    const words = s.match(/\b[a-zA-Z]{2,}\b/g)||[];
+    for(let i=0;i<words.length-2;i++){
+      const letter = words[i][0].toLowerCase();
+      if(/[aeiou]/.test(letter)) continue; // vowels produce false positives
+      let j=i+1;
+      while(j<words.length && words[j][0].toLowerCase()===letter) j++;
+      if(j-i>=3){
+        const phrase = words.slice(i,j).join(' ');
+        const idx = s.indexOf(phrase);
+        if(idx>=0) addFinding('alliteration',phrase,offset+idx,text,`Repeated "${letter.toUpperCase()}" sound: ${phrase}`);
+        i=j-1;
+      }
+    }
+  });
+}
+
+function detectOnomatopoeia(text){
+  const re = /\b\w+\b/g;
+  let m;
+  while((m=re.exec(text))!==null){
+    if(ONOMATOPOEIA_LIST.has(m[0].toLowerCase())){
+      addFinding('onomatopoeia',m[0],m.index,text,`"${m[0]}" imitates the sound it describes`);
+    }
+  }
+}
+
+function detectOxymorons(text){
+  const lower = text.toLowerCase();
+  OXYMORON_LIST.forEach(([ox])=>{
+    const idx = lower.indexOf(ox);
+    if(idx>=0) addFinding('oxymoron',text.slice(idx,idx+ox.length),idx,text,`"${ox}" combines two contradictory ideas`);
+  });
+}
+
+function detectAnaphora(text){
+  const sentences = splitSentences(text);
+  // Look for 3+ consecutive sentences/clauses starting with same word/phrase (2-4 words)
+  for(let i=0;i<sentences.length-1;i++){
+    const words1 = sentences[i].s.trim().split(/\s+/).slice(0,3).join(' ').toLowerCase();
+    if(words1.length<3) continue;
+    const twoWord = words1.split(' ').slice(0,2).join(' ');
+    let count=1, j=i+1;
+    while(j<sentences.length && sentences[j].s.trim().toLowerCase().startsWith(twoWord)) { count++; j++; }
+    if(count>=2){
+      const phrase = sentences.slice(i,i+count).map(x=>x.s.slice(0,50)).join(' / ');
+      addFinding('anaphora',phrase,sentences[i].offset,text,`"${twoWord}" repeated at start of ${count} clauses`);
+      i=j-1;
+    }
+  }
+}
+
+function detectIrony(text){
+  const patterns=[
+    /\b(obviously|clearly|certainly|of course)\b[^.!?]*\b(not|never|impossible|wrong|bad|worst|terrible)\b/gi,
+    /\b(great|wonderful|fantastic|lovely|perfect)\b[^.!?]*[.!?]/gi, // needs context — pick up "oh great"
+    /\b(oh\s+great|oh\s+wonderful|oh\s+perfect|oh\s+how\s+lovely|how\s+convenient|how\s+nice)\b/gi,
+    /\b(as\s+if|yeah\s+right|sure\s+thing|right\s+because|totally)\b/gi,
+  ];
+  patterns.forEach(re=>{
+    re.lastIndex=0; let m;
+    while((m=re.exec(text))!==null) addFinding('irony',m[0],m.index,text,'Possible irony or sarcasm — saying the opposite of what is meant');
+  });
+}
+
+function detectImagery(text){
+  IMAGERY_PATTERNS.forEach(re=>{
+    re.lastIndex=0; let m;
+    while((m=re.exec(text))!==null) addFinding('imagery',m[0],m.index,text,'Vivid sensory description that appeals to the senses');
+  });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function addFinding(type, text, start, fullText, explanation){
+  // Deduplicate by start position + type
+  if(findings.some(f=>f.type===type && Math.abs(f.start-start)<5)) return;
+  findings.push({type, text:text.trim(), start, end:start+text.length, explanation});
+}
+
+function splitSentences(text){
+  const result=[]; let offset=0;
+  text.split(/(?<=[.!?])\s+|\n/).forEach(s=>{
+    result.push({s,offset}); offset+=s.length+1;
+  });
+  return result;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderResults(text){
+  // Legend
+  const usedTypes = [...new Set(findings.map(f=>f.type))];
+  document.getElementById('legend').innerHTML = Object.entries(DEVICES)
+    .filter(([k])=>usedTypes.includes(k))
+    .map(([k,d])=>`<span class="legend-item"><span class="legend-dot" style="background:${d.color}"></span>${d.label}</span>`).join('');
+
+  // Summary chips
+  const counts={};
+  findings.forEach(f=>counts[f.type]=(counts[f.type]||0)+1);
+  document.getElementById('summaryChips').innerHTML = Object.entries(counts)
+    .map(([t,n])=>`<span class="sum-chip ${DEVICES[t].bg}">${DEVICES[t].icon} ${n} ${DEVICES[t].label}${n>1?'s':''}</span>`).join('');
+
+  // Highlighted text — build non-overlapping regions
+  const regions = buildNonOverlapping(findings);
+  let html='', pos=0;
+  regions.forEach(r=>{
+    if(r.start>pos) html+=escHtml(text.slice(pos,r.start));
+    const d=DEVICES[r.type];
+    html+=`<span class="fig-mark ${d.bg}" title="${d.label}: ${r.explanation}">${escHtml(text.slice(r.start,r.end))}<span class="fig-tooltip"><strong>${d.label}</strong><br>${r.explanation}</span></span>`;
+    pos=r.end;
+  });
+  html+=escHtml(text.slice(pos));
+  document.getElementById('highlightedOutput').innerHTML = html.replace(/\n/g,'<br>');
+
+  // Findings list
+  if(!findings.length){
+    document.getElementById('findingsList').innerHTML='<div class="empty-findings">No figurative language detected. Try a richer passage with more descriptive language.</div>';
+  } else {
+    document.getElementById('findingsList').innerHTML = findings.map(f=>{
+      const d=DEVICES[f.type];
+      return `<div class="finding">
+        <div class="finding-icon">${d.icon}</div>
+        <div>
+          <div class="finding-type" style="color:${d.color}">${d.label}</div>
+          <div class="finding-quote">"${escHtml(f.text.slice(0,100))}${f.text.length>100?'…':''}"</div>
+          <div class="finding-exp">${f.explanation}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Study guide
+  const studyEntries = Object.entries(DEVICES).filter(([k])=>usedTypes.includes(k));
+  document.getElementById('studyGuide').innerHTML = studyEntries.map(([k,d])=>{
+    const fofs = findings.filter(f=>f.type===k);
+    return `<div style="margin-bottom:16px">
+      <div style="font-size:.85rem;font-weight:800;color:${d.color};margin-bottom:4px">${d.icon} ${d.label}</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:6px">${d.def}</div>
+      ${fofs.map(f=>`<div style="background:#111827;border-radius:7px;border:1px solid var(--border);padding:8px 12px;margin-bottom:5px;font-size:.82rem;font-style:italic;color:#fff">"${escHtml(f.text.slice(0,120))}${f.text.length>120?'…':''}"</div>`).join('')}
+    </div>`;
+  }).join('') || '<div class="empty-findings">No figurative devices found.</div>';
+
+  switchTabById('highlighted');
+}
+
+function buildNonOverlapping(items){
+  // Sort by start, then greedily pick non-overlapping
+  const sorted=[...items].sort((a,b)=>a.start-b.start);
+  const result=[];let last=-1;
+  sorted.forEach(r=>{ if(r.start>=last){result.push(r);last=r.end;} });
+  return result;
+}
+
+function switchTab(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+function switchTabById(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector(`.tab[onclick*="${id}"]`)?.classList.add('active');
+  document.getElementById('tab-'+id)?.classList.add('active');
+}
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body></html>
