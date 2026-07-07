@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vocabulary Upgrade Tool — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:900px;margin:0 auto;padding:24px 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+h2{font-size:.85rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+textarea{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:12px 14px;font-size:.93rem;width:100%;resize:vertical;line-height:1.7;font-family:'Segoe UI',sans-serif}
+textarea:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+/* Output area */
+#output{background:#0d1728;border-radius:12px;padding:18px;line-height:1.9;font-size:.95rem;min-height:80px;border:1px solid var(--border)}
+.w-weak{background:#ef444433;border-bottom:2px solid #ef4444;border-radius:3px;cursor:pointer;padding:0 2px;position:relative}
+.w-weak:hover{background:#ef444455}
+/* Dropdown popup */
+.w-popup{display:none;position:absolute;z-index:999;background:var(--card);border:1px solid var(--accent);border-radius:10px;box-shadow:0 8px 32px #0008;min-width:220px;padding:6px 0;top:calc(100% + 4px);left:0}
+.w-popup.open{display:block}
+.w-popup-header{padding:8px 14px 4px;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.w-popup-item{padding:9px 14px;font-size:.88rem;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.w-popup-item:hover{background:#1e2d4a}
+.w-popup-item .w-word{font-weight:600;color:var(--accent2)}
+.w-popup-item .w-def{font-size:.74rem;color:var(--muted)}
+.w-popup-keep{padding:8px 14px;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted);cursor:pointer}
+.w-popup-keep:hover{color:var(--text)}
+/* Stats */
+.stat-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.stat-box{background:#0d1728;border-radius:10px;padding:12px 18px;flex:1;min-width:110px;text-align:center}
+.stat-num{font-size:1.5rem;font-weight:800;color:var(--accent2)}
+.stat-label{font-size:.72rem;color:var(--muted);margin-top:2px}
+/* Vocab list sidebar */
+.voc-tag{display:inline-block;background:#ef444422;border:1px solid #ef444466;color:#fca5a5;border-radius:6px;padding:3px 10px;font-size:.78rem;margin:3px;cursor:pointer}
+.voc-tag:hover{background:#ef444444}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;font-size:.78rem;color:var(--muted);align-items:center}
+.leg-box{display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📝 Vocabulary Upgrade Tool</h1>
+</div>
+<div class="container">
+
+  <div class="card">
+    <h2>Paste Your Writing</h2>
+    <textarea id="inp" rows="7" placeholder="Paste your essay, paragraph, or writing sample here..."></textarea>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <button class="btn btn-primary" onclick="analyze()">🔍 Find Weak Words</button>
+      <button class="btn btn-ghost" onclick="loadSample()">Try Sample</button>
+      <button class="btn btn-ghost" onclick="copyUpgraded()">📋 Copy Upgraded Text</button>
+    </div>
+  </div>
+
+  <div id="main" style="display:none">
+    <div class="stat-row" id="stats"></div>
+
+    <div class="card">
+      <div class="legend">
+        <span><span class="leg-box" style="background:#ef444433;border:2px solid #ef4444"></span>Weak / vague word — click to upgrade</span>
+      </div>
+      <h2>Highlighted Text <span style="font-size:.7rem;font-weight:400;color:var(--muted)">(click a highlighted word to replace it)</span></h2>
+      <div id="output"></div>
+    </div>
+
+    <div class="card">
+      <h2>Weak Words Found</h2>
+      <div id="tagCloud"></div>
+    </div>
+
+    <div class="card">
+      <h2>Upgraded Text</h2>
+      <div id="upgradedOut" style="background:#0d1728;border-radius:10px;padding:16px;line-height:1.9;font-size:.93rem;color:var(--text);min-height:60px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const WEAK = {
+  'good':     [{w:'excellent',d:'of very high quality'},{w:'commendable',d:'deserving praise'},{w:'admirable',d:'worthy of respect'},{w:'exceptional',d:'unusually good'},{w:'proficient',d:'skilled and competent'}],
+  'bad':      [{w:'detrimental',d:'causing harm or damage'},{w:'inadequate',d:'not sufficient'},{w:'substandard',d:'below required quality'},{w:'deficient',d:'lacking in quality'},{w:'inferior',d:'lower in quality'}],
+  'big':      [{w:'substantial',d:'of considerable size'},{w:'significant',d:'large and important'},{w:'enormous',d:'very large in size'},{w:'extensive',d:'covering a large area'},{w:'considerable',d:'notably large'}],
+  'small':    [{w:'minimal',d:'of a minimum amount'},{w:'negligible',d:'so small as to be unimportant'},{w:'marginal',d:'of minor importance'},{w:'modest',d:'not large or showy'},{w:'diminutive',d:'extremely small'}],
+  'nice':     [{w:'pleasant',d:'giving a sense of enjoyment'},{w:'agreeable',d:'pleasing and satisfying'},{w:'delightful',d:'highly pleasing'},{w:'commendable',d:'worthy of praise'},{w:'appealing',d:'attractive or interesting'}],
+  'very':     [{w:'extremely',d:'to a very great degree'},{w:'remarkably',d:'to a notable extent'},{w:'profoundly',d:'to a great depth'},{w:'considerably',d:'to a significant extent'},{w:'notably',d:'worthy of attention'}],
+  'really':   [{w:'genuinely',d:'in a true or authentic way'},{w:'substantially',d:'to a great or significant extent'},{w:'considerably',d:'to a significant degree'},{w:'markedly',d:'in a noticeable manner'},{w:'undeniably',d:'in a way that cannot be denied'}],
+  'said':     [{w:'stated',d:'expressed in words'},{w:'asserted',d:'stated confidently'},{w:'argued',d:'gave reasons for'},{w:'declared',d:'announced formally'},{w:'contended',d:'maintained as a position'}],
+  'things':   [{w:'elements',d:'individual parts of a whole'},{w:'factors',d:'contributing influences'},{w:'aspects',d:'particular parts or features'},{w:'components',d:'parts that make up a whole'},{w:'attributes',d:'characteristic qualities'}],
+  'get':      [{w:'obtain',d:'come to possess'},{w:'acquire',d:'come to have over time'},{w:'attain',d:'succeed in achieving'},{w:'procure',d:'obtain by effort'},{w:'secure',d:'succeed in obtaining'}],
+  'show':     [{w:'demonstrate',d:'clearly show evidence'},{w:'illustrate',d:'make clear by example'},{w:'reveal',d:'make known or visible'},{w:'indicate',d:'point out or suggest'},{w:'exhibit',d:'display publicly'}],
+  'use':      [{w:'utilize',d:'make practical use of'},{w:'employ',d:'make use of'},{w:'implement',d:'put into effect'},{w:'apply',d:'put to practical use'},{w:'leverage',d:'use to maximum advantage'}],
+  'make':     [{w:'create',d:'bring into existence'},{w:'produce',d:'manufacture or generate'},{w:'generate',d:'cause to arise or occur'},{w:'establish',d:'set up on a firm basis'},{w:'construct',d:'build or form by assembling'}],
+  'think':    [{w:'contend',d:'maintain as a position'},{w:'assert',d:'state a fact confidently'},{w:'argue',d:'present reasons or evidence'},{w:'posit',d:'put forward as a proposition'},{w:'maintain',d:'state a position firmly'}],
+  'people':   [{w:'individuals',d:'single persons'},{w:'individuals',d:'single persons'},{w:'citizens',d:'members of a community'},{w:'society',d:'the aggregate of people'},{w:'populations',d:'groups of people in an area'}],
+  'important':[{w:'crucial',d:'of great importance'},{w:'significant',d:'noteworthy and meaningful'},{w:'essential',d:'absolutely necessary'},{w:'pivotal',d:'of central importance'},{w:'paramount',d:'more important than anything else'}],
+  'a lot':    [{w:'numerous',d:'great in number'},{w:'an abundance of',d:'a very large quantity'},{w:'substantial amounts of',d:'considerable quantity'},{w:'considerable',d:'notably large'},{w:'a multitude of',d:'a very large number'}],
+  'also':     [{w:'furthermore',d:'in addition and more importantly'},{w:'moreover',d:'as a further matter'},{w:'additionally',d:'as an extra factor'},{w:'in addition',d:'as well as that'},{w:'likewise',d:'in the same way'}],
+  'but':      [{w:'however',d:'used to contrast ideas'},{w:'nevertheless',d:'in spite of that'},{w:'nonetheless',d:'in spite of that'},{w:'yet',d:'despite what has been said'},{w:'conversely',d:'introducing a contrasting idea'}],
+  'so':       [{w:'therefore',d:'for that reason'},{w:'consequently',d:'as a result'},{w:'thus',d:'as a result of this'},{w:'hence',d:'for this reason'},{w:'accordingly',d:'in a way that is appropriate'}],
+  'because':  [{w:'since',d:'for the reason that'},{w:'given that',d:'taking into account that'},{w:'as a result of',d:'owing to'},{w:'due to',d:'caused by'},{w:'owing to',d:'because of'}],
+  'clearly':  [{w:'evidently',d:'in a way that is clear'},{w:'undeniably',d:'in a way that cannot be denied'},{w:'demonstrably',d:'in a way that can be shown'},{w:'manifestly',d:'clearly and obviously'},{w:'unequivocally',d:'leaving no doubt'}],
+  'many':     [{w:'numerous',d:'great in number'},{w:'countless',d:'too many to count'},{w:'myriad',d:'a great number of'},{w:'an array of',d:'a wide range of'},{w:'substantial numbers of',d:'large quantities of'}],
+  'help':     [{w:'facilitate',d:'make easier'},{w:'assist',d:'give support to'},{w:'enable',d:'give means or ability'},{w:'support',d:'give assistance to'},{w:'advance',d:'help the progress of'}],
+  'change':   [{w:'transform',d:'change completely'},{w:'alter',d:'make different'},{w:'modify',d:'make partial changes'},{w:'revolutionize',d:'change completely and fundamentally'},{w:'reshape',d:'give a new form to'}],
+  'problem':  [{w:'challenge',d:'a difficult situation'},{w:'obstacle',d:'a thing that blocks progress'},{w:'issue',d:'an important topic'},{w:'dilemma',d:'a difficult choice'},{w:'complication',d:'a factor adding difficulty'}]
+};
+
+let tokens = []; // {type:'text'|'weak', text, key, replaced:false, replacement}
+
+function analyze(){
+  const raw = document.getElementById('inp').value;
+  if(!raw.trim()){ alert('Please paste some text first.'); return; }
+  tokenize(raw);
+  render();
+  document.getElementById('main').style.display='block';
+  document.getElementById('main').scrollIntoView({behavior:'smooth'});
+}
+
+function tokenize(text){
+  tokens = [];
+  // Build sorted pattern from WEAK keys (longest first to catch "a lot")
+  const keys = Object.keys(WEAK).sort((a,b)=>b.length-a.length);
+  const escaped = keys.map(k=>k.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,'\\$&'));
+  const re = new RegExp('\\b('+escaped.join('|')+')\\b','gi');
+  let last = 0;
+  let m;
+  while((m=re.exec(text))!==null){
+    if(m.index>last) tokens.push({type:'text',text:text.slice(last,m.index)});
+    const key = m[1].toLowerCase();
+    tokens.push({type:'weak',text:m[1],key:key in WEAK ? key : m[1].toLowerCase(),replaced:false,replacement:null});
+    last = m.index+m[0].length;
+  }
+  if(last<text.length) tokens.push({type:'text',text:text.slice(last)});
+}
+
+function render(){
+  // Stats
+  const weakCount = tokens.filter(t=>t.type==='weak').length;
+  const totalWords = tokens.map(t=>t.text).join('').split(/\s+/).filter(Boolean).length;
+  const replacedCount = tokens.filter(t=>t.type==='weak'&&t.replaced).length;
+  const pct = totalWords>0 ? Math.round(weakCount/totalWords*100) : 0;
+  const grade = pct<=5?'A':pct<=12?'B':pct<=20?'C':pct<=30?'D':'F';
+  const col = grade==='A'?'#10b981':grade==='B'?'#34d399':grade==='C'?'#f59e0b':grade==='D'?'#f97316':'#ef4444';
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-box"><div class="stat-num" style="color:${col}">${grade}</div><div class="stat-label">Vocab Grade</div></div>
+    <div class="stat-box"><div class="stat-num">${weakCount}</div><div class="stat-label">Weak Words</div></div>
+    <div class="stat-box"><div class="stat-num">${pct}%</div><div class="stat-label">Weak Word Rate</div></div>
+    <div class="stat-box"><div class="stat-num">${replacedCount}</div><div class="stat-label">Upgraded</div></div>`;
+
+  // Highlighted output
+  const out = document.getElementById('output');
+  out.innerHTML = tokens.map((t,i)=>{
+    if(t.type==='text') return escHtml(t.text).replace(/\n/g,'<br>');
+    const display = t.replaced ? `<strong style="color:#a5b4fc">${escHtml(t.replacement)}</strong>` : `<span class="w-weak" onclick="openPopup(event,${i})" id="tok-${i}">${escHtml(t.text)}<div class="w-popup" id="pop-${i}"></div></span>`;
+    return display;
+  }).join('');
+
+  // Tag cloud
+  const found = {};
+  tokens.filter(t=>t.type==='weak').forEach(t=>{ found[t.key]=(found[t.key]||0)+1; });
+  document.getElementById('tagCloud').innerHTML = Object.keys(found).map(k=>`<span class="voc-tag" onclick="scrollToFirst('${k}')">${k} (${found[k]}×)</span>`).join('');
+
+  // Upgraded
+  renderUpgraded();
+}
+
+function openPopup(e,i){
+  e.stopPropagation();
+  // Close all others
+  document.querySelectorAll('.w-popup.open').forEach(p=>p.classList.remove('open'));
+  const pop = document.getElementById('pop-'+i);
+  const t = tokens[i];
+  const alts = WEAK[t.key]||[];
+  pop.innerHTML = `<div class="w-popup-header">Replace "${escHtml(t.text)}" with:</div>`+
+    alts.map(a=>`<div class="w-popup-item" onclick="replace(${i},'${escHtml(a.w)}')""><span class="w-word">${escHtml(a.w)}</span><span class="w-def">${escHtml(a.d)}</span></div>`).join('')+
+    `<div class="w-popup-keep" onclick="closePopups()">Keep original</div>`;
+  pop.classList.add('open');
+}
+
+function replace(i,word){
+  tokens[i].replaced=true;
+  tokens[i].replacement=word;
+  closePopups();
+  render();
+}
+
+function closePopups(){ document.querySelectorAll('.w-popup.open').forEach(p=>p.classList.remove('open')); }
+document.addEventListener('click',closePopups);
+
+function renderUpgraded(){
+  const text = tokens.map(t=>t.replaced?t.replacement:t.text).join('');
+  document.getElementById('upgradedOut').innerHTML = escHtml(text).replace(/\n/g,'<br>');
+}
+
+function copyUpgraded(){
+  if(!tokens.length){ alert('Analyze some text first.'); return; }
+  const text = tokens.map(t=>t.replaced?t.replacement:t.text).join('');
+  navigator.clipboard.writeText(text).then(()=>alert('Upgraded text copied!'));
+}
+
+function scrollToFirst(key){
+  for(let i=0;i<tokens.length;i++){
+    if(tokens[i].type==='weak'&&tokens[i].key===key&&!tokens[i].replaced){
+      document.getElementById('tok-'+i)?.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+  }
+}
+
+function loadSample(){
+  document.getElementById('inp').value = `Social media is really bad for many people. It can make people feel very sad and is also a big problem for teenagers. Studies show that a lot of teens use social media and this is clearly not good for them. But some people think it can help people connect with others. So we need to think about how we use these things more carefully.`;
+  analyze();
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+</script>
+</body>
+</html>

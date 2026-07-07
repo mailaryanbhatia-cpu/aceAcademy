@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Assignment Checklist Builder — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:960px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:280px 1fr;gap:20px}
+@media(max-width:700px){.container{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+h2{font-size:.82rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+input,select{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:.86rem;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.84rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-sm{padding:4px 11px;font-size:.74rem}
+.btn-danger{background:transparent;color:#ef4444;border:1px solid #ef444433}
+.btn-danger:hover{background:#ef444422}
+/* Assignment list sidebar */
+.asn-item{background:#0d1728;border-radius:10px;padding:12px;margin-bottom:10px;cursor:pointer;border:2px solid transparent;transition:.12s}
+.asn-item:hover{border-color:var(--border)}
+.asn-item.active{border-color:var(--accent)}
+.asn-name{font-weight:700;font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.asn-meta{font-size:.72rem;color:var(--muted);margin-top:3px}
+.asn-progress-bar{height:4px;border-radius:2px;margin-top:8px;background:var(--border);overflow:hidden}
+.asn-progress-fill{height:100%;border-radius:2px;transition:.3s}
+/* Urgency colors */
+.urg-high{color:#ef4444}
+.urg-med{color:#f59e0b}
+.urg-low{color:#10b981}
+/* Main assignment view */
+.asn-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.asn-title-big{font-size:1.2rem;font-weight:800}
+.asn-due-big{font-size:.8rem;padding:4px 12px;border-radius:20px;font-weight:700}
+/* Steps */
+.step-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)22}
+.step-row:last-child{border-bottom:none}
+.step-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:.12s}
+.step-check.done{background:var(--accent);border-color:var(--accent)}
+.step-check.done::after{content:'✓';color:#fff;font-size:.75rem;font-weight:700}
+.step-body{flex:1;min-width:0}
+.step-name{font-size:.9rem;line-height:1.4}
+.step-name.done-text{text-decoration:line-through;color:var(--muted)}
+.step-sub{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;font-size:.72rem;color:var(--muted)}
+.step-actions{display:flex;gap:6px;align-items:center}
+/* Big progress ring */
+.ring-wrap{display:flex;align-items:center;gap:20px;background:#0d1728;border-radius:12px;padding:14px;margin-bottom:16px}
+.ring-svg{flex-shrink:0}
+.ring-info{flex:1}
+.ring-pct{font-size:2rem;font-weight:800;color:var(--accent2)}
+/* Add step form */
+.add-step-form{background:#0d1728;border-radius:10px;padding:14px;margin-top:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:500px){.g2{grid-template-columns:1fr}}
+/* Empty state */
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.88rem}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>✅ Assignment Checklist Builder</h1>
+</div>
+
+<div class="container">
+  <!-- SIDEBAR -->
+  <div>
+    <div class="card">
+      <h2>Assignments</h2>
+      <div id="asnList"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:12px;justify-content:center" onclick="showNewModal()">+ New Assignment</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="mainArea">
+    <div class="empty" id="emptyState">
+      <div style="font-size:2.5rem;margin-bottom:12px">📋</div>
+      <div style="font-weight:700;margin-bottom:6px">No assignment selected</div>
+      <div>Create a new assignment to get started.</div>
+    </div>
+  </div>
+</div>
+
+<!-- New Assignment Modal -->
+<div id="modal" style="display:none;position:fixed;inset:0;background:#000a;z-index:1000;display:flex;align-items:center;justify-content:center" onclick="closeModal(event)">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:460px;width:90%;position:relative" onclick="event.stopPropagation()">
+    <h2 style="margin-bottom:16px">New Assignment</h2>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div><label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">Assignment Name</label>
+        <input id="m-name" placeholder="e.g. History Essay — WWI Causes"/></div>
+      <div><label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">Subject</label>
+        <input id="m-sub" placeholder="e.g. History, English, Math"/></div>
+      <div><label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">Due Date</label>
+        <input id="m-due" type="date"/></div>
+      <div><label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">Priority</label>
+        <select id="m-pri"><option value="high">🔴 High</option><option value="med" selected>🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+      <div><label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">Total Estimated Hours</label>
+        <input id="m-hrs" type="number" min="0" step="0.5" placeholder="e.g. 3"/></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">Cancel</button>
+      <button class="btn btn-primary" onclick="createAssignment()">Create</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem('asn-checklist')||'[]');
+let activeId = null;
+
+function save(){ localStorage.setItem('asn-checklist',JSON.stringify(data)); }
+
+function showNewModal(){
+  document.getElementById('m-name').value='';
+  document.getElementById('m-sub').value='';
+  document.getElementById('m-due').value='';
+  document.getElementById('m-pri').value='med';
+  document.getElementById('m-hrs').value='';
+  document.getElementById('modal').style.display='flex';
+  setTimeout(()=>document.getElementById('m-name').focus(),50);
+}
+
+function closeModal(e){ if(e.target===document.getElementById('modal')) document.getElementById('modal').style.display='none'; }
+
+function createAssignment(){
+  const name = document.getElementById('m-name').value.trim();
+  if(!name){ alert('Please enter an assignment name.'); return; }
+  const asn = {
+    id: Date.now().toString(),
+    name, subject:document.getElementById('m-sub').value.trim(),
+    due:document.getElementById('m-due').value,
+    priority:document.getElementById('m-pri').value,
+    estHours:parseFloat(document.getElementById('m-hrs').value)||0,
+    steps:[], created:Date.now()
+  };
+  data.unshift(asn);
+  save();
+  document.getElementById('modal').style.display='none';
+  renderSidebar();
+  selectAsn(asn.id);
+}
+
+function deleteAsn(id){
+  if(!confirm('Delete this assignment?')) return;
+  data = data.filter(a=>a.id!==id);
+  save();
+  if(activeId===id){ activeId=null; document.getElementById('mainArea').innerHTML='<div class="empty" id="emptyState"><div style="font-size:2.5rem;margin-bottom:12px">📋</div><div style="font-weight:700;margin-bottom:6px">No assignment selected</div><div>Create a new assignment to get started.</div></div>'; }
+  renderSidebar();
+}
+
+function urgLabel(p){ return p==='high'?'🔴 High':p==='med'?'🟡 Medium':'🟢 Low'; }
+function urgClass(p){ return p==='high'?'urg-high':p==='med'?'urg-med':'urg-low'; }
+function urgColor(p){ return p==='high'?'#ef4444':p==='med'?'#f59e0b':'#10b981'; }
+
+function daysUntil(due){
+  if(!due) return null;
+  const d = new Date(due+'T23:59:59');
+  return Math.ceil((d-Date.now())/(1000*60*60*24));
+}
+
+function dueBadge(due,priority){
+  if(!due) return '';
+  const d = daysUntil(due);
+  const bg = d<0?'#7f1d1d':d<=2?'#7c2d12':d<=7?'#713f12':'#14532d';
+  const c = d<0?'#fca5a5':d<=2?'#fed7aa':d<=7?'#fef08a':'#86efac';
+  const label = d<0?`${Math.abs(d)}d overdue`:d===0?'Due today':d===1?'Due tomorrow':`${d} days left`;
+  return `<span class="asn-due-big" style="background:${bg};color:${c}">${label}</span>`;
+}
+
+function pct(asn){ return asn.steps.length===0?0:Math.round(asn.steps.filter(s=>s.done).length/asn.steps.length*100); }
+function progressColor(p){ return p>=100?'#10b981':p>=60?'#6366f1':p>=30?'#f59e0b':'#ef4444'; }
+
+function renderSidebar(){
+  const el = document.getElementById('asnList');
+  if(!data.length){ el.innerHTML='<div style="font-size:.8rem;color:var(--muted);text-align:center;padding:12px">No assignments yet</div>'; return; }
+  el.innerHTML = data.map(a=>{
+    const p = pct(a);
+    const d = daysUntil(a.due);
+    const dueStr = !a.due?'':`<span class="${d!==null&&d<0?'urg-high':d<=2?'urg-med':'urg-low'}">${d!==null&&d<0?`${Math.abs(d)}d overdue`:d===0?'Today':d===1?'Tomorrow':`${d}d`}</span>`;
+    return `<div class="asn-item${activeId===a.id?' active':''}" onclick="selectAsn('${a.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
+        <div class="asn-name">${escHtml(a.name)}</div>
+        <div style="font-size:.7rem;${a.priority==='high'?'color:#ef4444':a.priority==='med'?'color:#f59e0b':'color:#10b981'}">${a.priority[0].toUpperCase()}</div>
+      </div>
+      <div class="asn-meta">${a.subject?escHtml(a.subject)+' · ':''}${dueStr||'No due date'}</div>
+      <div class="asn-progress-bar"><div class="asn-progress-fill" style="width:${p}%;background:${progressColor(p)}"></div></div>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:4px">${p}% · ${a.steps.filter(s=>s.done).length}/${a.steps.length} steps</div>
+    </div>`;
+  }).join('');
+}
+
+function selectAsn(id){
+  activeId = id;
+  renderSidebar();
+  renderMain();
+}
+
+function renderMain(){
+  const asn = data.find(a=>a.id===activeId);
+  if(!asn){ return; }
+  const p = pct(asn);
+  const col = progressColor(p);
+  const r = 38, circ = 2*Math.PI*r;
+  const dash = circ*(1-p/100);
+
+  document.getElementById('mainArea').innerHTML = `
+    <div class="card" style="margin-bottom:16px">
+      <div class="asn-header">
+        <div>
+          <div class="asn-title-big">${escHtml(asn.name)}</div>
+          <div style="font-size:.8rem;color:var(--muted);margin-top:4px">${asn.subject?escHtml(asn.subject)+' · ':''}${urgLabel(asn.priority)}${asn.estHours?' · '+asn.estHours+'h estimated':''}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          ${dueBadge(asn.due,asn.priority)}
+          <button class="btn btn-danger btn-sm" onclick="deleteAsn('${asn.id}')">🗑 Delete</button>
+        </div>
+      </div>
+
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="90" height="90" viewBox="0 0 90 90">
+          <circle cx="45" cy="45" r="${r}" fill="none" stroke="var(--border)" stroke-width="8"/>
+          <circle cx="45" cy="45" r="${r}" fill="none" stroke="${col}" stroke-width="8"
+            stroke-dasharray="${circ}" stroke-dashoffset="${dash}" stroke-linecap="round"
+            transform="rotate(-90 45 45)" style="transition:.4s"/>
+        </svg>
+        <div class="ring-info">
+          <div class="ring-pct">${p}%</div>
+          <div style="font-size:.8rem;color:var(--muted)">${asn.steps.filter(s=>s.done).length} of ${asn.steps.length} steps done</div>
+          ${p===100?'<div style="color:#10b981;font-size:.8rem;font-weight:700;margin-top:4px">🎉 Assignment complete!</div>':''}
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--muted)">Time done</div>
+          <div style="font-weight:700;font-size:1rem;color:var(--accent2)">${timeSpent(asn)}h</div>
+          <div style="font-size:.72rem;color:var(--muted)">of ${asn.estHours||'?'}h</div>
+        </div>
+      </div>
+
+      <h2>Steps</h2>
+      <div id="stepList">${renderSteps(asn)}</div>
+
+      <div class="add-step-form">
+        <div style="font-size:.8rem;font-weight:600;margin-bottom:10px;color:var(--accent2)">+ Add Step</div>
+        <div style="margin-bottom:8px"><input id="new-step" placeholder="Step description (e.g. Write introduction)" onkeydown="if(event.key==='Enter')addStep()"/></div>
+        <div class="g2">
+          <div><label style="font-size:.72rem;color:var(--muted);display:block;margin-bottom:3px">Mini Due Date</label>
+            <input id="new-due" type="date"/></div>
+          <div><label style="font-size:.72rem;color:var(--muted);display:block;margin-bottom:3px">Est. Time (hours)</label>
+            <input id="new-time" type="number" min="0" step="0.25" placeholder="e.g. 0.5"/></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="addStep()" style="margin-top:10px">Add Step</button>
+      </div>
+    </div>`;
+}
+
+function timeSpent(asn){
+  return asn.steps.filter(s=>s.done&&s.estTime).reduce((a,s)=>a+s.estTime,0).toFixed(1);
+}
+
+function renderSteps(asn){
+  if(!asn.steps.length) return '<div style="font-size:.84rem;color:var(--muted);padding:8px 0">No steps yet — add your first step below.</div>';
+  return asn.steps.map((s,i)=>{
+    const dueD = daysUntil(s.due);
+    const dueStr = s.due?`<span style="${dueD!==null&&dueD<0?'color:#ef4444':dueD<=2?'color:#f59e0b':'color:var(--muted)'}">📅 ${new Date(s.due+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:'';
+    const timeStr = s.estTime?`<span>⏱ ${s.estTime}h</span>`:'';
+    return `<div class="step-row">
+      <div class="step-check${s.done?' done':''}" onclick="toggleStep('${asn.id}',${i})"></div>
+      <div class="step-body">
+        <div class="step-name${s.done?' done-text':''}">${escHtml(s.name)}</div>
+        ${(dueStr||timeStr)?`<div class="step-sub">${dueStr}${timeStr}</div>`:''}
+      </div>
+      <div class="step-actions">
+        <button class="btn btn-ghost btn-sm" style="color:#ef4444;border-color:#ef444433;padding:3px 8px" onclick="removeStep('${asn.id}',${i})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addStep(){
+  const asn = data.find(a=>a.id===activeId);
+  const name = document.getElementById('new-step').value.trim();
+  if(!name||!asn) return;
+  asn.steps.push({name, due:document.getElementById('new-due').value, estTime:parseFloat(document.getElementById('new-time').value)||0, done:false});
+  save();
+  document.getElementById('new-step').value='';
+  document.getElementById('new-due').value='';
+  document.getElementById('new-time').value='';
+  renderSidebar();
+  renderMain();
+}
+
+function toggleStep(id,i){
+  const asn = data.find(a=>a.id===id);
+  asn.steps[i].done=!asn.steps[i].done;
+  save();
+  renderSidebar();
+  renderMain();
+}
+
+function removeStep(id,i){
+  const asn = data.find(a=>a.id===id);
+  asn.steps.splice(i,1);
+  save();
+  renderSidebar();
+  renderMain();
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+// Kick off
+renderSidebar();
+</script>
+</body>
+</html>

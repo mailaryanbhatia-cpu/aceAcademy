@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Body Paragraph Builder (PEEL) — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:960px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.container{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+h2{font-size:.85rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:4px}
+textarea{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 12px;font-size:.88rem;width:100%;resize:vertical;font-family:'Segoe UI',sans-serif;line-height:1.6}
+textarea:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-sm{padding:5px 11px;font-size:.76rem}
+.peel-section{margin-bottom:16px}
+.peel-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.peel-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0}
+.peel-title{font-weight:700;font-size:.9rem}
+.peel-sub{font-size:.75rem;color:var(--muted);margin-left:40px;margin-bottom:6px}
+.starter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;margin-left:40px}
+.starter-btn{background:#0d1728;border:1px solid var(--border);color:var(--accent2);border-radius:6px;padding:3px 10px;font-size:.73rem;cursor:pointer;transition:.12s}
+.starter-btn:hover{background:#1e2d4a;border-color:var(--accent)}
+/* Preview */
+.preview-para{background:#0d1728;border-radius:10px;padding:16px;line-height:1.9;font-size:.93rem;color:var(--text);min-height:120px}
+.preview-para .p-point{color:#f59e0b}
+.preview-para .p-evidence{color:#10b981}
+.preview-para .p-explain{color:#6366f1}
+.preview-para .p-link{color:#ec4899}
+.preview-empty{color:var(--muted);font-style:italic;font-size:.85rem}
+/* Save list */
+.save-item{background:#0d1728;border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.save-item-name{font-size:.85rem;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.counter{font-size:.75rem;color:var(--muted);margin-top:4px}
+/* Word count */
+.wc{font-size:.72rem;color:var(--muted);text-align:right;margin-top:3px}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📄 PEEL Paragraph Builder</h1>
+</div>
+
+<div style="max-width:960px;margin:0 auto;padding:24px 16px 0">
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px">
+    <div style="font-size:.82rem;color:var(--muted)">Build a structured body paragraph using the PEEL method: <strong style="color:#f59e0b">P</strong>oint · <strong style="color:#10b981">E</strong>vidence · <strong style="color:#6366f1">E</strong>xplain · <strong style="color:#ec4899">L</strong>ink</div>
+    <button class="btn btn-ghost btn-sm" onclick="clearAll()" style="margin-left:auto">🗑 Clear</button>
+    <button class="btn btn-ghost btn-sm" onclick="loadExample()">Try Example</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- LEFT: PEEL input -->
+  <div>
+    <div class="card">
+      <h2>Build Your Paragraph</h2>
+
+      <!-- POINT -->
+      <div class="peel-section">
+        <div class="peel-header">
+          <div class="peel-badge" style="background:#f59e0b22;color:#f59e0b;border:2px solid #f59e0b">P</div>
+          <div>
+            <div class="peel-title" style="color:#f59e0b">Point</div>
+          </div>
+        </div>
+        <div class="peel-sub">Your topic sentence — state the main argument of this paragraph.</div>
+        <div class="starter-row" id="starters-p"></div>
+        <textarea id="inp-p" rows="2" placeholder="e.g. Social media has a significant negative impact on teenagers' mental health." oninput="updatePreview();wc('inp-p','wc-p')"></textarea>
+        <div class="wc" id="wc-p"></div>
+      </div>
+
+      <!-- EVIDENCE -->
+      <div class="peel-section">
+        <div class="peel-header">
+          <div class="peel-badge" style="background:#10b98122;color:#10b981;border:2px solid #10b981">E</div>
+          <div>
+            <div class="peel-title" style="color:#10b981">Evidence</div>
+          </div>
+        </div>
+        <div class="peel-sub">Support your point with a quote, statistic, or example.</div>
+        <div class="starter-row" id="starters-e"></div>
+        <textarea id="inp-e" rows="3" placeholder='e.g. According to a 2023 study by the American Psychological Association, "teens who spend more than 3 hours daily on social media are twice as likely to experience depression."' oninput="updatePreview();wc('inp-e','wc-e')"></textarea>
+        <div class="wc" id="wc-e"></div>
+      </div>
+
+      <!-- EXPLAIN -->
+      <div class="peel-section">
+        <div class="peel-header">
+          <div class="peel-badge" style="background:#6366f122;color:#a5b4fc;border:2px solid #6366f1">E</div>
+          <div>
+            <div class="peel-title" style="color:#a5b4fc">Explain</div>
+          </div>
+        </div>
+        <div class="peel-sub">Analyse the evidence — explain <em>why</em> it supports your point.</div>
+        <div class="starter-row" id="starters-x"></div>
+        <textarea id="inp-x" rows="3" placeholder="e.g. This demonstrates that excessive social media use directly correlates with declining mental wellbeing, suggesting that the constant exposure to curated, idealised content creates unrealistic comparisons." oninput="updatePreview();wc('inp-x','wc-x')"></textarea>
+        <div class="wc" id="wc-x"></div>
+      </div>
+
+      <!-- LINK -->
+      <div class="peel-section">
+        <div class="peel-header">
+          <div class="peel-badge" style="background:#ec489922;color:#ec4899;border:2px solid #ec4899">L</div>
+          <div>
+            <div class="peel-title" style="color:#ec4899">Link</div>
+          </div>
+        </div>
+        <div class="peel-sub">Connect back to your essay's thesis or the broader argument.</div>
+        <div class="starter-row" id="starters-l"></div>
+        <textarea id="inp-l" rows="2" placeholder="e.g. Ultimately, these findings reinforce the argument that society must address the unchecked growth of social media platforms before further harm is done to younger generations." oninput="updatePreview();wc('inp-l','wc-l')"></textarea>
+        <div class="wc" id="wc-l"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Preview + Save -->
+  <div>
+    <div class="card" style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h2 style="margin:0">Live Preview</h2>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="copyPara()">📋 Copy</button>
+          <button class="btn btn-primary btn-sm" onclick="savePara()">💾 Save</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:.72rem;margin-bottom:10px">
+        <span style="color:#f59e0b">■ Point</span>
+        <span style="color:#10b981">■ Evidence</span>
+        <span style="color:#a5b4fc">■ Explain</span>
+        <span style="color:#ec4899">■ Link</span>
+      </div>
+      <div class="preview-para" id="preview">
+        <span class="preview-empty">Start typing above to see your paragraph build in real time...</span>
+      </div>
+      <div class="counter" id="para-counter"></div>
+    </div>
+
+    <div class="card">
+      <h2>Saved Paragraphs</h2>
+      <div id="saveList"><div style="font-size:.82rem;color:var(--muted)">No saved paragraphs yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STARTERS = {
+  p:['One significant reason is','It can be argued that','A key factor is','Fundamentally,','This argument demonstrates that','A central issue is'],
+  e:['For instance,','According to','Research indicates that','As evidenced by','This is illustrated by','Studies have found that'],
+  x:['This suggests that','This demonstrates that','This reveals that','In other words,','This implies that','This highlights the fact that'],
+  l:['Therefore,','In conclusion,','This reinforces the argument that','Ultimately,','Thus, it is clear that','This connects directly to the broader argument that']
+};
+
+function initStarters(){
+  ['p','e','x','l'].forEach(key=>{
+    const inp_key = key==='x'?'x':key;
+    const container = document.getElementById('starters-'+key);
+    container.innerHTML = STARTERS[key].map(s=>
+      `<button class="starter-btn" onclick="insertStarter('inp-${key==='x'?'x':key}','${s.replace(/'/g,"\\'")}')">+ ${s}</button>`
+    ).join('');
+  });
+  // fix inp-x vs inp-e naming
+  document.getElementById('starters-x').querySelectorAll('button').forEach((b,i)=>{
+    b.onclick = ()=>insertStarter('inp-x', STARTERS.x[i]);
+  });
+}
+
+function insertStarter(id, text){
+  const el = document.getElementById(id);
+  if(!el.value.trim()) el.value = text+' ';
+  else el.value = el.value.trimEnd()+' '+text+' ';
+  el.focus();
+  updatePreview();
+}
+
+function wc(id, wcId){
+  const v = document.getElementById(id).value.trim();
+  const count = v ? v.split(/\s+/).length : 0;
+  document.getElementById(wcId).textContent = count ? `${count} word${count!==1?'s':''}` : '';
+}
+
+function updatePreview(){
+  const P = document.getElementById('inp-p').value.trim();
+  const E = document.getElementById('inp-e').value.trim();
+  const X = document.getElementById('inp-x').value.trim();
+  const L = document.getElementById('inp-l').value.trim();
+  if(!P&&!E&&!X&&!L){
+    document.getElementById('preview').innerHTML='<span class="preview-empty">Start typing above to see your paragraph build in real time...</span>';
+    document.getElementById('para-counter').textContent='';
+    return;
+  }
+  const parts = [];
+  if(P) parts.push(`<span class="p-point">${escHtml(P)}</span>`);
+  if(E) parts.push(`<span class="p-evidence">${escHtml(E)}</span>`);
+  if(X) parts.push(`<span class="p-explain">${escHtml(X)}</span>`);
+  if(L) parts.push(`<span class="p-link">${escHtml(L)}</span>`);
+  document.getElementById('preview').innerHTML = parts.join(' ');
+  const total = [P,E,X,L].join(' ').split(/\s+/).filter(Boolean).length;
+  const filled = [P,E,X,L].filter(Boolean).length;
+  document.getElementById('para-counter').textContent = `${filled}/4 sections · ${total} words`;
+}
+
+function copyPara(){
+  const parts = ['inp-p','inp-e','inp-x','inp-l'].map(id=>document.getElementById(id).value.trim()).filter(Boolean);
+  if(!parts.length){ alert('Write something first!'); return; }
+  navigator.clipboard.writeText(parts.join(' ')).then(()=>alert('Paragraph copied!'));
+}
+
+let saves = JSON.parse(localStorage.getItem('peel-saves')||'[]');
+
+function savePara(){
+  const P = document.getElementById('inp-p').value.trim();
+  if(!P){ alert('Add at least a Point sentence before saving.'); return; }
+  const name = prompt('Name this paragraph:',P.slice(0,40)+'...');
+  if(!name) return;
+  saves.unshift({name,p:document.getElementById('inp-p').value,e:document.getElementById('inp-e').value,x:document.getElementById('inp-x').value,l:document.getElementById('inp-l').value,ts:Date.now()});
+  if(saves.length>12) saves.pop();
+  localStorage.setItem('peel-saves',JSON.stringify(saves));
+  renderSaves();
+}
+
+function renderSaves(){
+  const el = document.getElementById('saveList');
+  if(!saves.length){ el.innerHTML='<div style="font-size:.82rem;color:var(--muted)">No saved paragraphs yet.</div>'; return; }
+  el.innerHTML = saves.map((s,i)=>`<div class="save-item">
+    <div style="flex:1;min-width:0">
+      <div class="save-item-name">${escHtml(s.name)}</div>
+      <div style="font-size:.72rem;color:var(--muted)">${new Date(s.ts).toLocaleDateString()}</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="loadSave(${i})">Load</button>
+    <button class="btn btn-ghost btn-sm" onclick="deleteSave(${i})" style="color:#ef4444;border-color:#ef444444">✕</button>
+  </div>`).join('');
+}
+
+function loadSave(i){
+  const s = saves[i];
+  document.getElementById('inp-p').value=s.p||'';
+  document.getElementById('inp-e').value=s.e||'';
+  document.getElementById('inp-x').value=s.x||'';
+  document.getElementById('inp-l').value=s.l||'';
+  ['p','e','x','l'].forEach(k=>wc('inp-'+k,'wc-'+k));
+  updatePreview();
+}
+
+function deleteSave(i){ saves.splice(i,1); localStorage.setItem('peel-saves',JSON.stringify(saves)); renderSaves(); }
+
+function clearAll(){
+  ['p','e','x','l'].forEach(k=>{document.getElementById('inp-'+k).value=''; document.getElementById('wc-'+k).textContent='';});
+  updatePreview();
+}
+
+function loadExample(){
+  document.getElementById('inp-p').value='Social media has a significant negative impact on teenagers’ mental health.';
+  document.getElementById('inp-e').value='According to a 2023 study by the American Psychological Association, teenagers who spend more than three hours daily on social media are twice as likely to experience symptoms of depression and anxiety compared to their peers who use it less frequently.';
+  document.getElementById('inp-x').value='This demonstrates that excessive social media consumption directly correlates with declining mental wellbeing, suggesting that the constant exposure to curated, idealised content creates unrealistic social comparisons and fosters feelings of inadequacy among young users.';
+  document.getElementById('inp-l').value='Ultimately, these findings reinforce the broader argument that society must take immediate action to regulate and educate around social media use before further harm is done to the mental health of younger generations.';
+  ['p','e','x','l'].forEach(k=>wc('inp-'+k,'wc-'+k));
+  updatePreview();
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+initStarters();
+renderSaves();
+</script>
+</body>
+</html>

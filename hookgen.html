@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hook Generator — Ace Academy</title>
+<link rel="stylesheet" href="ace-theme.css"/>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:860px;margin:0 auto;padding:24px 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+h2{font-size:.85rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+label{font-size:.82rem;color:var(--muted);display:block;margin-bottom:5px}
+input,select,textarea{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:.92rem;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:600;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+/* Hook cards */
+.hook-card{background:#0d1728;border-radius:12px;padding:18px;margin-bottom:14px;border-left:4px solid var(--accent);position:relative}
+.hook-type{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.hook-text{font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic}
+.hook-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.hook-tip{font-size:.75rem;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)33;line-height:1.5}
+.copied{color:#10b981!important;border-color:#10b981!important}
+/* Type chips */
+.type-chip{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.72rem;font-weight:700}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>🪝 Hook Generator</h1>
+</div>
+<div class="container">
+  <div class="card">
+    <h2>Your Essay</h2>
+    <div class="g2">
+      <div>
+        <label>Essay Topic</label>
+        <input id="topic" placeholder="e.g. climate change, social media, the Civil War"/>
+      </div>
+      <div>
+        <label>Essay Type</label>
+        <select id="essayType">
+          <option value="argumentative">Argumentative</option>
+          <option value="analytical">Analytical</option>
+          <option value="expository">Expository</option>
+          <option value="narrative">Narrative</option>
+          <option value="compare">Compare & Contrast</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <label>Thesis / Main Argument (optional — improves relevance)</label>
+      <input id="thesis" placeholder="e.g. Social media has fundamentally changed how teenagers form identity."/>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="generate()">✨ Generate Hooks</button>
+      <button class="btn btn-ghost" onclick="regenerate()">🔄 Regenerate</button>
+    </div>
+  </div>
+
+  <div id="results" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0">Your 5 Hooks</h2>
+      <button class="btn btn-ghost btn-sm" onclick="copyAll()">📋 Copy All</button>
+    </div>
+    <div id="hookList"></div>
+  </div>
+</div>
+
+<script>
+const HOOKS = [
+  {
+    type:'Question',icon:'❓',color:'#6366f1',
+    tip:'A question hook pulls the reader in by making them think. Best for argumentative and analytical essays.',
+    templates:[
+      'What would the world look like if {topic} were allowed to go unchecked for another generation?',
+      'Have you ever stopped to ask yourself what {topic} truly means — not just as a concept, but as a lived reality?',
+      'At what point does society take full responsibility for the consequences of {topic}?',
+      'Is {topic} the most urgent challenge of our time, or is it merely a symptom of something deeper?',
+      'What if the choices being made today about {topic} are the very ones future generations will judge us for?',
+      'How many times must {topic} reshape the course of history before we truly begin to listen?',
+      'Can we honestly claim to understand {topic} without examining the forces that created it?'
+    ]
+  },
+  {
+    type:'Statistic / Fact',icon:'📊',color:'#10b981',
+    tip:'Grounding your opening in data or a striking fact builds credibility immediately. Ideal for expository and argumentative essays.',
+    templates:[
+      'Experts and researchers across the globe agree: {topic} has already begun reshaping the world in ways that are both profound and irreversible.',
+      'In the span of a single generation, {topic} has transformed from a fringe concern into one of the most pressing forces defining modern life.',
+      'Studies consistently reveal that the impact of {topic} reaches far beyond what most people expect — touching economics, culture, health, and human relationships alike.',
+      'Across every continent and culture, {topic} is making its presence felt in ways that statistics alone can scarcely capture.',
+      'The data is clear: {topic} is no longer a future problem. It is a present reality demanding immediate and informed attention.',
+      'When researchers examine the long-term trajectory of {topic}, one pattern becomes undeniable — the stakes have never been higher.',
+      'History shows that societies which ignored {topic} paid a steep price; those that confronted it head-on found a path forward.'
+    ]
+  },
+  {
+    type:'Anecdote / Scenario',icon:'📖',color:'#f59e0b',
+    tip:'A brief story or imagined scenario creates emotional connection. Especially powerful for narrative and persuasive essays.',
+    templates:[
+      'Imagine standing at a crossroads where every decision surrounding {topic} determines not just your own future, but the futures of countless others.',
+      'Picture a community transformed almost overnight — not by disaster, but by the quiet, relentless force of {topic}.',
+      'Consider the story of an ordinary person whose life was irrevocably altered the moment {topic} entered their world.',
+      'Close your eyes and envision what daily life might look like in a world where {topic} had been taken seriously from the very beginning.',
+      'In a small town not unlike countless others, {topic} arrived without warning — and nothing was ever quite the same again.',
+      'Somewhere right now, a decision is being made about {topic} that will send ripples across decades and generations.',
+      'Think about the last time {topic} crossed your mind — and ask yourself whether you truly understood what was at stake.'
+    ]
+  },
+  {
+    type:'Bold Claim',icon:'⚡',color:'#ef4444',
+    tip:'A confident, direct statement commands attention. Best paired with a strong argumentative essay where you plan to defend a clear position.',
+    templates:[
+      '{topic_cap} is not simply a topic for academic debate — it is one of the defining forces of our time, and it demands to be taken seriously.',
+      'The time for passive observation of {topic} has ended; only those willing to engage with it directly will shape what comes next.',
+      'To dismiss {topic} is to dismiss the lived experiences of millions — and that is a moral failure society can no longer afford.',
+      '{topic_cap} represents both the greatest challenge and the greatest opportunity of the twenty-first century, and how we respond will define us.',
+      'History will not judge us by our good intentions toward {topic}, but by the concrete actions we chose — or failed — to take.',
+      'There is nothing neutral about {topic}. Every silence, every delay, every half-measure carries a cost that someone, somewhere, will pay.',
+      'Those who underestimate {topic} do so at their peril — and at the peril of everyone who comes after them.'
+    ]
+  },
+  {
+    type:'Quote / Voice',icon:'💬',color:'#8b5cf6',
+    tip:'Opening with a powerful voice or attributed perspective adds authority and depth. Works well for literary analysis and analytical essays.',
+    templates:[
+      'Across generations, the most thoughtful voices in history have wrestled with {topic} — and their insights have never felt more urgent than they do today.',
+      'From ancient philosophers to modern-day scholars, the conversation surrounding {topic} has always asked the same essential question: what do we owe one another?',
+      'The greatest minds of every era have recognized that {topic} is not merely an intellectual exercise, but a question with real consequences for real lives.',
+      'As thinkers, activists, and ordinary people have long argued, {topic} sits at the very heart of what it means to live in a just and thoughtful society.',
+      'Throughout history, those who dared to confront {topic} directly — rather than look away — became the people worth remembering.',
+      'The voices that have shaped our understanding of {topic} share one conviction: that knowledge without action is ultimately hollow.',
+      '"The measure of a civilization," many have argued, "is not what it builds, but how it responds to challenges like {topic}."'
+    ]
+  }
+];
+
+let currentVariants = [0,0,0,0,0];
+let lastTopic = '';
+
+function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function fillTemplate(tpl, topic){
+  return tpl
+    .replace(/\{topic\}/g, topic.toLowerCase())
+    .replace(/\{topic_cap\}/g, cap(topic));
+}
+
+function generate(){
+  const topic = document.getElementById('topic').value.trim();
+  if(!topic){ alert('Please enter an essay topic.'); return; }
+  lastTopic = topic;
+  currentVariants = HOOKS.map(()=>0);
+  render();
+}
+
+function regenerate(){
+  if(!lastTopic){ generate(); return; }
+  currentVariants = HOOKS.map((h,i) => (currentVariants[i]+1) % h.templates.length);
+  render();
+}
+
+function render(){
+  const topic = lastTopic;
+  document.getElementById('results').style.display='block';
+  document.getElementById('hookList').innerHTML = HOOKS.map((h,i)=>{
+    const text = fillTemplate(h.templates[currentVariants[i]], topic);
+    return `<div class="hook-card" style="border-left-color:${h.color}">
+      <div class="hook-type" style="color:${h.color}">${h.icon} <span>${h.type} Hook</span>
+        <span style="margin-left:auto;font-size:.7rem;color:var(--muted)">Variant ${currentVariants[i]+1}/${h.templates.length}</span>
+      </div>
+      <div class="hook-text" id="hook-text-${i}">${escHtml(text)}</div>
+      <div class="hook-actions">
+        <button class="btn btn-ghost btn-sm" onclick="copyHook(${i})" id="copy-btn-${i}">📋 Copy</button>
+        <button class="btn btn-ghost btn-sm" onclick="nextVariant(${i})">🔄 Next variant</button>
+      </div>
+      <div class="hook-tip">💡 <strong>Tip:</strong> ${h.tip}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+
+function nextVariant(i){
+  currentVariants[i] = (currentVariants[i]+1) % HOOKS[i].templates.length;
+  const text = fillTemplate(HOOKS[i].templates[currentVariants[i]], lastTopic);
+  document.getElementById('hook-text-'+i).textContent = text;
+  const el = document.getElementById('hook-card-'+i);
+}
+
+function copyHook(i){
+  const text = document.getElementById('hook-text-'+i).textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('copy-btn-'+i);
+    btn.textContent='✅ Copied!'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='📋 Copy';btn.classList.remove('copied');},2000);
+  });
+}
+
+function copyAll(){
+  const all = HOOKS.map((h,i)=>`[${h.type} Hook]\n${document.getElementById('hook-text-'+i)?.textContent||''}`).join('\n\n');
+  navigator.clipboard.writeText(all).then(()=>alert('All hooks copied!'));
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+// Enter key
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&(e.target.id==='topic'||e.target.id==='thesis')) generate();
+});
+</script>
+</body>
+</html>
