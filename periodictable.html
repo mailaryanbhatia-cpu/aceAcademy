@@ -93,8 +93,8 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;m
     </div>
     <div class="dp-grid" id="dp-stats"></div>
     <div class="bohr-wrap" id="dp-bohr-wrap">
-      <div class="bohr-title">⚛ Atomic Structure</div>
-      <div id="dp-bohr-svg" style="margin-bottom:10px"></div>
+      <div class="bohr-title">⚛ Live Atom Model</div>
+      <canvas id="atom-canvas" width="280" height="280" style="display:block;margin:0 auto;border-radius:10px;background:#050d1a;margin-bottom:10px;max-width:100%"></canvas>
       <table class="shell-table" id="dp-shell-table"></table>
     </div>
     <div class="dp-sec"><div class="dp-sec-title">Electron Configuration</div><div class="econfig" id="dp-cfg"></div></div>
@@ -290,6 +290,166 @@ const SHELLS={
 };
 const SHELL_NAMES=['K','L','M','N','O','P','Q'];
 
+
+// ——— 3D Atom Canvas Animation ———
+function initAtomCanvas(protons, neutrons, shells, cat){
+  if(window._atomAnim){cancelAnimationFrame(window._atomAnim);window._atomAnim=null;}
+  const canvas=document.getElementById('atom-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height, cx=W/2, cy=H/2;
+
+  const CAT_COLORS={'cat-alkali':'#ef4444','cat-alkaline':'#f59e0b','cat-transition':'#818cf8',
+    'cat-post':'#a78bfa','cat-metalloid':'#34d399','cat-nonmetal':'#22d3ee',
+    'cat-halogen':'#fb923c','cat-noble':'#c084fc','cat-lanthanide':'#f472b6',
+    'cat-actinide':'#a3e635','cat-unknown':'#6366f1'};
+  const catColor=CAT_COLORS[cat.cls]||'#6366f1';
+
+  // — Nucleus particles —
+  const total=protons+neutrons;
+  const MAX_SHOW=90;
+  const ratio=Math.min(1,MAX_SHOW/Math.max(1,total));
+  const showP=Math.max(1,Math.round(protons*ratio));
+  const showN=Math.max(0,Math.round(neutrons*ratio));
+  const nucR=Math.max(10,Math.min(26,4.5*Math.cbrt(showP+showN)));
+
+  const nucleons=[];
+  [[showP,'p'],[showN,'n']].forEach(([count,type])=>{
+    for(let i=0;i<count;i++){
+      let x,y,z,att=0;
+      do{x=(Math.random()*2-1)*nucR*0.9;y=(Math.random()*2-1)*nucR*0.9;z=(Math.random()*2-1)*nucR*0.9;att++;}
+      while(x*x+y*y+z*z>nucR*nucR*0.81&&att<40);
+      nucleons.push({type,x,y,z});
+    }
+  });
+
+  // — Orbits —
+  const nShells=shells.filter(n=>n>0).length||1;
+  const ORB_MIN=nucR+16, ORB_MAX=cy-14;
+  // Tilt angles per shell (inclination from horizontal + azimuth offset)
+  const INCL=[20,55,35,72,18,62,44].map(d=>d*Math.PI/180);
+  const AZIM=[0,50,100,30,130,70,160].map(d=>d*Math.PI/180);
+  // Angular speed: inner shells faster, ω ∝ 1/n^1.5 (Bohr model approximation)
+  const OMEGA_BASE=1.9;
+
+  let shellIdx=0;
+  const orbits=shells.map((n,i)=>{
+    if(n===0) return null;
+    const r=ORB_MIN+(shellIdx+1)*(ORB_MAX-ORB_MIN)/(nShells+0.2);
+    shellIdx++;
+    const incl=INCL[i%7];
+    const azim=AZIM[i%7];
+    const omega=OMEGA_BASE/Math.pow(i+1,1.45);
+    const electrons=Array.from({length:n},(_,j)=>({angle:(j/n)*2*Math.PI+(i*1.1)}));
+    return{r,incl,azim,omega,electrons,shellNum:i+1};
+  }).filter(Boolean);
+
+  // — Render loop —
+  let last=null;
+  let t=0;
+  function frame(ts){
+    if(!last) last=ts;
+    const dt=Math.min((ts-last)/1000,0.05);
+    last=ts; t+=dt;
+    const cv=document.getElementById('atom-canvas');
+    if(!cv){window._atomAnim=null;return;}
+
+    ctx.clearRect(0,0,W,H);
+
+    // Center glow
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,nucR*3);
+    g.addColorStop(0,catColor+'28');g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,nucR*3,0,Math.PI*2);ctx.fill();
+
+    // Update electrons
+    orbits.forEach(o=>o.electrons.forEach(e=>{e.angle+=o.omega*dt;}));
+
+    // Very slow precession of orbital planes
+    const prec=t*0.12;
+
+    // Draw orbital paths
+    orbits.forEach((o,i)=>{
+      const incl=o.incl;
+      const az=o.azim+prec*(i%2===0?1:-0.7);
+      const b=o.r*Math.abs(Math.cos(incl));
+      ctx.save();ctx.translate(cx,cy);ctx.rotate(az);
+      ctx.beginPath();ctx.ellipse(0,0,o.r,Math.max(4,b),0,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(100,160,255,0.14)`;ctx.lineWidth=0.8;
+      ctx.setLineDash([4,5]);ctx.stroke();ctx.setLineDash([]);
+      ctx.restore();
+    });
+
+    // Collect all items with 3D depth
+    const items=[];
+
+    // Nucleus nucleons
+    nucleons.forEach(p=>{
+      items.push({kind:'nuc',type:p.type,sx:cx+p.x,sy:cy+p.y,depth:p.z,nucR:p.z/nucR});
+    });
+
+    // Electrons: 3D position using inclination + precessing azimuth
+    orbits.forEach((o,oi)=>{
+      const incl=o.incl;
+      const az=o.azim+prec*(oi%2===0?1:-0.7);
+      const cosAz=Math.cos(az), sinAz=Math.sin(az);
+      const cosI=Math.cos(incl), sinI=Math.sin(incl);
+      o.electrons.forEach(e=>{
+        // Position on unit circle in orbital plane
+        const lx=o.r*Math.cos(e.angle);
+        const ly=o.r*Math.sin(e.angle);
+        // Apply inclination (tilt around local x-axis)
+        const lx2=lx, ly2=ly*cosI, lz2=ly*sinI;
+        // Apply azimuth rotation (around world z-axis)
+        const wx=lx2*cosAz-ly2*sinAz;
+        const wy=lx2*sinAz+ly2*cosAz;
+        const wz=lz2;
+        items.push({kind:'elec',sx:cx+wx,sy:cy+wy,depth:wz,r:3.5+wz/o.r*1.5,oi});
+      });
+    });
+
+    // Sort back to front
+    items.sort((a,b)=>a.depth-b.depth);
+
+    // Draw
+    items.forEach(item=>{
+      if(item.kind==='nuc'){
+        const c=item.type==='p'?'#ef4444':'#3b82f6';
+        const lit=0.6+0.4*(item.nucR+1)/2;
+        ctx.beginPath();ctx.arc(item.sx,item.sy,3.8,0,Math.PI*2);
+        ctx.fillStyle=c;ctx.globalAlpha=Math.max(0.5,Math.min(1,lit));
+        ctx.fill();
+        ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=0.4;ctx.stroke();
+        ctx.globalAlpha=1;
+      } else {
+        const orb=orbits[item.oi];
+        const alpha=orb?0.45+0.55*((item.depth/orb.r+1)/2):0.8;
+        const r=Math.max(2.2,item.r);
+        ctx.save();
+        ctx.globalAlpha=Math.max(0.3,Math.min(1,alpha));
+        ctx.shadowColor='#fde047';ctx.shadowBlur=9;
+        ctx.beginPath();ctx.arc(item.sx,item.sy,r,0,Math.PI*2);
+        ctx.fillStyle='#fde047';ctx.fill();
+        ctx.shadowBlur=0;ctx.restore();
+      }
+    });
+
+    // Nucleus border
+    ctx.beginPath();ctx.arc(cx,cy,nucR,0,Math.PI*2);
+    ctx.strokeStyle=catColor+'66';ctx.lineWidth=1.2;ctx.stroke();
+
+    // Legend
+    ctx.font='9px sans-serif'; ctx.textBaseline='middle';
+    [[catColor,'Protons (red)','#ef4444'],[catColor,'Neutrons (blue)','#3b82f6'],[catColor,'Electrons (yellow)','#fde047']].forEach(([_,label,col],i)=>{
+      const lx=12,ly=H-36+i*13;
+      ctx.beginPath();ctx.arc(lx,ly,4,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
+      ctx.fillStyle='rgba(176,190,206,0.8)';ctx.fillText(label,lx+9,ly);
+    });
+
+    window._atomAnim=requestAnimationFrame(frame);
+  }
+  window._atomAnim=requestAnimationFrame(frame);
+}
+
 function buildLegend(){
   document.getElementById('legend').innerHTML=Object.entries(CATS).map(([k,v])=>`
     <span class="leg" data-cat="${k}" onclick="toggleCat('${k}',this)">
@@ -403,7 +563,7 @@ function showDetail(num){
   ].map(([l,v])=>`<div class="dp-stat"><div class="dp-stat-lbl">${l}</div><div class="dp-stat-val">${v}</div></div>`).join('');
 
   // Bohr model SVG
-  document.getElementById('dp-bohr-svg').innerHTML = drawBohr(protons, shells, cat);
+  initAtomCanvas(protons, neutrons, shells, cat);
 
   // Shell table
   document.getElementById('dp-shell-table').innerHTML=
@@ -420,44 +580,6 @@ function showDetail(num){
   dp.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function drawBohr(num, shells, cat){
-  const W=240,H=240,cx=W/2,cy=H/2;
-  const nShells=shells.length;
-  if(!nShells) return '';
-  // Radii: evenly spaced from 22 to W/2-12
-  const minR=22,maxR=W/2-14;
-  const radii=shells.map((_,i)=>minR+(i+1)*(maxR-minR)/(nShells));
-  // Get accent color from cat class
-  const CAT_COLORS={'cat-alkali':'#ef4444','cat-alkaline':'#f59e0b','cat-transition':'#6366f1',
-    'cat-post':'#8b5cf6','cat-metalloid':'#10b981','cat-nonmetal':'#06b6d4',
-    'cat-halogen':'#f97316','cat-noble':'#a855f7','cat-lanthanide':'#ec4899','cat-actinide':'#84cc16','cat-unknown':'#6366f1'};
-  const color=CAT_COLORS[cat.cls]||'#6366f1';
-  const neutrons=Math.round(parseFloat((EMAP[num]||[])[3]||0))-num;
-
-  let svg=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin:0 auto;max-width:100%">`;
-  // Draw shell orbits
-  radii.forEach((r,i)=>{
-    const n=shells[i];
-    if(n===0) return;
-    svg+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#2a3a5566" stroke-width="1" stroke-dasharray="${i>1?'4,3':'none'}"/>`;
-    // Electrons
-    const dotR=n>20?2:n>10?2.5:3;
-    for(let j=0;j<n;j++){
-      const ang=(j/n)*2*Math.PI-Math.PI/2;
-      const ex=cx+r*Math.cos(ang), ey=cy+r*Math.sin(ang);
-      svg+=`<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="${dotR}" fill="${color}" opacity=".85"/>`;
-    }
-    // Shell label on right
-    svg+=`<text x="${cx+r+4}" y="${cy+4}" fill="#b0bece" font-size="8" font-family="sans-serif">${SHELL_NAMES[i]}(${n})</text>`;
-  });
-  // Nucleus
-  const nucR=18;
-  svg+=`<circle cx="${cx}" cy="${cy}" r="${nucR}" fill="${color}44" stroke="${color}" stroke-width="1.5"/>`;
-  svg+=`<text x="${cx}" y="${cy-5}" text-anchor="middle" fill="#fff" font-size="8" font-weight="700" font-family="sans-serif">${num}p</text>`;
-  svg+=`<text x="${cx}" y="${cy+7}" text-anchor="middle" fill="#ddd" font-size="7" font-family="sans-serif">${neutrons}n</text>`;
-  svg+='</svg>';
-  return svg;
-}
 
 function searchEls(){
   const q=document.getElementById('ptSearch').value.toLowerCase().trim();
