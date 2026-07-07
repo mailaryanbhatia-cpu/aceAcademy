@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Note Summarizer — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#1a1060,#2d1b8a,#1a2080);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:940px;margin:24px auto;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.container{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.full{grid-column:1/-1}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent);color:var(--accent2)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+label{font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+textarea,select{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:12px;font-size:.88rem;font-family:inherit;color:#fff;outline:none;transition:border .15s;resize:vertical}
+textarea:focus,select:focus{border-color:var(--accent)}
+select option{background:#1a2540}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.word-count{font-size:.72rem;color:var(--muted);text-align:right;margin-top:4px}
+
+/* Summary output */
+.summary-section{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.summary-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.section-tag{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:3px 10px;border-radius:10px;margin-bottom:10px;display:inline-block}
+.tag-tldr{background:rgba(99,102,241,.2);color:var(--accent2)}
+.tag-terms{background:rgba(251,191,36,.15);color:var(--amber)}
+.tag-concepts{background:rgba(52,211,153,.15);color:var(--green)}
+.tag-questions{background:rgba(248,113,113,.15);color:var(--red)}
+
+.tldr-list{list-style:none;padding:0}
+.tldr-list li{padding:7px 0 7px 20px;position:relative;font-size:.9rem;line-height:1.5;color:#fff}
+.tldr-list li::before{content:'▸';position:absolute;left:0;color:var(--accent2)}
+
+.term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.term-card{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px 12px}
+.term-name{font-weight:700;font-size:.82rem;color:var(--amber);margin-bottom:3px}
+.term-def{font-size:.78rem;color:var(--muted);line-height:1.4}
+
+.concept-list{list-style:none;padding:0}
+.concept-item{padding:8px 0 8px 16px;border-left:2px solid var(--accent);margin-bottom:8px;font-size:.88rem;line-height:1.5;color:#fff}
+
+.q-list{list-style:none;padding:0;counter-reset:qc}
+.q-list li{counter-increment:qc;padding:8px 0 8px 28px;position:relative;font-size:.88rem;color:#fff;line-height:1.5}
+.q-list li::before{content:counter(qc)'.';position:absolute;left:0;color:var(--red);font-weight:700;font-size:.8rem}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state .icon{font-size:2.5rem;margin-bottom:10px}
+.spinner{display:none;text-align:center;padding:30px;color:var(--muted);font-size:.9rem}
+.spinner.active{display:block}
+
+/* History */
+.hist-item{padding:10px 14px;border-radius:8px;border:1px solid var(--border);margin-bottom:7px;cursor:pointer;transition:all .15s}
+.hist-item:hover{border-color:var(--accent)}
+.hist-preview{font-size:.82rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-meta{font-size:.72rem;color:var(--muted);margin-top:2px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="notesummarizer.html">Note Summarizer</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>📝 Note Summarizer</h1>
+  <p>Paste your class notes and get a structured summary, key terms, and study questions</p>
+</div>
+
+<div class="container">
+  <!-- Input -->
+  <div class="card">
+    <h2>📋 Your Notes</h2>
+    <div class="chip-row" id="subjectChips">
+      <button class="chip active" data-val="general">General</button>
+      <button class="chip" data-val="math">Math</button>
+      <button class="chip" data-val="science">Science</button>
+      <button class="chip" data-val="history">History</button>
+      <button class="chip" data-val="ela">ELA</button>
+    </div>
+    <div style="margin-bottom:12px">
+      <label>DETAIL LEVEL</label>
+      <div class="chip-row" id="detailChips">
+        <button class="chip" data-val="brief">Brief TL;DR</button>
+        <button class="chip active" data-val="standard">Standard</button>
+        <button class="chip" data-val="detailed">Detailed</button>
+      </div>
+    </div>
+    <label>PASTE YOUR NOTES</label>
+    <textarea id="notesInput" rows="14" placeholder="Paste your class notes, textbook passages, or study material here…" oninput="updateWC()"></textarea>
+    <div class="word-count" id="wc">0 words</div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-big" onclick="summarize()">✨ Summarize</button>
+      <button class="btn btn-outline" onclick="clearAll()">Clear</button>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="card" id="outputCard">
+    <h2>📊 Summary</h2>
+    <div id="emptyState" class="empty-state">
+      <div class="icon">📄</div>
+      <div>Paste notes and click Summarize</div>
+    </div>
+    <div class="spinner" id="spinner">⏳ Analyzing your notes…</div>
+    <div id="summaryOutput" style="display:none"></div>
+  </div>
+
+  <!-- History -->
+  <div class="card full" id="histCard" style="display:none">
+    <h2>🕒 Recent Summaries</h2>
+    <div id="histList"></div>
+    <button class="btn btn-outline" style="font-size:.75rem;margin-top:8px" onclick="clearHist()">Clear History</button>
+  </div>
+</div>
+
+<script>
+let subject = 'general';
+let detail = 'standard';
+let history = JSON.parse(localStorage.getItem('ns-history') || '[]');
+
+document.querySelectorAll('#subjectChips .chip').forEach(c => c.addEventListener('click', function(){
+  document.querySelectorAll('#subjectChips .chip').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active'); subject = this.dataset.val;
+}));
+document.querySelectorAll('#detailChips .chip').forEach(c => c.addEventListener('click', function(){
+  document.querySelectorAll('#detailChips .chip').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active'); detail = this.dataset.val;
+}));
+
+function updateWC(){
+  const t = document.getElementById('notesInput').value.trim();
+  const w = t ? t.split(/\s+/).length : 0;
+  document.getElementById('wc').textContent = w + ' words';
+}
+
+// ── Core summarization engine ────────────────────────────────
+function summarize(){
+  const text = document.getElementById('notesInput').value.trim();
+  if(!text || text.split(/\s+/).length < 20){
+    alert('Please paste at least a paragraph of notes to summarize.');
+    return;
+  }
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('summaryOutput').style.display = 'none';
+  document.getElementById('spinner').classList.add('active');
+
+  setTimeout(() => {
+    const result = buildSummary(text, subject, detail);
+    document.getElementById('spinner').classList.remove('active');
+    document.getElementById('summaryOutput').innerHTML = renderSummary(result);
+    document.getElementById('summaryOutput').style.display = '';
+
+    // Save to history
+    history.unshift({ preview: text.slice(0,80), subject, ts: Date.now(), result });
+    if(history.length > 15) history.pop();
+    localStorage.setItem('ns-history', JSON.stringify(history));
+    renderHistory();
+  }, 400);
+}
+
+function buildSummary(text, subj, detail){
+  const sentences = tokenizeSentences(text);
+  const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 3);
+
+  // ── TF-IDF style sentence scoring ──
+  const stopWords = new Set(['this','that','with','from','they','have','been','were','their','there','which','would','could','should','about','these','those','when','where','what','will','also','more','than','then','into','some','your','each','many','most','such','both','very','after','before','through','between','during','under','over','other','another','within','without','against','because','since','while','though','although','however','therefore','moreover','furthermore','nevertheless','otherwise','meanwhile']);
+
+  const wordFreq = {};
+  words.forEach(w => { if(!stopWords.has(w)) wordFreq[w] = (wordFreq[w]||0)+1; });
+
+  const scored = sentences.map(s => {
+    const sw = s.toLowerCase().split(/\W+/).filter(w=>w.length>3&&!stopWords.has(w));
+    const score = sw.reduce((sum,w) => sum + (wordFreq[w]||0), 0) / (sw.length||1);
+    return { s, score };
+  });
+
+  // Top sentences for TL;DR
+  const nBullets = detail==='brief' ? 3 : detail==='detailed' ? 6 : 4;
+  const topSents = [...scored].sort((a,b)=>b.score-a.score).slice(0, nBullets).map(x=>x.s);
+
+  // ── Term extraction ──
+  const terms = extractTerms(text);
+
+  // ── Concept extraction ──
+  const concepts = extractConcepts(sentences, detail);
+
+  // ── Study questions ──
+  const questions = generateQuestions(text, sentences, terms, subj);
+
+  return { tldr: topSents, terms, concepts, questions };
+}
+
+function tokenizeSentences(text){
+  return text
+    .replace(/\n{2,}/g, ' <BREAK> ')
+    .split(/(?<=[.!?])\s+|<BREAK>/)
+    .map(s => s.trim())
+    .filter(s => s.length > 30 && s.split(/\s+/).length > 5);
+}
+
+function extractTerms(text){
+  const terms = [];
+  const seen = new Set();
+
+  // Pattern: "X is/are/means/refers to Y"
+  const defPatterns = [
+    /([A-Z][a-zA-Z\s]{2,30})\s+(?:is|are|refers to|means|defined as|known as)\s+([^.!?\n]{10,120})/g,
+    /([A-Z][a-zA-Z\s]{2,20}):\s+([^.\n]{10,100})/g,
+    /(?:define|definition of|term|concept)\s+[""']?([a-zA-Z\s]{2,25})[""']?\s*[—–:]\s*([^.\n]{10,100})/gi,
+  ];
+
+  defPatterns.forEach(re => {
+    let m;
+    while((m=re.exec(text))!==null){
+      const name = m[1].trim();
+      const def  = m[2].trim().replace(/^(is|are|refers to|means|defined as|known as)\s+/i,'');
+      if(name.length > 2 && name.length < 35 && !seen.has(name.toLowerCase())){
+        seen.add(name.toLowerCase());
+        terms.push({ name, def });
+      }
+    }
+  });
+
+  // Capitalized multi-word terms (likely proper nouns / named concepts)
+  const capPattern = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\b/g;
+  let m;
+  while((m=capPattern.exec(text))!==null){
+    const name = m[1];
+    if(!seen.has(name.toLowerCase()) && name.split(' ').length >= 2){
+      seen.add(name.toLowerCase());
+      // Try to find a following description in the same sentence
+      const sentStart = text.lastIndexOf('.',m.index)+1;
+      const sentEnd = text.indexOf('.',m.index+name.length);
+      const sent = text.slice(sentStart, sentEnd>0?sentEnd:sentStart+200).trim();
+      if(sent.length > name.length + 5){
+        terms.push({ name, def: sent.slice(name.length).replace(/^[\s,;:—–]+/,'').slice(0,100) });
+      }
+    }
+  }
+
+  return terms.slice(0, detail==='brief'?6:detail==='detailed'?14:10);
+}
+
+function extractConcepts(sentences, detail){
+  const nConcepts = detail==='brief' ? 4 : detail==='detailed' ? 10 : 6;
+  // Find sentences with structural signal words
+  const signals = /\b(first|second|third|finally|importantly|key|main|primary|essential|critical|note that|remember|because|therefore|as a result|leads to|causes|results in|consists of|composed of|divided into|classified as|types of|steps|process|example)\b/i;
+  const signalSents = sentences.filter(s => signals.test(s));
+  const other = sentences.filter(s => !signals.test(s));
+  const pool = [...signalSents, ...other].slice(0, nConcepts);
+  return pool.map(s => s.replace(/^[-•*\d.)\s]+/, ''));
+}
+
+function generateQuestions(text, sentences, terms, subj){
+  const questions = [];
+
+  // Term-based questions
+  terms.slice(0,4).forEach(t => {
+    if(t.name && t.def) questions.push(`What is ${t.name}?`);
+  });
+
+  // "Why / How / What" from sentences with causal or explanatory language
+  const causal = sentences.filter(s => /\b(because|therefore|causes|results in|leads to|enables|prevents|requires)\b/i.test(s));
+  causal.slice(0,3).forEach(s => {
+    const sub = s.split(/[,;]/)[0].replace(/^[^a-zA-Z]+/,'');
+    if(sub.length > 10) questions.push('Why does ' + sub.toLowerCase().replace(/^(the|a|an)\s+/,'') + '?');
+  });
+
+  // Concept questions from numbered/listed points
+  const listSents = sentences.filter(s => /^(?:\d+[.)]\s|[-•]\s|first|second|third)/i.test(s));
+  listSents.slice(0,2).forEach(s => {
+    const core = s.replace(/^\d+[.)]\s+|-\s+|•\s+/,'').split('.')[0];
+    if(core.length > 15) questions.push('Explain: ' + core.trim() + '.');
+  });
+
+  // Generic subject-aware questions
+  const subjectQs = {
+    math:    ['What formula or equation is central to this topic?','What are the steps to solve this type of problem?'],
+    science: ['What process or mechanism is described?','What variables are involved and how do they relate?'],
+    history: ['What events led to the outcome described?','Who were the key figures and what were their roles?'],
+    ela:     ['What is the main theme or argument?','What literary devices or techniques are used?'],
+    general: ['What is the main idea of these notes?','How does this topic connect to what you already know?']
+  };
+  (subjectQs[subj] || subjectQs.general).forEach(q => questions.push(q));
+
+  return [...new Set(questions)].slice(0, 6);
+}
+
+function renderSummary({ tldr, terms, concepts, questions }){
+  let html = '';
+
+  html += `<div class="summary-section">
+    <span class="section-tag tag-tldr">TL;DR</span>
+    <ul class="tldr-list">${tldr.map(s=>`<li>${esc(s)}</li>`).join('')}</ul>
+  </div>`;
+
+  if(terms.length){
+    html += `<div class="summary-section">
+      <span class="section-tag tag-terms">Key Terms</span>
+      <div class="term-grid">${terms.map(t=>`
+        <div class="term-card">
+          <div class="term-name">${esc(t.name)}</div>
+          <div class="term-def">${esc(t.def.slice(0,120))}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  if(concepts.length){
+    html += `<div class="summary-section">
+      <span class="section-tag tag-concepts">Main Concepts</span>
+      <ul class="concept-list">${concepts.map(c=>`<li class="concept-item">${esc(c)}</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  if(questions.length){
+    html += `<div class="summary-section">
+      <span class="section-tag tag-questions">Study Questions</span>
+      <ol class="q-list">${questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>
+    </div>`;
+  }
+
+  return html;
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function clearAll(){
+  document.getElementById('notesInput').value='';
+  updateWC();
+  document.getElementById('summaryOutput').style.display='none';
+  document.getElementById('emptyState').style.display='';
+}
+
+function renderHistory(){
+  if(!history.length){document.getElementById('histCard').style.display='none';return;}
+  document.getElementById('histCard').style.display='';
+  document.getElementById('histList').innerHTML = history.slice(0,8).map((h,i)=>`
+    <div class="hist-item" onclick="reloadHist(${i})">
+      <div class="hist-preview">${esc(h.preview)}…</div>
+      <div class="hist-meta">${h.subject} · ${new Date(h.ts).toLocaleDateString()}</div>
+    </div>`).join('');
+}
+function reloadHist(i){
+  const h = history[i];
+  document.getElementById('summaryOutput').innerHTML = renderSummary(h.result);
+  document.getElementById('summaryOutput').style.display='';
+  document.getElementById('emptyState').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function clearHist(){ if(confirm('Clear history?')){ history=[]; localStorage.removeItem('ns-history'); renderHistory(); } }
+
+renderHistory();
+</script>
+</body></html>
