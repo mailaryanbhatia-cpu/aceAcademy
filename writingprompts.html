@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Writing Prompt Generator — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}
+.nav-link.active{color:var(--accent);font-weight:700}
+.spacer{flex:1}
+[data-theme="dark"] body{background:#0f1117}
+[data-theme="dark"] .topnav{background:#1a1d2e;border-color:#2a2d3e}
+[data-theme="dark"] .card{background:#1a1d2e;border-color:#2a2d3e}
+[data-theme="dark"] .card{--card:#1a1d2e}
+
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero h1{font-size:1.8rem;font-weight:800;margin-bottom:6px}
+.hero p{opacity:.85;font-size:.95rem}
+.container{max-width:860px;margin:28px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px;color:var(--text)}
+
+/* Controls */
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:all .15s}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+label{font-size:.8rem;font-weight:700;color:var(--muted);display:block;margin-bottom:6px}
+
+/* Prompt display */
+.prompt-box{background:linear-gradient(135deg,rgba(79,70,229,.06),rgba(124,58,237,.06));border:2px solid rgba(79,70,229,.2);border-radius:12px;padding:24px 28px;min-height:90px;margin-bottom:18px}
+.prompt-text{font-size:1.15rem;font-weight:600;line-height:1.6;color:var(--text)}
+.prompt-meta{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:12px;background:rgba(79,70,229,.12);color:var(--accent)}
+
+/* Timer */
+.timer-wrap{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.timer-display{font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);min-width:80px}
+.timer-display.warning{color:var(--amber)}
+.timer-display.critical{color:var(--red)}
+.timer-btns{display:flex;gap:8px}
+.btn{padding:8px 18px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{opacity:.88}
+.btn-big{padding:12px 28px;font-size:1rem;border-radius:12px}
+
+/* Writing area */
+.write-area{width:100%;min-height:260px;background:transparent;border:1.5px solid var(--border);border-radius:10px;padding:14px;font-size:.95rem;font-family:inherit;color:var(--text);resize:vertical;line-height:1.7;outline:none;transition:border .15s}
+.write-area:focus{border-color:var(--accent)}
+.word-count{font-size:.78rem;color:var(--muted);margin-top:6px;text-align:right}
+
+/* History */
+.hist-item{padding:12px 16px;border-radius:9px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:all .15s}
+.hist-item:hover{border-color:var(--accent)}
+.hist-prompt{font-size:.88rem;font-weight:600;color:var(--text)}
+.hist-meta{font-size:.75rem;color:var(--muted);margin-top:3px}
+
+/* Progress ring for timer */
+.timer-ring{position:relative;width:64px;height:64px;flex-shrink:0}
+.timer-ring svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:4}
+.ring-fg{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .3s}
+
+@media(max-width:600px){.prompt-text{font-size:1rem}.timer-display{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="writingprompts.html">Writing Prompts</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>✍️ Writing Prompt Generator</h1>
+  <p>Practice timed writing with prompts matched to your grade and style</p>
+</div>
+
+<div class="container">
+
+  <!-- Filters -->
+  <div class="card">
+    <div style="display:flex;flex-wrap:wrap;gap:20px">
+      <div>
+        <label>GENRE</label>
+        <div class="chip-group" id="genreGroup">
+          <button class="chip active" data-val="all">All</button>
+          <button class="chip" data-val="argumentative">Argumentative</button>
+          <button class="chip" data-val="narrative">Narrative</button>
+          <button class="chip" data-val="expository">Expository</button>
+          <button class="chip" data-val="descriptive">Descriptive</button>
+          <button class="chip" data-val="persuasive">Persuasive</button>
+        </div>
+      </div>
+      <div>
+        <label>GRADE</label>
+        <div class="chip-group" id="gradeGroup">
+          <button class="chip active" data-val="all">All</button>
+          <button class="chip" data-val="6-8">6–8</button>
+          <button class="chip" data-val="9-10">9–10</button>
+          <button class="chip" data-val="11-12">11–12</button>
+          <button class="chip" data-val="ap">AP / College</button>
+        </div>
+      </div>
+      <div>
+        <label>TIMER</label>
+        <div class="chip-group" id="timerGroup">
+          <button class="chip active" data-val="0">No timer</button>
+          <button class="chip" data-val="10">10 min</button>
+          <button class="chip" data-val="25">25 min</button>
+          <button class="chip" data-val="40">40 min</button>
+          <button class="chip" data-val="60">60 min</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt -->
+  <div class="card">
+    <div id="promptBox" class="prompt-box" style="display:none">
+      <div class="prompt-text" id="promptText"></div>
+      <div class="prompt-meta"><span class="badge" id="promptGenre"></span><span class="badge" id="promptGrade"></span></div>
+    </div>
+    <div id="emptyState" style="text-align:center;padding:20px 0">
+      <div style="font-size:2.5rem;margin-bottom:10px">✍️</div>
+      <div style="color:var(--muted);font-size:.95rem">Generate a prompt to get started</div>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer-wrap" id="timerWrap" style="display:none">
+      <div class="timer-ring">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle class="ring-bg" cx="32" cy="32" r="28"/>
+          <circle class="ring-fg" id="ringFg" cx="32" cy="32" r="28" stroke-dasharray="175.9" stroke-dashoffset="0"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:var(--muted)">TIME</div>
+      </div>
+      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div class="timer-btns">
+        <button class="btn btn-outline" id="timerStartBtn" onclick="timerToggle()">▶ Start</button>
+        <button class="btn btn-outline" onclick="timerReset()">↺ Reset</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-big" onclick="generatePrompt()">🎲 Generate Prompt</button>
+      <button class="btn btn-outline" id="saveBtn" style="display:none" onclick="saveResponse()">💾 Save Response</button>
+      <button class="btn btn-outline" style="display:none" id="essayBtn" onclick="goToEssay()">📝 Grade This Essay</button>
+    </div>
+  </div>
+
+  <!-- Writing area -->
+  <div class="card" id="writeCard" style="display:none">
+    <h2>Your Response</h2>
+    <textarea class="write-area" id="writeArea" placeholder="Start writing here…" oninput="updateWordCount()"></textarea>
+    <div class="word-count" id="wordCount">0 words</div>
+  </div>
+
+  <!-- History -->
+  <div class="card" id="histCard" style="display:none">
+    <h2>Recent Prompts</h2>
+    <div id="histList"></div>
+    <button class="btn btn-outline" onclick="clearHistory()" style="margin-top:8px;font-size:.78rem">Clear History</button>
+  </div>
+
+</div>
+
+<script>
+// ── Prompt bank ─────────────────────────────────────────
+const PROMPTS = [
+  // Argumentative 6-8
+  {g:'argumentative',grade:'6-8',p:'Should students be required to wear uniforms at school? Write an essay arguing your position with at least two reasons and evidence.'},
+  {g:'argumentative',grade:'6-8',p:'Is social media helpful or harmful for middle school students? Take a clear position and support it with specific examples.'},
+  {g:'argumentative',grade:'6-8',p:'Should homework be banned? Write a persuasive essay arguing for or against nightly homework assignments.'},
+  {g:'argumentative',grade:'6-8',p:'Are zoos good for animals? Argue whether keeping animals in zoos is ethical or not.'},
+  {g:'argumentative',grade:'6-8',p:'Should video games be considered a sport? Write an argument supporting your view with specific reasoning.'},
+  {g:'argumentative',grade:'6-8',p:'Should students be allowed to grade their teachers? Take a position and defend it with evidence.'},
+  {g:'argumentative',grade:'6-8',p:'Is it better to be an only child or to have siblings? Argue your position using personal reasoning and examples.'},
+  // Argumentative 9-10
+  {g:'argumentative',grade:'9-10',p:'Should the voting age be lowered to 16? Write a well-organized essay arguing your position with evidence and counterargument.'},
+  {g:'argumentative',grade:'9-10',p:'Is standardized testing an accurate measure of student ability? Argue a position using specific examples and reasoning.'},
+  {g:'argumentative',grade:'9-10',p:'Should schools teach financial literacy as a required course? Support your argument with logical reasoning and evidence.'},
+  {g:'argumentative',grade:'9-10',p:'Do violent video games contribute to real-world violence? Write a researched argument addressing the strongest opposing view.'},
+  {g:'argumentative',grade:'9-10',p:'Should the death penalty be abolished nationwide? Argue a position while fairly acknowledging the other side.'},
+  {g:'argumentative',grade:'9-10',p:'Is remote learning a viable alternative to in-person school? Write an evidence-based argument for or against.'},
+  {g:'argumentative',grade:'9-10',p:'Should college athletes be paid for their participation? Argue using economic, ethical, and educational reasoning.'},
+  // Argumentative 11-12
+  {g:'argumentative',grade:'11-12',p:'Is civil disobedience ever morally justified? Write an analytical argument drawing on historical examples and ethical frameworks.'},
+  {g:'argumentative',grade:'11-12',p:'Should the United States adopt a universal basic income? Argue your position using economic evidence and counterargument.'},
+  {g:'argumentative',grade:'11-12',p:'To what extent should free speech be protected even when speech causes harm? Construct a nuanced argument.'},
+  {g:'argumentative',grade:'11-12',p:'Is the American Dream still achievable today? Argue using economic data and social analysis.'},
+  {g:'argumentative',grade:'11-12',p:'Should social media companies be held legally responsible for content posted on their platforms? Make a legally and ethically grounded argument.'},
+  // Argumentative AP
+  {g:'argumentative',grade:'ap',p:'In your view, does technological progress inevitably come at the cost of human connection? Write a carefully reasoned argument using evidence from literature, history, or personal observation.'},
+  {g:'argumentative',grade:'ap',p:'"The ends justify the means." To what extent do you agree with this ethical position? Write a nuanced essay acknowledging moral complexity.'},
+  {g:'argumentative',grade:'ap',p:'Some argue that democracy requires an informed citizenry, yet misinformation spreads faster than truth. What, if anything, should governments do about it? Construct a policy argument.'},
+  {g:'argumentative',grade:'ap',p:'Is it possible to be both patriotic and critical of one\'s government? Write a sophisticated argument exploring the tension between loyalty and dissent.'},
+
+  // Narrative 6-8
+  {g:'narrative',grade:'6-8',p:'Write a story about a time you faced a difficult choice. What did you decide, and what did you learn?'},
+  {g:'narrative',grade:'6-8',p:'You discover a hidden door in your school that leads somewhere unexpected. Write what happens next.'},
+  {g:'narrative',grade:'6-8',p:'Write about a moment when you felt proud of yourself. Describe the events leading up to it and how it felt.'},
+  {g:'narrative',grade:'6-8',p:'Tell the story of a day that started as a disaster but ended up being great.'},
+  {g:'narrative',grade:'6-8',p:'You wake up one morning and discover you have a superpower for exactly 24 hours. Write about your day.'},
+  // Narrative 9-10
+  {g:'narrative',grade:'9-10',p:'Write a personal narrative about a moment that changed how you see the world. Use vivid sensory detail and reflection.'},
+  {g:'narrative',grade:'9-10',p:'Tell the story of a relationship — with a person, a place, or an idea — that has shaped who you are. Focus on a specific scene or moment.'},
+  {g:'narrative',grade:'9-10',p:'Write a narrative about a time you failed at something important. What did the experience teach you about yourself?'},
+  {g:'narrative',grade:'9-10',p:'Describe a moment when you stood up for something — or wish you had. Explore the emotions and consequences honestly.'},
+  // Narrative 11-12
+  {g:'narrative',grade:'11-12',p:'Write a personal essay about a formative experience that revealed something true about your character. Go beyond the surface — explore the contradiction or complexity it exposed.'},
+  {g:'narrative',grade:'11-12',p:'Describe a moment of genuine uncertainty — when you didn\'t know the right thing to do. How did you navigate it, and what does it say about your values?'},
+  {g:'narrative',grade:'11-12',p:'Write about a person who shaped your intellectual or moral development. Use a specific memory as the anchor.'},
+  // Narrative AP
+  {g:'narrative',grade:'ap',p:'Write a lyric essay about a place that holds personal significance. Blend memory, observation, and reflection without a single linear narrative.'},
+  {g:'narrative',grade:'ap',p:'Write a personal essay that uses a small, mundane object as a lens through which to explore a larger truth about your life or identity.'},
+
+  // Expository 6-8
+  {g:'expository',grade:'6-8',p:'Explain how the water cycle works and why it matters for life on Earth. Use clear facts and examples.'},
+  {g:'expository',grade:'6-8',p:'What makes a great leader? Explain the qualities of effective leadership using examples from history or your own experience.'},
+  {g:'expository',grade:'6-8',p:'Explain the causes and effects of bullying in schools. Include both the reasons it happens and its impact on individuals.'},
+  {g:'expository',grade:'6-8',p:'How does social media affect the way young people communicate? Explain with specific examples.'},
+  // Expository 9-10
+  {g:'expository',grade:'9-10',p:'Explain how the supply and demand model works in a real-world market. Use a specific product or service as your example.'},
+  {g:'expository',grade:'9-10',p:'How does the Electoral College work, and why is it controversial? Explain both the mechanics and the debate surrounding it.'},
+  {g:'expository',grade:'9-10',p:'Explain the psychological concept of confirmation bias. How does it affect decision-making in everyday life?'},
+  {g:'expository',grade:'9-10',p:'Explain the causes of World War I. Which cause do you consider most significant, and why?'},
+  // Expository 11-12
+  {g:'expository',grade:'11-12',p:'Explain the philosophical concept of the "social contract" as understood by Locke, Rousseau, or Hobbes. How does it underpin modern democratic governance?'},
+  {g:'expository',grade:'11-12',p:'Explain how CRISPR gene editing works and what ethical questions it raises. Present both the science and the debate clearly.'},
+  {g:'expository',grade:'11-12',p:'Explain the causes and consequences of income inequality in the United States over the last 40 years.'},
+  // Expository AP
+  {g:'expository',grade:'ap',p:'Explain the concept of opportunity cost and how it applies to both individual decision-making and national policy choices. Use specific, developed examples.'},
+  {g:'expository',grade:'ap',p:'Explain how systemic racism differs from individual prejudice. What evidence supports or complicates this distinction?'},
+
+  // Descriptive 6-8
+  {g:'descriptive',grade:'6-8',p:'Describe your favorite place in vivid detail. Use all five senses to make the reader feel as if they are there.'},
+  {g:'descriptive',grade:'6-8',p:'Describe an ordinary object — a pencil, a book, a pair of shoes — as if you were seeing it for the very first time.'},
+  {g:'descriptive',grade:'6-8',p:'Paint a picture with words: describe a stormy night, a crowded cafeteria, or a quiet library using specific sensory details.'},
+  // Descriptive 9-10
+  {g:'descriptive',grade:'9-10',p:'Describe a person you know well — not what they look like, but what they feel like to be around. Capture their essence through specific details and moments.'},
+  {g:'descriptive',grade:'9-10',p:'Describe a moment of intense emotion — joy, fear, grief, or awe — focusing on the physical sensations and specific details of the scene.'},
+  // Descriptive 11-12
+  {g:'descriptive',grade:'11-12',p:'Write a richly observed description of a public space — a subway car, a waiting room, a park at dusk. Reveal something about human nature through what you notice.'},
+  {g:'descriptive',grade:'11-12',p:'Describe a moment of transition — the last day of something, the first morning in a new place — capturing both external details and internal experience.'},
+  // Descriptive AP
+  {g:'descriptive',grade:'ap',p:'Write a prose poem or lyric description of an ordinary moment that reveals something extraordinary. Focus on compression, image, and resonance over narrative.'},
+
+  // Persuasive 6-8
+  {g:'persuasive',grade:'6-8',p:'Write a letter to your principal convincing them to add a new class or activity to your school. Use at least three reasons.'},
+  {g:'persuasive',grade:'6-8',p:'Persuade a friend who refuses to recycle. What arguments would be most effective, and why?'},
+  {g:'persuasive',grade:'6-8',p:'Write a persuasive speech to your class about why everyone should read more books.'},
+  // Persuasive 9-10
+  {g:'persuasive',grade:'9-10',p:'Write an op-ed for your school newspaper arguing that your school should change one policy. Use rhetorical strategies including ethos, pathos, and logos.'},
+  {g:'persuasive',grade:'9-10',p:'Write a persuasive speech urging your community to take action on a local environmental issue. Focus on a specific, concrete action the audience can take.'},
+  {g:'persuasive',grade:'9-10',p:'Persuade a skeptical audience that climate change is the most urgent issue facing your generation. Anticipate and respond to the strongest objections.'},
+  // Persuasive 11-12
+  {g:'persuasive',grade:'11-12',p:'Write an op-ed arguing for a specific policy change at the national level. Your piece should appear in a major newspaper and reach a general audience. Use evidence, rhetorical appeal, and concision.'},
+  {g:'persuasive',grade:'11-12',p:'Write a TED Talk-style opening (first 3 paragraphs) for a persuasive speech about why the education system needs to fundamentally change.'},
+  // Persuasive AP
+  {g:'persuasive',grade:'ap',p:'Write a rhetorical analysis of the most persuasive speech or text you have ever encountered. Then, using what you identified, write your own 300-word persuasive passage on an issue you care about.'},
+  {g:'persuasive',grade:'ap',p:'Write an op-ed for a national publication making the case for or against one of the following: lowering the retirement age, universal pre-K, or a 4-day work week. Your argument must grapple seriously with counterevidence.'},
+];
+
+const GENRE_LABELS = {all:'All',argumentative:'Argumentative',narrative:'Narrative',expository:'Expository',descriptive:'Descriptive',persuasive:'Persuasive'};
+const GRADE_LABELS = {all:'All Grades','6-8':'Grades 6–8','9-10':'Grades 9–10','11-12':'Grades 11–12',ap:'AP / College'};
+
+let selectedGenre = 'all';
+let selectedGrade = 'all';
+let selectedTimer = 0;
+let currentPrompt = null;
+let timerInterval = null;
+let timerRunning = false;
+let timerSeconds = 0;
+let timerTotal = 0;
+let history = JSON.parse(localStorage.getItem('wp-history') || '[]');
+
+// Chip groups
+document.querySelectorAll('#genreGroup .chip').forEach(c => c.addEventListener('click', function(){
+  document.querySelectorAll('#genreGroup .chip').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active'); selectedGenre = this.dataset.val;
+}));
+document.querySelectorAll('#gradeGroup .chip').forEach(c => c.addEventListener('click', function(){
+  document.querySelectorAll('#gradeGroup .chip').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active'); selectedGrade = this.dataset.val;
+}));
+document.querySelectorAll('#timerGroup .chip').forEach(c => c.addEventListener('click', function(){
+  document.querySelectorAll('#timerGroup .chip').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active'); selectedTimer = parseInt(this.dataset.val);
+}));
+
+function generatePrompt(){
+  let pool = PROMPTS.filter(p =>
+    (selectedGenre === 'all' || p.g === selectedGenre) &&
+    (selectedGrade === 'all' || p.grade === selectedGrade)
+  );
+  if(!pool.length) pool = PROMPTS;
+  // avoid repeating last prompt
+  if(pool.length > 1 && currentPrompt) pool = pool.filter(p=>p.p!==currentPrompt.p);
+  const p = pool[Math.floor(Math.random()*pool.length)];
+  currentPrompt = p;
+
+  document.getElementById('promptText').textContent = p.p;
+  document.getElementById('promptGenre').textContent = GENRE_LABELS[p.g]||p.g;
+  document.getElementById('promptGrade').textContent = GRADE_LABELS[p.grade]||p.grade;
+  document.getElementById('promptBox').style.display = '';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('writeCard').style.display = '';
+  document.getElementById('saveBtn').style.display = '';
+  document.getElementById('essayBtn').style.display = '';
+  document.getElementById('writeArea').value = '';
+  updateWordCount();
+
+  // Add to history
+  const entry = {p:p.p,g:p.g,grade:p.grade,ts:Date.now()};
+  history.unshift(entry);
+  if(history.length>20) history.pop();
+  localStorage.setItem('wp-history',JSON.stringify(history));
+  renderHistory();
+
+  // Timer
+  timerReset();
+  if(selectedTimer>0){
+    document.getElementById('timerWrap').style.display='flex';
+    timerTotal = selectedTimer*60;
+    timerSeconds = timerTotal;
+    updateTimerDisplay();
+  } else {
+    document.getElementById('timerWrap').style.display='none';
+  }
+}
+
+// Timer logic
+function timerToggle(){
+  if(timerRunning){ clearInterval(timerInterval); timerRunning=false; document.getElementById('timerStartBtn').textContent='▶ Resume'; }
+  else { timerRunning=true; document.getElementById('timerStartBtn').textContent='⏸ Pause'; timerInterval=setInterval(timerTick,1000); }
+}
+function timerReset(){
+  clearInterval(timerInterval); timerRunning=false;
+  timerSeconds = timerTotal;
+  document.getElementById('timerStartBtn').textContent='▶ Start';
+  updateTimerDisplay();
+}
+function timerTick(){
+  timerSeconds--;
+  if(timerSeconds<=0){ timerSeconds=0; clearInterval(timerInterval); timerRunning=false; document.getElementById('timerStartBtn').textContent='▶ Start'; alert('Time\'s up! Great work.'); }
+  updateTimerDisplay();
+}
+function updateTimerDisplay(){
+  const m=Math.floor(timerSeconds/60), s=timerSeconds%60;
+  const disp=document.getElementById('timerDisplay');
+  disp.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  disp.className='timer-display'+(timerSeconds<60?' critical':timerSeconds<180?' warning':'');
+  // Ring
+  const circ=175.9, pct=timerTotal>0?timerSeconds/timerTotal:1;
+  document.getElementById('ringFg').style.strokeDashoffset=circ*(1-pct);
+  document.getElementById('ringFg').style.stroke=timerSeconds<60?'var(--red)':timerSeconds<180?'var(--amber)':'var(--accent)';
+}
+
+function updateWordCount(){
+  const txt=document.getElementById('writeArea').value.trim();
+  const words=txt?txt.split(/\s+/).length:0;
+  document.getElementById('wordCount').textContent=words+' word'+(words===1?'':'s');
+}
+
+function saveResponse(){
+  const text=document.getElementById('writeArea').value.trim();
+  if(!text||!currentPrompt){alert('Nothing to save yet!');return;}
+  const saves=JSON.parse(localStorage.getItem('wp-saves')||'[]');
+  saves.unshift({prompt:currentPrompt.p,response:text,ts:Date.now()});
+  if(saves.length>50)saves.pop();
+  localStorage.setItem('wp-saves',JSON.stringify(saves));
+  const btn=document.getElementById('saveBtn');
+  const orig=btn.textContent; btn.textContent='✓ Saved!'; setTimeout(()=>btn.textContent=orig,1500);
+}
+
+function goToEssay(){
+  const text=document.getElementById('writeArea').value.trim();
+  if(text) localStorage.setItem('essay-prefill',JSON.stringify({prompt:currentPrompt?.p||'',essay:text}));
+  window.location.href='essaygrader.html';
+}
+
+function renderHistory(){
+  const list=document.getElementById('histList');
+  if(!history.length){document.getElementById('histCard').style.display='none';return;}
+  document.getElementById('histCard').style.display='';
+  list.innerHTML=history.slice(0,8).map((h,i)=>`
+    <div class="hist-item" onclick="reloadPrompt(${i})">
+      <div class="hist-prompt">${h.p.slice(0,100)}${h.p.length>100?'…':''}</div>
+      <div class="hist-meta">${GENRE_LABELS[h.g]||h.g} · ${GRADE_LABELS[h.grade]||h.grade} · ${new Date(h.ts).toLocaleDateString()}</div>
+    </div>`).join('');
+}
+function reloadPrompt(i){
+  const h=history[i];
+  currentPrompt={p:h.p,g:h.g,grade:h.grade};
+  document.getElementById('promptText').textContent=h.p;
+  document.getElementById('promptGenre').textContent=GENRE_LABELS[h.g]||h.g;
+  document.getElementById('promptGrade').textContent=GRADE_LABELS[h.grade]||h.grade;
+  document.getElementById('promptBox').style.display='';
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('writeCard').style.display='';
+  document.getElementById('saveBtn').style.display='';
+  document.getElementById('essayBtn').style.display='';
+  document.getElementById('writeArea').value='';
+  updateWordCount();
+}
+function clearHistory(){if(confirm('Clear prompt history?')){history=[];localStorage.removeItem('wp-history');renderHistory();}}
+
+renderHistory();
+</script>
+</body></html>

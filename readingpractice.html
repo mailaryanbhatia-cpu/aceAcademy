@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading Comprehension — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--accent:#4f46e5;--accent2:#7c3aed;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--red:#dc2626;--amber:#d97706;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap}.nav-link:hover{background:var(--bg)}
+.nav-link.active{color:var(--accent);font-weight:700}
+.spacer{flex:1}
+[data-theme="dark"] .card{background:#1a1d2e;border-color:#2a2d3e}
+
+.hero{text-align:center;padding:36px 20px 20px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+.hero h1{font-size:1.8rem;font-weight:800;margin-bottom:6px}
+.container{max-width:900px;margin:28px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:14px}
+
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.chip{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:all .15s}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+label{font-size:.8rem;font-weight:700;color:var(--muted);display:block;margin-bottom:6px}
+
+.btn{padding:8px 18px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:1rem;border-radius:12px}
+
+/* Passage */
+.passage-box{background:rgba(79,70,229,.04);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:20px 24px;line-height:1.85;font-size:.95rem;margin-bottom:20px;max-height:340px;overflow-y:auto}
+.passage-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.badge{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:12px;background:rgba(79,70,229,.12);color:var(--accent)}
+
+/* Questions */
+.q-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.q-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.q-num{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.q-text{font-size:.95rem;font-weight:600;margin-bottom:12px;line-height:1.5}
+.options{display:flex;flex-direction:column;gap:7px}
+.option{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:9px;border:1.5px solid var(--border);cursor:pointer;transition:all .15s;font-size:.88rem;line-height:1.5}
+.option:hover:not(.locked){border-color:var(--accent);background:rgba(79,70,229,.04)}
+.option input{margin-top:2px;flex-shrink:0;accent-color:var(--accent)}
+.option.correct{border-color:var(--green);background:rgba(5,150,105,.08);color:var(--green)}
+.option.wrong{border-color:var(--red);background:rgba(220,38,38,.07);color:var(--red)}
+.option.revealed{border-color:var(--green);background:rgba(5,150,105,.06)}
+.explanation{margin-top:10px;padding:10px 14px;border-radius:8px;background:rgba(79,70,229,.06);border:1px solid rgba(79,70,229,.15);font-size:.82rem;line-height:1.5;color:var(--muted);display:none}
+
+/* Results */
+.result-bar{height:8px;border-radius:4px;background:var(--border);margin:10px 0}
+.result-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .6s}
+.score-big{font-size:2.2rem;font-weight:800;color:var(--accent)}
+
+/* Timer */
+.timer-badge{font-size:.82rem;font-weight:700;padding:4px 12px;border-radius:10px;background:rgba(79,70,229,.1);color:var(--accent);font-variant-numeric:tabular-nums}
+.timer-badge.warn{background:rgba(217,119,6,.12);color:var(--amber)}
+.timer-badge.crit{background:rgba(220,38,38,.12);color:var(--red)}
+
+/* Stats */
+.stat-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.stat{background:rgba(79,70,229,.06);border-radius:10px;padding:12px 18px;text-align:center;flex:1;min-width:90px}
+.stat-val{font-size:1.4rem;font-weight:800;color:var(--accent)}
+.stat-lbl{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:2px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="readingpractice.html">Reading Practice</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>📖 Reading Comprehension Practice</h1>
+  <p>SAT-style passages with questions, explanations, and score tracking</p>
+</div>
+
+<div class="container">
+
+  <!-- Selector -->
+  <div class="card" id="selectorCard">
+    <div style="display:flex;flex-wrap:wrap;gap:20px;margin-bottom:18px">
+      <div>
+        <label>DIFFICULTY / GRADE</label>
+        <div class="chip-group" id="lvlGroup">
+          <button class="chip active" data-val="all">All</button>
+          <button class="chip" data-val="6-8">Grades 6–8</button>
+          <button class="chip" data-val="9-10">Grades 9–10</button>
+          <button class="chip" data-val="11-12">Grades 11–12</button>
+          <button class="chip" data-val="sat">SAT/AP Level</button>
+        </div>
+      </div>
+      <div>
+        <label>SUBJECT</label>
+        <div class="chip-group" id="subjGroup">
+          <button class="chip active" data-val="all">All</button>
+          <button class="chip" data-val="lit">Literature</button>
+          <button class="chip" data-val="sci">Science</button>
+          <button class="chip" data-val="history">History/Social Studies</button>
+        </div>
+      </div>
+      <div>
+        <label>TIMED MODE</label>
+        <div class="chip-group" id="timedGroup">
+          <button class="chip active" data-val="0">No timer</button>
+          <button class="chip" data-val="8">8 min</button>
+          <button class="chip" data-val="13">13 min</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-big" onclick="startPassage()">📄 Load Passage</button>
+  </div>
+
+  <!-- Practice area -->
+  <div id="practiceArea" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+        <div>
+          <div class="passage-meta" id="passageMeta"></div>
+          <div style="font-size:1.05rem;font-weight:700" id="passageTitle"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="timer-badge" id="timerBadge" style="display:none">00:00</span>
+          <button class="btn btn-outline" style="font-size:.78rem" onclick="showSelector()">← New Passage</button>
+        </div>
+      </div>
+      <div class="passage-box" id="passageText"></div>
+      <div id="questionsArea"></div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-big" id="submitBtn" onclick="submitAnswers()">Submit Answers</button>
+        <button class="btn btn-outline" onclick="startPassage()">🔀 New Passage</button>
+      </div>
+    </div>
+
+    <!-- Results (hidden until submit) -->
+    <div class="card" id="resultsCard" style="display:none">
+      <h2>Results</h2>
+      <div class="stat-row">
+        <div class="stat"><div class="score-big" id="scoreNum">0/0</div><div class="stat-lbl">Score</div></div>
+        <div class="stat"><div class="stat-val" id="scorePct">0%</div><div class="stat-lbl">Accuracy</div></div>
+        <div class="stat"><div class="stat-val" id="scoreTime">—</div><div class="stat-lbl">Time</div></div>
+      </div>
+      <div class="result-bar"><div class="result-fill" id="resultFill" style="width:0"></div></div>
+      <button class="btn btn-primary" onclick="startPassage()" style="margin-top:14px">Try Another Passage</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const PASSAGES = [
+  // ── 6-8 Literature ──
+  {
+    level:'6-8', subj:'lit',
+    title:'Excerpt from "The Outsiders" (style)',
+    source:'Fiction · Grade 6–8',
+    text:`Nobody ever said life was easy. I just didn't think it would be this hard.
+
+When I was twelve, I thought that growing up meant getting taller and stronger. By the time I was fourteen, I understood something different: growing up meant learning which parts of yourself to keep hidden. The neighborhood you came from wasn't just an address. It was a label, and labels stuck.
+
+My older brother Marcus always said that the world was divided into two kinds of people — those who had something to prove, and those who didn't need to. I spent most of my life assuming I was the second kind, until the afternoon everything changed at the corner of Elm and Fifth.
+
+It was a Tuesday in October, the kind of day where the sky can't decide between blue and gray. I was walking home from school with my backpack heavy on both shoulders when I saw the new kid, Dante, being cornered by three boys from the north end. I didn't know Dante. I didn't owe him anything.
+
+But I stopped anyway.
+
+Marcus told me later that was the moment he knew I'd turned a corner. I told him I was just tired of watching.`,
+    qs:[
+      {q:'What does the narrator mean by "labels stuck"?',opts:['Tags on clothing were difficult to remove','Your background defined how others saw you','Some words were hard to forget','Teachers kept track of student records'],ans:1,exp:'The narrator is describing how where you came from (your "label") became a permanent part of how people judged you — it wasn\'t just a temporary perception.'},
+      {q:'Based on the passage, what caused the narrator to stop and help Dante?',opts:['He was told to by his brother Marcus','He knew Dante from school','He felt it was wrong to keep watching others be mistreated','He was afraid of getting in trouble'],ans:2,exp:'The narrator says "I was just tired of watching" — implying a moral discomfort with being a bystander, not loyalty, obligation, or fear.'},
+      {q:'Which word best describes the narrator\'s tone throughout the passage?',opts:['Angry and resentful','Reflective and honest','Cheerful and optimistic','Confused and uncertain'],ans:1,exp:'The narrator looks back on his past with clear-eyed honesty and self-awareness, making the tone reflective rather than emotional or uncertain.'},
+      {q:'The phrase "which parts of yourself to keep hidden" most closely suggests that:',opts:['The narrator was shy around new people','Growing up required adapting to social expectations','The narrator lied to his family','School required uniforms'],ans:1,exp:'The phrase implies that maturity involves learning to suppress or conceal aspects of yourself to navigate social realities — a nuanced observation about identity and conformity.'},
+      {q:'What role does Marcus play in the passage?',opts:['He starts the conflict with the north end boys','He provides a contrasting perspective the narrator measures himself against','He warns the narrator to stay out of trouble','He is the main antagonist'],ans:1,exp:'Marcus serves as a foil and moral reference point — his philosophy about "two kinds of people" frames the narrator\'s self-understanding throughout.'},
+    ]
+  },
+  // ── 6-8 Science ──
+  {
+    level:'6-8', subj:'sci',
+    title:'How Coral Reefs Work',
+    source:'Informational · Science · Grade 6–8',
+    text:`Coral reefs are sometimes called the "rainforests of the sea" — and for good reason. Although they cover less than one percent of the ocean floor, coral reefs support roughly 25 percent of all marine species. From clownfish to sea turtles, the biodiversity of a healthy reef rivals almost any ecosystem on Earth.
+
+But coral itself is often misunderstood. Many people think coral is a plant because it looks like colorful underwater shrubbery. In fact, coral is an animal — or more accurately, a colony of tiny animals called polyps. Each polyp is only a few millimeters wide and secretes a hard calcium carbonate skeleton that becomes the reef structure over time. The process is extraordinarily slow: reefs typically grow between 0.3 and 10 centimeters per year.
+
+Inside each polyp live microscopic algae called zooxanthellae. This relationship is mutually beneficial — the polyps provide shelter and compounds the algae need for photosynthesis, while the algae produce oxygen and up to 90 percent of the polyp's energy needs through photosynthesis.
+
+When ocean temperatures rise even slightly — by one or two degrees Celsius — the relationship breaks down. The polyps expel the algae, causing the reef to turn white in a process called "coral bleaching." Without the algae's energy support, the coral can survive for only a few weeks before dying. Scientists estimate that half of the world's coral reefs have been lost since 1950, primarily due to warming oceans linked to climate change.`,
+    qs:[
+      {q:'What is the main purpose of this passage?',opts:['To argue that climate change is the greatest threat to ocean life','To explain the biology of coral reefs and the threat they face','To compare coral reefs to rainforests','To describe the different species that live near reefs'],ans:1,exp:'The passage primarily explains how coral works (biology, symbiosis) and concludes with the environmental threat — making explanation, not persuasion, its main purpose.'},
+      {q:'According to the passage, why is the coral-zooxanthellae relationship described as "mutually beneficial"?',opts:['Both organisms live in warm water','Both organisms produce calcium carbonate','Both organisms gain something from the relationship','Both organisms are types of animals'],ans:2,exp:'"Mutually beneficial" means both parties benefit — the algae get shelter and compounds, while the coral gets up to 90% of its energy from the algae\'s photosynthesis.'},
+      {q:'Which statement best explains why coral bleaching is dangerous?',opts:['It makes reefs visible to predators','It removes the algae that supply most of the coral\'s energy','It causes reefs to grow too quickly','It changes the color of the ocean'],ans:1,exp:'The passage states that without the algae\'s energy support (up to 90% of the polyp\'s needs), the coral dies within weeks — making the energy loss the critical danger.'},
+      {q:'Based on the passage, what is a coral "polyp"?',opts:['A type of algae that lives in warm water','A microscopic plant found near reefs','A small animal that builds the reef structure','A layer of calcium carbonate on the ocean floor'],ans:2,exp:'The passage explicitly states: "coral is an animal — or more accurately, a colony of tiny animals called polyps" that secrete calcium carbonate skeletons.'},
+      {q:'The author most likely includes the comparison to "rainforests of the sea" in order to:',opts:['Explain how coral reefs produce oxygen','Suggest that reefs and rainforests face the same threats','Emphasize the richness and importance of reef ecosystems','Argue that forests and oceans should be equally protected'],ans:2,exp:'The comparison is used to immediately convey the biodiversity and ecological significance of reefs to a reader who may not know much about them — an accessible analogy.'},
+    ]
+  },
+  // ── 9-10 Literature ──
+  {
+    level:'9-10', subj:'lit',
+    title:'On Loneliness (Original Literary Prose)',
+    source:'Literary Nonfiction · Grade 9–10',
+    text:`There is a particular loneliness that comes not from being alone, but from being surrounded by people who do not see you. I have felt it in crowded lunchrooms and at loud parties, at family gatherings where everyone speaks but no one quite listens. It is different from solitude, which can be chosen and even pleasant. This loneliness is imposed.
+
+Writers have long understood this distinction. Henry David Thoreau spent two years at Walden Pond in deliberate isolation and concluded that he had never felt less lonely in his life. Meanwhile, he observed, many people in cities — packed together on street corners and in apartments — lived in a kind of perpetual spiritual exile. His paradox was not a rhetorical trick. He meant it plainly.
+
+The psychological literature supports Thoreau's intuition. Studies of loneliness consistently show that the subjective feeling of disconnection — not the objective count of social interactions — predicts outcomes like depression, anxiety, and even physical illness. A person who speaks to fifty acquaintances a day but feels unseen by all of them reports higher loneliness scores than a hermit who has one genuine conversation a week.
+
+What this suggests is uncomfortable: that loneliness is not a problem of proximity. You cannot solve it by adding more people to a room. It is, at its core, a problem of recognition — the human need to be understood, accurately and with care, by at least one other person.`,
+    qs:[
+      {q:'What distinction does the author draw at the beginning of the passage?',opts:['Between physical and emotional pain','Between loneliness and solitude','Between city life and rural life','Between writers and scientists'],ans:1,exp:'The opening lines explicitly contrast "loneliness" (imposed disconnection in company) with "solitude" (chosen aloneness that can be pleasant) — this distinction drives the passage.'},
+      {q:'The author mentions Thoreau primarily to:',opts:['Prove that city life is harmful','Argue that everyone should spend time in nature','Support the idea that isolation is not the same as loneliness','Show that writers are more sensitive than ordinary people'],ans:2,exp:'Thoreau\'s experience at Walden is used as evidence that being physically alone doesn\'t cause loneliness, reinforcing the author\'s central distinction between solitude and loneliness.'},
+      {q:'According to the psychological research cited, what best predicts loneliness?',opts:['The total number of social interactions a person has','Whether a person lives alone or with others','The subjective feeling of being disconnected or unseen','How often a person communicates with family'],ans:2,exp:'The passage states: "the subjective feeling of disconnection — not the objective count of social interactions — predicts outcomes like depression and anxiety."'},
+      {q:'What does the author mean by "loneliness is not a problem of proximity"?',opts:['Loneliness cannot be measured by distance','Being near other people does not necessarily cure loneliness','People who live far apart are lonelier than those who live together','Proximity refers to emotional closeness, not physical distance'],ans:1,exp:'The author concludes that adding more people to a room doesn\'t solve loneliness — the real issue is whether those people truly "see" and understand you, not how close they are physically.'},
+      {q:'The word "exile" in paragraph 2 is used to suggest that city-dwellers are:',opts:['Physically removed from nature','Experiencing emotional disconnection despite living among others','Forced to leave their home communities','Unable to form lasting friendships'],ans:1,exp:'"Spiritual exile" is a metaphor for feeling isolated or banished from genuine human connection while being physically surrounded by others — matching the passage\'s central theme.'},
+    ]
+  },
+  // ── 9-10 History ──
+  {
+    level:'9-10', subj:'history',
+    title:'The Causes of the Great Depression',
+    source:'Informational · History · Grade 9–10',
+    text:`The Great Depression, which lasted from 1929 to approximately 1939, was the worst economic crisis in modern American history. Its causes were multiple, interlocking, and debated by economists to this day — but several factors are broadly agreed upon.
+
+The most dramatic trigger was the stock market crash of October 1929. After years of speculative excess — investors buying stocks on thin margins, driven by the belief that prices would rise indefinitely — the market collapsed over several days. Between October 24 and October 29, the Dow Jones Industrial Average lost nearly a quarter of its value. But the crash was a trigger, not the underlying disease.
+
+The structural weaknesses were already present. American banks in the 1920s were largely unregulated and fragile. When panicked depositors tried to withdraw their savings after the crash, banks lacked the reserves to meet demand. Nearly 9,000 banks failed between 1930 and 1933, wiping out the savings of millions of ordinary Americans. This bank collapse contracted the money supply dramatically — historians estimate it shrank by one-third — deepening the economic spiral.
+
+Agricultural overproduction throughout the 1920s had driven down farm prices even before the crash, leaving rural Americans already struggling. The Smoot-Hawley Tariff of 1930, intended to protect American industry, triggered retaliatory tariffs from trading partners and caused international trade to collapse by roughly 65 percent, turning a national crisis into a global one.`,
+    qs:[
+      {q:'According to the passage, what was the stock market crash\'s role in causing the Great Depression?',opts:['It was the single most important and sufficient cause','It was the trigger, but structural weaknesses were the deeper cause','It had little impact compared to agricultural overproduction','It primarily affected international trade, not domestic banks'],ans:1,exp:'The passage explicitly states: "the crash was a trigger, not the underlying disease" — meaning it set off a crisis that structural problems had already made possible.'},
+      {q:'Which of the following best explains why bank failures worsened the Depression?',opts:['They caused the stock market crash of 1929','They led the government to raise tariffs','They reduced the money supply, deepening the economic crisis','They caused farm prices to fall throughout the 1920s'],ans:2,exp:'The passage explains that bank failures shrank the money supply by an estimated one-third, which deepened the economic spiral — making monetary contraction the key mechanism.'},
+      {q:'The Smoot-Hawley Tariff is described as significant primarily because:',opts:['It helped American farmers recover their losses','It reduced inflation during the Depression years','It provoked international retaliation, turning a national crisis into a global one','It caused the bank runs of 1930 to 1933'],ans:2,exp:'The passage states Smoot-Hawley triggered retaliatory tariffs and caused trade to collapse by 65%, "turning a national crisis into a global one" — its international impact is the focus.'},
+      {q:'What does the passage suggest about the cause of the Great Depression overall?',opts:['It was caused entirely by government mismanagement','It resulted from a single dramatic event that shocked the economy','It was the product of multiple interconnected structural weaknesses and events','It was primarily an agricultural crisis that spread to other sectors'],ans:2,exp:'The opening sentence explicitly states "its causes were multiple, interlocking" — and the passage describes several distinct but connected factors across finance, agriculture, banking, and trade.'},
+      {q:'The phrase "speculative excess" in paragraph 2 most likely refers to:',opts:['Overproduction in American factories during the 1920s','Reckless investing driven by unrealistic expectations of gain','The government\'s excessive spending in the years before the crash','International speculation on American currency'],ans:1,exp:'"Speculative excess" describes the risky investment behavior of the 1920s — buying stocks on thin margins under the assumption prices would always rise. This is irrational, hope-driven risk-taking.'},
+    ]
+  },
+  // ── 11-12 Literature ──
+  {
+    level:'11-12', subj:'lit',
+    title:'Excerpt: The Double Consciousness of Language',
+    source:'Literary Criticism · Grade 11–12',
+    text:`Every writer works in two languages simultaneously: the language they write in, and the language they think in. For most writers, these are the same, and the gap between thought and expression is merely a matter of craft — of finding the word that fits the feeling like a key turning in a lock. But for writers who compose in a language not their first, the gap is wider, stranger, and often more productive.
+
+Samuel Beckett, born in Ireland and educated in English, chose to write his major works in French. He said he did so "pour faire remarquer moi" — to make himself noticed, perhaps, but more precisely to denature himself, to write without the comfort of instinct. Writing in his adopted language forced Beckett to slow down, to question every phrase, to refuse the lazy fluency that a first language permits. The result was a prose style of extraordinary economy and silence.
+
+Jhumpa Lahiri made a similar gamble decades later, moving to Rome and choosing to write in Italian — a language she had studied but never mastered. Her memoir "In Other Words" records this experiment in obsessive detail: the pleasure of small words finally understood, the shame of every grammatical error, the sense of constructing a self out of borrowed material. Lahiri writes that in Italian she becomes "a guest" in the language — not fully at home, but not outside either.
+
+What both writers discovered, from opposite directions, is that defamiliarization — the experience of language as strange — can dissolve the clichés that familiarity breeds. The goal is not fluency; it is friction.`,
+    qs:[
+      {q:'What is the central claim of the passage?',opts:['Writers who compose in their native language produce better work','Writing in a non-native language can paradoxically enhance a writer\'s prose','Beckett and Lahiri are the greatest writers of the twentieth century','Language barriers are a significant obstacle that most writers fail to overcome'],ans:1,exp:'The passage argues throughout that the difficulty and "friction" of writing in a non-native language can produce a more deliberate, precise, and economical style — a counterintuitive benefit.'},
+      {q:'According to the passage, why did Beckett write in French rather than English?',opts:['He felt French was a superior literary language','He wanted to reach a larger French-speaking audience','Writing in his adopted language forced him to slow down and question his choices','He was required to by his French publisher'],ans:2,exp:'The passage quotes Beckett and explains he wanted to "denature himself" and avoid "lazy fluency" — the unfamiliarity of French required deliberate attention to every phrase.'},
+      {q:'The word "defamiliarization" in the final paragraph most closely means:',opts:['The process of learning a new language systematically','Experiencing something familiar as strange and new','Removing personal bias from one\'s writing','Making readers uncomfortable with difficult vocabulary'],ans:1,exp:'The passage defines defamiliarization as "the experience of language as strange" — a literary technique in which familiar things are perceived freshly, dissolving clichés born of habit.'},
+      {q:'The author uses the phrase "the goal is not fluency; it is friction" to suggest:',opts:['Writers should deliberately make their writing difficult to read','The productive difficulty of unfamiliar language is more valuable than ease','Writers should study foreign languages to improve their native prose','Beckett and Lahiri ultimately failed to achieve real fluency'],ans:1,exp:'The closing aphorism reframes the entire passage: what writers gain from the non-native language experiment is not smoothness but resistance — and resistance produces better, more considered art.'},
+      {q:'Lahiri\'s description of herself as "a guest" in Italian primarily implies:',opts:['She was never truly welcomed by Italian literary society','Her Italian was too weak to be taken seriously','She occupied an in-between state — present but never fully belonging','She preferred Italian to her native Bengali'],ans:2,exp:'Being "a guest" suggests a liminal position: not outside the language (she can use it) but not fully at home either (she hasn\'t internalized it as native). This in-between space is the passage\'s subject.'},
+    ]
+  },
+  // ── SAT Level Science ──
+  {
+    level:'sat', subj:'sci',
+    title:'The Replication Crisis in Science',
+    source:'Informational · Science · SAT/AP Level',
+    text:`Science is often portrayed as self-correcting — a process in which errors are eventually detected and overturned by subsequent research. This optimistic picture, while not entirely false, has been complicated over the last decade by what researchers call the "replication crisis": the discovery that a troublingly high proportion of published findings in psychology, medicine, and other fields cannot be reproduced by independent researchers using the same methods.
+
+In 2015, the Open Science Collaboration published the results of a landmark study in which 270 researchers attempted to replicate 100 previously published psychological experiments. They succeeded in replicating fewer than 40 percent. A similar analysis of cancer biology studies found that only 11 percent of 53 landmark papers could be reproduced. The scale of the problem was not merely statistical noise.
+
+Several structural factors contribute to the crisis. Publication bias — the tendency of journals to publish positive results while rejecting null or ambiguous findings — creates a skewed scientific literature in which successful experiments are systematically overrepresented. The "file drawer problem" refers to the unknown number of negative studies that exist but are never published. Together, these pressures incentivize researchers, perhaps unconsciously, to engage in practices like p-hacking: testing multiple hypotheses until one reaches the conventional significance threshold of p < 0.05, then reporting only that result.
+
+Solutions under discussion include pre-registration of studies (researchers publicly commit to their methods before data collection), larger sample sizes, and open data policies requiring researchers to share raw data. The crisis has also prompted deeper questions: whether the p < 0.05 threshold is too permissive, and whether effect sizes rather than binary significance should guide interpretation.`,
+    qs:[
+      {q:'According to the passage, what is "publication bias"?',opts:['The tendency of researchers to publish studies that agree with their hypotheses','Journals\' preference for publishing positive results over null or ambiguous findings','The overrepresentation of American research in international publications','Unconscious errors made by scientists during data analysis'],ans:1,exp:'The passage defines publication bias precisely: "the tendency of journals to publish positive results while rejecting null or ambiguous findings" — creating a systematically skewed literature.'},
+      {q:'What does the "file drawer problem" refer to?',opts:['Researchers storing raw data improperly','Studies with negative or null results that are never published','Errors introduced when transferring data between research teams','The loss of historical research due to poor archiving'],ans:1,exp:'The passage explicitly defines it: "the unknown number of negative studies that exist but are never published" — research that sits in file drawers because its results aren\'t interesting enough to publish.'},
+      {q:'Based on the passage, p-hacking is best described as:',opts:['Falsifying data to achieve a desired experimental result','Testing many hypotheses until one reaches significance, then reporting only that result','Using overly permissive statistical thresholds in research','Failing to replicate a previously published study'],ans:1,exp:'The passage describes p-hacking as "testing multiple hypotheses until one reaches the conventional significance threshold of p < 0.05, then reporting only that result" — selective reporting, not falsification.'},
+      {q:'Which of the following would most directly address publication bias as described in the passage?',opts:['Requiring all published studies to use sample sizes above a set minimum','Mandating that journals also publish null and negative results','Requiring researchers to pre-register their methods before collecting data','Replacing the p < 0.05 threshold with effect size reporting'],ans:1,exp:'Publication bias is the rejection of negative/null findings. The only option that directly addresses this is requiring journals to publish such studies — pre-registration addresses p-hacking, and effect sizes address interpretation standards.'},
+      {q:'The author\'s phrase "not entirely false" when describing science as self-correcting is best understood as:',opts:['A strong endorsement of science\'s ability to correct its own errors','An acknowledgment that while self-correction exists, it is imperfect and overestimated','A dismissal of the idea that science ever corrects itself','An ironic understatement intended to criticize the scientific community'],ans:1,exp:'This hedged phrase introduces nuance: science does self-correct (so the view isn\'t "entirely false"), but the replication crisis shows the process is slower, messier, and less reliable than commonly assumed.'},
+    ]
+  },
+  // ── SAT Level History ──
+  {
+    level:'sat', subj:'history',
+    title:'Frederick Douglass on the Meaning of July Fourth',
+    source:'Primary Source / Rhetoric · SAT/AP Level',
+    text:`The following is adapted from a speech delivered by Frederick Douglass in Rochester, New York, on July 5, 1852.
+
+Fellow citizens, pardon me, and allow me to ask, why am I called upon to speak here today? What have I to do with your national independence? Are the great principles of political freedom and of natural justice, embodied in that Declaration of Independence, extended to us? And am I, therefore, called to bring our humble offering to the national altar, and to confess the benefits and express devout gratitude for the blessings resulting from your independence to us?
+
+I am not included within the pale of this glorious anniversary. Your high independence only reveals the immeasurable distance between us. The blessings in which you this day rejoice are not enjoyed in common. The rich inheritance of justice, liberty, prosperity, and independence bequeathed by your fathers is shared by you, not by me.
+
+This Fourth July is yours, not mine. You may rejoice, I must mourn. To drag a man in fetters into the grand illuminated temple of liberty, and call upon him to join you in joyous anthems, were inhuman mockery and sacrilegious irony. Do you mean, citizens, to mock me, by asking me to speak today?
+
+Fellow citizens, above your national tumult I hear the mournful wail of millions, whose chains, heavy and grievous yesterday, are today rendered more intolerable by the jubilee shouts that reach them. If I do forget, if I do not faithfully remember those bleeding children of sorrow this day, "may my right hand forget her cunning, and may my tongue cleave to the roof of my mouth!"`,
+    qs:[
+      {q:'What is Douglass\'s primary purpose in this speech?',opts:['To celebrate American independence on behalf of all Americans','To call for an immediate armed revolt against the government','To expose the contradiction between America\'s ideals of freedom and the reality of slavery','To argue that the Declaration of Independence is a flawed document'],ans:2,exp:'Douglass uses the occasion of July 4th to highlight the hypocrisy of celebrating freedom while slavery persists — exposing the gap between American ideals and American reality for enslaved people.'},
+      {q:'When Douglass says "This Fourth July is yours, not mine," he is primarily arguing that:',opts:['He would prefer to celebrate on a different date','African Americans have no loyalty to the United States','The promise of independence does not extend to enslaved people','White Americans are selfish in their celebrations'],ans:2,exp:'Douglass is not making a personal or emotional complaint — he is making a political argument that the liberty celebrated on July 4th is legally and materially withheld from Black Americans, particularly the enslaved.'},
+      {q:'The phrase "inhuman mockery and sacrilegious irony" is used to describe:',opts:['The way slaveholders justified slavery using religious arguments','The act of asking enslaved people to celebrate a freedom that excludes them','The government\'s failure to amend the Constitution','The way abolitionists were treated by the press'],ans:1,exp:'Douglass uses this phrase to characterize the absurdity of inviting an enslaved or formerly enslaved man to joyously celebrate a freedom that was never his — calling it both cruel and spiritually offensive.'},
+      {q:'Douglass\'s rhetorical strategy in the opening paragraph is best described as:',opts:['Flattering the audience before presenting his argument','Using a series of rhetorical questions to challenge the assumptions behind his invitation to speak','Establishing his credentials as a scholar of the Declaration','Acknowledging that he benefits from American independence'],ans:1,exp:'The opening is structured as a sequence of rhetorical questions — each one stripping away the assumption that Douglass shares in the freedom being celebrated, building toward his central argument.'},
+      {q:'The biblical allusion at the end of the passage ("may my right hand forget her cunning") serves primarily to:',opts:['Show Douglass\'s religious faith','Emphasize the sacred obligation he feels to speak for enslaved people','Warn listeners that God will punish America for slavery','Quote a passage that the audience would recognize from church'],ans:1,exp:'The allusion (from Psalm 137, spoken by exiles who refuse to forget their people) expresses a moral oath: Douglass treats remembering and speaking for enslaved people as a sacred duty he cannot abandon.'},
+    ]
+  },
+];
+
+let selLevel='all', selSubj='all', selTimed=0;
+let currentPassage=null, answered={}, startTime=null, timerInterval=null, timerSec=0;
+
+document.querySelectorAll('#lvlGroup .chip').forEach(c=>c.addEventListener('click',function(){
+  document.querySelectorAll('#lvlGroup .chip').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active'); selLevel=this.dataset.val;
+}));
+document.querySelectorAll('#subjGroup .chip').forEach(c=>c.addEventListener('click',function(){
+  document.querySelectorAll('#subjGroup .chip').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active'); selSubj=this.dataset.val;
+}));
+document.querySelectorAll('#timedGroup .chip').forEach(c=>c.addEventListener('click',function(){
+  document.querySelectorAll('#timedGroup .chip').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active'); selTimed=parseInt(this.dataset.val);
+}));
+
+function startPassage(){
+  let pool=PASSAGES.filter(p=>
+    (selLevel==='all'||p.level===selLevel)&&
+    (selSubj==='all'||p.subj===selSubj)
+  );
+  if(!pool.length) pool=PASSAGES;
+  if(pool.length>1&&currentPassage) pool=pool.filter(p=>p.title!==currentPassage.title);
+  currentPassage=pool[Math.floor(Math.random()*pool.length)];
+  answered={};
+
+  document.getElementById('selectorCard').style.display='none';
+  document.getElementById('practiceArea').style.display='';
+  document.getElementById('resultsCard').style.display='none';
+  document.getElementById('submitBtn').style.display='';
+
+  document.getElementById('passageTitle').textContent=currentPassage.title;
+  document.getElementById('passageMeta').innerHTML=`<span class="badge">${currentPassage.source}</span><span class="badge">${currentPassage.level==='sat'?'SAT/AP':currentPassage.level}</span>`;
+  document.getElementById('passageText').innerHTML=currentPassage.text.replace(/\n\n/g,'</p><p>').replace(/^/,'<p>').replace(/$/,'</p>');
+
+  // Build questions
+  document.getElementById('questionsArea').innerHTML=currentPassage.qs.map((q,qi)=>`
+    <div class="q-block" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${currentPassage.qs.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${q.opts.map((o,oi)=>`
+        <label class="option" id="opt${qi}_${oi}">
+          <input type="radio" name="q${qi}" value="${oi}" onchange="selectAnswer(${qi},${oi})">
+          <span>${String.fromCharCode(65+oi)}. ${o}</span>
+        </label>`).join('')}
+      </div>
+      <div class="explanation" id="exp${qi}">${q.exp}</div>
+    </div>`).join('');
+
+  // Timer
+  clearInterval(timerInterval);
+  startTime=Date.now();
+  if(selTimed>0){
+    timerSec=selTimed*60;
+    const badge=document.getElementById('timerBadge');
+    badge.style.display='';
+    updateTimerBadge();
+    timerInterval=setInterval(()=>{
+      timerSec--;
+      updateTimerBadge();
+      if(timerSec<=0){clearInterval(timerInterval);submitAnswers();}
+    },1000);
+  } else {
+    document.getElementById('timerBadge').style.display='none';
+  }
+}
+
+function updateTimerBadge(){
+  const m=Math.floor(timerSec/60),s=timerSec%60;
+  const badge=document.getElementById('timerBadge');
+  badge.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  badge.className='timer-badge'+(timerSec<60?' crit':timerSec<180?' warn':'');
+}
+
+function selectAnswer(qi,oi){ answered[qi]=oi; }
+
+function submitAnswers(){
+  clearInterval(timerInterval);
+  const timeMs=Date.now()-startTime;
+  const mins=Math.floor(timeMs/60000),secs=Math.floor((timeMs%60000)/1000);
+
+  let correct=0;
+  currentPassage.qs.forEach((q,qi)=>{
+    const chosen=answered[qi];
+    const opts=document.querySelectorAll(`[id^="opt${qi}_"]`);
+    opts.forEach(el=>el.classList.add('locked'));
+    // Mark all options
+    opts.forEach((el,oi)=>{
+      if(oi===q.ans) el.classList.add(chosen===q.ans?'correct':'revealed');
+      else if(oi===chosen&&chosen!==q.ans) el.classList.add('wrong');
+    });
+    // Show explanation
+    document.getElementById('exp'+qi).style.display='block';
+    if(chosen===q.ans) correct++;
+  });
+
+  // Block further changes
+  document.querySelectorAll('.option input').forEach(i=>i.disabled=true);
+  document.getElementById('submitBtn').style.display='none';
+
+  // Results
+  const total=currentPassage.qs.length;
+  const pct=Math.round(correct/total*100);
+  document.getElementById('scoreNum').textContent=correct+'/'+total;
+  document.getElementById('scorePct').textContent=pct+'%';
+  document.getElementById('scoreTime').textContent=mins+'m '+secs+'s';
+  document.getElementById('resultFill').style.width=pct+'%';
+  document.getElementById('resultFill').style.background=pct>=80?'var(--green)':pct>=60?'var(--amber)':'var(--red)';
+  document.getElementById('resultsCard').style.display='';
+  document.getElementById('resultsCard').scrollIntoView({behavior:'smooth'});
+
+  // Save to history
+  const hist=JSON.parse(localStorage.getItem('rc-hist')||'[]');
+  hist.unshift({title:currentPassage.title,score:correct,total,pct,ts:Date.now()});
+  if(hist.length>50)hist.pop();
+  localStorage.setItem('rc-hist',JSON.stringify(hist));
+}
+
+function showSelector(){
+  clearInterval(timerInterval);
+  document.getElementById('selectorCard').style.display='';
+  document.getElementById('practiceArea').style.display='none';
+}
+</script>
+</body></html>
