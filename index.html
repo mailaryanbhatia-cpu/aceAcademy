@@ -37,7 +37,7 @@
     height: 60px;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 200;
   }
   .logo { font-size: 1.25rem; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
   .tagline { font-size: 0.8rem; color: var(--muted); }
@@ -733,6 +733,20 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 .content-col{flex:1;display:flex;flex-direction:column;min-width:0;overflow-y:auto;}
 .hero-outer{padding:28px 36px 0;}
 main#mainContent{flex:1;padding:0 36px 36px;}
+
+  /* ── Global Search Results ── */
+  #globalSearchResults{display:none;position:absolute;top:60px;left:0;right:0;background:var(--surface);border-bottom:2px solid var(--accent);z-index:200;max-height:70vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+  .gsr-header{padding:12px 24px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border)}
+  .gsr-item{display:flex;align-items:flex-start;gap:12px;padding:12px 24px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+  .gsr-item:hover{background:var(--bg)}
+  .gsr-grade{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--accent);color:#fff;white-space:nowrap;flex-shrink:0;margin-top:2px}
+  .gsr-body{flex:1;min-width:0}
+  .gsr-unit{font-size:.88rem;font-weight:600;color:var(--text)}
+  .gsr-sub{font-size:.75rem;color:var(--muted);margin-top:2px}
+  .gsr-topics{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+  .gsr-topic{font-size:.72rem;padding:2px 8px;border-radius:10px;background:rgba(99,102,241,.15);color:var(--accent)}
+  .gsr-topic mark{background:rgba(250,204,21,.35);color:inherit;border-radius:2px}
+  .gsr-none{padding:32px;text-align:center;color:var(--muted);font-size:.88rem}
 </style>
 <script src="auth-guard.js"></script>
 </head>
@@ -746,13 +760,14 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   <a href="alltools.html" class="nav-link">🛠 All Tools</a>
   <div class="search-wrap" style="flex-shrink:0;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" id="headerSearch" placeholder="Search tools…" style="background:var(--surface);color:var(--text);width:190px;"
-      onkeydown="if(event.key==='Enter'&&this.value.trim())window.location='alltools.html?q='+encodeURIComponent(this.value.trim())">
+    <input type="text" id="headerSearch" placeholder="Search grades, units, topics…" style="background:var(--surface);color:var(--text);width:220px;"
+      oninput="globalSearch(this.value)" onkeydown="if(event.key==='Escape'){this.value='';globalSearch('')}">
   </div>
   <div class="nav-spacer"></div>
   <span style="font-size:.82rem;color:#7a8fa8;font-weight:500;font-family:'Inter',system-ui,sans-serif;">Grades 6–12 Learning Platform</span>
   <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark</button>
 </header>
+<div id="globalSearchResults"></div>
 
 <div class="page">
   <aside>
@@ -7107,6 +7122,88 @@ document.querySelectorAll('#gradeList a').forEach(a => {
     e.preventDefault();
     const g = a.dataset.grade; setGrade(g === 'ap' ? 'ap' : parseInt(g));
   });
+});
+
+// ── GLOBAL SEARCH ───────────────────────────────────────────────
+const GRADE_LABELS = { 6:'Grade 6', 7:'Grade 7', 8:'Grade 8', 9:'Grade 9', 10:'Grade 10', 11:'Grade 11', 12:'Grade 12', ap:'AP' };
+
+function globalSearch(raw) {
+  const q = raw.trim().toLowerCase();
+  const panel = document.getElementById('globalSearchResults');
+  if (!panel) return;
+
+  if (!q) { panel.style.display = 'none'; return; }
+
+  const results = [];
+  const allGrades = [6,7,8,9,10,11,12,'ap'];
+
+  allGrades.forEach(grade => {
+    const gradeData = CURRICULUM[grade];
+    if (!gradeData) return;
+    const subjList = grade === 'ap' ? AP_SUBJECTS : SUBJECTS;
+    subjList.forEach(subj => {
+      const units = gradeData[subj.id] || [];
+      units.forEach((u, ui) => {
+        const unitMatch = u.unit.toLowerCase().includes(q);
+        const matchTopics = u.topics.filter(t => t.toLowerCase().includes(q));
+        if (unitMatch || matchTopics.length) {
+          results.push({ grade, subj, unit: u.unit, topics: u.topics, matchTopics, ui });
+        }
+      });
+    });
+  });
+
+  if (!results.length) {
+    panel.innerHTML = '<div class="gsr-none">No results for <strong>' + raw + '</strong></div>';
+    panel.style.display = 'block';
+    return;
+  }
+
+  function hl(text) {
+    const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+  }
+
+  let html = '<div class="gsr-header">' + results.length + ' result' + (results.length !== 1 ? 's' : '') + ' across all grades</div>';
+  results.slice(0, 40).forEach(r => {
+    const topicsHtml = r.matchTopics.length
+      ? r.matchTopics.map(t => '<span class="gsr-topic">' + hl(t) + '</span>').join('')
+      : (r.topics.slice(0,3).map(t => '<span class="gsr-topic">' + t + '</span>').join('') + (r.topics.length > 3 ? '<span class="gsr-topic">+' + (r.topics.length-3) + ' more</span>' : ''));
+    html += '<div class="gsr-item" onclick="goToResult('' + r.grade + '','' + r.subj.id + '')">'
+      + '<span class="gsr-grade">' + GRADE_LABELS[r.grade] + '</span>'
+      + '<div class="gsr-body">'
+      + '<div class="gsr-unit">' + hl(r.unit) + '</div>'
+      + '<div class="gsr-sub">' + r.subj.label + '</div>'
+      + '<div class="gsr-topics">' + topicsHtml + '</div>'
+      + '</div></div>';
+  });
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+}
+
+function goToResult(grade, subjId) {
+  const panel = document.getElementById('globalSearchResults');
+  if (panel) panel.style.display = 'none';
+  const inp = document.getElementById('headerSearch');
+  if (inp) inp.value = '';
+  // Navigate to the grade+subject
+  currentGrade = isNaN(grade) ? grade : Number(grade);
+  activeSubject = subjId;
+  searchQuery = '';
+  document.querySelectorAll('.grade-list a').forEach(a => {
+    a.classList.toggle('active', String(a.dataset.grade) === String(currentGrade));
+  });
+  buildSubjectButtons();
+  render();
+  document.getElementById('mainContent')?.scrollIntoView({ behavior:'smooth' });
+}
+
+// Close search panel when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('#globalSearchResults') && !e.target.closest('#headerSearch')) {
+    const panel = document.getElementById('globalSearchResults');
+    if (panel) panel.style.display = 'none';
+  }
 });
 
 // Search
