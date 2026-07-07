@@ -16071,12 +16071,40 @@ function renderPhrasebook(){
 // ═══════════════════════════════════════════════════════════════
 function speak(text, language){
   if(!window.speechSynthesis) return;
-  const langMap = {mandarin:'zh-CN', japanese:'ja-JP', hindi:'hi-IN'};
+  const langMap = {
+    mandarin:'zh-CN', japanese:'ja-JP', hindi:'hi-IN', korean:'ko-KR',
+    thai:'th-TH', vietnamese:'vi-VN', indonesian:'id-ID', tagalog:'fil-PH',
+    bengali:'bn-IN', tamil:'ta-IN', arabic:'ar-SA', urdu:'ur-PK',
+    malay:'ms-MY', burmese:'my-MM', nepali:'ne-NP', mongolian:'mn-MN',
+    khmer:'km-KH', lao:'lo-LA'
+  };
+  const targetLang = langMap[language] || 'en-US';
   const utt = new SpeechSynthesisUtterance(text);
-  utt.lang = langMap[language] || 'zh-CN';
   utt.rate = 0.85;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utt);
+
+  // Try to find a voice that matches the target language
+  function trySpeak(voices){
+    const exact = voices.find(v => v.lang === targetLang);
+    const prefix = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
+    utt.lang = targetLang;
+    if(exact) utt.voice = exact;
+    else if(prefix) utt.voice = prefix;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utt);
+  }
+
+  const voices = window.speechSynthesis.getVoices();
+  if(voices.length) {
+    trySpeak(voices);
+  } else {
+    // Voices not loaded yet — wait for them
+    window.speechSynthesis.onvoiceschanged = () => {
+      trySpeak(window.speechSynthesis.getVoices());
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+    // Fallback: speak anyway after short delay
+    setTimeout(() => { window.speechSynthesis.cancel(); window.speechSynthesis.speak(utt); }, 300);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
