@@ -362,6 +362,11 @@ async function doSignUp(){
   showMsg('signup-msg','Account created! Signing you in… ✓','success');
   setTimeout(()=>window.location.replace('index.html'),900);
 }
+
+// Auto-switch to signup tab if ?signup=1 in URL
+if (new URLSearchParams(window.location.search).get('signup') === '1') {
+  switchTab('up');
+}
 </script>
 </body>
 </html>
