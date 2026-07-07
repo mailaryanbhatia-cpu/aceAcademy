@@ -955,12 +955,12 @@ main#mainContent{flex:1;padding:0 36px 36px;}
 <footer>AcerAcademy — Free grades 6–12 curriculum, aligned to Common Core, NGSS &amp; CSTA standards.</footer>
 
 <script>
-// ──────────────────────────────────────────────
+// ----------------------------------------------
 // PRACTICE SHEET DATA
 // Each entry: [sheet1, sheet2]
 // sheet: {title, problems:[{q,ex,a}]}
 // ex = worked example (optional, shown in green)
-// ──────────────────────────────────────────────
+// ----------------------------------------------
 const PRACTICE = {
   6: {
     math: [
@@ -6372,7 +6372,7 @@ The 'with' statement automatically closes the file when done.` },
 
 };;
 
-// ──────────────────────────────────────────────
+// ----------------------------------------------
 
 const CHEAT_SHEETS = {
   math: [
@@ -6566,7 +6566,7 @@ const CHEAT_SHEETS = {
 };
 
 // CURRICULUM DATA
-// ──────────────────────────────────────────────
+// ----------------------------------------------
 const SUBJECTS = [
   { id: 'math',     label: 'Mathematics',       color: '#2563eb' },
   { id: 'science',  label: 'Science',            color: '#16a34a' },
@@ -6892,9 +6892,9 @@ const CURRICULUM = {
 
 };
 
-// ──────────────────────────────────────────────
+// ----------------------------------------------
 // APP
-// ──────────────────────────────────────────────
+// ----------------------------------------------
 let currentGrade = 6;
 let activeSubject = 'all';
 let searchQuery = '';
@@ -7124,7 +7124,7 @@ document.querySelectorAll('#gradeList a').forEach(a => {
   });
 });
 
-// ── GLOBAL SEARCH ───────────────────────────────────────────────
+// -- GLOBAL SEARCH -----------------------------------------------
 const GRADE_LABELS = { 6:'Grade 6', 7:'Grade 7', 8:'Grade 8', 9:'Grade 9', 10:'Grade 10', 11:'Grade 11', 12:'Grade 12', ap:'AP' };
 let _gsrResults = [];
 
@@ -7199,7 +7199,7 @@ function goToResult(el) {
   document.querySelectorAll('.grade-list a').forEach(function(a) {
     a.classList.toggle('active', String(a.dataset.grade) === String(currentGrade));
   });
-  buildSubjectButtons();
+  updateSidebarSubjectBtns();
   render();
   setTimeout(function(){ document.getElementById('mainContent')?.scrollIntoView({ behavior:'smooth' }); }, 50);
 }
@@ -7234,7 +7234,7 @@ if (_searchInput) _searchInput.addEventListener('input', e => {
 
 
 
-// ── FOCUS MODE ──────────────────────────────────────────────────
+// -- FOCUS MODE --------------------------------------------------
 function toggleFocusMode() {
   const on = document.body.classList.toggle('focus-mode');
   const btn = document.getElementById('focusModeBtn');
@@ -7242,7 +7242,7 @@ function toggleFocusMode() {
   try { localStorage.setItem('focus-mode', on ? '1' : '0'); } catch(e) {}
 }
 
-// ── MASTERY SUMMARY ─────────────────────────────────────────────
+// -- MASTERY SUMMARY ---------------------------------------------
 function updateMasterySummary() {
   const container = document.getElementById('masterySummary');
   if (!container) return;
@@ -7278,7 +7278,7 @@ function updateMasterySummary() {
   container.innerHTML = html || '<p style="font-size:.72rem;color:var(--muted)">Click topic dots to track mastery.</p>';
 }
 
-// ── STREAK CALENDAR ─────────────────────────────────────────────
+// -- STREAK CALENDAR ---------------------------------------------
 function updateStreakCalendar() {
   const container = document.getElementById('streakCal');
   if (!container) return;
@@ -7307,7 +7307,7 @@ function toggleCalSection() {
   if (open) updateStreakCalendar();
 }
 
-// ── BOOKMARKS ───────────────────────────────────────────────────
+// -- BOOKMARKS ---------------------------------------------------
 function toggleBookmark(e, key) {
   e.stopPropagation();
   const star = e.currentTarget;
@@ -7370,7 +7370,7 @@ function goToBookmark(grade, subj, ui) {
   }, 80);
 }
 
-// ── VOCAB GAME ──────────────────────────────────────────────────
+// -- VOCAB GAME --------------------------------------------------
 let vgMode = 'match', vgScore = 0, vgTotal = 0;
 let vgSelected = null;
 
@@ -7487,7 +7487,7 @@ function quizAnswer(btn) {
   }
   setTimeout(() => { if (window._vgNextQ) window._vgNextQ(); }, 900);
 }
-// ── MASTERY TRACKER ──────────────────────────────────────────────────────
+// -- MASTERY TRACKER ------------------------------------------------------
 function cycleMastery(e) {
   const dot = e.currentTarget;
   const key = dot.dataset.key;
@@ -7503,8 +7503,8 @@ function cycleMastery(e) {
   updateMasterySummary();
 }
 
-// ── DAILY CHALLENGE ───────────────────────────────────────────────────────
-// ── DAILY CHALLENGE ─────────────────────────────────────────────────────────
+// -- DAILY CHALLENGE -------------------------------------------------------
+// -- DAILY CHALLENGE ---------------------------------------------------------
 
 const DC_GRADE_LABELS = { '6':'Grade 6','7':'Grade 7','8':'Grade 8','9':'Grade 9','10':'Grade 10','11':'Grade 11','12':'Grade 12','ap':'AP Courses' };
 const DC_SUBJ_LABELS  = { math:'Math', science:'Science', ela:'ELA', history:'History', cs:'Computer Science', arts:'Arts', languages:'Languages', capstone:'Capstone', english:'English', socialstudies:'Social Studies', pe:'PE', health:'Health' };
@@ -7701,7 +7701,7 @@ if (localStorage.getItem('focus-mode') === '1') {
   if (btn) { btn.textContent = '🔓 Exit Focus Mode'; btn.classList.add('on'); }
 }
 updateSidebarSubjectBtns();
-// ══ UNIT COMPLETION RING ═════════════════════════════════════
+// -- UNIT COMPLETION RING -------------------------------------
 function unitRingSvg(grade, subjId, unitIdx, topics) {
   if (!topics || !topics.length) return '';
   let score = 0;
@@ -8153,7 +8153,7 @@ if (document.readyState === 'loading') {
   if(tp) tp.style.bottom='24px';
 })();
 
-// ══ DAILY GOAL ══════════════════════════════════════════════
+// -- DAILY GOAL ----------------------------------------------
 function toggleGoalSection() {
   const b = document.getElementById('goalBody'), c = document.getElementById('goalChev');
   b.classList.toggle('open');
@@ -8192,7 +8192,7 @@ function incrementGoal() {
   updateGoalWidget();
 }
 
-// ══ SPACED REPETITION ═══════════════════════════════════════
+// -- SPACED REPETITION ---------------------------------------
 function toggleSrSection() {
   const b = document.getElementById('srBody'), c = document.getElementById('srChev');
   b.classList.toggle('open');
@@ -8234,7 +8234,7 @@ function updateSrWidget() {
   } catch(e) { container.innerHTML = '<p class="sr-empty">No data yet.</p>'; }
 }
 
-// ══ MISTAKE JOURNAL ══════════════════════════════════════════
+// -- MISTAKE JOURNAL ------------------------------------------
 function toggleMjSection() {
   const b = document.getElementById('mjBody'), c = document.getElementById('mjChev');
   b.classList.toggle('open');
@@ -8284,7 +8284,7 @@ function updateMjWidget() {
   } catch(e) {}
 }
 
-// ══ TIMED PRACTICE ══════════════════════════════════════════
+// -- TIMED PRACTICE ------------------------------------------
 let tpInterval = null, tpLeft = 600, tpTotal = 600, tpRunning = false;
 function toggleTimerPanel() { document.getElementById('timerPanel').classList.toggle('open'); }
 function setTimerPreset(mins, btn) {
@@ -8330,7 +8330,7 @@ function updateTimerDisplay() {
   if (el) el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
 }
 
-// ══ FORMULA REFERENCE ═══════════════════════════════════════
+// -- FORMULA REFERENCE ---------------------------------------
 const FORMULAS = {
   Math: [
     {name:'Area of Circle',expr:'A = πr²',desc:'r = radius'},
@@ -8432,7 +8432,7 @@ function renderFormulaModal() {
   filterFormulas('');
 }
 
-// ══ CONCEPT EXPLAINER ══════════════════════════════════════
+// -- CONCEPT EXPLAINER --------------------------------------
 const TIPS = {
   ratio:'A ratio compares two quantities. Write as a:b, a/b, or "a to b". Simplify like fractions.',
   proportion:'A proportion says two ratios are equal: a/b = c/d. Cross-multiply to solve: ad = bc.',
@@ -8509,7 +8509,7 @@ function showTip(topic, btn) {
 function closeTip() { const p = document.getElementById('tipPopup'); if (p) p.classList.remove('open'); }
 document.addEventListener('click', e => { if (!e.target.closest('.tip-btn') && !e.target.closest('#tipPopup')) closeTip(); });
 
-// ══ PROGRESS SNAPSHOT EXPORT ═════════════════════════════════
+// -- PROGRESS SNAPSHOT EXPORT ---------------------------------
 function exportSnapshot() {
   try {
     const SLABELS = {math:'Math',science:'Science',ela:'ELA',history:'History',cs:'CS',health:'Health'};
@@ -8555,7 +8555,7 @@ function exportSnapshot() {
 }
 
 
-// ══ DARK / LIGHT MODE ═══════════════════════════════════════
+// -- DARK / LIGHT MODE ---------------------------------------
 function toggleTheme() {
   const html = document.documentElement;
   const isDark = html.getAttribute('data-theme') === 'dark';
@@ -8578,7 +8578,7 @@ function toggleTheme() {
 
 
 
-// ══ TOPIC NOTES ══════════════════════════════════════════════
+// -- TOPIC NOTES ----------------------------------------------
 function toggleTopicNote(key) {
   const wrap = document.getElementById('note-wrap-' + key);
   if (!wrap) return;
@@ -8605,7 +8605,7 @@ function populateNotes() {
   });
 }
 
-// ══ WEAK SPOT DETECTOR ═══════════════════════════════════════
+// -- WEAK SPOT DETECTOR ---------------------------------------
 function toggleWsSection() {
   const b = document.getElementById('wsBody'), c = document.getElementById('wsChev');
   b.classList.toggle('open');
@@ -8655,7 +8655,7 @@ function updateWsWidget() {
   } catch(e) { container.innerHTML = '<p class="ws-empty">No data yet.</p>'; }
 }
 
-// ══ QUIZ MODE ════════════════════════════════════════════════
+// -- QUIZ MODE ------------------------------------------------
 let quizQs = [], quizIdx = 0, quizCorrect = 0, quizWrong = 0, quizCount = 10;
 
 function openQuiz() {
@@ -8749,7 +8749,7 @@ function showQuizScore() {
   document.getElementById('quizTitle').textContent = '✏️ Quiz Results';
 }
 
-// ══ OFFLINE DETECTION ════════════════════════════════════════
+// -- OFFLINE DETECTION ----------------------------------------
 window.addEventListener('offline', () => { const b = document.getElementById('offlineBanner'); if (b) b.classList.add('show'); });
 window.addEventListener('online', () => { const b = document.getElementById('offlineBanner'); if (b) b.classList.remove('show'); });
 
