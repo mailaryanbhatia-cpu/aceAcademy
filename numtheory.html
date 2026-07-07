@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Number Theory Tool — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:900px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:640px){.container{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+h2{font-size:.83rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px;margin-top:10px}
+input{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-size:.9rem;width:100%}
+input:focus{outline:none;border-color:var(--accent)}
+.btn{display:block;width:100%;padding:9px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;background:var(--accent);color:#fff;margin-top:12px;transition:.15s}
+.btn:hover{background:#5254d4}
+/* Results */
+.res{background:#0d1728;border-radius:10px;padding:14px;margin-top:12px;min-height:40px}
+.res-num{font-size:1.4rem;font-weight:800;color:var(--accent2);margin-bottom:6px}
+.step{font-size:.8rem;padding:5px 0;border-bottom:1px solid var(--border)22;line-height:1.6;color:var(--text)}
+.step:last-child{border-bottom:none}
+.step-n{color:var(--accent2);font-weight:700}
+/* Factor tree */
+.factor-tree{font-family:'Courier New',monospace;font-size:.82rem;color:var(--text);line-height:1.8;white-space:pre}
+/* Prime badge */
+.badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:.8rem;font-weight:700;margin-bottom:8px}
+.badge-prime{background:#10b98122;border:1px solid #10b981;color:#10b981}
+.badge-composite{background:#f59e0b22;border:1px solid #f59e0b;color:#f59e0b}
+/* Divisibility */
+.div-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)22;font-size:.83rem}
+.div-row:last-child{border-bottom:none}
+.div-tick{color:#10b981;font-weight:700}
+.div-x{color:#ef4444}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>🔢 Number Theory Tool</h1>
+</div>
+<div class="container">
+
+  <!-- GCF/LCM -->
+  <div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>GCF & LCM</h2>
+      <label>Number 1</label><input id="gl-a" type="number" min="1" step="1" placeholder="e.g. 48"/>
+      <label>Number 2</label><input id="gl-b" type="number" min="1" step="1" placeholder="e.g. 36"/>
+      <button class="btn" onclick="calcGL()">Calculate GCF & LCM</button>
+      <div class="res" id="gl-res" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <h2>Divisibility Check</h2>
+      <label>Number</label><input id="div-n" type="number" min="1" step="1" placeholder="e.g. 840"/>
+      <button class="btn" onclick="checkDiv()">Check Divisibility</button>
+      <div class="res" id="div-res" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- Prime Factorization & Primality -->
+  <div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Prime Factorization</h2>
+      <label>Number</label><input id="pf-n" type="number" min="2" step="1" placeholder="e.g. 360"/>
+      <button class="btn" onclick="calcPF()">Factorize</button>
+      <div class="res" id="pf-res" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <h2>Primality Test</h2>
+      <label>Number</label><input id="pr-n" type="number" min="1" step="1" placeholder="e.g. 97"/>
+      <button class="btn" onclick="testPrime()">Test</button>
+      <div class="res" id="pr-res" style="display:none"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Divisibility rules reference -->
+<div style="max-width:900px;margin:0 auto;padding:0 16px 24px">
+<div class="card">
+  <h2>Divisibility Rules</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+    ${[['2','Last digit is even (0,2,4,6,8)'],['3','Sum of digits divisible by 3'],['4','Last 2 digits divisible by 4'],['5','Last digit is 0 or 5'],['6','Divisible by both 2 and 3'],['7','Double last digit, subtract from rest; repeat'],['8','Last 3 digits divisible by 8'],['9','Sum of digits divisible by 9'],['10','Last digit is 0'],['11','Alternating digit sum divisible by 11']].map(([d,r])=>`<div style="background:#0d1728;border-radius:8px;padding:10px 12px"><span style="color:var(--accent2);font-weight:700">÷${d}</span> <span style="font-size:.8rem;color:var(--muted)">${r}</span></div>`).join('')}
+  </div>
+</div>
+</div>
+
+<script>
+function gcd(a,b){while(b){[a,b]=[b,a%b];}return a;}
+function lcm(a,b){return a/gcd(a,b)*b;}
+
+function calcGL(){
+  const a=parseInt(document.getElementById('gl-a').value);
+  const b=parseInt(document.getElementById('gl-b').value);
+  if(!a||!b||a<1||b<1){alert('Enter two positive integers.');return;}
+  const steps=[];
+  // Euclidean steps
+  let x=a,y=b;
+  steps.push(`Find GCF(${a}, ${b}) using the Euclidean Algorithm:`);
+  while(y>0){
+    const q=Math.floor(x/y),r=x%y;
+    steps.push(`${x} = ${y} × ${q} + ${r}`);
+    x=y;y=r;
+  }
+  const g=gcd(a,b);
+  const l=lcm(a,b);
+  steps.push(`GCF = ${g}`);
+  steps.push(`LCM = (${a} × ${b}) / GCF = ${a*b} / ${g} = ${l}`);
+  const el=document.getElementById('gl-res');
+  el.style.display='block';
+  el.innerHTML=`<div style="display:flex;gap:30px;margin-bottom:10px">
+    <div><div style="font-size:.7rem;color:var(--muted)">GCF (Greatest Common Factor)</div><div class="res-num">${g}</div></div>
+    <div><div style="font-size:.7rem;color:var(--muted)">LCM (Least Common Multiple)</div><div class="res-num">${l}</div></div>
+  </div>`+steps.map(s=>`<div class="step">${s}</div>`).join('');
+}
+
+function primeFactors(n){
+  const factors=[];
+  let d=2;
+  while(d*d<=n){
+    while(n%d===0){factors.push(d);n=Math.floor(n/d);}
+    d++;
+  }
+  if(n>1) factors.push(n);
+  return factors;
+}
+
+function calcPF(){
+  const n=parseInt(document.getElementById('pf-n').value);
+  if(!n||n<2){alert('Enter an integer ≥ 2.');return;}
+  const factors=primeFactors(n);
+  // Build exponential form
+  const exp={};
+  factors.forEach(f=>{exp[f]=(exp[f]||0)+1;});
+  const expStr=Object.entries(exp).map(([p,e])=>e===1?p:`${p}^${e}`).join(' × ');
+  const steps=[];
+  let rem=n;
+  const usedFactors=[];
+  let d=2;
+  while(d*d<=rem){
+    while(rem%d===0){
+      steps.push(`${rem} ÷ ${d} = ${rem/d}`);
+      usedFactors.push(d);rem=Math.floor(rem/d);
+    }
+    d++;
+  }
+  if(rem>1){steps.push(`${rem} is prime`);usedFactors.push(rem);}
+  const el=document.getElementById('pf-res');
+  el.style.display='block';
+  el.innerHTML=`<div class="res-num">${n} = ${expStr}</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:8px">Prime factors: ${factors.join(', ')}</div>
+    ${steps.map(s=>`<div class="step"><span class="step-n">→</span> ${s}</div>`).join('')}`;
+}
+
+function isPrime(n){
+  if(n<2) return false;
+  if(n===2) return true;
+  if(n%2===0) return false;
+  for(let i=3;i*i<=n;i+=2) if(n%i===0) return false;
+  return true;
+}
+
+function testPrime(){
+  const n=parseInt(document.getElementById('pr-n').value);
+  if(!n||n<1){alert('Enter a positive integer.');return;}
+  const prime=isPrime(n);
+  const steps=[];
+  if(n<2) steps.push(`${n} < 2, so it is neither prime nor composite.`);
+  else if(n===2||n===3) steps.push(`${n} is prime by definition.`);
+  else if(n%2===0) steps.push(`${n} is even (divisible by 2), so it is composite.`);
+  else{
+    steps.push(`Check divisors from 2 up to √${n} ≈ ${Math.sqrt(n).toFixed(2)}`);
+    let found=null;
+    for(let i=2;i*i<=n;i++){
+      if(n%i===0){found=i;break;}
+    }
+    if(found) steps.push(`${n} ÷ ${found} = ${n/found} — divisible! Composite.`);
+    else steps.push(`No divisor found — ${n} is prime!`);
+  }
+  // If composite, show factorization
+  const el=document.getElementById('pr-res');
+  el.style.display='block';
+  let extra='';
+  if(!prime&&n>=2){const f=primeFactors(n);extra=`<div style="font-size:.78rem;color:var(--muted);margin-top:6px">Factorization: ${f.join(' × ')}</div>`;}
+  el.innerHTML=`<span class="badge ${prime?'badge-prime':'badge-composite'}">${n<2?'Neither':prime?'✓ Prime':'Composite'}</span>
+    ${steps.map(s=>`<div class="step">${s}</div>`).join('')}${extra}`;
+}
+
+function checkDiv(){
+  const n=parseInt(document.getElementById('div-n').value);
+  if(!n||n<1){alert('Enter a positive integer.');return;}
+  const divisors=[2,3,4,5,6,7,8,9,10,11,12];
+  const el=document.getElementById('div-res');
+  el.style.display='block';
+  el.innerHTML=`<div style="font-size:.78rem;color:var(--muted);margin-bottom:8px">${n} is divisible by:</div>`+
+    divisors.map(d=>`<div class="div-row"><span>Divisible by <strong>${d}</strong></span><span class="${n%d===0?'div-tick':'div-x'}">${n%d===0?'✓ Yes':'✗ No'}</span></div>`).join('')+
+    `<div style="margin-top:10px;font-size:.78rem;color:var(--muted)">All factors of ${n}: ${allFactors(n).join(', ')}</div>`;
+}
+
+function allFactors(n){
+  const f=[];for(let i=1;i*i<=n;i++){if(n%i===0){f.push(i);if(i!==n/i)f.push(n/i);}}return f.sort((a,b)=>a-b);}
+</script>
+</body>
+</html>

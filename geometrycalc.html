@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Geometry Calculator — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:960px;margin:0 auto;padding:24px 16px}
+.shape-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.shape-tab{padding:8px 14px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:.82rem;font-weight:600;transition:.12s;display:flex;align-items:center;gap:6px}
+.shape-tab:hover,.shape-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+h2{font-size:.85rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px}
+.field{margin-bottom:12px}
+label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px}
+input{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-size:.9rem;width:100%}
+input:focus{outline:none;border-color:var(--accent)}
+.btn{padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;transition:.15s;width:100%;margin-top:4px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+/* Results */
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)22}
+.result-row:last-child{border-bottom:none}
+.result-label{font-size:.82rem;color:var(--muted)}
+.result-val{font-size:1.05rem;font-weight:800;color:var(--accent2)}
+/* Formula box */
+.formula-box{background:#0d1728;border-radius:10px;padding:14px;margin-bottom:16px;font-family:'Courier New',monospace;font-size:.82rem;color:var(--muted);line-height:1.8}
+.formula-box .hl{color:var(--accent2)}
+/* Steps */
+.step-item{padding:6px 0;font-size:.82rem;color:var(--text);border-bottom:1px solid var(--border)22;line-height:1.6}
+.step-item:last-child{border-bottom:none}
+/* SVG diagram */
+#diagram{display:flex;justify-content:center;align-items:center;min-height:160px}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📐 Geometry Calculator</h1>
+</div>
+<div class="container">
+
+<div class="shape-tabs" id="shapeTabs"></div>
+
+<div class="grid">
+  <div>
+    <div class="card">
+      <h2 id="inputTitle">Inputs</h2>
+      <div id="inputArea"></div>
+      <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    </div>
+  </div>
+  <div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Diagram</h2>
+      <div id="diagram"></div>
+    </div>
+    <div class="card" id="resultsCard" style="display:none">
+      <h2>Results</h2>
+      <div class="formula-box" id="formulaBox"></div>
+      <div id="resultRows"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="stepsCard" style="display:none;margin-top:20px">
+  <h2>Step-by-Step Solution</h2>
+  <div id="stepsArea"></div>
+</div>
+
+</div>
+<script>
+const PI=Math.PI;
+function r(x,d=4){return Math.round(x*Math.pow(10,d))/Math.pow(10,d);}
+function fr(x){
+  // try to show clean fraction of pi
+  const fracs=[[1,1],[1,2],[1,3],[2,3],[1,4],[3,4],[1,6],[5,6]];
+  for(const[n,d] of fracs){if(Math.abs(x-PI*n/d)<1e-9) return `${n===1?'':n}π${d===1?'':'/'+d}`;}
+  return r(x,4);
+}
+
+const SHAPES=[
+  {id:'square',icon:'⬛',name:'Square',fields:[{id:'s',label:'Side (s)'}],
+   formula:'A = s²  |  P = 4s',
+   calc:(v)=>{const s=v.s;const A=s*s;const P=4*s;const D=s*Math.sqrt(2);
+    return{results:[{l:'Area (A)',v:r(A)+' sq units'},{l:'Perimeter (P)',v:r(P)+' units'},{l:'Diagonal (d)',v:r(D)+' units'}],
+    steps:[`A = s² = ${s}² = ${r(A)}`,`P = 4s = 4×${s} = ${r(P)}`,`Diagonal = s√2 = ${s}×√2 = ${r(D)}`]};},
+   svg:(v)=>{const s=v.s||1;const k=Math.min(120/s,120);const S=s*k;const off=(160-S)/2;
+    return`<svg width="160" height="160"><rect x="${off}" y="${off}" width="${S}" height="${S}" fill="#6366f122" stroke="#6366f1" stroke-width="2" rx="2"/><text x="80" y="${off+S/2+5}" text-anchor="middle" fill="#a5b4fc" font-size="12">s=${v.s}</text></svg>`;}},
+
+  {id:'rectangle',icon:'▬',name:'Rectangle',fields:[{id:'l',label:'Length (l)'},{id:'w',label:'Width (w)'}],
+   formula:'A = l×w  |  P = 2(l+w)',
+   calc:(v)=>{const{l,w}=v;const A=l*w;const P=2*(l+w);const D=Math.sqrt(l*l+w*w);
+    return{results:[{l:'Area (A)',v:r(A)+' sq units'},{l:'Perimeter (P)',v:r(P)+' units'},{l:'Diagonal (d)',v:r(D)+' units'}],
+    steps:[`A = l×w = ${l}×${w} = ${r(A)}`,`P = 2(l+w) = 2(${l}+${w}) = ${r(P)}`,`Diagonal = √(l²+w²) = √(${l}²+${w}²) = ${r(D)}`]};},
+   svg:(v)=>{const{l=2,w=1}=v;const kl=Math.min(130/l,60),kw=Math.min(100/w,60);const k=Math.min(kl,kw);const L=l*k,W=w*k;const ox=(160-L)/2,oy=(160-W)/2;
+    return`<svg width="160" height="160"><rect x="${ox}" y="${oy}" width="${L}" height="${W}" fill="#10b98122" stroke="#10b981" stroke-width="2" rx="2"/><text x="80" y="${oy-6}" text-anchor="middle" fill="#a5b4fc" font-size="11">l=${v.l}</text><text x="${ox-8}" y="80" text-anchor="end" fill="#a5b4fc" font-size="11">w=${v.w}</text></svg>`;}},
+
+  {id:'circle',icon:'⭕',name:'Circle',fields:[{id:'r',label:'Radius (r)'}],
+   formula:'A = πr²  |  C = 2πr',
+   calc:(v)=>{const rad=v.r;const A=PI*rad*rad;const C=2*PI*rad;const D=2*rad;
+    return{results:[{l:'Area (A)',v:r(A,4)+' sq units'},{l:'Circumference (C)',v:r(C,4)+' units'},{l:'Diameter (d)',v:r(D)+' units'}],
+    steps:[`A = πr² = π×${rad}² = π×${rad*rad} = ${r(A,4)}`,`C = 2πr = 2×π×${rad} = ${r(C,4)}`,`Diameter = 2r = 2×${rad} = ${D}`]};},
+   svg:(v)=>{const rad=v.r||1;const k=Math.min(60/rad,60);const R=rad*k;
+    return`<svg width="160" height="160"><circle cx="80" cy="80" r="${R}" fill="#f59e0b22" stroke="#f59e0b" stroke-width="2"/><line x1="80" y1="80" x2="${80+R}" y2="80" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4"/><text x="${80+R/2}" y="72" text-anchor="middle" fill="#a5b4fc" font-size="11">r=${v.r}</text></svg>`;}},
+
+  {id:'triangle',icon:'🔺',name:'Triangle',fields:[{id:'a',label:'Base (a)'},{id:'b',label:'Side b'},{id:'c',label:'Side c'}],
+   formula:"A = √(s(s-a)(s-b)(s-c))  [Heron's]  |  P = a+b+c",
+   calc:(v)=>{const{a,b,c}=v;const p=a+b+c;const s2=(a+b+c)/2;const A=Math.sqrt(s2*(s2-a)*(s2-b)*(s2-c));
+    if(isNaN(A)||A<=0) return{error:'These sides cannot form a triangle.'};
+    const h=2*A/a;
+    return{results:[{l:'Area (A)',v:r(A,4)+' sq units'},{l:'Perimeter (P)',v:r(p)+' units'},{l:'Height (h)',v:r(h,4)+' units'},{l:'Semi-perimeter (s)',v:r(s2)+' units'}],
+    steps:[`Semi-perimeter s = (a+b+c)/2 = (${a}+${b}+${c})/2 = ${r(s2)}`,`Area = √(s(s-a)(s-b)(s-c)) = √(${r(s2)}×${r(s2-a)}×${r(s2-b)}×${r(s2-c)}) = ${r(A,4)}`,`Height from base = 2A/a = 2×${r(A,4)}/${a} = ${r(h,4)}`,`Perimeter = ${a}+${b}+${c} = ${p}`]};},
+   svg:(v)=>{const{a=3,b=4,c=5}=v;const s2=(a+b+c)/2;const A=Math.sqrt(s2*(s2-a)*(s2-b)*(s2-c));const h=2*A/a;
+    const k=Math.min(120/a,80/h,30);const bx=80-a*k/2;const bx2=80+a*k/2;const ty=80-h*k;const tx=bx+(b*b-h*h+a*a)/2/(a)* k; // actually simple
+    const cos_A=(b*b+c*c-a*a)/(2*b*c);const ang=Math.acos(Math.max(-1,Math.min(1,cos_A)));
+    // place: A at left, B at right, C at top
+    const scale2=Math.min(100/a,80);const Ax=30,Ay=130,Bx=30+a*scale2,By=130;
+    const cos_ang=(a*a+b*b-c*c)/(2*a*b);const ang2=Math.acos(Math.max(-1,Math.min(1,cos_ang)));
+    const Cx=Ax+b*scale2*Math.cos(ang2),Cy=Ay-b*scale2*Math.sin(ang2);
+    return`<svg width="160" height="160"><polygon points="${r(Ax,1)},${r(Ay,1)} ${r(Bx,1)},${r(By,1)} ${r(Cx,1)},${r(Cy,1)}" fill="#ec489922" stroke="#ec4899" stroke-width="2"/><text x="${(Ax+Bx)/2}" y="${Ay+16}" text-anchor="middle" fill="#a5b4fc" font-size="11">a=${v.a}</text></svg>`;}},
+
+  {id:'trapezoid',icon:'⏢',name:'Trapezoid',fields:[{id:'a',label:'Base 1 (a)'},{id:'b',label:'Base 2 (b)'},{id:'h',label:'Height (h)'}],
+   formula:'A = ½(a+b)×h',
+   calc:(v)=>{const{a,b,h}=v;const A=0.5*(a+b)*h;
+    return{results:[{l:'Area (A)',v:r(A,4)+' sq units'}],
+    steps:[`A = ½(a+b)×h = ½(${a}+${b})×${h} = ½×${a+b}×${h} = ${r(A,4)}`]};},
+   svg:(v)=>{const{a=4,b=2,h=2}=v;const k=Math.min(100/Math.max(a,b),40);const off=(a-b)/2;const y1=120,y2=120-h*k;
+    return`<svg width="160" height="160"><polygon points="${(80-a*k/2)},${y1} ${(80+a*k/2)},${y1} ${(80+b*k/2)},${y2} ${(80-b*k/2)},${y2}" fill="#8b5cf622" stroke="#8b5cf6" stroke-width="2"/><text x="80" y="${y1+14}" text-anchor="middle" fill="#a5b4fc" font-size="11">a=${v.a}</text><text x="80" y="${y2-6}" text-anchor="middle" fill="#a5b4fc" font-size="11">b=${v.b}</text></svg>`;}},
+
+  {id:'cylinder',icon:'🛢',name:'Cylinder',fields:[{id:'r',label:'Radius (r)'},{id:'h',label:'Height (h)'}],
+   formula:'V = πr²h  |  SA = 2πr(r+h)',
+   calc:(v)=>{const{r:rad,h}=v;const V=PI*rad*rad*h;const SA=2*PI*rad*(rad+h);const LA=2*PI*rad*h;
+    return{results:[{l:'Volume (V)',v:r(V,4)+' cu units'},{l:'Surface Area (SA)',v:r(SA,4)+' sq units'},{l:'Lateral Area',v:r(LA,4)+' sq units'}],
+    steps:[`V = πr²h = π×${rad}²×${h} = ${r(V,4)}`,`Lateral Area = 2πrh = 2π×${rad}×${h} = ${r(LA,4)}`,`SA = 2πr(r+h) = 2π×${rad}×(${rad}+${h}) = ${r(SA,4)}`]};},
+   svg:(_)=>`<svg width="160" height="160"><ellipse cx="80" cy="50" rx="45" ry="15" fill="#06b6d422" stroke="#06b6d4" stroke-width="2"/><rect x="35" y="50" width="90" height="80" fill="#06b6d411" stroke="#06b6d4" stroke-width="2"/><ellipse cx="80" cy="130" rx="45" ry="15" fill="#06b6d422" stroke="#06b6d4" stroke-width="2"/></svg>`},
+
+  {id:'sphere',icon:'🔵',name:'Sphere',fields:[{id:'r',label:'Radius (r)'}],
+   formula:'V = (4/3)πr³  |  SA = 4πr²',
+   calc:(v)=>{const rad=v.r;const V=(4/3)*PI*rad*rad*rad;const SA=4*PI*rad*rad;
+    return{results:[{l:'Volume (V)',v:r(V,4)+' cu units'},{l:'Surface Area (SA)',v:r(SA,4)+' sq units'},{l:'Diameter (d)',v:r(2*rad)+' units'}],
+    steps:[`V = (4/3)πr³ = (4/3)×π×${rad}³ = ${r(V,4)}`,`SA = 4πr² = 4×π×${rad}² = ${r(SA,4)}`]};},
+   svg:(_)=>`<svg width="160" height="160"><circle cx="80" cy="80" r="55" fill="#84cc1622" stroke="#84cc16" stroke-width="2"/><ellipse cx="80" cy="80" rx="55" ry="15" fill="none" stroke="#84cc1688" stroke-width="1.5" stroke-dasharray="5"/></svg>`},
+
+  {id:'cone',icon:'🔺',name:'Cone',fields:[{id:'r',label:'Radius (r)'},{id:'h',label:'Height (h)'}],
+   formula:'V = (1/3)πr²h  |  SA = πr(r+l)',
+   calc:(v)=>{const{r:rad,h}=v;const l=Math.sqrt(rad*rad+h*h);const V=(1/3)*PI*rad*rad*h;const SA=PI*rad*(rad+l);const LA=PI*rad*l;
+    return{results:[{l:'Volume (V)',v:r(V,4)+' cu units'},{l:'Slant Height (l)',v:r(l,4)+' units'},{l:'Surface Area (SA)',v:r(SA,4)+' sq units'},{l:'Lateral Area',v:r(LA,4)+' sq units'}],
+    steps:[`Slant height l = √(r²+h²) = √(${rad}²+${h}²) = ${r(l,4)}`,`V = (1/3)πr²h = (1/3)π×${rad}²×${h} = ${r(V,4)}`,`SA = πr(r+l) = π×${rad}×(${rad}+${r(l,4)}) = ${r(SA,4)}`]};},
+   svg:(_)=>`<svg width="160" height="160"><polygon points="80,20 30,140 130,140" fill="#f59e0b22" stroke="#f59e0b" stroke-width="2"/><ellipse cx="80" cy="140" rx="50" ry="12" fill="#f59e0b22" stroke="#f59e0b" stroke-width="1.5"/></svg>`},
+
+  {id:'cube',icon:'⬜',name:'Cube',fields:[{id:'s',label:'Side (s)'}],
+   formula:'V = s³  |  SA = 6s²',
+   calc:(v)=>{const s=v.s;const V=s*s*s;const SA=6*s*s;const D=s*Math.sqrt(3);
+    return{results:[{l:'Volume (V)',v:r(V)+' cu units'},{l:'Surface Area (SA)',v:r(SA)+' sq units'},{l:'Space Diagonal',v:r(D,4)+' units'}],
+    steps:[`V = s³ = ${s}³ = ${r(V)}`,`SA = 6s² = 6×${s}² = 6×${s*s} = ${r(SA)}`,`Space Diagonal = s√3 = ${s}×√3 = ${r(D,4)}`]};},
+   svg:(_)=>`<svg width="160" height="160"><polygon points="40,120 40,40 110,40 110,120" fill="#a5b4fc22" stroke="#a5b4fc" stroke-width="2"/><polygon points="40,40 65,15 135,15 110,40" fill="#6366f122" stroke="#a5b4fc" stroke-width="2"/><line x1="110" y1="40" x2="135" y2="15" stroke="#a5b4fc" stroke-width="2"/><line x1="135" y1="15" x2="135" y2="95" stroke="#a5b4fc" stroke-width="2" stroke-dasharray="5"/><line x1="135" y1="95" x2="110" y2="120" stroke="#a5b4fc" stroke-width="2" stroke-dasharray="5"/></svg>`},
+
+  {id:'rectprism',icon:'📦',name:'Rect. Prism',fields:[{id:'l',label:'Length (l)'},{id:'w',label:'Width (w)'},{id:'h',label:'Height (h)'}],
+   formula:'V = l×w×h  |  SA = 2(lw+lh+wh)',
+   calc:(v)=>{const{l,w,h}=v;const V=l*w*h;const SA=2*(l*w+l*h+w*h);
+    return{results:[{l:'Volume (V)',v:r(V)+' cu units'},{l:'Surface Area (SA)',v:r(SA)+' sq units'}],
+    steps:[`V = l×w×h = ${l}×${w}×${h} = ${r(V)}`,`SA = 2(lw+lh+wh) = 2(${l*w}+${l*h}+${w*h}) = 2×${l*w+l*h+w*h} = ${r(SA)}`]};},
+   svg:(_)=>`<svg width="160" height="160"><polygon points="25,130 25,60 90,60 90,130" fill="#a5b4fc22" stroke="#a5b4fc" stroke-width="2"/><polygon points="25,60 50,35 115,35 90,60" fill="#6366f122" stroke="#a5b4fc" stroke-width="2"/><line x1="90" y1="60" x2="115" y2="35" stroke="#a5b4fc" stroke-width="2"/><line x1="115" y1="35" x2="115" y2="105" stroke="#a5b4fc" stroke-width="2" stroke-dasharray="4"/><line x1="115" y1="105" x2="90" y2="130" stroke="#a5b4fc" stroke-width="2" stroke-dasharray="4"/></svg>`},
+];
+
+let activeShape=SHAPES[0];
+
+function initTabs(){
+  document.getElementById('shapeTabs').innerHTML=SHAPES.map(s=>
+    `<button class="shape-tab${s.id===activeShape.id?' active':''}" onclick="selectShape('${s.id}')">${s.icon} ${s.name}</button>`
+  ).join('');
+}
+
+function selectShape(id){
+  activeShape=SHAPES.find(s=>s.id===id);
+  initTabs();
+  buildInputs();
+  document.getElementById('resultsCard').style.display='none';
+  document.getElementById('stepsCard').style.display='none';
+  renderDiagram();
+}
+
+function buildInputs(){
+  document.getElementById('inputTitle').textContent=activeShape.name+' — Inputs';
+  document.getElementById('inputArea').innerHTML=activeShape.fields.map(f=>
+    `<div class="field"><label>${f.label}</label><input id="inp-${f.id}" type="number" step="any" placeholder="Enter value" oninput="renderDiagram()"/></div>`
+  ).join('');
+}
+
+function getVals(){
+  const v={};let ok=true;
+  activeShape.fields.forEach(f=>{
+    const val=parseFloat(document.getElementById('inp-'+f.id).value);
+    if(isNaN(val)||val<=0) ok=false;
+    v[f.id]=val;
+  });
+  return ok?v:null;
+}
+
+function renderDiagram(){
+  const v=getVals()||activeShape.fields.reduce((a,f)=>{a[f.id]=2;return a;},{});
+  document.getElementById('diagram').innerHTML=activeShape.svg(v);
+}
+
+function calculate(){
+  const v=getVals();
+  if(!v){alert('Please fill in all fields with positive numbers.');return;}
+  const res=activeShape.calc(v);
+  if(res.error){alert(res.error);return;}
+  // Formula
+  document.getElementById('formulaBox').innerHTML=activeShape.formula.split('|').map(f=>`<div><span class="hl">${f.trim()}</span></div>`).join('');
+  // Results
+  document.getElementById('resultRows').innerHTML=res.results.map(r=>
+    `<div class="result-row"><span class="result-label">${r.l}</span><span class="result-val">${r.v}</span></div>`
+  ).join('');
+  document.getElementById('resultsCard').style.display='block';
+  // Steps
+  document.getElementById('stepsArea').innerHTML=res.steps.map((s,i)=>
+    `<div class="step-item"><strong style="color:var(--accent2)">${i+1}.</strong> ${s}</div>`
+  ).join('');
+  document.getElementById('stepsCard').style.display='block';
+}
+
+initTabs();
+buildInputs();
+renderDiagram();
+</script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SAT/ACT Reading Trainer — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.timer{background:#0d1728;border-radius:8px;padding:5px 14px;font-family:monospace;font-size:.95rem;font-weight:700;border:1px solid var(--border)}
+.timer.warn{border-color:#f59e0b;color:#f59e0b}
+.timer.crit{border-color:#ef4444;color:#ef4444}
+.container{max-width:1100px;margin:0 auto;padding:20px 16px}
+/* Setup screen */
+.setup{max-width:600px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{font-size:.83rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+select,input{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:.88rem;width:100%}
+select:focus,input:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+/* Practice layout */
+.practice-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.practice-grid{grid-template-columns:1fr}}
+.passage-box{background:#0d1728;border-radius:12px;padding:18px;line-height:1.9;font-size:.88rem;color:var(--text);max-height:70vh;overflow-y:auto;border:1px solid var(--border)}
+.passage-box p{margin-bottom:10px}
+.q-card{background:#0d1728;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(--border)}
+.q-num{font-size:.7rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+.q-text{font-size:.88rem;line-height:1.6;margin-bottom:12px;font-weight:600}
+.choice{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:.85rem;line-height:1.5;margin-bottom:5px;border:1px solid var(--border)44;transition:.12s}
+.choice:hover{background:#1e2d4a}
+.choice.selected{border-color:var(--accent);background:#6366f122}
+.choice.correct{border-color:#10b981;background:#10b98122}
+.choice.wrong{border-color:#ef4444;background:#ef444422}
+.choice-letter{font-weight:800;color:var(--accent2);width:16px;flex-shrink:0}
+.rationale{background:#0b1a30;border-radius:8px;padding:10px 12px;font-size:.78rem;line-height:1.6;margin-top:8px;border-left:3px solid var(--accent)}
+.rationale-label{font-weight:700;color:var(--accent2);margin-bottom:4px}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:16px}
+.progress-fill{height:100%;background:var(--accent);transition:.3s}
+/* Score screen */
+.score-big{font-size:3rem;font-weight:900;color:var(--accent2);text-align:center;margin:20px 0 6px}
+.score-label{text-align:center;font-size:.85rem;color:var(--muted);margin-bottom:20px}
+.q-review{background:#0d1728;border-radius:10px;padding:14px;margin-bottom:10px}
+.q-review-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.82rem;font-weight:700}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.7rem;font-weight:700}
+.tag-correct{background:#10b98122;color:#10b981;border:1px solid #10b98144}
+.tag-wrong{background:#ef444422;color:#ef4444;border:1px solid #ef444444}
+.strategy-box{background:#0d1728;border-radius:10px;padding:14px}
+.strategy-item{padding:6px 0;border-bottom:1px solid var(--border)22;font-size:.82rem;line-height:1.6}
+.strategy-item:last-child{border-bottom:none}
+.strategy-icon{color:var(--accent2);margin-right:6px}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📖 SAT/ACT Reading Trainer</h1>
+  <div id="timerDisplay" style="display:none" class="timer">13:00</div>
+  <div id="qProgress" style="display:none;font-size:.78rem;color:var(--muted);margin-left:auto"></div>
+</div>
+
+<div class="container" id="app"></div>
+
+<script>
+const PASSAGES=[
+  {
+    id:'lit1',type:'Literary Fiction',label:'Literary Fiction',
+    title:'The Garden Wall',
+    text:`<p>Marina had grown up believing the garden wall was impassable. Her grandmother, a small woman with iron-gray hair and surprisingly large hands, had told her so every summer she had spent in the old house. "Some walls exist for a reason," the old woman would say, pressing a damp cloth to Marina's forehead during those interminable August afternoons. "You learn to live within them."</p>
+<p>Now, at thirty-two, Marina stood at the base of the wall and found that it was not so tall as she had remembered. The moss had grown thick and soft over the stones, and gaps had opened where the mortar had finally surrendered to years of cold and thaw. A person could reach the top if they stretched. A person could climb over if they chose to.</p>
+<p>She placed one hand against the stone. It was warm from the afternoon sun, warmer than she expected — not the cold, forbidding surface she had imagined through all those childhood summers. She thought of her grandmother's voice, not unkind but absolutely certain. <em>Some walls exist for a reason.</em></p>
+<p>But reasons change. People change. Even stone, she supposed, could eventually be persuaded to give way.</p>
+<p>Marina pulled herself up.</p>`,
+    questions:[
+      {q:'Which choice best describes what happens in the passage?',choices:['A woman visits her grandmother\'s house for the first time as an adult.','A woman overcomes a childhood fear after returning to a familiar place.','A woman discovers that a garden wall has been damaged by neglect.','A woman reflects on her grandmother\'s wisdom and decides to follow her advice.'],ans:1,
+       rationale:'The passage focuses on Marina returning to a place from her childhood and finally crossing a wall she was told was impassable — a literal and symbolic overcoming of a childhood limitation. Choice A is incorrect because she grew up going there; choice D is the opposite of what happens.'},
+      {q:'As used in paragraph 2, the word "surrendered" most nearly means:',choices:['admitted defeat honestly','given up resistance gradually','fought back against damage','collapsed all at once'],ans:1,
+       rationale:'"Surrendered" here describes the mortar slowly crumbling over years of weathering — a gradual giving way, not a sudden or dramatic collapse. "Given up resistance gradually" best captures this meaning.'},
+      {q:'The grandmother\'s words "Some walls exist for a reason" function primarily to:',choices:['warn Marina about a specific physical danger','suggest that the wall hides a family secret','establish a belief Marina must decide whether to accept','explain why the garden was left untended for years'],ans:2,
+       rationale:'The grandmother\'s repeated words establish a philosophy of acceptance and limitation. The climax of the passage — Marina climbing the wall — shows her questioning and ultimately rejecting that philosophy, making choice C correct.'},
+      {q:'The detail that the wall felt "warmer than she expected" primarily suggests that:',choices:['the summer had been unusually hot that year','reality differed from Marina\'s long-held memory','the moss had insulated the stones over time','Marina was relieved to find the wall in disrepair'],ans:1,
+       rationale:'The unexpected warmth contrasts with the "cold, forbidding surface she had imagined" — showing that her childhood perception was distorted by fear and memory. This contrast is thematically central to the passage.'},
+      {q:'The final line "Marina pulled herself up" is best interpreted as:',choices:['a description of Marina\'s physical struggle to reach the top','a signal that Marina decided not to cross the wall after all','both a literal action and a metaphor for self-determination','evidence that Marina was more athletic than she appeared'],ans:2,
+       rationale:'SAT literary passages often end on purposefully double-meaning lines. "Pulled herself up" literally describes climbing, but metaphorically it echoes overcoming hesitation and choosing her own path — the arc of the entire passage.'},
+    ]
+  },
+  {
+    id:'sci1',type:'Natural Science',label:'Natural Science',
+    title:'The Murmuration Phenomenon',
+    text:`<p>Among the most visually striking phenomena in the natural world is the murmuration — the synchronized aerial display performed by large flocks of starlings. Numbering in the tens of thousands and sometimes exceeding a million birds, murmurations produce fluid, constantly shifting formations that seem to operate as a single coordinated entity, despite the absence of any central organizing intelligence.</p>
+    <p>For decades, ornithologists puzzled over how such precise coordination could emerge from a group of animals whose individual cognitive capacities are relatively limited. Early hypotheses invoked electromagnetic fields and long-range signaling, but these were eventually discarded as insufficiently supported by observation. The breakthrough came with high-speed photography and computational modeling, which revealed a far simpler mechanism: each bird responds only to its immediate neighbors — specifically, to the movements of the six or seven birds closest to it, regardless of physical distance.</p>
+    <p>This rule-based, decentralized behavior produces what mathematicians call a scale-free correlation — perturbations at any one location in the flock propagate almost instantaneously across the entire group with no loss of coherence. The information effectively travels faster than any individual bird can fly, allowing the flock to respond to a predator as a single organism would respond to a nerve impulse.</p>
+    <p>The murmuration offers a compelling example of emergent complexity: sophisticated collective behavior arising from simple individual rules, with no blueprint, no leader, and no global awareness required.</p>`,
+    questions:[
+      {q:'The primary purpose of this passage is to:',choices:['argue that birds are more intelligent than previously believed','explain the mechanism behind a natural collective behavior','compare murmurations to human organizational systems','describe the history of ornithological research methods'],ans:1,
+       rationale:'The passage explains how murmurations work — specifically the mechanism of neighbor-response rules. It is primarily explanatory, not argumentative (ruling out A) and only briefly mentions history as context.'},
+      {q:'According to the passage, early hypotheses about murmurations were rejected because:',choices:['they were too mathematically complex to test','high-speed photography disproved them directly','they lacked sufficient observational support','the birds were found to respond to sound, not electromagnetic fields'],ans:2,
+       rationale:'The passage states early hypotheses "were eventually discarded as insufficiently supported by observation." This matches choice C. The passage does not say photography directly disproved them — it just enabled a better model.'},
+      {q:'As used in paragraph 3, "propagate" most nearly means:',choices:['create','spread','predict','eliminate'],ans:1,
+       rationale:'In context, "perturbations propagate across the flock" means disturbances spread or travel through it. "Spread" is the closest synonym here.'},
+      {q:'Which of the following best describes the relationship between individual behavior and group outcome in a murmuration?',choices:['Complex individual calculations produce simple group patterns.','Simple individual rules produce complex group behavior.','Individual birds intentionally mimic a pre-planned group formation.','Group decisions are made by dominant birds and followed by the rest.'],ans:1,
+       rationale:'The passage explicitly states "sophisticated collective behavior arising from simple individual rules" — each bird follows a simple rule (track 6-7 neighbors), producing the complex murmuration. This is choice B.'},
+      {q:'The passage compares the flock\'s response to a predator to "a nerve impulse" in order to:',choices:['suggest that birds have evolved a rudimentary nervous system','explain why predators are rarely able to catch starlings','illustrate how rapidly information travels across the flock','argue that collective intelligence is superior to individual intelligence'],ans:2,
+       rationale:'The nerve impulse comparison appears immediately after the claim that information "travels faster than any individual bird can fly" — the analogy illustrates the speed of information transfer, not the nature of the birds\' biology.'},
+    ]
+  },
+  {
+    id:'ss1',type:'Social Science',label:'Social Science',
+    title:'The Science of Decision Fatigue',
+    text:`<p>Every decision depletes a finite cognitive resource. This observation, formalized in the psychological literature as "decision fatigue," has significant implications for how individuals behave across a range of high-stakes contexts. Research conducted in the early 2000s by social psychologist Roy Baumeister and colleagues proposed that willpower and self-regulatory capacity draw from a limited mental reserve — one that diminishes with use and is replenished primarily by rest and, some studies suggested, glucose intake.</p>
+    <p>Subsequent studies extended this model into applied settings. A frequently cited 2011 analysis of Israeli parole board decisions found that prisoners who appeared before the board in the morning were granted parole approximately 65 percent of the time, while those whose cases were heard later in the day received favorable decisions far less frequently — in some cases approaching zero. The researchers attributed this disparity to the accumulating cognitive burden on the judges, who defaulted increasingly to the easier choice of denial as their decision-making capacity eroded.</p>
+    <p>However, the decision fatigue model has not gone unchallenged. A 2019 reanalysis of the Israeli parole data suggested that the observed pattern might be explained by the scheduling of food breaks — with approval rates rising after each meal break, not merely in the morning — and argued that hunger and low blood sugar, rather than decision fatigue per se, might account for the findings. Others have noted that the original ego depletion studies, on which the broader model rests, have proven difficult to replicate consistently.</p>
+    <p>The debate illustrates a broader challenge in behavioral science: distinguishing robust phenomena from artifacts of experimental design. Even as the precise mechanism remains contested, the practical implication — that consequential decisions may be better made early in the day, and after adequate nutrition — has found broad acceptance among practitioners.</p>`,
+    questions:[
+      {q:'The passage is primarily concerned with:',choices:['arguing that decision fatigue proves humans have limited willpower','describing a psychological concept, its evidence, and challenges to it','comparing the Israeli legal system to those of other countries','explaining why judges should not be required to make many decisions per day'],ans:1,
+       rationale:'The passage presents decision fatigue (paragraph 1), supporting evidence (paragraph 2), challenges to it (paragraph 3), and a balanced conclusion (paragraph 4). It is a balanced descriptive/analytical passage, not an argument — ruling out A. B is the best fit.'},
+      {q:'The 2019 reanalysis described in paragraph 3 primarily argues that:',choices:['the original parole study was fraudulent','decision fatigue does not exist in any form','hunger rather than mental depletion may explain the parole board data','judges should be given more frequent meal breaks during proceedings'],ans:2,
+       rationale:'The 2019 reanalysis specifically challenged the interpretation of the data, proposing that food breaks (and thus hunger/blood sugar) rather than decision fatigue explained the pattern. C is correct. The passage does not say the original study was fraudulent.'},
+      {q:'As used in paragraph 2, "disparity" most nearly means:',choices:['injustice','difference','confusion','inefficiency'],ans:1,
+       rationale:'"Disparity" in context refers to the gap between morning approval rates (~65%) and near-zero afternoon rates. "Difference" is the most precise fit. "Injustice" adds a moral judgment the passage does not make here.'},
+      {q:'The author\'s attitude toward decision fatigue as a concept is best described as:',choices:['strongly skeptical and dismissive','enthusiastically supportive','balanced and acknowledging of both evidence and criticism','indifferent, since the concept has no practical value'],ans:2,
+       rationale:'The passage presents evidence for and against decision fatigue without taking a firm side, and ends by noting that "practical implications... have found broad acceptance" even as the mechanism is contested. This is a balanced, nuanced stance — C.'},
+      {q:'Which of the following, if true, would most weaken the original decision fatigue explanation for the parole board data?',choices:['Parole boards in other countries show similar morning-to-afternoon patterns.','Prisoners with more serious crimes were disproportionately scheduled for afternoon hearings.','Judges who ate breakfast were found to approve parole at higher morning rates.','The judges in the study reported feeling tired by the end of the day.'],ans:1,
+       rationale:'If more serious cases were systematically scheduled later in the day, that scheduling bias — not cognitive fatigue — could explain the low afternoon approval rate. This alternative explanation would weaken the decision fatigue interpretation. B is the correct answer to a "weaken" question.'},
+    ]
+  },
+  {
+    id:'hist1',type:'Historical Document',label:'Historical Document',
+    title:'On the Question of Self-Government (adapted)',
+    text:`<p>The principle that legitimate government derives its authority from the consent of the governed is not a novelty introduced by revolution or upheaval; it is, rather, an ancient inference drawn from the nature of rational beings. Men are not constituted by nature to be governed as cattle are — without reference to their reason, their interests, or their judgment. To rule a rational creature without engaging his rationality is, in the fullest sense, a tyranny, whether the ruler be one or many.</p>
+    <p>Some will object that the common man lacks the education or leisure to participate meaningfully in the affairs of state. This objection, frequently offered in good faith, deserves a candid reply. It is precisely because men have been denied education and leisure that they appear unsuited to self-governance; the condition is manufactured, not natural. A slave kept from learning to read is not thereby proved incapable of reading.</p>
+    <p>Others will argue that stability requires authority — that without a governing power to command obedience, society dissolves into the confusion of competing interests. This, too, is an objection worth taking seriously. Yet one must ask: stability for whom? The order that benefits a small class at the permanent expense of the many is not stability at all but suppression given a respectable name.</p>
+    <p>The advocate of self-government does not propose anarchy. She proposes something far more demanding: a society in which each member bears genuine responsibility for the common welfare, and in which power answers to those it affects. This is not easier than tyranny. It is immeasurably harder. But difficulty is not an argument against justice.</p>`,
+    questions:[
+      {q:'The central claim of this passage is best expressed as:',choices:['Revolutions are the only legitimate means of establishing self-government.','Education is a prerequisite for political participation.','Self-government is both principled and difficult but is the only just form of rule.','Authority and stability are incompatible with democratic principles.'],ans:2,
+       rationale:'The author argues for self-government throughout — acknowledging its difficulty in the final paragraph but affirming it as demanded by justice. C best captures the full arc. A is not the focus; B is addressed but not the main claim; D overstates the argument.'},
+      {q:'In paragraph 2, the author uses the example of "a slave kept from learning to read" primarily to:',choices:['argue that literacy is a fundamental right','demonstrate that apparent incapacity may result from imposed conditions, not nature','criticize educational institutions for failing to serve the poor','suggest that slaves are the primary victims of tyranny'],ans:1,
+       rationale:'The slave/reading analogy illustrates the author\'s point that apparent unsuitability for self-governance is manufactured by denying education — not evidence of natural incapacity. B is correct. The example is an analogy for a broader argument, not a specific claim about literacy or slavery.'},
+      {q:'As used in paragraph 3, "suppression" most nearly means:',choices:['destruction','debate','forceful control','quiet agreement'],ans:2,
+       rationale:'The author describes a social order that "benefits a small class at the permanent expense of the many" and calls it "suppression given a respectable name" — meaning control by force or domination dressed up as legitimate order. C is correct.'},
+      {q:'The author most likely addresses the objections in paragraphs 2 and 3 in order to:',choices:['acknowledge that self-government is an impractical ideal','demonstrate awareness of counterarguments while refuting them','concede that stability is more important than justice','show that educated people and common people disagree on governance'],ans:1,
+       rationale:'Raising and answering counterarguments is a rhetorical strategy to strengthen one\'s own position. The author takes each objection "seriously" but then refutes it. This is B — acknowledging counterarguments while ultimately dismissing them.'},
+      {q:'The phrase "difficulty is not an argument against justice" in the final paragraph serves to:',choices:['admit that self-government has failed in practice','dismiss critics who raise practical concerns about democratic rule','reframe the challenge of self-government as a reason to pursue rather than abandon it','suggest that justice should be pursued regardless of human cost'],ans:2,
+       rationale:'The author has just said self-government is "immeasurably harder" than tyranny — but immediately follows with this line to reframe that difficulty: it does not disqualify self-government, it simply describes the stakes. C is correct.'},
+    ]
+  }
+];
+
+const STRATEGIES=[
+  {icon:'🎯',tip:'Always read the question before the passage — know what you\'re looking for.'},
+  {icon:'📍',tip:'For "as used in line X" vocabulary questions, substitute each answer back into the sentence. Choose the one that preserves the sentence\'s meaning.'},
+  {icon:'📋',tip:'For "main purpose" questions, the answer describes the whole passage, not just one paragraph.'},
+  {icon:'🔍',tip:'Eliminate answers with absolute language ("always," "never," "proves") unless the passage explicitly supports them.'},
+  {icon:'✋',tip:'For "weaken/strengthen" questions, the correct answer introduces new information — it doesn\'t just restate the passage.'},
+  {icon:'💡',tip:'On evidence questions, the evidence must directly support your previous answer — not just be related to the topic.'},
+  {icon:'⏱',tip:'Spend about 13 minutes per passage on the SAT (5 passages, 65 min). Skipping a hard question and returning is always smart.'},
+];
+
+let state={screen:'setup',passageIdx:0,answers:{},revealed:{},startTime:null,timerSec:780,timerInterval:null,testMode:'sat'};
+
+function render(){
+  if(state.screen==='setup') renderSetup();
+  else if(state.screen==='practice') renderPractice();
+  else if(state.screen==='score') renderScore();
+}
+
+function renderSetup(){
+  document.getElementById('timerDisplay').style.display='none';
+  document.getElementById('qProgress').style.display='none';
+  document.getElementById('app').innerHTML=`
+    <div class="setup">
+      <div class="card" style="margin-bottom:20px">
+        <h2>Welcome to SAT/ACT Reading Trainer</h2>
+        <p style="font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:14px">Practice with authentic-style reading passages and multiple-choice questions. Each passage comes with 5 questions and detailed explanations for every answer choice.</p>
+        <div style="margin-bottom:12px"><label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">Test Mode</label>
+          <select id="testMode"><option value="sat">SAT (13 min/passage)</option><option value="act">ACT (8 min/passage)</option><option value="untimed">Untimed Practice</option></select></div>
+        <div style="margin-bottom:12px"><label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">Passage</label>
+          <select id="passageSel">${PASSAGES.map((p,i)=>`<option value="${i}">[${p.label}] ${p.title}</option>`).join('')}</select></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="startPractice()">▶ Start Practice</button>
+      </div>
+      <div class="card">
+        <h2>SAT/ACT Reading Strategies</h2>
+        <div class="strategy-box">${STRATEGIES.map(s=>`<div class="strategy-item"><span class="strategy-icon">${s.icon}</span>${s.tip}</div>`).join('')}</div>
+      </div>
+    </div>`;
+}
+
+function startPractice(){
+  state.passageIdx=parseInt(document.getElementById('passageSel').value);
+  state.testMode=document.getElementById('testMode').value;
+  state.answers={};state.revealed={};
+  state.timerSec=state.testMode==='act'?480:780;
+  state.screen='practice';
+  render();
+  if(state.testMode!=='untimed') startTimer();
+}
+
+function startTimer(){
+  document.getElementById('timerDisplay').style.display='block';
+  updateTimerDisplay();
+  state.timerInterval=setInterval(()=>{
+    state.timerSec--;
+    updateTimerDisplay();
+    if(state.timerSec<=0){clearInterval(state.timerInterval);alert('Time\'s up!');showScore();}
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const el=document.getElementById('timerDisplay');
+  const m=Math.floor(state.timerSec/60),s=state.timerSec%60;
+  el.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  el.className='timer'+(state.timerSec<=120?' crit':state.timerSec<=300?' warn':'');
+}
+
+function renderPractice(){
+  const p=PASSAGES[state.passageIdx];
+  const total=p.questions.length;
+  const answered=Object.keys(state.answers).length;
+  document.getElementById('qProgress').style.display='block';
+  document.getElementById('qProgress').textContent=`${answered}/${total} answered`;
+  document.getElementById('app').innerHTML=`
+    <div class="progress-bar"><div class="progress-fill" style="width:${answered/total*100}%"></div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div>
+        <span style="font-size:.7rem;font-weight:700;background:#6366f133;color:var(--accent2);padding:2px 10px;border-radius:6px;border:1px solid #6366f144">${p.label}</span>
+        <span style="font-size:.95rem;font-weight:700;margin-left:10px">${p.title}</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="renderSetup();clearInterval(state.timerInterval);document.getElementById('timerDisplay').style.display='none'">← Back</button>
+        <button class="btn btn-primary btn-sm" onclick="showScore()">Submit →</button>
+      </div>
+    </div>
+    <div class="practice-grid">
+      <div><div class="passage-box">${p.text}</div></div>
+      <div id="questionsArea">${p.questions.map((q,qi)=>renderQuestion(q,qi)).join('')}</div>
+    </div>`;
+}
+
+function renderQuestion(q,qi){
+  const chosen=state.answers[qi];
+  const rev=state.revealed[qi];
+  return`<div class="q-card" id="qc-${qi}">
+    <div class="q-num">Question ${qi+1} of ${PASSAGES[state.passageIdx].questions.length}</div>
+    <div class="q-text">${q.q}</div>
+    ${q.choices.map((c,ci)=>{
+      let cls='choice';
+      if(rev){cls+=(ci===q.ans?' correct':ci===chosen?' wrong':'');}
+      else if(ci===chosen) cls+=' selected';
+      return`<div class="${cls}" onclick="${rev?'':'selectAnswer('+qi+','+ci+')'}">`+
+        `<span class="choice-letter">${'ABCD'[ci]}</span><span>${c}</span></div>`;
+    }).join('')}
+    ${rev?`<div class="rationale"><div class="rationale-label">💡 Explanation</div>${q.rationale}</div>`:''}
+    ${chosen!==undefined&&!rev?`<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="revealAnswer(${qi})">Check Answer</button>`:''}
+  </div>`;
+}
+
+function selectAnswer(qi,ci){
+  state.answers[qi]=ci;
+  document.getElementById('qc-'+qi).outerHTML=renderQuestion(PASSAGES[state.passageIdx].questions[qi],qi);
+  // update progress
+  const answered=Object.keys(state.answers).length;
+  const total=PASSAGES[state.passageIdx].questions.length;
+  document.getElementById('qProgress').textContent=`${answered}/${total} answered`;
+  document.querySelector('.progress-fill').style.width=(answered/total*100)+'%';
+}
+
+function revealAnswer(qi){
+  state.revealed[qi]=true;
+  document.getElementById('qc-'+qi).outerHTML=renderQuestion(PASSAGES[state.passageIdx].questions[qi],qi);
+}
+
+function showScore(){
+  clearInterval(state.timerInterval);
+  document.getElementById('timerDisplay').style.display='none';
+  state.screen='score';
+  render();
+}
+
+function renderScore(){
+  document.getElementById('qProgress').style.display='none';
+  const p=PASSAGES[state.passageIdx];
+  const total=p.questions.length;
+  let correct=0;
+  p.questions.forEach((q,i)=>{if(state.answers[i]===q.ans)correct++;});
+  const pct=Math.round(correct/total*100);
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F';
+  const gradeCol=pct>=90?'#10b981':pct>=80?'#34d399':pct>=70?'#f59e0b':pct>=60?'#f97316':'#ef4444';
+  document.getElementById('app').innerHTML=`
+    <div style="max-width:700px;margin:0 auto">
+      <div class="card" style="text-align:center">
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:8px">${p.label} — ${p.title}</div>
+        <div class="score-big" style="color:${gradeCol}">${correct}/${total}</div>
+        <div class="score-label">${pct}% correct — Grade <strong style="color:${gradeCol}">${grade}</strong></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="startPractice()">Retry This Passage</button>
+          <button class="btn btn-ghost" onclick="state.screen='setup';render()">Choose Another</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Question Review</h2>
+        ${p.questions.map((q,qi)=>{
+          const chosen=state.answers[qi];
+          const right=chosen===q.ans;
+          return`<div class="q-review">
+            <div class="q-review-header">
+              <span>Q${qi+1}</span>
+              <span class="tag ${right?'tag-correct':'tag-wrong'}">${right?'✓ Correct':'✗ Wrong'}</span>
+              ${!right&&chosen!==undefined?`<span style="font-size:.75rem;color:var(--muted)">You chose ${['A','B','C','D'][chosen]} · Correct: ${['A','B','C','D'][q.ans]}</span>`:''}
+              ${chosen===undefined?`<span style="font-size:.75rem;color:var(--muted)">Not answered</span>`:''}
+            </div>
+            <div style="font-size:.8rem;margin-bottom:6px">${q.q}</div>
+            <div class="rationale"><div class="rationale-label">💡 Explanation</div>${q.rationale}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="card">
+        <h2>Test-Taking Strategies</h2>
+        <div class="strategy-box">${STRATEGIES.map(s=>`<div class="strategy-item"><span class="strategy-icon">${s.icon}</span>${s.tip}</div>`).join('')}</div>
+      </div>
+    </div>`;
+}
+
+render();
+</script>
+</body>
+</html>

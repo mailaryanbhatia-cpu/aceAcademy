@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Trigonometry Tool — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:1000px;margin:0 auto;padding:20px 16px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tab{padding:10px 20px;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:.12s}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{font-size:.82rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px}
+input,select{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:.88rem;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.btn{padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.86rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:500px){.g3{grid-template-columns:1fr}}
+.result-box{background:#0d1728;border-radius:10px;padding:14px;margin-top:14px}
+.result-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)22;font-size:.88rem}
+.result-row:last-child{border-bottom:none}
+.rv{font-weight:700;color:var(--accent2)}
+/* Unit circle */
+#ucCanvas{display:block;margin:0 auto}
+.uc-wrap{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.uc-vals{background:#0d1728;border-radius:10px;padding:16px;min-width:180px;flex:1}
+.uc-val-row{margin-bottom:10px}
+.uc-val-label{font-size:.72rem;color:var(--muted)}
+.uc-val-num{font-size:1.05rem;font-weight:800;color:var(--accent2)}
+/* Trig table */
+.trig-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.trig-table th{background:#0d1728;padding:8px 10px;text-align:left;font-weight:700;color:var(--accent2);border-bottom:1px solid var(--border)}
+.trig-table td{padding:7px 10px;border-bottom:1px solid var(--border)22}
+.trig-table tr:hover td{background:#0d172844}
+/* Identities */
+.id-section{margin-bottom:16px}
+.id-name{font-size:.78rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.id-list{display:flex;flex-direction:column;gap:6px}
+.id-item{background:#0d1728;border-radius:8px;padding:10px 14px;font-family:'Courier New',monospace;font-size:.84rem;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📐 Trigonometry Tool</h1>
+</div>
+<div class="container">
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('uc')">Unit Circle</div>
+  <div class="tab" onclick="switchTab('calc')">Trig Calculator</div>
+  <div class="tab" onclick="switchTab('triangle')">Triangle Solver</div>
+  <div class="tab" onclick="switchTab('table')">Reference Table</div>
+  <div class="tab" onclick="switchTab('ids')">Identities</div>
+</div>
+
+<!-- UNIT CIRCLE -->
+<div class="tab-pane active" id="pane-uc">
+  <div class="card">
+    <h2>Interactive Unit Circle</h2>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Click or drag on the circle to explore angles. Or type an angle below.</p>
+    <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:140px"><label>Angle (degrees)</label><input id="uc-deg" type="number" value="30" oninput="ucSetDeg()" placeholder="0–360"/></div>
+      <div style="flex:1;min-width:140px"><label>Angle (radians)</label><input id="uc-rad" type="number" step="any" value="0.5236" oninput="ucSetRad()" placeholder="0–2π"/></div>
+    </div>
+    <div class="uc-wrap">
+      <canvas id="ucCanvas" width="280" height="280"></canvas>
+      <div class="uc-vals" id="ucVals"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CALC -->
+<div class="tab-pane" id="pane-calc">
+  <div class="card">
+    <h2>Trig Function Calculator</h2>
+    <div class="g2">
+      <div><label>Value</label><input id="calc-val" type="number" step="any" placeholder="e.g. 45"/></div>
+      <div><label>Unit</label><select id="calc-unit"><option value="deg">Degrees</option><option value="rad">Radians</option></select></div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:12px" onclick="calcTrig()">Calculate</button>
+    <div class="result-box" id="calcResult" style="display:none"></div>
+  </div>
+  <div class="card">
+    <h2>Inverse Trig Calculator</h2>
+    <div class="g2">
+      <div><label>Function</label><select id="inv-fn"><option value="asin">arcsin (sin⁻¹)</option><option value="acos">arccos (cos⁻¹)</option><option value="atan">arctan (tan⁻¹)</option></select></div>
+      <div><label>Value (between -1 and 1 for sin/cos)</label><input id="inv-val" type="number" step="any" placeholder="e.g. 0.5"/></div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:12px" onclick="calcInv()">Calculate</button>
+    <div class="result-box" id="invResult" style="display:none"></div>
+  </div>
+</div>
+
+<!-- TRIANGLE SOLVER -->
+<div class="tab-pane" id="pane-triangle">
+  <div class="card">
+    <h2>Triangle Solver (Law of Sines & Cosines)</h2>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Enter any 3 values (at least one must be a side). Leave unknowns blank. Angles in degrees.</p>
+    <div class="g3">
+      <div><label>Side a</label><input id="tri-a" type="number" step="any" placeholder="opposite A"/></div>
+      <div><label>Side b</label><input id="tri-b" type="number" step="any" placeholder="opposite B"/></div>
+      <div><label>Side c</label><input id="tri-c" type="number" step="any" placeholder="opposite C"/></div>
+    </div>
+    <div class="g3" style="margin-top:10px">
+      <div><label>Angle A (°)</label><input id="tri-A" type="number" step="any" placeholder="degrees"/></div>
+      <div><label>Angle B (°)</label><input id="tri-B" type="number" step="any" placeholder="degrees"/></div>
+      <div><label>Angle C (°)</label><input id="tri-C" type="number" step="any" placeholder="degrees"/></div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="solveTri()">Solve Triangle</button>
+    <div class="result-box" id="triResult" style="display:none"></div>
+  </div>
+</div>
+
+<!-- TABLE -->
+<div class="tab-pane" id="pane-table">
+  <div class="card">
+    <h2>Common Angle Reference Table</h2>
+    <div style="overflow-x:auto">
+    <table class="trig-table" id="refTable"></table>
+    </div>
+  </div>
+</div>
+
+<!-- IDENTITIES -->
+<div class="tab-pane" id="pane-ids">
+  <div class="card">
+    <h2>Trigonometric Identities</h2>
+    <div id="idsArea"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const PI=Math.PI;
+function d2r(d){return d*PI/180;}
+function r2d(r){return r*180/PI;}
+function fr(x,d=4){return Math.round(x*1e4)/1e4;}
+function frd(x){return Math.round(x*1e3)/1e3;}
+
+// Exact value lookup for common angles
+const EXACT={
+  0:  {sin:'0',cos:'1',tan:'0'},
+  30: {sin:'1/2',cos:'√3/2',tan:'1/√3'},
+  45: {sin:'√2/2',cos:'√2/2',tan:'1'},
+  60: {sin:'√3/2',cos:'1/2',tan:'√3'},
+  90: {sin:'1',cos:'0',tan:'undefined'},
+  120:{sin:'√3/2',cos:'-1/2',tan:'-√3'},
+  135:{sin:'√2/2',cos:'-√2/2',tan:'-1'},
+  150:{sin:'1/2',cos:'-√3/2',tan:'-1/√3'},
+  180:{sin:'0',cos:'-1',tan:'0'},
+  210:{sin:'-1/2',cos:'-√3/2',tan:'1/√3'},
+  225:{sin:'-√2/2',cos:'-√2/2',tan:'1'},
+  240:{sin:'-√3/2',cos:'-1/2',tan:'√3'},
+  270:{sin:'-1',cos:'0',tan:'undefined'},
+  300:{sin:'-√3/2',cos:'1/2',tan:'-√3'},
+  315:{sin:'-√2/2',cos:'√2/2',tan:'-1'},
+  330:{sin:'-1/2',cos:'√3/2',tan:'-1/√3'},
+  360:{sin:'0',cos:'1',tan:'0'}
+};
+
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['uc','calc','triangle','table','ids'][i]===id)});
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  if(id==='table') buildTable();
+  if(id==='ids') buildIds();
+}
+
+// ===== UNIT CIRCLE =====
+let ucAngleDeg=30;
+const ucCanvas=document.getElementById('ucCanvas');
+const ucCtx=ucCanvas.getContext('2d');
+
+function ucSetDeg(){
+  const v=parseFloat(document.getElementById('uc-deg').value);
+  if(!isNaN(v)){ucAngleDeg=v;document.getElementById('uc-rad').value=fr(d2r(v));drawUC();}
+}
+function ucSetRad(){
+  const v=parseFloat(document.getElementById('uc-rad').value);
+  if(!isNaN(v)){ucAngleDeg=r2d(v);document.getElementById('uc-deg').value=fr(r2d(v));drawUC();}
+}
+
+function drawUC(){
+  const W=280,H=280,cx=140,cy=140,R=100;
+  ucCtx.clearRect(0,0,W,H);
+  ucCtx.fillStyle='#080f1f';ucCtx.fillRect(0,0,W,H);
+
+  // Grid lines
+  ucCtx.strokeStyle='#1e2d4a';ucCtx.lineWidth=1;
+  ucCtx.beginPath();ucCtx.moveTo(0,cy);ucCtx.lineTo(W,cy);ucCtx.stroke();
+  ucCtx.beginPath();ucCtx.moveTo(cx,0);ucCtx.lineTo(cx,H);ucCtx.stroke();
+
+  // Circle
+  ucCtx.strokeStyle='#2a3a55';ucCtx.lineWidth=1.5;
+  ucCtx.beginPath();ucCtx.arc(cx,cy,R,0,2*PI);ucCtx.stroke();
+
+  // Special angle markers
+  const specials=[0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330];
+  ucCtx.fillStyle='#2a3a55';
+  specials.forEach(deg=>{
+    const rad=d2r(deg);
+    const x=cx+R*Math.cos(rad),y=cy-R*Math.sin(rad);
+    ucCtx.beginPath();ucCtx.arc(x,y,3,0,2*PI);ucCtx.fill();
+  });
+
+  // Current angle
+  const rad=d2r(ucAngleDeg);
+  const px=cx+R*Math.cos(rad),py=cy-R*Math.sin(rad);
+
+  // Sine (vertical)
+  ucCtx.strokeStyle='#10b98188';ucCtx.lineWidth=1.5;ucCtx.setLineDash([4,3]);
+  ucCtx.beginPath();ucCtx.moveTo(px,cy);ucCtx.lineTo(px,py);ucCtx.stroke();
+
+  // Cosine (horizontal)
+  ucCtx.strokeStyle='#6366f188';
+  ucCtx.beginPath();ucCtx.moveTo(cx,py);ucCtx.lineTo(px,py);ucCtx.stroke();
+  ucCtx.setLineDash([]);
+
+  // Radius line
+  ucCtx.strokeStyle='#f59e0b';ucCtx.lineWidth=2;
+  ucCtx.beginPath();ucCtx.moveTo(cx,cy);ucCtx.lineTo(px,py);ucCtx.stroke();
+
+  // Angle arc
+  ucCtx.strokeStyle='#f59e0b44';ucCtx.lineWidth=1.5;
+  ucCtx.beginPath();ucCtx.arc(cx,cy,30,0,-rad,rad<0);ucCtx.stroke();
+
+  // Point on circle
+  ucCtx.fillStyle='#f59e0b';
+  ucCtx.beginPath();ucCtx.arc(px,py,5,0,2*PI);ucCtx.fill();
+
+  // Labels
+  ucCtx.font='11px monospace';ucCtx.textAlign='center';
+  ucCtx.fillStyle='#a5b4fc';ucCtx.fillText('(cos θ, sin θ)',px,py-(py<cy?10:-18));
+  ucCtx.fillStyle='var(--muted)';
+  ucCtx.font='10px sans-serif';
+  ucCtx.fillText('1',cx+R+12,cy-3);ucCtx.fillText('-1',cx-R-16,cy-3);
+  ucCtx.fillText('1',cx+4,cy-R-6);ucCtx.fillText('-1',cx+4,cy+R+12);
+
+  // Values panel
+  const cosV=Math.cos(rad),sinV=Math.sin(rad);
+  const tanV=Math.abs(cosV)<1e-10?null:sinV/cosV;
+  const normDeg=((ucAngleDeg%360)+360)%360;
+  const exact=EXACT[Math.round(normDeg)];
+  document.getElementById('ucVals').innerHTML=`
+    <div class="uc-val-row"><div class="uc-val-label">Angle (θ)</div><div class="uc-val-num">${frd(normDeg)}°  =  ${fr(d2r(normDeg))} rad</div></div>
+    <div class="uc-val-row"><div class="uc-val-label" style="color:#6366f1">cos θ  (x)</div><div class="uc-val-num">${fr(cosV)}${exact?'  <span style="font-size:.75rem;color:var(--muted)">= '+exact.cos+'</span>':''}</div></div>
+    <div class="uc-val-row"><div class="uc-val-label" style="color:#10b981">sin θ  (y)</div><div class="uc-val-num">${fr(sinV)}${exact?'  <span style="font-size:.75rem;color:var(--muted)">= '+exact.sin+'</span>':''}</div></div>
+    <div class="uc-val-row"><div class="uc-val-label" style="color:#f59e0b">tan θ  (y/x)</div><div class="uc-val-num">${tanV===null?'Undefined':fr(tanV)}${exact?'  <span style="font-size:.75rem;color:var(--muted)">= '+exact.tan+'</span>':''}</div></div>
+    <div class="uc-val-row"><div class="uc-val-label">csc θ</div><div class="uc-val-num">${Math.abs(sinV)<1e-10?'Undefined':fr(1/sinV)}</div></div>
+    <div class="uc-val-row"><div class="uc-val-label">sec θ</div><div class="uc-val-num">${Math.abs(cosV)<1e-10?'Undefined':fr(1/cosV)}</div></div>
+    <div class="uc-val-row"><div class="uc-val-label">cot θ</div><div class="uc-val-num">${Math.abs(sinV)<1e-10?'Undefined':fr(cosV/sinV)}</div></div>
+  `;
+}
+
+// Drag on unit circle
+ucCanvas.addEventListener('click',e=>{
+  const rect=ucCanvas.getBoundingClientRect();
+  const x=(e.clientX-rect.left)-140, y=-((e.clientY-rect.top)-140);
+  ucAngleDeg=r2d(Math.atan2(y,x));
+  document.getElementById('uc-deg').value=fr(ucAngleDeg);
+  document.getElementById('uc-rad').value=fr(d2r(ucAngleDeg));
+  drawUC();
+});
+ucCanvas.style.cursor='crosshair';
+
+drawUC();
+
+// ===== TRIG CALCULATOR =====
+function calcTrig(){
+  let v=parseFloat(document.getElementById('calc-val').value);
+  const unit=document.getElementById('calc-unit').value;
+  if(isNaN(v)){alert('Enter a number');return;}
+  const rad=unit==='deg'?d2r(v):v;
+  const degV=unit==='deg'?v:r2d(v);
+  const sinV=Math.sin(rad),cosV=Math.cos(rad);
+  const tanV=Math.abs(cosV)<1e-10?null:sinV/cosV;
+  const el=document.getElementById('calcResult');
+  el.style.display='block';
+  el.innerHTML=`
+    <div class="result-row"><span>sin(${fr(degV)}°)</span><span class="rv">${fr(sinV)}</span></div>
+    <div class="result-row"><span>cos(${fr(degV)}°)</span><span class="rv">${fr(cosV)}</span></div>
+    <div class="result-row"><span>tan(${fr(degV)}°)</span><span class="rv">${tanV===null?'Undefined':fr(tanV)}</span></div>
+    <div class="result-row"><span>csc(${fr(degV)}°)</span><span class="rv">${Math.abs(sinV)<1e-10?'Undefined':fr(1/sinV)}</span></div>
+    <div class="result-row"><span>sec(${fr(degV)}°)</span><span class="rv">${Math.abs(cosV)<1e-10?'Undefined':fr(1/cosV)}</span></div>
+    <div class="result-row"><span>cot(${fr(degV)}°)</span><span class="rv">${Math.abs(sinV)<1e-10?'Undefined':fr(cosV/sinV)}</span></div>
+  `;
+}
+
+function calcInv(){
+  const fn=document.getElementById('inv-fn').value;
+  const v=parseFloat(document.getElementById('inv-val').value);
+  if(isNaN(v)){alert('Enter a number');return;}
+  let radResult;
+  if(fn==='asin') radResult=Math.asin(v);
+  else if(fn==='acos') radResult=Math.acos(v);
+  else radResult=Math.atan(v);
+  const el=document.getElementById('invResult');
+  if(isNaN(radResult)){el.style.display='block';el.innerHTML='<div style="color:#ef4444">Value out of domain.</div>';return;}
+  el.style.display='block';
+  el.innerHTML=`
+    <div class="result-row"><span>Result (degrees)</span><span class="rv">${fr(r2d(radResult))}°</span></div>
+    <div class="result-row"><span>Result (radians)</span><span class="rv">${fr(radResult)}</span></div>
+  `;
+}
+
+// ===== TRIANGLE SOLVER =====
+function solveTri(){
+  const get=id=>{const v=parseFloat(document.getElementById('tri-'+id).value);return isNaN(v)||v<=0?null:v;};
+  let a=get('a'),b=get('b'),c=get('c'),A=get('A'),B=get('B'),C=get('C');
+  if(A) A=d2r(A); if(B) B=d2r(B); if(C) C=d2r(C);
+  const sides=[a,b,c].filter(x=>x!==null).length;
+  const angles=[A,B,C].filter(x=>x!==null).length;
+  let solved=false,steps=[];
+  // If two angles known, find third
+  if(angles===2){
+    if(!A){A=PI-(B+C);steps.push(`A = 180° − B − C = ${fr(r2d(A))}°`);}
+    else if(!B){B=PI-(A+C);steps.push(`B = 180° − A − C = ${fr(r2d(B))}°`);}
+    else{C=PI-(A+B);steps.push(`C = 180° − A − B = ${fr(r2d(C))}°`);}
+  }
+  // AAS or ASA — one side, two angles
+  if(sides===1&&angles>=2){
+    if(!A&&B&&C) A=PI-B-C;
+    if(!B&&A&&C) B=PI-A-C;
+    if(!C&&A&&B) C=PI-A-B;
+    if(a&&A&&B&&C){b=a*Math.sin(B)/Math.sin(A);c=a*Math.sin(C)/Math.sin(A);solved=true;steps.push(`Law of Sines: b/sin(B)=a/sin(A) → b=${fr(b)}`,`c/sin(C)=a/sin(A) → c=${fr(c)}`);}
+    else if(b&&A&&B&&C){a=b*Math.sin(A)/Math.sin(B);c=b*Math.sin(C)/Math.sin(B);solved=true;steps.push(`a=${fr(a)}, c=${fr(c)}`);}
+    else if(c&&A&&B&&C){a=c*Math.sin(A)/Math.sin(C);b=c*Math.sin(B)/Math.sin(C);solved=true;steps.push(`a=${fr(a)}, b=${fr(b)}`);}
+  }
+  // SSS
+  if(sides===3&&!solved){
+    A=Math.acos((b*b+c*c-a*a)/(2*b*c));B=Math.acos((a*a+c*c-b*b)/(2*a*c));C=PI-A-B;solved=true;
+    steps.push(`Law of Cosines: cos(A)=(b²+c²−a²)/(2bc) → A=${fr(r2d(A))}°`,`cos(B)=(a²+c²−b²)/(2ac) → B=${fr(r2d(B))}°`,`C=180°−A−B = ${fr(r2d(C))}°`);
+  }
+  // SAS
+  if(sides===2&&angles===1&&!solved){
+    if(a&&b&&C){c=Math.sqrt(a*a+b*b-2*a*b*Math.cos(C));A=Math.acos((b*b+c*c-a*a)/(2*b*c));B=PI-A-C;solved=true;steps.push(`Law of Cosines: c=√(a²+b²−2ab·cos(C)) = ${fr(c)}`);}
+    else if(a&&c&&B){b=Math.sqrt(a*a+c*c-2*a*c*Math.cos(B));A=Math.acos((b*b+c*c-a*a)/(2*b*c));C=PI-A-B;solved=true;steps.push(`b=√(a²+c²−2ac·cos(B)) = ${fr(b)}`);}
+    else if(b&&c&&A){a=Math.sqrt(b*b+c*c-2*b*c*Math.cos(A));B=Math.acos((a*a+c*c-b*b)/(2*a*c));C=PI-A-B;solved=true;steps.push(`a=√(b²+c²−2bc·cos(A)) = ${fr(a)}`);}
+  }
+  const el=document.getElementById('triResult');
+  if(!solved){el.style.display='block';el.innerHTML='<div style="color:#f59e0b">Enter at least 3 values (including at least one side) to solve the triangle.</div>';return;}
+  const area=0.5*a*b*Math.sin(C);
+  el.style.display='block';
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+      <div class="result-row" style="flex-direction:column;align-items:flex-start"><span style="font-size:.72rem;color:var(--muted)">Side a</span><span class="rv">${fr(a)}</span></div>
+      <div class="result-row" style="flex-direction:column;align-items:flex-start"><span style="font-size:.72rem;color:var(--muted)">Side b</span><span class="rv">${fr(b)}</span></div>
+      <div class="result-row" style="flex-direction:column;align-items:flex-start"><span style="font-size:.72rem;color:var(--muted)">Side c</span><span class="rv">${fr(c)}</span></div>
+      <div class="result-row" style="flex-direction:column;align-items:flex-start"><span style="font-size:.72rem;color:var(--muted)">Angle A</span><span class="rv">${fr(r2d(A))}°</span></div>
+      <div class="result-row" style="flex-direction:column;align-items:flex-start"><span style="font-size:.72rem;color:var(--muted)">Angle B</span><span class="rv">${fr(r2d(B))}°</span></div>
+      <div class="result-row" style="flex-direction:column;align-items:flex-start"><span style="font-size:.72rem;color:var(--muted)">Angle C</span><span class="rv">${fr(r2d(C))}°</span></div>
+    </div>
+    <div class="result-row"><span>Area</span><span class="rv">${fr(area)} sq units</span></div>
+    ${steps.length?'<div style="margin-top:10px;font-size:.78rem;color:var(--muted)">'+steps.map((s,i)=>`<div style="padding:3px 0">${i+1}. ${s}</div>`).join('')+'</div>':''}
+  `;
+}
+
+// ===== REFERENCE TABLE =====
+function buildTable(){
+  const angles=[0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330,360];
+  const radLabels={'0':'0','30':'π/6','45':'π/4','60':'π/3','90':'π/2','120':'2π/3','135':'3π/4','150':'5π/6','180':'π','210':'7π/6','225':'5π/4','240':'4π/3','270':'3π/2','300':'5π/3','315':'7π/4','330':'11π/6','360':'2π'};
+  document.getElementById('refTable').innerHTML=`
+    <tr><th>Degrees</th><th>Radians</th><th>sin θ</th><th>cos θ</th><th>tan θ</th></tr>
+    ${angles.map(deg=>{
+      const e=EXACT[deg]||{};const rad=d2r(deg);
+      return`<tr><td>${deg}°</td><td>${radLabels[deg]||fr(rad)}</td><td>${e.sin||fr(Math.sin(rad))}</td><td>${e.cos||fr(Math.cos(rad))}</td><td>${e.tan||fr(Math.tan(rad))}</td></tr>`;
+    }).join('')}
+  `;
+}
+
+// ===== IDENTITIES =====
+function buildIds(){
+  const groups=[
+    {name:'Pythagorean Identities',ids:['sin²θ + cos²θ = 1','1 + tan²θ = sec²θ','1 + cot²θ = csc²θ']},
+    {name:'Reciprocal Identities',ids:['sin θ = 1/csc θ','cos θ = 1/sec θ','tan θ = sin θ/cos θ','cot θ = cos θ/sin θ = 1/tan θ']},
+    {name:'Co-function Identities',ids:['sin θ = cos(90°−θ)','tan θ = cot(90°−θ)','sec θ = csc(90°−θ)']},
+    {name:'Sum & Difference Formulas',ids:['sin(A±B) = sinA·cosB ± cosA·sinB','cos(A±B) = cosA·cosB ∓ sinA·sinB','tan(A±B) = (tanA ± tanB)/(1 ∓ tanA·tanB)']},
+    {name:'Double Angle Formulas',ids:['sin(2θ) = 2 sinθ cosθ','cos(2θ) = cos²θ − sin²θ = 2cos²θ−1 = 1−2sin²θ','tan(2θ) = 2tanθ/(1−tan²θ)']},
+    {name:'Half Angle Formulas',ids:['sin(θ/2) = ±√((1−cosθ)/2)','cos(θ/2) = ±√((1+cosθ)/2)','tan(θ/2) = sinθ/(1+cosθ) = (1−cosθ)/sinθ']},
+  ];
+  document.getElementById('idsArea').innerHTML=groups.map(g=>`
+    <div class="id-section">
+      <div class="id-name">${g.name}</div>
+      <div class="id-list">${g.ids.map(id=>`<div class="id-item">${id}</div>`).join('')}</div>
+    </div>
+  `).join('');
+}
+</script>
+</body>
+</html>
