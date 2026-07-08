@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Logarithm Practice Tool — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:900px;margin:0 auto;padding:24px 16px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto}
+.tab{padding:10px 20px;cursor:pointer;font-size:.84rem;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:.12s}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.pane{display:none}.pane.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{font-size:.83rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px;margin-top:10px}
+input,select{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-size:.9rem;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:560px){.g2,.g3{grid-template-columns:1fr}}
+.btn{display:block;width:100%;padding:10px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;background:var(--accent);color:#fff;margin-top:14px;transition:.15s}
+.btn:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border);margin-top:10px}
+.btn-ghost:hover{background:#1e2d4a}
+.res{background:#0d1728;border-radius:12px;padding:16px;margin-top:14px;display:none}
+.res-big{font-size:1.4rem;font-weight:800;color:var(--accent2);margin-bottom:8px;font-family:monospace}
+.step{font-size:.83rem;padding:6px 0;border-bottom:1px solid var(--border)22;line-height:1.7}
+.step:last-child{border-bottom:none}
+.step strong{color:var(--accent2)}
+/* Practice */
+.quiz-q{background:#0d1728;border-radius:12px;padding:18px;margin-bottom:14px;border-left:4px solid var(--accent)}
+.quiz-expr{font-size:1.2rem;font-family:monospace;color:var(--text);margin-bottom:12px;font-weight:700}
+.quiz-input{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quiz-input input{max-width:140px}
+.quiz-feedback{margin-top:10px;font-size:.85rem;padding:8px 12px;border-radius:8px}
+.correct{background:#10b98122;color:#10b981;border:1px solid #10b98144}
+.wrong{background:#ef444422;color:#ef4444;border:1px solid #ef444444}
+/* Laws ref */
+.law-item{background:#0d1728;border-radius:10px;padding:14px;margin-bottom:10px}
+.law-name{font-size:.72rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.law-expr{font-family:monospace;font-size:.95rem;color:var(--text);margin-bottom:6px;font-weight:600}
+.law-desc{font-size:.78rem;color:var(--muted);line-height:1.5}
+.law-example{font-family:monospace;font-size:.8rem;color:#a5b4fc;margin-top:4px}
+/* Score */
+.score-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.score-fill{height:100%;background:var(--accent);border-radius:4px;transition:.4s}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>㏒ Logarithm Practice Tool</h1>
+</div>
+<div class="container">
+<div class="tabs">
+  <div class="tab active" onclick="sw('calc',this)">Calculator</div>
+  <div class="tab" onclick="sw('expand',this)">Expand / Condense</div>
+  <div class="tab" onclick="sw('solve',this)">Solve Equations</div>
+  <div class="tab" onclick="sw('practice',this)">Practice Problems</div>
+  <div class="tab" onclick="sw('laws',this)">Log Laws</div>
+</div>
+
+<!-- CALCULATOR -->
+<div class="pane active" id="pane-calc">
+  <div class="card">
+    <h2>Logarithm Calculator</h2>
+    <div class="g3">
+      <div><label>Base (b)</label><input id="c-b" type="number" step="any" placeholder="e.g. 10 (or e)"/></div>
+      <div><label>Argument (x)</label><input id="c-x" type="number" step="any" placeholder="e.g. 100"/></div>
+      <div><label>Base type</label>
+        <select id="c-type" onchange="toggleBase()">
+          <option value="custom">Custom base</option>
+          <option value="10">log₁₀ (common)</option>
+          <option value="e">ln (natural)</option>
+          <option value="2">log₂ (binary)</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" onclick="calcLog()">Calculate</button>
+    <div class="res" id="c-res"></div>
+  </div>
+  <div class="card">
+    <h2>Change of Base</h2>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px">log_b(x) = log(x)/log(b) = ln(x)/ln(b)</p>
+    <div class="g3">
+      <div><label>From base (b)</label><input id="cb-b" type="number" step="any" placeholder="e.g. 5"/></div>
+      <div><label>Argument (x)</label><input id="cb-x" type="number" step="any" placeholder="e.g. 125"/></div>
+      <div><label>To base</label>
+        <select id="cb-to">
+          <option value="10">base 10</option>
+          <option value="e">base e (ln)</option>
+          <option value="2">base 2</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" onclick="calcCOB()">Convert</button>
+    <div class="res" id="cb-res"></div>
+  </div>
+</div>
+
+<!-- EXPAND / CONDENSE -->
+<div class="pane" id="pane-expand">
+  <div class="card">
+    <h2>Expand a Logarithm</h2>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px">Uses product, quotient, and power rules to expand log expressions.</p>
+    <div class="g2">
+      <div><label>Numerator factors (comma-separated, use ^ for powers)</label>
+        <input id="ex-num" placeholder="e.g. x^2, y, z^3"/></div>
+      <div><label>Denominator factors (leave blank if none)</label>
+        <input id="ex-den" placeholder="e.g. w^4"/></div>
+    </div>
+    <div><label>Base</label><input id="ex-b" placeholder="b (or leave blank for general)"/></div>
+    <button class="btn" onclick="expandLog()">Expand</button>
+    <div class="res" id="ex-res"></div>
+  </div>
+  <div class="card">
+    <h2>Condense to a Single Logarithm</h2>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px">Enter terms like: <code>2*log(x) + log(y) - 3*log(z)</code></p>
+    <textarea id="cond-in" rows="2" style="background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;font-size:.88rem;width:100%;font-family:monospace;resize:none" placeholder="e.g. 2*log(x) + log(y) - 3*log(z)"></textarea>
+    <button class="btn" onclick="condenseLog()">Condense</button>
+    <div class="res" id="cond-res"></div>
+  </div>
+</div>
+
+<!-- SOLVE -->
+<div class="pane" id="pane-solve">
+  <div class="card">
+    <h2>Solve: log_b(x) = c  →  x = bᶜ</h2>
+    <div class="g3">
+      <div><label>Base (b)</label><input id="s1-b" type="number" step="any" placeholder="e.g. 2"/></div>
+      <div><label>Result (c)</label><input id="s1-c" type="number" step="any" placeholder="e.g. 5"/></div>
+      <div><label>Find x</label><input value="x = ?" disabled style="opacity:.5"/></div>
+    </div>
+    <button class="btn" onclick="solveLogEq1()">Solve for x</button>
+    <div class="res" id="s1-res"></div>
+  </div>
+  <div class="card">
+    <h2>Solve: bˣ = c  →  x = log_b(c)</h2>
+    <div class="g3">
+      <div><label>Base (b)</label><input id="s2-b" type="number" step="any" placeholder="e.g. 3"/></div>
+      <div><label>Result (c)</label><input id="s2-c" type="number" step="any" placeholder="e.g. 81"/></div>
+      <div><label>Find x</label><input value="x = ?" disabled style="opacity:.5"/></div>
+    </div>
+    <button class="btn" onclick="solveExpEq()">Solve for x</button>
+    <div class="res" id="s2-res"></div>
+  </div>
+  <div class="card">
+    <h2>Solve: log_b(ax + k) = c</h2>
+    <div class="g2">
+      <div><label>Base (b)</label><input id="s3-b" type="number" step="any" placeholder="e.g. 2"/></div>
+      <div><label>Result (c)</label><input id="s3-c" type="number" step="any" placeholder="e.g. 4"/></div>
+      <div><label>Coefficient of x (a)</label><input id="s3-a" type="number" step="any" placeholder="e.g. 3"/></div>
+      <div><label>Constant (k)</label><input id="s3-k" type="number" step="any" placeholder="e.g. 1"/></div>
+    </div>
+    <button class="btn" onclick="solveLogLinear()">Solve for x</button>
+    <div class="res" id="s3-res"></div>
+  </div>
+</div>
+
+<!-- PRACTICE -->
+<div class="pane" id="pane-practice">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div>
+      <div style="font-size:.7rem;color:var(--muted)">Score</div>
+      <div style="font-weight:700;font-size:.9rem" id="score-display">0 / 0</div>
+    </div>
+    <div style="flex:1;max-width:200px">
+      <div class="score-bar"><div class="score-fill" id="score-fill" style="width:0%"></div></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <select id="diff" style="width:auto">
+        <option value="easy">Easy</option>
+        <option value="med" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+      <button class="btn" style="width:auto;margin:0;padding:8px 16px" onclick="newQuestion()">New Question</button>
+    </div>
+  </div>
+  <div id="quizArea"></div>
+</div>
+
+<!-- LAWS -->
+<div class="pane" id="pane-laws">
+  <div class="card">
+    <h2>Laws of Logarithms</h2>
+    <div id="lawsArea"></div>
+  </div>
+</div>
+</div>
+
+<script>
+function sw(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pane-'+id).classList.add('active');
+  if(id==='laws') renderLaws();
+  if(id==='practice'&&!document.getElementById('quizArea').innerHTML) newQuestion();
+}
+
+function toggleBase(){
+  const t=document.getElementById('c-type').value;
+  document.getElementById('c-b').disabled=(t!=='custom');
+  if(t!=='custom') document.getElementById('c-b').value='';
+}
+
+function r(x,d=4){return Math.round(x*Math.pow(10,d))/Math.pow(10,d);}
+function log(x,b){return Math.log(x)/Math.log(b);}
+
+function calcLog(){
+  let b;
+  const t=document.getElementById('c-type').value;
+  if(t==='custom') b=parseFloat(document.getElementById('c-b').value);
+  else if(t==='e') b=Math.E;
+  else b=parseFloat(t);
+  const x=parseFloat(document.getElementById('c-x').value);
+  if(isNaN(x)||x<=0||(isNaN(b)||b<=0||b===1)){alert('Enter valid positive values. Base cannot be 1.');return;}
+  const res=Math.log(x)/Math.log(b);
+  const bname=t==='e'?'e':t==='10'?'10':t==='2'?'2':r(b);
+  const el=document.getElementById('c-res');el.style.display='block';
+  el.innerHTML=`<div class="res-big">log${bname==='e'?'':bname==='10'?'₁₀':'_'+bname}(${r(x)}) = ${r(res)}</div>
+    <div class="step"><strong>Using change of base:</strong> ln(${r(x)})/ln(${bname==='e'?'e':r(b)}) = ${r(Math.log(x))} / ${r(Math.log(b))} = ${r(res)}</div>
+    <div class="step"><strong>Verify:</strong> ${bname==='e'?'e':r(b)}^${r(res)} ≈ ${r(Math.pow(b,res))}</div>
+    <div class="step">Also: log₁₀(${r(x)}) = ${r(Math.log10(x))} &nbsp; | &nbsp; ln(${r(x)}) = ${r(Math.log(x))}</div>`;
+}
+
+function calcCOB(){
+  const b=parseFloat(document.getElementById('cb-b').value);
+  const x=parseFloat(document.getElementById('cb-x').value);
+  const tot=document.getElementById('cb-to').value;
+  if(isNaN(b)||isNaN(x)||b<=0||b===1||x<=0){alert('Enter valid positive values.');return;}
+  const toB=tot==='e'?Math.E:parseFloat(tot);
+  const res=Math.log(x)/Math.log(b);
+  const num=Math.log(x)/Math.log(toB);
+  const den=Math.log(b)/Math.log(toB);
+  const label=tot==='e'?'ln':tot==='2'?'log₂':'log';
+  const el=document.getElementById('cb-res');el.style.display='block';
+  el.innerHTML=`<div class="res-big">log_${r(b)}(${r(x)}) = ${r(res)}</div>
+    <div class="step"><strong>Change of base formula:</strong> ${label}(${r(x)}) / ${label}(${r(b)}) = ${r(num,4)} / ${r(den,4)} = ${r(res)}</div>`;
+}
+
+function expandLog(){
+  const numRaw=document.getElementById('ex-num').value.trim();
+  const denRaw=document.getElementById('ex-den').value.trim();
+  const base=document.getElementById('ex-b').value.trim()||'b';
+  if(!numRaw){alert('Enter at least one numerator factor.');return;}
+  const parse=s=>s.split(',').map(t=>t.trim()).filter(Boolean);
+  const numF=parse(numRaw), denF=parse(denRaw);
+  const terms=[];
+  numF.forEach(f=>{
+    const m=f.match(/^(.+)\^([0-9.]+)$/);
+    if(m) terms.push(`${m[2]}·log_${base}(${m[1].trim()})`);
+    else terms.push(`log_${base}(${f})`);
+  });
+  denF.forEach(f=>{
+    const m=f.match(/^(.+)\^([0-9.]+)$/);
+    if(m) terms.push(`−${m[2]}·log_${base}(${m[1].trim()})`);
+    else terms.push(`−log_${base}(${f})`);
+  });
+  const el=document.getElementById('ex-res');el.style.display='block';
+  el.innerHTML=`<div class="res-big" style="font-size:1rem">${terms.join(' + ').replace(/\+ −/g,'− ')}</div>
+    <div class="step"><strong>Product rule:</strong> log(AB) = log(A) + log(B)</div>
+    <div class="step"><strong>Quotient rule:</strong> log(A/B) = log(A) − log(B)</div>
+    <div class="step"><strong>Power rule:</strong> log(Aⁿ) = n·log(A)</div>`;
+}
+
+function condenseLog(){
+  const raw=document.getElementById('cond-in').value.trim();
+  if(!raw){alert('Enter a log expression.');return;}
+  // Parse simple: coefficient*log(expr) +/- coefficient*log(expr)
+  const parts=[];
+  const re=/([+-]?\s*\d*\.?\d*)\s*\*?\s*log\(([^)]+)\)/gi;
+  let m;
+  while((m=re.exec(raw))!==null){
+    const coef=parseFloat(m[1].replace(/\s/g,''))||1;
+    parts.push({coef,arg:m[2].trim()});
+  }
+  if(!parts.length){const el=document.getElementById('cond-res');el.style.display='block';el.innerHTML='<div style="color:var(--muted)">Could not parse. Use format: 2*log(x) + log(y) - 3*log(z)</div>';return;}
+  const pos=parts.filter(p=>p.coef>0), neg=parts.filter(p=>p.coef<0);
+  const numStr=pos.map(p=>p.coef===1?p.arg:`${p.arg}^${p.coef}`).join('·');
+  const denStr=neg.map(p=>p.coef===-1?p.arg:`${p.arg}^${Math.abs(p.coef)}`).join('·');
+  const result=denStr?`log(${numStr} / ${denStr})`:`log(${numStr})`;
+  const el=document.getElementById('cond-res');el.style.display='block';
+  el.innerHTML=`<div class="res-big" style="font-size:1rem">${result}</div>
+    <div class="step">Applied power rule, then product/quotient rule in reverse.</div>`;
+}
+
+function solveLogEq1(){
+  const b=parseFloat(document.getElementById('s1-b').value);
+  const c=parseFloat(document.getElementById('s1-c').value);
+  if(isNaN(b)||isNaN(c)||b<=0||b===1){alert('Enter valid base and result.');return;}
+  const x=Math.pow(b,c);
+  const el=document.getElementById('s1-res');el.style.display='block';
+  el.innerHTML=`<div class="res-big">x = ${r(x)}</div>
+    <div class="step"><strong>Step 1:</strong> log_${r(b)}(x) = ${r(c)}</div>
+    <div class="step"><strong>Step 2:</strong> Convert to exponential form: ${r(b)}^${r(c)} = x</div>
+    <div class="step"><strong>Step 3:</strong> x = ${r(b)}^${r(c)} = ${r(x)}</div>`;
+}
+
+function solveExpEq(){
+  const b=parseFloat(document.getElementById('s2-b').value);
+  const c=parseFloat(document.getElementById('s2-c').value);
+  if(isNaN(b)||isNaN(c)||b<=0||b===1||c<=0){alert('Enter valid positive values.');return;}
+  const x=Math.log(c)/Math.log(b);
+  const el=document.getElementById('s2-res');el.style.display='block';
+  el.innerHTML=`<div class="res-big">x = ${r(x)}</div>
+    <div class="step"><strong>Step 1:</strong> ${r(b)}^x = ${r(c)}</div>
+    <div class="step"><strong>Step 2:</strong> Take log of both sides: x·log(${r(b)}) = log(${r(c)})</div>
+    <div class="step"><strong>Step 3:</strong> x = log(${r(c)})/log(${r(b)}) = ${r(Math.log10(c),4)}/${r(Math.log10(b),4)} = ${r(x)}</div>
+    <div class="step"><strong>Verify:</strong> ${r(b)}^${r(x)} ≈ ${r(Math.pow(b,x))}</div>`;
+}
+
+function solveLogLinear(){
+  const b=parseFloat(document.getElementById('s3-b').value);
+  const c=parseFloat(document.getElementById('s3-c').value);
+  const a=parseFloat(document.getElementById('s3-a').value);
+  const k=parseFloat(document.getElementById('s3-k').value)||0;
+  if(isNaN(b)||isNaN(c)||isNaN(a)||b<=0||b===1||a===0){alert('Fill in base, result, and coefficient.');return;}
+  const bc=Math.pow(b,c);
+  const x=(bc-k)/a;
+  const el=document.getElementById('s3-res');el.style.display='block';
+  el.innerHTML=`<div class="res-big">x = ${r(x)}</div>
+    <div class="step"><strong>Step 1:</strong> log_${r(b)}(${r(a)}x + ${r(k)}) = ${r(c)}</div>
+    <div class="step"><strong>Step 2:</strong> Exponentiate both sides: ${r(a)}x + ${r(k)} = ${r(b)}^${r(c)} = ${r(bc)}</div>
+    <div class="step"><strong>Step 3:</strong> ${r(a)}x = ${r(bc)} − ${r(k)} = ${r(bc-k)}</div>
+    <div class="step"><strong>Step 4:</strong> x = ${r(bc-k)}/${r(a)} = ${r(x)}</div>
+    <div class="step"><strong>Check domain:</strong> ${r(a)}×${r(x)}+${r(k)} = ${r(a*x+k)} ${a*x+k>0?'> 0 ✓ Valid':'≤ 0 ✗ No solution'}</div>`;
+}
+
+// Practice
+let qScore=0,qTotal=0,qCurrent=null;
+
+const QUESTIONS={
+  easy:[
+    {expr:'log₁₀(100)',ans:2,hint:'10² = 100'},
+    {expr:'log₂(8)',ans:3,hint:'2³ = 8'},
+    {expr:'log₁₀(1000)',ans:3,hint:'10³ = 1000'},
+    {expr:'log₂(16)',ans:4,hint:'2⁴ = 16'},
+    {expr:'log₅(25)',ans:2,hint:'5² = 25'},
+    {expr:'log₃(27)',ans:3,hint:'3³ = 27'},
+    {expr:'log₁₀(1)',ans:0,hint:'Any base^0 = 1'},
+    {expr:'log₂(1)',ans:0,hint:'2⁰ = 1'},
+    {expr:'log₄(64)',ans:3,hint:'4³ = 64'},
+    {expr:'log₁₀(0.1)',ans:-1,hint:'10⁻¹ = 0.1'},
+  ],
+  med:[
+    {expr:'log₂(32)',ans:5,hint:'2⁵ = 32'},
+    {expr:'log₃(81)',ans:4,hint:'3⁴ = 81'},
+    {expr:'log₅(125)',ans:3,hint:'5³ = 125'},
+    {expr:'log₁₀(0.001)',ans:-3,hint:'10⁻³ = 0.001'},
+    {expr:'log₄(256)',ans:4,hint:'4⁴ = 256'},
+    {expr:'log₆(36)',ans:2,hint:'6² = 36'},
+    {expr:'log₂(1/8)',ans:-3,hint:'2⁻³ = 1/8'},
+    {expr:'log₉(3)',ans:0.5,hint:'9^(1/2) = 3'},
+    {expr:'log₂₇(3)',ans:1/3,hint:'27^(1/3) = 3'},
+    {expr:'log₁₀(√10)',ans:0.5,hint:'10^(1/2) = √10'},
+  ],
+  hard:[
+    {expr:'log₃(1/243)',ans:-5,hint:'3⁻⁵ = 1/243'},
+    {expr:'log₈(4)',ans:2/3,hint:'8^(2/3) = (8^(1/3))² = 4'},
+    {expr:'log₄(1/32)',ans:-2.5,hint:'4^(-5/2) = 1/32'},
+    {expr:'log₂(√128)',ans:3.5,hint:'128 = 2⁷, √128 = 2^(7/2)'},
+    {expr:'log₁₂₅(25)',ans:2/3,hint:'125^(2/3) = (5³)^(2/3) = 5² = 25'},
+  ]
+};
+
+function newQuestion(){
+  const diff=document.getElementById('diff').value;
+  const pool=QUESTIONS[diff];
+  qCurrent=pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById('quizArea').innerHTML=`
+    <div class="quiz-q">
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:6px">Evaluate:</div>
+      <div class="quiz-expr">${qCurrent.expr} = ?</div>
+      <div class="quiz-input">
+        <input id="q-ans" type="number" step="any" placeholder="Your answer" onkeydown="if(event.key==='Enter')checkAnswer()"/>
+        <button class="btn" style="width:auto;margin:0;padding:8px 18px" onclick="checkAnswer()">Check</button>
+        <button class="btn btn-ghost" style="width:auto;margin:0;padding:8px 14px" onclick="showHint()">Hint</button>
+      </div>
+      <div id="q-fb" class="quiz-feedback" style="display:none"></div>
+      <div id="q-hint" style="display:none;margin-top:8px;font-size:.78rem;color:var(--muted)">💡 Hint: ${qCurrent.hint}</div>
+    </div>`;
+  document.getElementById('q-ans').focus();
+}
+
+function checkAnswer(){
+  const val=parseFloat(document.getElementById('q-ans').value);
+  if(isNaN(val)){alert('Enter a number.');return;}
+  qTotal++;
+  const fb=document.getElementById('q-fb');
+  fb.style.display='block';
+  if(Math.abs(val-qCurrent.ans)<0.001){
+    qScore++;
+    fb.className='quiz-feedback correct';
+    fb.innerHTML=`✓ Correct! ${qCurrent.expr} = ${qCurrent.ans}`;
+  } else {
+    fb.className='quiz-feedback wrong';
+    fb.innerHTML=`✗ Not quite. The answer is <strong>${qCurrent.ans}</strong>. Remember: ${qCurrent.hint}`;
+  }
+  document.getElementById('score-display').textContent=`${qScore} / ${qTotal}`;
+  const pct=qTotal>0?Math.round(qScore/qTotal*100):0;
+  document.getElementById('score-fill').style.width=pct+'%';
+  setTimeout(newQuestion,2200);
+}
+
+function showHint(){document.getElementById('q-hint').style.display='block';}
+
+const LAWS=[
+  {name:'Product Rule',expr:'logᵦ(MN) = logᵦ(M) + logᵦ(N)',desc:'The log of a product equals the sum of the logs.',ex:'log₂(8×4) = log₂(8) + log₂(4) = 3 + 2 = 5'},
+  {name:'Quotient Rule',expr:'logᵦ(M/N) = logᵦ(M) − logᵦ(N)',desc:'The log of a quotient equals the difference of the logs.',ex:'log₁₀(100/10) = log₁₀(100) − log₁₀(10) = 2 − 1 = 1'},
+  {name:'Power Rule',expr:'logᵦ(Mⁿ) = n · logᵦ(M)',desc:'The log of a power equals the exponent times the log.',ex:'log₂(8³) = 3·log₂(8) = 3×3 = 9'},
+  {name:'Change of Base',expr:'logᵦ(x) = log(x)/log(b) = ln(x)/ln(b)',desc:'Convert any log to base 10 or natural log for calculator use.',ex:'log₅(30) = log(30)/log(5) ≈ 1.4771/0.6990 ≈ 2.113'},
+  {name:'Log of 1',expr:'logᵦ(1) = 0',desc:'Any base raised to the power 0 equals 1.',ex:'log₇(1) = 0 because 7⁰ = 1'},
+  {name:'Log of Base',expr:'logᵦ(b) = 1',desc:'Any base raised to the power 1 equals itself.',ex:'log₅(5) = 1 because 5¹ = 5'},
+  {name:'Inverse Property',expr:'logᵦ(bˣ) = x  and  bˡᵒᵍᵦ⁽ˣ⁾ = x',desc:'Logs and exponentials are inverse functions.',ex:'log₂(2⁵) = 5  |  2^log₂(8) = 8'},
+  {name:'Logarithm Definition',expr:'logᵦ(x) = y  ↔  bʸ = x',desc:'The definition linking logarithmic and exponential form.',ex:'log₃(27) = 3 ↔ 3³ = 27'},
+];
+
+function renderLaws(){
+  document.getElementById('lawsArea').innerHTML=LAWS.map(l=>`
+    <div class="law-item">
+      <div class="law-name">${l.name}</div>
+      <div class="law-expr">${l.expr}</div>
+      <div class="law-desc">${l.desc}</div>
+      <div class="law-example">Example: ${l.ex}</div>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>

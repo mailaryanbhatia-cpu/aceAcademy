@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>DBQ Organizer — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:1060px;margin:0 auto;padding:20px 16px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tab{padding:10px 20px;cursor:pointer;font-size:.84rem;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:.12s;white-space:nowrap}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.pane{display:none}.pane.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+h2{font-size:.82rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+label{font-size:.77rem;color:var(--muted);display:block;margin-bottom:4px;margin-top:8px}
+input,select,textarea{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:.86rem;width:100%;font-family:'Segoe UI',sans-serif}
+textarea{resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.84rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-sm{padding:5px 11px;font-size:.76rem}
+.btn-danger{color:#ef4444;border-color:#ef444433;background:transparent}
+.btn-danger:hover{background:#ef444422}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+/* Doc cards */
+.doc-card{background:#0d1728;border-radius:12px;padding:16px;margin-bottom:12px;border-left:4px solid var(--accent)}
+.doc-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.doc-num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-size:.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.doc-title{font-weight:700;font-size:.9rem;flex:1}
+.doc-meta{font-size:.73rem;color:var(--muted);margin-top:2px}
+.doc-main{font-size:.82rem;line-height:1.6;margin-bottom:8px;color:var(--text)}
+.happ-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
+.happ-cell{background:#1a2540;border-radius:6px;padding:6px 8px}
+.happ-label{font-size:.62rem;color:var(--accent2);font-weight:700;text-transform:uppercase;margin-bottom:3px}
+.happ-val{font-size:.72rem;color:var(--text);line-height:1.4}
+/* Theme groups */
+.theme-group{background:#0d1728;border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid #10b981}
+.theme-name{font-weight:700;font-size:.9rem;color:#10b981;margin-bottom:6px}
+.theme-docs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.doc-badge{background:#6366f122;border:1px solid #6366f155;border-radius:6px;padding:2px 8px;font-size:.72rem;color:var(--accent2)}
+/* Outline */
+.outline-section{background:#0d1728;border-radius:10px;padding:14px;margin-bottom:10px}
+.outline-label{font-size:.72rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.outline-content{font-size:.84rem;line-height:1.7;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📜 DBQ Organizer</h1>
+</div>
+<div class="container">
+<div class="tabs">
+  <div class="tab active" onclick="sw('prompt',this)">Prompt & Thesis</div>
+  <div class="tab" onclick="sw('docs',this)">Documents</div>
+  <div class="tab" onclick="sw('themes',this)">Group by Theme</div>
+  <div class="tab" onclick="sw('outline',this)">Essay Outline</div>
+</div>
+
+<!-- PROMPT & THESIS -->
+<div class="pane active" id="pane-prompt">
+  <div class="card">
+    <h2>DBQ Prompt</h2>
+    <textarea id="dbq-prompt" rows="3" placeholder="Paste your DBQ prompt here…" oninput="save()"></textarea>
+    <label>Time Period</label>
+    <input id="dbq-period" placeholder="e.g. 1750–1900" oninput="save()"/>
+    <label>Subject / Course</label>
+    <input id="dbq-subject" placeholder="e.g. AP World History, AP US History, AP Euro" oninput="save()"/>
+  </div>
+  <div class="card">
+    <h2>Draft Your Thesis</h2>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px">A strong DBQ thesis must make a historically defensible claim that responds to the prompt, establishes a line of reasoning, and goes beyond restating the prompt.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <span style="font-size:.72rem;color:var(--muted)">Thesis starters:</span>
+      <span class="btn btn-ghost btn-sm" onclick="ins('thesis','Although … , … ultimately … because …')">Although…</span>
+      <span class="btn btn-ghost btn-sm" onclick="ins('thesis','While … , the most significant factor was …')">While…</span>
+      <span class="btn btn-ghost btn-sm" onclick="ins('thesis','The … was primarily caused by …, which led to …')">Causal…</span>
+    </div>
+    <textarea id="thesis" rows="3" placeholder="Write your thesis statement here…" oninput="save()"></textarea>
+    <label>Complexity Argument (optional — for the complexity point)</label>
+    <textarea id="complexity" rows="2" placeholder="e.g. Although X primarily caused Y, its impact varied significantly across regions / time periods / groups…" oninput="save()"></textarea>
+  </div>
+  <div class="card">
+    <h2>Outside Evidence (HAPP)</h2>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Note outside evidence not from the documents that you can use to support your argument.</p>
+    <textarea id="outside" rows="3" placeholder="e.g. The Enlightenment ideas of Locke and Rousseau influenced revolutionary movements across the Atlantic world…" oninput="save()"></textarea>
+  </div>
+</div>
+
+<!-- DOCUMENTS -->
+<div class="pane" id="pane-docs">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <h2 style="margin:0">Documents (<span id="doc-count">0</span>)</h2>
+    <button class="btn btn-primary" onclick="addDoc()">+ Add Document</button>
+  </div>
+  <div id="docList"></div>
+  <div id="docEmpty" style="font-size:.84rem;color:var(--muted);text-align:center;padding:30px">No documents yet. Click "Add Document" to get started.</div>
+</div>
+
+<!-- THEME GROUPS -->
+<div class="pane" id="pane-themes">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <h2 style="margin:0">Theme Groups</h2>
+    <button class="btn btn-primary" onclick="addTheme()">+ Add Theme</button>
+  </div>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:14px">Group your documents by theme to structure your body paragraphs. Aim for 2–3 themes, each supported by 2–3 documents.</p>
+  <div id="themeList"></div>
+</div>
+
+<!-- OUTLINE -->
+<div class="pane" id="pane-outline">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <h2 style="margin:0">Essay Outline</h2>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="genOutline()">⚡ Auto-Generate</button>
+      <button class="btn btn-ghost btn-sm" onclick="copyOutline()">📋 Copy</button>
+    </div>
+  </div>
+  <div id="outlineArea">
+    <div style="font-size:.84rem;color:var(--muted);text-align:center;padding:30px">Fill in your thesis and theme groups, then click "Auto-Generate" or write your outline below.</div>
+  </div>
+</div>
+</div>
+
+<script>
+let state = JSON.parse(localStorage.getItem('dbq-state') || '{"docs":[],"themes":[]}');
+
+function save() {
+  state.prompt = document.getElementById('dbq-prompt')?.value || state.prompt;
+  state.period = document.getElementById('dbq-period')?.value || state.period;
+  state.subject = document.getElementById('dbq-subject')?.value || state.subject;
+  state.thesis = document.getElementById('thesis')?.value || state.thesis;
+  state.complexity = document.getElementById('complexity')?.value || state.complexity;
+  state.outside = document.getElementById('outside')?.value || state.outside;
+  localStorage.setItem('dbq-state', JSON.stringify(state));
+}
+
+function loadPromptFields() {
+  if (document.getElementById('dbq-prompt')) document.getElementById('dbq-prompt').value = state.prompt || '';
+  if (document.getElementById('dbq-period')) document.getElementById('dbq-period').value = state.period || '';
+  if (document.getElementById('dbq-subject')) document.getElementById('dbq-subject').value = state.subject || '';
+  if (document.getElementById('thesis')) document.getElementById('thesis').value = state.thesis || '';
+  if (document.getElementById('complexity')) document.getElementById('complexity').value = state.complexity || '';
+  if (document.getElementById('outside')) document.getElementById('outside').value = state.outside || '';
+}
+
+function sw(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pane-'+id).classList.add('active');
+  if (id === 'prompt') setTimeout(loadPromptFields, 10);
+  if (id === 'docs') renderDocs();
+  if (id === 'themes') renderThemes();
+  if (id === 'outline') renderOutline();
+}
+
+function ins(id, text) {
+  const el = document.getElementById(id);
+  if (el) { el.value = text; el.focus(); save(); }
+}
+
+// DOCS
+function addDoc() {
+  state.docs.push({ id: Date.now(), num: state.docs.length + 1, title: '', author: '', date: '', type: '', mainPoint: '', happ: { h: '', a: '', p: '', p2: '', s: '' } });
+  save();
+  renderDocs();
+}
+
+function renderDocs() {
+  const el = document.getElementById('docList');
+  const empty = document.getElementById('docEmpty');
+  document.getElementById('doc-count').textContent = state.docs.length;
+  if (!state.docs.length) { el.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  el.innerHTML = state.docs.map((d, i) => `
+    <div class="doc-card" id="dc-${d.id}">
+      <div class="doc-header">
+        <div class="doc-num">Doc ${i+1}</div>
+        <div style="flex:1">
+          <input value="${esc(d.title)}" placeholder="Document title / source name" style="font-weight:700;margin-bottom:4px" oninput="updateDoc(${d.id},'title',this.value)"/>
+          <div class="g2" style="margin-top:6px">
+            <input value="${esc(d.author)}" placeholder="Author / Creator" oninput="updateDoc(${d.id},'author',this.value)"/>
+            <input value="${esc(d.date)}" placeholder="Date (e.g. 1789)" oninput="updateDoc(${d.id},'date',this.value)"/>
+          </div>
+          <input value="${esc(d.type)}" placeholder="Document type (speech, letter, map, cartoon…)" style="margin-top:6px" oninput="updateDoc(${d.id},'type',this.value)"/>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeDoc(${d.id})">✕</button>
+      </div>
+      <label>Main Point / What does this document argue or show?</label>
+      <textarea rows="2" placeholder="Summarize the document's main argument or content…" oninput="updateDoc(${d.id},'mainPoint',this.value)">${esc(d.mainPoint)}</textarea>
+      <div style="margin-top:10px">
+        <div style="font-size:.7rem;font-weight:700;color:var(--accent2);text-transform:uppercase;margin-bottom:6px">HAPP Analysis</div>
+        <div class="happ-row">
+          <div class="happ-cell"><div class="happ-label">Historical Context</div><textarea rows="2" style="font-size:.72rem;padding:4px 6px" placeholder="What was happening at this time?" oninput="updateDocHapp(${d.id},'h',this.value)">${esc(d.happ.h)}</textarea></div>
+          <div class="happ-cell"><div class="happ-label">Audience</div><textarea rows="2" style="font-size:.72px;padding:4px 6px" placeholder="Who was this made for?" oninput="updateDocHapp(${d.id},'a',this.value)">${esc(d.happ.a)}</textarea></div>
+          <div class="happ-cell"><div class="happ-label">Purpose</div><textarea rows="2" style="font-size:.72rem;padding:4px 6px" placeholder="Why was this created?" oninput="updateDocHapp(${d.id},'p',this.value)">${esc(d.happ.p)}</textarea></div>
+          <div class="happ-cell"><div class="happ-label">Point of View</div><textarea rows="2" style="font-size:.72rem;padding:4px 6px" placeholder="Author's perspective / bias?" oninput="updateDocHapp(${d.id},'p2',this.value)">${esc(d.happ.p2)}</textarea></div>
+          <div class="happ-cell"><div class="happ-label">Significance</div><textarea rows="2" style="font-size:.72rem;padding:4px 6px" placeholder="How does it support your thesis?" oninput="updateDocHapp(${d.id},'s',this.value)">${esc(d.happ.s)}</textarea></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function updateDoc(id, field, val) { const d = state.docs.find(x => x.id === id); if (d) { d[field] = val; save(); } }
+function updateDocHapp(id, field, val) { const d = state.docs.find(x => x.id === id); if (d) { d.happ[field] = val; save(); } }
+function removeDoc(id) { state.docs = state.docs.filter(x => x.id !== id); save(); renderDocs(); }
+
+// THEMES
+function addTheme() {
+  const name = prompt('Theme name (e.g. Economic Factors, Political Causes):');
+  if (!name) return;
+  state.themes.push({ id: Date.now(), name, docIds: [], bodyNote: '' });
+  save(); renderThemes();
+}
+
+function renderThemes() {
+  const el = document.getElementById('themeList');
+  if (!state.themes.length) { el.innerHTML = '<div style="font-size:.84rem;color:var(--muted);text-align:center;padding:20px">No themes yet.</div>'; return; }
+  el.innerHTML = state.themes.map((t, ti) => `
+    <div class="theme-group">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="theme-name">📁 ${esc(t.name)}</div>
+        <button class="btn btn-danger btn-sm" onclick="removeTheme(${t.id})">✕</button>
+      </div>
+      <label style="margin-top:0">Assign Documents:</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px">
+        ${state.docs.map((d,i) => `<label style="display:flex;align-items:center;gap:5px;font-size:.78rem;cursor:pointer;color:var(--text)"><input type="checkbox" ${t.docIds.includes(d.id)?'checked':''} onchange="toggleDocTheme(${t.id},${d.id},this.checked)" style="width:auto;padding:0"/> Doc ${i+1}${d.title?' — '+d.title.slice(0,20):''}</label>`).join('')}
+        ${!state.docs.length ? '<span style="font-size:.76rem;color:var(--muted)">Add documents first</span>' : ''}
+      </div>
+      <label>Body Paragraph Notes:</label>
+      <textarea rows="2" placeholder="What argument will this paragraph make? Which docs support it?" oninput="updateTheme(${t.id},'bodyNote',this.value)">${esc(t.bodyNote)}</textarea>
+    </div>`).join('');
+}
+
+function toggleDocTheme(tid, did, checked) {
+  const t = state.themes.find(x => x.id === tid);
+  if (!t) return;
+  if (checked && !t.docIds.includes(did)) t.docIds.push(did);
+  if (!checked) t.docIds = t.docIds.filter(x => x !== did);
+  save();
+}
+function updateTheme(id, field, val) { const t = state.themes.find(x => x.id === id); if (t) { t[field] = val; save(); } }
+function removeTheme(id) { state.themes = state.themes.filter(x => x.id !== id); save(); renderThemes(); }
+
+// OUTLINE
+function genOutline() {
+  const thesis = state.thesis || '[Your thesis here]';
+  const outside = state.outside || '[Outside evidence here]';
+  const prompt = state.prompt || '[DBQ Prompt]';
+  const bodyParagraphs = state.themes.length ? state.themes.map((t, i) => {
+    const docs = t.docIds.map(did => {
+      const d = state.docs.find(x => x.id === did);
+      return d ? `Doc ${state.docs.indexOf(d)+1}${d.title?' ('+d.title.slice(0,30)+')':''}` : '';
+    }).filter(Boolean);
+    return `<div class="outline-section">
+      <div class="outline-label">Body Paragraph ${i+1}: ${esc(t.name)}</div>
+      <div class="outline-content">
+        <strong>Topic sentence:</strong> ${esc(t.bodyNote) || '[State your argument for this theme]'}<br>
+        <strong>Documents used:</strong> ${docs.length ? docs.join(', ') : '[Assign documents in the Theme Groups tab]'}<br>
+        <strong>HAPP sourcing:</strong> [Include at least one piece of HAPP analysis per paragraph]<br>
+        <strong>Analysis:</strong> [Explain how the docs support your claim]
+      </div>
+    </div>`;
+  }).join('') : '<div class="outline-section"><div class="outline-content" style="color:var(--muted)">Create theme groups in the "Group by Theme" tab to auto-fill body paragraphs.</div></div>';
+
+  document.getElementById('outlineArea').innerHTML = `
+    <div class="outline-section">
+      <div class="outline-label">Introduction</div>
+      <div class="outline-content">
+        <strong>Historical context:</strong> [2–3 sentences situating the prompt in time and place]<br>
+        <strong>Thesis:</strong> ${esc(thesis)}
+      </div>
+    </div>
+    ${bodyParagraphs}
+    <div class="outline-section">
+      <div class="outline-label">Outside Evidence Paragraph (if needed)</div>
+      <div class="outline-content">
+        <strong>Evidence:</strong> ${esc(outside)}<br>
+        <strong>Connection to thesis:</strong> [Explain how this outside evidence strengthens your argument]
+      </div>
+    </div>
+    <div class="outline-section">
+      <div class="outline-label">Conclusion</div>
+      <div class="outline-content">
+        <strong>Restate thesis:</strong> [In new words]<br>
+        <strong>Synthesize:</strong> [Connect your main themes together]<br>
+        ${state.complexity ? '<strong>Complexity:</strong> ' + esc(state.complexity) : '<strong>Complexity (optional):</strong> [Show nuance — change over time, regional variation, or counterargument]'}
+      </div>
+    </div>`;
+}
+
+function renderOutline() { genOutline(); }
+
+function copyOutline() {
+  const el = document.getElementById('outlineArea');
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => alert('Outline copied!'));
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Init
+loadPromptFields();
+renderDocs();
+</script>
+</body>
+</html>

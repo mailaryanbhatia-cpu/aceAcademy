@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Conclusion Writer — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:960px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.container{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+h2{font-size:.83rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px}
+textarea,input,select{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-size:.87rem;width:100%;font-family:'Segoe UI',sans-serif}
+textarea{resize:vertical;line-height:1.6}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent)}
+.field{margin-bottom:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.87rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-sm{padding:5px 12px;font-size:.76rem}
+/* Section labels */
+.section-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+/* Preview */
+.preview-box{background:#0d1728;border-radius:12px;padding:18px;line-height:1.9;font-size:.93rem;min-height:120px}
+.preview-empty{color:var(--muted);font-style:italic;font-size:.85rem}
+.s-restate{color:#f59e0b}
+.s-synth{color:#10b981}
+.s-sig{color:#6366f1}
+.s-clincher{color:#ec4899}
+/* Starter chips */
+.starter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.starter-chip{background:#0d1728;border:1px solid var(--border);color:var(--accent2);border-radius:6px;padding:3px 10px;font-size:.72rem;cursor:pointer;transition:.12s}
+.starter-chip:hover{background:#1e2d4a;border-color:var(--accent)}
+/* Word count */
+.wc{font-size:.7rem;color:var(--muted);text-align:right;margin-top:3px}
+/* Saves */
+.save-item{background:#0d1728;border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+/* Anti-cliché alert */
+.cliche-alert{background:#ef444422;border:1px solid #ef444444;border-radius:8px;padding:10px 12px;font-size:.78rem;color:#fca5a5;margin-top:8px;display:none}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>✍️ Conclusion Writer</h1>
+</div>
+
+<div style="max-width:960px;margin:0 auto;padding:20px 16px 0">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+    <p style="font-size:.82rem;color:var(--muted)">Build a synthesis conclusion in 4 steps: <strong style="color:#f59e0b">Restate</strong> → <strong style="color:#10b981">Synthesize</strong> → <strong style="color:#6366f1">Broader Significance</strong> → <strong style="color:#ec4899">Clincher</strong></p>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="loadExample()">Try Example</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearAll()">🗑 Clear</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- LEFT: INPUTS -->
+  <div>
+    <div class="card">
+      <h2>Build Your Conclusion</h2>
+
+      <!-- RESTATE -->
+      <div class="field">
+        <span class="section-badge" style="background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b55">1 · Restate</span>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Restate your thesis in new words — don't copy it verbatim.</div>
+        <div class="starter-row" id="starters-r"></div>
+        <textarea id="inp-r" rows="2" placeholder="e.g. The evidence throughout this essay makes clear that social media represents a genuine threat to teenage mental health." oninput="update();wc('inp-r','wc-r')"></textarea>
+        <div class="wc" id="wc-r"></div>
+        <div class="cliche-alert" id="cliche-r">⚠️ Avoid starting with "In conclusion," "To sum up," "As I have shown," or "In this essay." These openers weaken your conclusion.</div>
+      </div>
+
+      <!-- SYNTHESIZE -->
+      <div class="field">
+        <span class="section-badge" style="background:#10b98122;color:#10b981;border:1px solid #10b98155">2 · Synthesize</span>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Weave together your 2–3 main points — show how they connect, not just list them.</div>
+        <div class="starter-row" id="starters-s"></div>
+        <textarea id="inp-s" rows="3" placeholder="e.g. From the psychological research on comparison culture to the neurological effects of dopamine loops, the evidence converges on a single, troubling conclusion: these platforms are engineered for engagement at the direct expense of wellbeing." oninput="update();wc('inp-s','wc-s')"></textarea>
+        <div class="wc" id="wc-s"></div>
+      </div>
+
+      <!-- SIGNIFICANCE -->
+      <div class="field">
+        <span class="section-badge" style="background:#6366f122;color:#a5b4fc;border:1px solid #6366f155">3 · Broader Significance</span>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Zoom out — why does this argument matter beyond the essay?</div>
+        <div class="starter-row" id="starters-sig"></div>
+        <textarea id="inp-sig" rows="2" placeholder="e.g. At stake is not merely a question of screen time, but the kind of society we are building for the next generation — one that either protects young people's capacity for genuine connection or silently erodes it." oninput="update();wc('inp-sig','wc-sig')"></textarea>
+        <div class="wc" id="wc-sig"></div>
+      </div>
+
+      <!-- CLINCHER -->
+      <div class="field">
+        <span class="section-badge" style="background:#ec489922;color:#ec4899;border:1px solid #ec489955">4 · Clincher</span>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">A memorable final sentence — a call to action, a provocative question, or a resonant image.</div>
+        <div class="starter-row" id="starters-cl"></div>
+        <textarea id="inp-cl" rows="2" placeholder="e.g. The question is no longer whether social media affects teenagers — the question is whether we are willing to act before the damage becomes irreversible." oninput="update();wc('inp-cl','wc-cl')"></textarea>
+        <div class="wc" id="wc-cl"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: PREVIEW + SAVES -->
+  <div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h2 style="margin:0">Live Preview</h2>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="copyConclusion()">📋 Copy</button>
+          <button class="btn btn-primary btn-sm" onclick="saveConclusion()">💾 Save</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:.7rem;margin-bottom:10px">
+        <span style="color:#f59e0b">■ Restate</span>
+        <span style="color:#10b981">■ Synthesize</span>
+        <span style="color:#a5b4fc">■ Significance</span>
+        <span style="color:#ec4899">■ Clincher</span>
+      </div>
+      <div class="preview-box" id="preview">
+        <span class="preview-empty">Fill in the sections above to build your conclusion...</span>
+      </div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:8px" id="word-count"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <h2>What Makes a Strong Conclusion?</h2>
+      <div style="font-size:.8rem;line-height:1.8;color:var(--text)">
+        <div style="margin-bottom:6px">✅ <strong>Synthesizes</strong> — connects ideas, doesn't just list them</div>
+        <div style="margin-bottom:6px">✅ <strong>Restates differently</strong> — thesis in new language</div>
+        <div style="margin-bottom:6px">✅ <strong>Zooms out</strong> — broader implications for the world</div>
+        <div style="margin-bottom:6px">✅ <strong>Ends memorably</strong> — leaves the reader thinking</div>
+        <div style="margin-bottom:6px">❌ <strong>Never</strong> starts with "In conclusion" or "To sum up"</div>
+        <div>❌ <strong>Never</strong> introduces brand-new arguments</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Saved Conclusions</h2>
+      <div id="saveList"><div style="font-size:.82rem;color:var(--muted)">No saved conclusions yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STARTERS = {
+  r: ['Ultimately, this essay has demonstrated that','The evidence presented throughout makes clear that','Taken together, these arguments confirm that','What emerges from this analysis is that','This examination has revealed that'],
+  s: ['Across these arguments, a clear pattern emerges:','When considered together, these findings suggest','The connection between these points reveals','Each of these threads points toward the same conclusion:','Together, these ideas illuminate'],
+  sig: ['At stake is more than','The implications of this argument extend beyond','This matters because','In a broader sense, this reflects','What this reveals about our society is'],
+  cl: ['The question is no longer whether, but','The choice we make now will determine','Perhaps the most important step forward is','History will judge us not by our intentions, but','The time for half-measures has passed —']
+};
+
+const CLICHES = ['in conclusion','to sum up','as i have shown','in this essay','in summary','to conclude','as demonstrated','as shown above','all in all'];
+
+function initStarters() {
+  Object.entries(STARTERS).forEach(([key, arr]) => {
+    const id = 'starters-' + key;
+    const inpId = 'inp-' + (key === 'sig' ? 'sig' : key === 'cl' ? 'cl' : key);
+    document.getElementById(id).innerHTML = arr.map((s, i) =>
+      `<span class="starter-chip" onclick="insertStarter('${inpId}','${s.replace(/'/g,"\\'")}')">+ ${s.split(' ').slice(0,3).join(' ')}…</span>`
+    ).join('');
+  });
+}
+
+function insertStarter(id, text) {
+  const el = document.getElementById(id);
+  el.value = el.value.trim() ? el.value.trimEnd() + ' ' + text + ' ' : text + ' ';
+  el.focus(); update();
+}
+
+function wc(id, wcId) {
+  const v = document.getElementById(id).value.trim();
+  const n = v ? v.split(/\s+/).length : 0;
+  document.getElementById(wcId).textContent = n ? n + ' word' + (n !== 1 ? 's' : '') : '';
+}
+
+function checkCliche(id, alertId) {
+  const v = document.getElementById(id).value.toLowerCase().trimStart();
+  const found = CLICHES.some(c => v.startsWith(c));
+  document.getElementById(alertId).style.display = found ? 'block' : 'none';
+}
+
+function update() {
+  const R = document.getElementById('inp-r').value.trim();
+  const S = document.getElementById('inp-s').value.trim();
+  const Sig = document.getElementById('inp-sig').value.trim();
+  const Cl = document.getElementById('inp-cl').value.trim();
+
+  checkCliche('inp-r', 'cliche-r');
+
+  if (!R && !S && !Sig && !Cl) {
+    document.getElementById('preview').innerHTML = '<span class="preview-empty">Fill in the sections above to build your conclusion...</span>';
+    document.getElementById('word-count').textContent = '';
+    return;
+  }
+  const parts = [];
+  if (R) parts.push(`<span class="s-restate">${esc(R)}</span>`);
+  if (S) parts.push(`<span class="s-synth">${esc(S)}</span>`);
+  if (Sig) parts.push(`<span class="s-sig">${esc(Sig)}</span>`);
+  if (Cl) parts.push(`<span class="s-clincher">${esc(Cl)}</span>`);
+  document.getElementById('preview').innerHTML = parts.join(' ');
+  const total = [R, S, Sig, Cl].join(' ').split(/\s+/).filter(Boolean).length;
+  document.getElementById('word-count').textContent = `${total} words · ${[R,S,Sig,Cl].filter(Boolean).length}/4 sections`;
+}
+
+function copyConclusion() {
+  const parts = ['inp-r','inp-s','inp-sig','inp-cl'].map(id => document.getElementById(id).value.trim()).filter(Boolean);
+  if (!parts.length) { alert('Write something first!'); return; }
+  navigator.clipboard.writeText(parts.join(' ')).then(() => alert('Conclusion copied!'));
+}
+
+let saves = JSON.parse(localStorage.getItem('conclusion-saves') || '[]');
+
+function saveConclusion() {
+  const R = document.getElementById('inp-r').value.trim();
+  if (!R) { alert('Add at least a restatement before saving.'); return; }
+  const name = prompt('Name this conclusion:', R.slice(0, 50) + '…');
+  if (!name) return;
+  saves.unshift({
+    name, r: document.getElementById('inp-r').value,
+    s: document.getElementById('inp-s').value,
+    sig: document.getElementById('inp-sig').value,
+    cl: document.getElementById('inp-cl').value,
+    ts: Date.now()
+  });
+  if (saves.length > 10) saves.pop();
+  localStorage.setItem('conclusion-saves', JSON.stringify(saves));
+  renderSaves();
+}
+
+function renderSaves() {
+  const el = document.getElementById('saveList');
+  if (!saves.length) { el.innerHTML = '<div style="font-size:.82rem;color:var(--muted)">No saved conclusions yet.</div>'; return; }
+  el.innerHTML = saves.map((s, i) => `<div class="save-item">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.84rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.name)}</div>
+      <div style="font-size:.7rem;color:var(--muted)">${new Date(s.ts).toLocaleDateString()}</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="loadSave(${i})">Load</button>
+    <button class="btn btn-ghost btn-sm" style="color:#ef4444;border-color:#ef444433" onclick="deleteSave(${i})">✕</button>
+  </div>`).join('');
+}
+
+function loadSave(i) {
+  const s = saves[i];
+  document.getElementById('inp-r').value = s.r || '';
+  document.getElementById('inp-s').value = s.s || '';
+  document.getElementById('inp-sig').value = s.sig || '';
+  document.getElementById('inp-cl').value = s.cl || '';
+  ['r','s','sig','cl'].forEach(k => wc('inp-'+k, 'wc-'+k));
+  update();
+}
+
+function deleteSave(i) { saves.splice(i, 1); localStorage.setItem('conclusion-saves', JSON.stringify(saves)); renderSaves(); }
+
+function clearAll() {
+  ['r','s','sig','cl'].forEach(k => { document.getElementById('inp-'+k).value = ''; document.getElementById('wc-'+k).textContent = ''; });
+  update();
+}
+
+function loadExample() {
+  document.getElementById('inp-r').value = 'The evidence throughout this essay makes clear that social media represents a genuine and measurable threat to teenage mental health.';
+  document.getElementById('inp-s').value = 'From the psychological research on social comparison culture to the neurological effects of variable-reward dopamine loops, the evidence converges on a single troubling conclusion: these platforms are deliberately engineered for engagement at the direct expense of wellbeing.';
+  document.getElementById('inp-sig').value = 'At stake is not merely a question of screen time but the kind of society we are building — one that either protects young people\'s capacity for genuine connection or silently erodes it in the name of profit.';
+  document.getElementById('inp-cl').value = 'The question is no longer whether social media harms teenagers; the question is whether we are willing to act before that harm becomes irreversible.';
+  ['r','s','sig','cl'].forEach(k => wc('inp-'+k, 'wc-'+k));
+  update();
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+initStarters();
+renderSaves();
+</script>
+</body>
+</html>

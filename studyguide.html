@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Study Guide Builder — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.9rem}
+.top-bar h1{font-size:1.1rem;font-weight:700}
+.container{max-width:1000px;margin:0 auto;padding:24px 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{font-size:.83rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px}
+textarea,input{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 12px;font-size:.88rem;width:100%;font-family:'Segoe UI',sans-serif;line-height:1.6}
+textarea{resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.87rem;font-weight:700;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5254d4}
+.btn-ghost{background:transparent;color:var(--accent2);border:1px solid var(--border)}
+.btn-ghost:hover{background:#1e2d4a}
+.btn-sm{padding:5px 12px;font-size:.76rem}
+/* Guide sections */
+.guide-section{background:#0d1728;border-radius:12px;margin-bottom:16px;overflow:hidden}
+.guide-section-header{padding:12px 16px;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.guide-section-body{padding:0 16px 16px}
+/* Key terms */
+.term-card{background:#1a2540;border-radius:8px;padding:12px;margin-bottom:8px;display:flex;gap:14px;align-items:flex-start}
+.term-word{font-weight:800;color:var(--accent2);font-size:.9rem;min-width:120px;flex-shrink:0}
+.term-def{font-size:.84rem;line-height:1.6;color:var(--text)}
+/* Practice Qs */
+.pq-item{padding:10px 0;border-bottom:1px solid var(--border)22}
+.pq-item:last-child{border-bottom:none}
+.pq-q{font-size:.86rem;font-weight:600;margin-bottom:4px;line-height:1.5}
+.pq-a{font-size:.8rem;color:var(--muted);line-height:1.5;padding-left:12px;border-left:2px solid var(--border);margin-top:4px;display:none}
+.pq-toggle{font-size:.72rem;color:var(--accent2);cursor:pointer;margin-top:4px;display:inline-block}
+/* Summary */
+.summary-text{font-size:.88rem;line-height:1.9;color:var(--text)}
+/* Stats */
+.stat-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.stat-box{background:#0d1728;border-radius:10px;padding:10px 16px;flex:1;min-width:90px;text-align:center}
+.stat-num{font-size:1.4rem;font-weight:800;color:var(--accent2)}
+.stat-label{font-size:.68rem;color:var(--muted);margin-top:2px}
+/* Progress */
+.prog-row{display:flex;justify-content:space-between;margin-bottom:4px;font-size:.78rem}
+.prog-bar-wrap{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.prog-bar-fill{height:100%;background:var(--accent);border-radius:3px}
+/* Collapsed toggle icon */
+.toggle-icon{margin-left:auto;color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📚 Study Guide Builder</h1>
+</div>
+<div class="container">
+
+  <div class="card">
+    <h2>Paste Your Notes</h2>
+    <div style="margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px"><label>Topic / Subject</label><input id="topic" placeholder="e.g. The French Revolution, Cell Biology, Algebra II"/></div>
+      <div style="flex:1;min-width:160px"><label>Grade / Course</label><input id="course" placeholder="e.g. AP World History, Grade 10 Bio"/></div>
+    </div>
+    <textarea id="notes" rows="10" placeholder="Paste your notes, textbook excerpts, or any text you want to turn into a study guide…&#10;&#10;The more detailed your notes, the better your study guide will be. Include definitions, key events, formulas, or concepts."></textarea>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="buildGuide()">✨ Build Study Guide</button>
+      <button class="btn btn-ghost" onclick="loadSample()">Try Sample Notes</button>
+      <button class="btn btn-ghost" id="copy-btn" style="display:none" onclick="copyGuide()">📋 Copy Guide</button>
+    </div>
+  </div>
+
+  <div id="output" style="display:none">
+    <div class="stat-row" id="stats"></div>
+
+    <!-- Summary -->
+    <div class="guide-section" id="sec-summary">
+      <div class="guide-section-header" style="background:#6366f133;color:var(--accent2)" onclick="toggle('summary')">
+        📝 Summary <span class="toggle-icon" id="ti-summary">▾</span>
+      </div>
+      <div class="guide-section-body" id="body-summary"></div>
+    </div>
+
+    <!-- Key Terms -->
+    <div class="guide-section" id="sec-terms">
+      <div class="guide-section-header" style="background:#f59e0b22;color:#f59e0b" onclick="toggle('terms')">
+        🔑 Key Terms & Definitions <span class="toggle-icon" id="ti-terms">▾</span>
+      </div>
+      <div class="guide-section-body" id="body-terms"></div>
+    </div>
+
+    <!-- Key Concepts -->
+    <div class="guide-section" id="sec-concepts">
+      <div class="guide-section-header" style="background:#10b98122;color:#10b981" onclick="toggle('concepts')">
+        💡 Key Concepts & Ideas <span class="toggle-icon" id="ti-concepts">▾</span>
+      </div>
+      <div class="guide-section-body" id="body-concepts"></div>
+    </div>
+
+    <!-- Practice Questions -->
+    <div class="guide-section" id="sec-questions">
+      <div class="guide-section-header" style="background:#ec489922;color:#ec4899" onclick="toggle('questions')">
+        ❓ Practice Questions <span class="toggle-icon" id="ti-questions">▾</span>
+      </div>
+      <div class="guide-section-body" id="body-questions"></div>
+    </div>
+
+    <!-- Quick Review -->
+    <div class="guide-section" id="sec-review">
+      <div class="guide-section-header" style="background:#8b5cf622;color:#a78bfa" onclick="toggle('review')">
+        ⚡ Quick Review Checklist <span class="toggle-icon" id="ti-review">▾</span>
+      </div>
+      <div class="guide-section-body" id="body-review"></div>
+    </div>
+  </div>
+
+</div>
+<script>
+function toggle(id){
+  const body=document.getElementById('body-'+id);
+  const icon=document.getElementById('ti-'+id);
+  const hidden=body.style.display==='none';
+  body.style.display=hidden?'block':'none';
+  icon.textContent=hidden?'▾':'▸';
+}
+
+function buildGuide(){
+  const notes=document.getElementById('notes').value.trim();
+  const topic=document.getElementById('topic').value.trim()||'This Topic';
+  if(!notes||notes.length<50){alert('Please paste at least a paragraph of notes.');return;}
+  const guide=analyzeNotes(notes,topic);
+  renderGuide(guide,topic);
+}
+
+function analyzeNotes(text, topic){
+  const sentences=text.match(/[^.!?]+[.!?]+/g)||text.split('\n').filter(Boolean);
+  const words=text.toLowerCase().split(/\W+/).filter(w=>w.length>3);
+  const wordFreq={};
+  words.forEach(w=>{if(!STOPS.has(w)) wordFreq[w]=(wordFreq[w]||0)+1;});
+  const topWords=Object.entries(wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,30).map(e=>e[0]);
+
+  // Extract terms: lines with ":" or "—" or "-" patterns
+  const termLines=text.split('\n').filter(l=>{
+    const t=l.trim();
+    return (t.includes(':')&&t.length<200&&t.indexOf(':')>1&&t.indexOf(':')<60)||
+           (t.includes(' — ')&&t.length<200)||(t.match(/^[A-Z][a-zA-Z\s]+\s*[:—-]\s*.{10,}/));
+  });
+  const terms=termLines.slice(0,12).map(l=>{
+    const sep=l.includes(':')? ':' : l.includes(' — ')?' — ':' - ';
+    const idx=l.indexOf(sep);
+    return{word:l.slice(0,idx).replace(/^[-•*\s]+/,'').trim(), def:l.slice(idx+sep.length).trim()};
+  }).filter(t=>t.word&&t.def&&t.word.length<60);
+
+  // Key concepts: sentences with top words or that are long and substantive
+  const concepts=sentences.filter(s=>{
+    const sl=s.toLowerCase();
+    return topWords.slice(0,8).some(w=>sl.includes(w))&&s.trim().length>40&&s.trim().length<300;
+  }).slice(0,8).map(s=>s.trim());
+
+  // Generate practice questions from concepts
+  const questions=generateQuestions(concepts, terms, topic);
+
+  // Summary: first 3 substantial sentences
+  const summary=sentences.filter(s=>s.trim().length>60).slice(0,4).map(s=>s.trim()).join(' ');
+
+  // Checklist items from key terms and concepts
+  const checklist=[
+    ...terms.slice(0,6).map(t=>`Define and explain: ${t.word}`),
+    ...concepts.slice(0,4).map((c,i)=>`Understand concept ${i+1}: ${c.split(' ').slice(0,8).join(' ')}…`)
+  ].slice(0,10);
+
+  return{summary,terms,concepts,questions,checklist,wordCount:words.length,sentenceCount:sentences.length};
+}
+
+function generateQuestions(concepts, terms, topic){
+  const qs=[];
+  // From terms
+  terms.slice(0,4).forEach(t=>{
+    qs.push({q:`What is ${t.word}?`,a:t.def});
+    qs.push({q:`How would you use or apply the concept of "${t.word}" in ${topic}?`,a:`${t.word} refers to: ${t.def}. Application depends on context.`});
+  });
+  // From concepts
+  const starters=['Explain why','Describe how','What is the significance of','In what way does','Compare and contrast','What caused','How did','What are the key features of'];
+  concepts.slice(0,4).forEach((c,i)=>{
+    const s=starters[i%starters.length];
+    const noun=c.split(' ').slice(0,5).join(' ');
+    qs.push({q:`${s} ${noun.toLowerCase()}...?`,a:c});
+  });
+  // General
+  qs.push({q:`What are the 3 most important things to remember about ${topic}?`,a:'Review your key terms and concepts above to formulate your answer.'});
+  qs.push({q:`How does ${topic} connect to broader themes in this subject?`,a:'Think about patterns, causes, and significance beyond the specific content.'});
+  return qs.slice(0,10);
+}
+
+const STOPS=new Set(['that','this','with','from','they','been','have','were','their','said','each','which','about','would','there','could','other','after','these','those','when','will','what','your','more','also','into','than','then','some','very','just','like','over','such','only','both','much','most','even','well','many','back','good','time','year','made','come','used','make','take','does','work','life','look','know','need','way','day','get','had','has','him','his','how','its','now','our','out','own','say','she','the','too','use','was','who','why','yet','you']);
+
+function renderGuide(g, topic){
+  document.getElementById('output').style.display='block';
+  document.getElementById('copy-btn').style.display='inline-flex';
+  // Stats
+  document.getElementById('stats').innerHTML=`
+    <div class="stat-box"><div class="stat-num">${g.terms.length}</div><div class="stat-label">Key Terms</div></div>
+    <div class="stat-box"><div class="stat-num">${g.concepts.length}</div><div class="stat-label">Key Concepts</div></div>
+    <div class="stat-box"><div class="stat-num">${g.questions.length}</div><div class="stat-label">Practice Qs</div></div>
+    <div class="stat-box"><div class="stat-num">${g.wordCount}</div><div class="stat-label">Words Analyzed</div></div>`;
+  // Summary
+  document.getElementById('body-summary').innerHTML=`<p class="summary-text">${esc(g.summary||'No clear summary could be extracted — try adding more complete sentences.')}</p>`;
+  // Terms
+  document.getElementById('body-terms').innerHTML=g.terms.length?
+    g.terms.map(t=>`<div class="term-card"><div class="term-word">${esc(t.word)}</div><div class="term-def">${esc(t.def)}</div></div>`).join('') :
+    '<div style="color:var(--muted);font-size:.84rem">No clear term definitions detected. Try formatting as "Term: definition" in your notes.</div>';
+  // Concepts
+  document.getElementById('body-concepts').innerHTML=g.concepts.length?
+    g.concepts.map((c,i)=>`<div class="pq-item"><div class="pq-q">${i+1}. ${esc(c)}</div></div>`).join('') :
+    '<div style="color:var(--muted);font-size:.84rem">No key concepts extracted.</div>';
+  // Questions
+  let qHtml='';
+  g.questions.forEach((q,i)=>{
+    qHtml+=`<div class="pq-item">
+      <div class="pq-q">${i+1}. ${esc(q.q)}</div>
+      <span class="pq-toggle" onclick="toggleAnswer(${i})">Show answer ▾</span>
+      <div class="pq-a" id="qa-${i}">${esc(q.a)}</div>
+    </div>`;
+  });
+  document.getElementById('body-questions').innerHTML=qHtml||'<div style="color:var(--muted)">Not enough content to generate questions.</div>';
+  // Checklist
+  document.getElementById('body-review').innerHTML=`
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Check each item as you review:</p>`+
+    g.checklist.map((item,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)22;font-size:.84rem">
+      <input type="checkbox" id="cl-${i}" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;cursor:pointer;padding:0"/>
+      <label for="cl-${i}" style="cursor:pointer;color:var(--text)">${esc(item)}</label>
+    </div>`).join('');
+  document.getElementById('output').scrollIntoView({behavior:'smooth'});
+}
+
+function toggleAnswer(i){
+  const el=document.getElementById('qa-'+i);
+  const tog=el.previousElementSibling;
+  if(el.style.display==='block'){el.style.display='none';tog.textContent='Show answer ▾';}
+  else{el.style.display='block';tog.textContent='Hide answer ▴';}
+}
+
+function copyGuide(){
+  const el=document.getElementById('output');
+  navigator.clipboard.writeText(el.innerText).then(()=>alert('Study guide copied!'));
+}
+
+function loadSample(){
+  document.getElementById('topic').value='The French Revolution';
+  document.getElementById('course').value='AP World History / Grade 10';
+  document.getElementById('notes').value=`The French Revolution (1789–1799)
+
+Causes of the French Revolution:
+- Financial crisis: France was nearly bankrupt due to costly wars, including support for the American Revolution
+- Social inequality: The Three Estates created deep divisions (clergy, nobility, commoners)
+- Enlightenment ideas: Thinkers like Rousseau and Voltaire spread ideas about liberty, equality, and democracy
+- Food shortages: Poor harvests in 1788 caused widespread hunger among the peasantry
+
+Key Terms:
+Ancien Régime: The political and social system of France before the Revolution, based on the Three Estates
+The Estates-General: A legislative body representing the three estates, called by Louis XVI in 1789
+The National Assembly: A new governing body formed by the Third Estate after being locked out of the Estates-General
+The Tennis Court Oath: 1789 pledge by members of the National Assembly not to disband until a constitution was written
+The Declaration of the Rights of Man: Document adopted in 1789 establishing principles of liberty, equality, and popular sovereignty
+Jacobins: A radical political club that gained power during the Revolution; led by Robespierre
+The Reign of Terror: Period (1793–1794) of mass executions of perceived enemies of the Revolution under Robespierre
+The Directory: Five-person governing committee that ruled France from 1795 to 1799
+
+Key Events:
+- July 14, 1789: Storming of the Bastille — symbolic start of the Revolution
+- August 1789: Abolition of feudalism by the National Assembly
+- 1793: Execution of Louis XVI; France declared war on Britain and others
+- 1793–1794: Reign of Terror — approximately 17,000 executed officially
+- November 1799: Napoleon's coup d'état (18 Brumaire) ends the Revolution
+
+Legacy and Significance:
+The French Revolution transformed France and influenced revolutions worldwide. It ended the absolute monarchy, spread Enlightenment values, and inspired future democratic movements. Napoleon later exported revolutionary ideals (and French power) across Europe.`;
+  buildGuide();
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
