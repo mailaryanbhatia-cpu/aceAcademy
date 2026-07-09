@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Computer Science Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="apcs.html">AP Computer Science</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>💻 AP Computer Science Concept Drill</h1>
+  <p>101 terms covering AP CSP's five Big Ideas plus AP CS A / Java fundamentals. Flip flashcards or quiz yourself.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "creative": {
+    "label": "Creative Development",
+    "icon": "💡",
+    "terms": [
+      [
+        "Iterative Design Process",
+        "A development approach of repeatedly testing and refining a program based on feedback."
+      ],
+      [
+        "Incremental Development",
+        "Building a program in small stages, testing each piece before adding the next."
+      ],
+      [
+        "Pair Programming",
+        "A collaborative technique where two programmers work together at one workstation, one writing code and one reviewing."
+      ],
+      [
+        "Program Documentation",
+        "Written explanations (comments, design docs) describing what code does and how to use it."
+      ],
+      [
+        "Pseudocode",
+        "An informal, high-level description of an algorithm's steps, not tied to any specific programming language."
+      ],
+      [
+        "Debugging",
+        "The process of finding and fixing errors (bugs) in a program."
+      ],
+      [
+        "Syntax Error",
+        "An error that occurs when code violates the grammatical rules of a programming language."
+      ],
+      [
+        "Logic Error",
+        "An error where a program runs without crashing but produces incorrect results due to flawed reasoning."
+      ],
+      [
+        "Runtime Error",
+        "An error that occurs while a program is executing, e.g., dividing by zero."
+      ],
+      [
+        "Abstraction",
+        "Hiding complex implementation details behind a simpler interface, e.g., a function name representing many lines of code."
+      ],
+      [
+        "Program Function/Procedure",
+        "A named block of reusable code that performs a specific task."
+      ],
+      [
+        "Parameter",
+        "A variable used to pass a value into a function or procedure."
+      ],
+      [
+        "Return Value",
+        "The output a function sends back to the code that called it."
+      ],
+      [
+        "List (Array)",
+        "An ordered collection of data elements, accessible by index."
+      ],
+      [
+        "API",
+        "Application Programming Interface; a set of predefined functions/tools that let programs interact with other software or services."
+      ],
+      [
+        "Open-Source Software",
+        "Software whose source code is publicly available for anyone to view, use, modify, and share."
+      ],
+      [
+        "Intellectual Property / Creative Commons",
+        "Legal protections and licenses (like Creative Commons) governing how creative and software work can be used and shared."
+      ]
+    ]
+  },
+  "data": {
+    "label": "Data & Binary",
+    "icon": "💾",
+    "terms": [
+      [
+        "Bit",
+        "A single binary digit — either 0 or 1 — the smallest unit of digital data."
+      ],
+      [
+        "Byte",
+        "A group of 8 bits, commonly used to represent a single character of data."
+      ],
+      [
+        "Binary Number System",
+        "A base-2 number system using only digits 0 and 1, the foundation of digital computing."
+      ],
+      [
+        "Binary Search",
+        "An efficient algorithm that repeatedly halves a sorted list to locate a target value, O(log n) time."
+      ],
+      [
+        "ASCII",
+        "A character encoding standard that maps text characters to numeric binary values."
+      ],
+      [
+        "Unicode",
+        "A character encoding standard designed to represent text from all the world's writing systems."
+      ],
+      [
+        "Lossless Compression",
+        "Data compression that allows the original data to be perfectly reconstructed, e.g., ZIP files."
+      ],
+      [
+        "Lossy Compression",
+        "Data compression that permanently discards some data to reduce file size, e.g., JPEG, MP3."
+      ],
+      [
+        "Metadata",
+        "Data that describes other data, e.g., a photo's timestamp, location, and camera settings."
+      ],
+      [
+        "Data Abstraction",
+        "Representing complex real-world data using simplified data structures like lists or tables."
+      ],
+      [
+        "Extraneous Data",
+        "Irrelevant or unnecessary information in a dataset that can obscure meaningful patterns."
+      ],
+      [
+        "Big Data",
+        "Extremely large and complex datasets that require special tools and techniques to store, process, and analyze."
+      ],
+      [
+        "Data Mining",
+        "The process of discovering patterns and relationships within large datasets."
+      ],
+      [
+        "Heuristic",
+        "A problem-solving approach using practical shortcuts to find a good-enough solution quickly, though not guaranteed optimal."
+      ],
+      [
+        "Bandwidth",
+        "The maximum rate of data transfer across a network, often measured in bits per second."
+      ],
+      [
+        "Overflow Error",
+        "An error that occurs when a calculated value is too large to be stored in the allocated space."
+      ]
+    ]
+  },
+  "algorithms": {
+    "label": "Algorithms & Programming",
+    "icon": "🧩",
+    "terms": [
+      [
+        "Algorithm",
+        "A precise, step-by-step sequence of instructions used to solve a problem or complete a task."
+      ],
+      [
+        "Variable",
+        "A named storage location in a program that holds a value which can change during execution."
+      ],
+      [
+        "Sequencing",
+        "Executing program statements one after another in the exact order they are written."
+      ],
+      [
+        "Selection (Conditional)",
+        "A programming construct (if/else) that chooses between different paths of execution based on a condition."
+      ],
+      [
+        "Iteration (Loop)",
+        "A programming construct that repeats a sequence of instructions until a condition is met."
+      ],
+      [
+        "For Loop",
+        "A loop that repeats a set number of times or iterates over a fixed collection."
+      ],
+      [
+        "While Loop",
+        "A loop that repeats as long as a specified condition remains true."
+      ],
+      [
+        "Boolean Expression",
+        "An expression that evaluates to either true or false."
+      ],
+      [
+        "Relational Operator",
+        "An operator (like <, >, ==) used to compare two values."
+      ],
+      [
+        "Logical Operator",
+        "An operator (AND, OR, NOT) used to combine or invert Boolean expressions."
+      ],
+      [
+        "Procedural Abstraction",
+        "Breaking a large problem into smaller, well-defined procedures/functions to manage complexity."
+      ],
+      [
+        "Simulation",
+        "A computational model that represents a real-world process, allowing testing without real-world consequences."
+      ],
+      [
+        "Undecidable Problem",
+        "A problem for which no algorithm can be constructed that always leads to a correct yes-or-no answer."
+      ],
+      [
+        "Big-O Notation",
+        "A way to describe how an algorithm's runtime or space requirements grow as input size increases."
+      ],
+      [
+        "Linear Search",
+        "An algorithm that checks each element in a list sequentially until the target is found, O(n) time."
+      ],
+      [
+        "Sorting Algorithm",
+        "An algorithm (e.g., bubble sort, selection sort) that arranges elements of a list into a specific order."
+      ],
+      [
+        "Recursion",
+        "A technique where a function calls itself to solve smaller instances of the same problem."
+      ]
+    ]
+  },
+  "systems": {
+    "label": "The Internet & Computing Systems",
+    "icon": "🌐",
+    "terms": [
+      [
+        "The Internet",
+        "A global network connecting millions of computer networks using standardized communication protocols."
+      ],
+      [
+        "Protocol",
+        "A set of agreed-upon rules that govern how data is formatted and transmitted between devices."
+      ],
+      [
+        "TCP/IP",
+        "The core protocol suite of the Internet; TCP breaks/reassembles data packets, IP handles addressing/routing."
+      ],
+      [
+        "Packet",
+        "A small unit of data, along with routing information, sent across a network."
+      ],
+      [
+        "Router",
+        "A networking device that forwards data packets between different computer networks."
+      ],
+      [
+        "IP Address",
+        "A unique numerical identifier assigned to each device connected to a network."
+      ],
+      [
+        "DNS",
+        "Domain Name System; translates human-readable domain names into numerical IP addresses."
+      ],
+      [
+        "HTTP/HTTPS",
+        "The protocol used for transferring web pages; HTTPS adds encryption for secure communication."
+      ],
+      [
+        "Fault Tolerance",
+        "A system's ability to continue operating properly even if some of its components fail."
+      ],
+      [
+        "Redundancy",
+        "Duplicating critical components or data so a system keeps working if one part fails."
+      ],
+      [
+        "Bandwidth vs. Latency",
+        "Bandwidth is the amount of data transferred per second; latency is the delay before data transfer begins."
+      ],
+      [
+        "Parallel Computing",
+        "Performing multiple computations simultaneously by dividing a task across multiple processors."
+      ],
+      [
+        "Distributed Computing",
+        "Using multiple independent computers that communicate over a network to work together on a task."
+      ],
+      [
+        "Scalability",
+        "A system's capacity to handle increasing amounts of work or to be enlarged to accommodate growth."
+      ],
+      [
+        "Firewall",
+        "A network security system that monitors and controls incoming/outgoing traffic based on security rules."
+      ]
+    ]
+  },
+  "impact": {
+    "label": "Impact of Computing",
+    "icon": "⚖️",
+    "terms": [
+      [
+        "Digital Divide",
+        "The gap between those who have easy access to computers/the Internet and those who do not."
+      ],
+      [
+        "Computing Bias",
+        "Unfair outcomes produced by algorithms, often reflecting biases present in training data or design choices."
+      ],
+      [
+        "Crowdsourcing",
+        "Obtaining input, ideas, or data by soliciting contributions from a large group of people, often via the Internet."
+      ],
+      [
+        "Citizen Science",
+        "Scientific research conducted, in part, by amateur or nonprofessional volunteers, often using computing tools."
+      ],
+      [
+        "Phishing",
+        "A cyberattack that uses deceptive emails or messages to trick users into revealing sensitive information."
+      ],
+      [
+        "Malware",
+        "Software designed to damage, disrupt, or gain unauthorized access to a computer system."
+      ],
+      [
+        "Keylogging",
+        "Malicious software that secretly records a user's keystrokes to steal passwords or other private data."
+      ],
+      [
+        "Rogue Access Point",
+        "An unauthorized wireless access point that can be used to intercept network traffic."
+      ],
+      [
+        "Encryption",
+        "The process of encoding data so that only authorized parties can read it."
+      ],
+      [
+        "Symmetric Encryption",
+        "An encryption method that uses the same key for both encrypting and decrypting data."
+      ],
+      [
+        "Public Key Encryption",
+        "An encryption method using a public key to encrypt and a private key to decrypt, enabling secure communication."
+      ],
+      [
+        "Multi-Factor Authentication",
+        "A security process requiring two or more forms of verification to confirm a user's identity."
+      ],
+      [
+        "Computer Virus",
+        "Malicious code that attaches to legitimate programs/files and spreads when the infected file is run or shared."
+      ],
+      [
+        "Net Neutrality",
+        "The principle that Internet service providers should treat all data equally, without favoring or blocking content."
+      ],
+      [
+        "Digital Footprint",
+        "The trail of data a person leaves behind from their online activity."
+      ],
+      [
+        "Personally Identifiable Information (PII)",
+        "Data that can be used to identify a specific individual, e.g., name, SSN, address."
+      ]
+    ]
+  },
+  "java": {
+    "label": "Java & OOP Fundamentals (CS A)",
+    "icon": "☕",
+    "terms": [
+      [
+        "Primitive Data Type",
+        "A basic built-in data type in Java, e.g., int, double, boolean, char."
+      ],
+      [
+        "int",
+        "A Java primitive type that stores whole numbers (32-bit integers)."
+      ],
+      [
+        "double",
+        "A Java primitive type that stores decimal (floating-point) numbers."
+      ],
+      [
+        "boolean",
+        "A Java primitive type that stores only true or false."
+      ],
+      [
+        "String",
+        "A Java class (not a primitive) representing a sequence of characters."
+      ],
+      [
+        "Casting",
+        "Explicitly converting a value from one data type to another, e.g., (int) 3.9 becomes 3."
+      ],
+      [
+        "Class",
+        "A blueprint for creating objects, defining their attributes (fields) and behaviors (methods)."
+      ],
+      [
+        "Object",
+        "An instance of a class, containing actual data values for the class's fields."
+      ],
+      [
+        "Constructor",
+        "A special method used to initialize a new object when it is created."
+      ],
+      [
+        "Instance Variable",
+        "A variable defined in a class that holds data unique to each object created from that class."
+      ],
+      [
+        "Method",
+        "A block of code within a class that defines a behavior objects of that class can perform."
+      ],
+      [
+        "Method Signature",
+        "A method's name along with the number, types, and order of its parameters."
+      ],
+      [
+        "Encapsulation",
+        "Bundling data and methods together within a class and restricting direct access to internal details."
+      ],
+      [
+        "Inheritance",
+        "A mechanism where a new class (subclass) derives fields and methods from an existing class (superclass)."
+      ],
+      [
+        "Polymorphism",
+        "The ability for objects of different classes to be treated as instances of a common superclass."
+      ],
+      [
+        "Overriding",
+        "Providing a new implementation of a superclass method in a subclass."
+      ],
+      [
+        "Overloading",
+        "Defining multiple methods in the same class with the same name but different parameter lists."
+      ],
+      [
+        "ArrayList",
+        "A resizable Java collection class used to store an ordered list of objects."
+      ],
+      [
+        "Instantiation",
+        "The process of creating a new object from a class using the 'new' keyword."
+      ],
+      [
+        "this Keyword",
+        "A reference in Java used within a class to refer to the current object instance."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

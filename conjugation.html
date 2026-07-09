@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verb Conjugation Trainer — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+
+.chip-group{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:6px 15px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted);transition:all .15s}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+label{font-size:.72rem;font-weight:800;color:var(--muted);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+
+.tab-row{display:flex;gap:8px;margin-bottom:16px}
+.tab-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.verb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.verb-chip{background:#111827;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;transition:.15s;text-align:left}
+.verb-chip:hover{border-color:var(--accent)}
+.verb-chip.active{border-color:var(--accent);background:rgba(99,102,241,.15)}
+.verb-inf{font-weight:800;font-size:.88rem;color:#fff}
+.verb-meaning{font-size:.72rem;color:var(--muted);margin-top:2px}
+.verb-reg{font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:6px;margin-top:4px;display:inline-block}
+.reg-yes{background:rgba(52,211,153,.15);color:var(--green)}
+.reg-no{background:rgba(251,191,36,.15);color:var(--amber)}
+
+table.conj-table{width:100%;border-collapse:collapse;margin-top:6px}
+table.conj-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:.88rem}
+table.conj-table td:first-child{color:var(--muted);font-weight:600;width:40%}
+table.conj-table td:last-child{color:var(--accent2);font-weight:700}
+
+.quiz-prompt{text-align:center;padding:20px 0}
+.quiz-verb{font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:4px}
+.quiz-meta{font-size:.85rem;color:var(--muted);margin-bottom:18px}
+.quiz-input{width:100%;max-width:340px;margin:0 auto;display:block;background:#0d1628;border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;font-size:1.1rem;color:#fff;text-align:center;outline:none;font-family:inherit}
+.quiz-input:focus{border-color:var(--accent)}
+.quiz-input.correct{border-color:var(--green);background:rgba(52,211,153,.1)}
+.quiz-input.wrong{border-color:var(--red);background:rgba(248,113,113,.1)}
+.quiz-feedback{margin-top:12px;font-size:.88rem;min-height:22px}
+.feedback-correct{color:var(--green);font-weight:700}
+.feedback-wrong{color:var(--red);font-weight:700}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="conjugation.html">Verb Conjugation</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🔤 Verb Conjugation Trainer</h1>
+  <p>60 verbs (20 each) across Spanish, French, and German — present, past, and future tenses.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <label>Language</label>
+    <div class="chip-group" id="langGroup">
+      <button class="chip active" data-val="spanish">🇪🇸 Spanish</button>
+      <button class="chip" data-val="french">🇫🇷 French</button>
+      <button class="chip" data-val="german">🇩🇪 German</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Verb</label>
+    <div class="verb-grid" id="verbGrid"></div>
+  </div>
+
+  <div class="card" id="tenseCard" style="display:none">
+    <label>Tense</label>
+    <div class="chip-group" id="tenseGroup"></div>
+  </div>
+
+  <div class="card" id="modeCard" style="display:none">
+    <div class="tab-row">
+      <button class="tab-btn active" id="modeTable" onclick="setMode('table')">📋 Reference Table</button>
+      <button class="tab-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="tableArea"></div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizScore">Score: 0 / 0</div>
+      <div class="quiz-prompt">
+        <div class="quiz-verb" id="quizVerb"></div>
+        <div class="quiz-meta" id="quizMeta"></div>
+        <input type="text" class="quiz-input" id="quizInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type the conjugated form…">
+        <div class="quiz-feedback" id="quizFeedback"></div>
+        <div style="margin-top:16px"><button class="btn btn-primary" onclick="checkAnswer()">Check</button> <button class="btn btn-outline" onclick="nextQuizQ()">Skip →</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const DATA = {
+  "spanish": {
+    "pronouns": [
+      "yo",
+      "tú",
+      "él/ella/usted",
+      "nosotros",
+      "vosotros",
+      "ellos/ellas/ustedes"
+    ],
+    "tenses": [
+      "present",
+      "preterite",
+      "future"
+    ],
+    "tenseLabels": {
+      "present": "Present",
+      "preterite": "Preterite (Past)",
+      "future": "Future"
+    },
+    "verbs": {
+      "hablar": {
+        "meaning": "to speak",
+        "present": [
+          "hablo",
+          "hablas",
+          "habla",
+          "hablamos",
+          "habláis",
+          "hablan"
+        ],
+        "preterite": [
+          "hablé",
+          "hablaste",
+          "habló",
+          "hablamos",
+          "hablasteis",
+          "hablaron"
+        ],
+        "future": [
+          "hablaré",
+          "hablarás",
+          "hablará",
+          "hablaremos",
+          "hablaréis",
+          "hablarán"
+        ],
+        "regular": true
+      },
+      "trabajar": {
+        "meaning": "to work",
+        "present": [
+          "trabajo",
+          "trabajas",
+          "trabaja",
+          "trabajamos",
+          "trabajáis",
+          "trabajan"
+        ],
+        "preterite": [
+          "trabajé",
+          "trabajaste",
+          "trabajó",
+          "trabajamos",
+          "trabajasteis",
+          "trabajaron"
+        ],
+        "future": [
+          "trabajaré",
+          "trabajarás",
+          "trabajará",
+          "trabajaremos",
+          "trabajaréis",
+          "trabajarán"
+        ],
+        "regular": true
+      },
+      "comprar": {
+        "meaning": "to buy",
+        "present": [
+          "compro",
+          "compras",
+          "compra",
+          "compramos",
+          "compráis",
+          "compran"
+        ],
+        "preterite": [
+          "compré",
+          "compraste",
+          "compró",
+          "compramos",
+          "comprasteis",
+          "compraron"
+        ],
+        "future": [
+          "compraré",
+          "comprarás",
+          "comprará",
+          "compraremos",
+          "compraréis",
+          "comprarán"
+        ],
+        "regular": true
+      },
+      "estudiar": {
+        "meaning": "to study",
+        "present": [
+          "estudio",
+          "estudias",
+          "estudia",
+          "estudiamos",
+          "estudiáis",
+          "estudian"
+        ],
+        "preterite": [
+          "estudié",
+          "estudiaste",
+          "estudió",
+          "estudiamos",
+          "estudiasteis",
+          "estudiaron"
+        ],
+        "future": [
+          "estudiaré",
+          "estudiarás",
+          "estudiará",
+          "estudiaremos",
+          "estudiaréis",
+          "estudiarán"
+        ],
+        "regular": true
+      },
+      "caminar": {
+        "meaning": "to walk",
+        "present": [
+          "camino",
+          "caminas",
+          "camina",
+          "caminamos",
+          "camináis",
+          "caminan"
+        ],
+        "preterite": [
+          "caminé",
+          "caminaste",
+          "caminó",
+          "caminamos",
+          "caminasteis",
+          "caminaron"
+        ],
+        "future": [
+          "caminaré",
+          "caminarás",
+          "caminará",
+          "caminaremos",
+          "caminaréis",
+          "caminarán"
+        ],
+        "regular": true
+      },
+      "comer": {
+        "meaning": "to eat",
+        "present": [
+          "como",
+          "comes",
+          "come",
+          "comemos",
+          "coméis",
+          "comen"
+        ],
+        "preterite": [
+          "comí",
+          "comiste",
+          "comió",
+          "comimos",
+          "comisteis",
+          "comieron"
+        ],
+        "future": [
+          "comeré",
+          "comerás",
+          "comerá",
+          "comeremos",
+          "comeréis",
+          "comerán"
+        ],
+        "regular": true
+      },
+      "aprender": {
+        "meaning": "to learn",
+        "present": [
+          "aprendo",
+          "aprendes",
+          "aprende",
+          "aprendemos",
+          "aprendéis",
+          "aprenden"
+        ],
+        "preterite": [
+          "aprendí",
+          "aprendiste",
+          "aprendió",
+          "aprendimos",
+          "aprendisteis",
+          "aprendieron"
+        ],
+        "future": [
+          "aprenderé",
+          "aprenderás",
+          "aprenderá",
+          "aprenderemos",
+          "aprenderéis",
+          "aprenderán"
+        ],
+        "regular": true
+      },
+      "beber": {
+        "meaning": "to drink",
+        "present": [
+          "bebo",
+          "bebes",
+          "bebe",
+          "bebemos",
+          "bebéis",
+          "beben"
+        ],
+        "preterite": [
+          "bebí",
+          "bebiste",
+          "bebió",
+          "bebimos",
+          "bebisteis",
+          "bebieron"
+        ],
+        "future": [
+          "beberé",
+          "beberás",
+          "beberá",
+          "beberemos",
+          "beberéis",
+          "beberán"
+        ],
+        "regular": true
+      },
+      "vivir": {
+        "meaning": "to live",
+        "present": [
+          "vivo",
+          "vives",
+          "vive",
+          "vivimos",
+          "vivís",
+          "viven"
+        ],
+        "preterite": [
+          "viví",
+          "viviste",
+          "vivió",
+          "vivimos",
+          "vivisteis",
+          "vivieron"
+        ],
+        "future": [
+          "viviré",
+          "vivirás",
+          "vivirá",
+          "viviremos",
+          "viviréis",
+          "vivirán"
+        ],
+        "regular": true
+      },
+      "escribir": {
+        "meaning": "to write",
+        "present": [
+          "escribo",
+          "escribes",
+          "escribe",
+          "escribimos",
+          "escribís",
+          "escriben"
+        ],
+        "preterite": [
+          "escribí",
+          "escribiste",
+          "escribió",
+          "escribimos",
+          "escribisteis",
+          "escribieron"
+        ],
+        "future": [
+          "escribiré",
+          "escribirás",
+          "escribirá",
+          "escribiremos",
+          "escribiréis",
+          "escribirán"
+        ],
+        "regular": true
+      },
+      "ser": {
+        "meaning": "to be (permanent)",
+        "present": [
+          "soy",
+          "eres",
+          "es",
+          "somos",
+          "sois",
+          "son"
+        ],
+        "preterite": [
+          "fui",
+          "fuiste",
+          "fue",
+          "fuimos",
+          "fuisteis",
+          "fueron"
+        ],
+        "future": [
+          "seré",
+          "serás",
+          "será",
+          "seremos",
+          "seréis",
+          "serán"
+        ],
+        "regular": false
+      },
+      "estar": {
+        "meaning": "to be (temporary/location)",
+        "present": [
+          "estoy",
+          "estás",
+          "está",
+          "estamos",
+          "estáis",
+          "están"
+        ],
+        "preterite": [
+          "estuve",
+          "estuviste",
+          "estuvo",
+          "estuvimos",
+          "estuvisteis",
+          "estuvieron"
+        ],
+        "future": [
+          "estaré",
+          "estarás",
+          "estará",
+          "estaremos",
+          "estaréis",
+          "estarán"
+        ],
+        "regular": false
+      },
+      "tener": {
+        "meaning": "to have",
+        "present": [
+          "tengo",
+          "tienes",
+          "tiene",
+          "tenemos",
+          "tenéis",
+          "tienen"
+        ],
+        "preterite": [
+          "tuve",
+          "tuviste",
+          "tuvo",
+          "tuvimos",
+          "tuvisteis",
+          "tuvieron"
+        ],
+        "future": [
+          "tendré",
+          "tendrás",
+          "tendrá",
+          "tendremos",
+          "tendréis",
+          "tendrán"
+        ],
+        "regular": false
+      },
+      "ir": {
+        "meaning": "to go",
+        "present": [
+          "voy",
+          "vas",
+          "va",
+          "vamos",
+          "vais",
+          "van"
+        ],
+        "preterite": [
+          "fui",
+          "fuiste",
+          "fue",
+          "fuimos",
+          "fuisteis",
+          "fueron"
+        ],
+        "future": [
+          "iré",
+          "irás",
+          "irá",
+          "iremos",
+          "iréis",
+          "irán"
+        ],
+        "regular": false
+      },
+      "hacer": {
+        "meaning": "to do / make",
+        "present": [
+          "hago",
+          "haces",
+          "hace",
+          "hacemos",
+          "hacéis",
+          "hacen"
+        ],
+        "preterite": [
+          "hice",
+          "hiciste",
+          "hizo",
+          "hicimos",
+          "hicisteis",
+          "hicieron"
+        ],
+        "future": [
+          "haré",
+          "harás",
+          "hará",
+          "haremos",
+          "haréis",
+          "harán"
+        ],
+        "regular": false
+      },
+      "poder": {
+        "meaning": "to be able to / can",
+        "present": [
+          "puedo",
+          "puedes",
+          "puede",
+          "podemos",
+          "podéis",
+          "pueden"
+        ],
+        "preterite": [
+          "pude",
+          "pudiste",
+          "pudo",
+          "pudimos",
+          "pudisteis",
+          "pudieron"
+        ],
+        "future": [
+          "podré",
+          "podrás",
+          "podrá",
+          "podremos",
+          "podréis",
+          "podrán"
+        ],
+        "regular": false
+      },
+      "querer": {
+        "meaning": "to want / love",
+        "present": [
+          "quiero",
+          "quieres",
+          "quiere",
+          "queremos",
+          "queréis",
+          "quieren"
+        ],
+        "preterite": [
+          "quise",
+          "quisiste",
+          "quiso",
+          "quisimos",
+          "quisisteis",
+          "quisieron"
+        ],
+        "future": [
+          "querré",
+          "querrás",
+          "querrá",
+          "querremos",
+          "querréis",
+          "querrán"
+        ],
+        "regular": false
+      },
+      "decir": {
+        "meaning": "to say / tell",
+        "present": [
+          "digo",
+          "dices",
+          "dice",
+          "decimos",
+          "decís",
+          "dicen"
+        ],
+        "preterite": [
+          "dije",
+          "dijiste",
+          "dijo",
+          "dijimos",
+          "dijisteis",
+          "dijeron"
+        ],
+        "future": [
+          "diré",
+          "dirás",
+          "dirá",
+          "diremos",
+          "diréis",
+          "dirán"
+        ],
+        "regular": false
+      },
+      "ver": {
+        "meaning": "to see",
+        "present": [
+          "veo",
+          "ves",
+          "ve",
+          "vemos",
+          "veis",
+          "ven"
+        ],
+        "preterite": [
+          "vi",
+          "viste",
+          "vio",
+          "vimos",
+          "visteis",
+          "vieron"
+        ],
+        "future": [
+          "veré",
+          "verás",
+          "verá",
+          "veremos",
+          "veréis",
+          "verán"
+        ],
+        "regular": false
+      },
+      "dar": {
+        "meaning": "to give",
+        "present": [
+          "doy",
+          "das",
+          "da",
+          "damos",
+          "dais",
+          "dan"
+        ],
+        "preterite": [
+          "di",
+          "diste",
+          "dio",
+          "dimos",
+          "disteis",
+          "dieron"
+        ],
+        "future": [
+          "daré",
+          "darás",
+          "dará",
+          "daremos",
+          "daréis",
+          "darán"
+        ],
+        "regular": false
+      }
+    }
+  },
+  "french": {
+    "pronouns": [
+      "je",
+      "tu",
+      "il/elle/on",
+      "nous",
+      "vous",
+      "ils/elles"
+    ],
+    "tenses": [
+      "present",
+      "passe_compose",
+      "future"
+    ],
+    "tenseLabels": {
+      "present": "Présent",
+      "passe_compose": "Passé Composé",
+      "future": "Futur Simple"
+    },
+    "verbs": {
+      "parler": {
+        "meaning": "to speak",
+        "present": [
+          "parle",
+          "parles",
+          "parle",
+          "parlons",
+          "parlez",
+          "parlent"
+        ],
+        "passe_compose": [
+          "ai parlé",
+          "as parlé",
+          "a parlé",
+          "avons parlé",
+          "avez parlé",
+          "ont parlé"
+        ],
+        "future": [
+          "parlerai",
+          "parleras",
+          "parlera",
+          "parlerons",
+          "parlerez",
+          "parleront"
+        ],
+        "regular": true
+      },
+      "travailler": {
+        "meaning": "to work",
+        "present": [
+          "travaille",
+          "travailles",
+          "travaille",
+          "travaillons",
+          "travaillez",
+          "travaillent"
+        ],
+        "passe_compose": [
+          "ai travaillé",
+          "as travaillé",
+          "a travaillé",
+          "avons travaillé",
+          "avez travaillé",
+          "ont travaillé"
+        ],
+        "future": [
+          "travaillerai",
+          "travailleras",
+          "travaillera",
+          "travaillerons",
+          "travaillerez",
+          "travailleront"
+        ],
+        "regular": true
+      },
+      "acheter": {
+        "meaning": "to buy",
+        "present": [
+          "achete",
+          "achetes",
+          "achete",
+          "achetons",
+          "achetez",
+          "achetent"
+        ],
+        "passe_compose": [
+          "ai acheté",
+          "as acheté",
+          "a acheté",
+          "avons acheté",
+          "avez acheté",
+          "ont acheté"
+        ],
+        "future": [
+          "acheterai",
+          "acheteras",
+          "achetera",
+          "acheterons",
+          "acheterez",
+          "acheteront"
+        ],
+        "regular": true
+      },
+      "manger": {
+        "meaning": "to eat",
+        "present": [
+          "mange",
+          "manges",
+          "mange",
+          "mangons",
+          "mangez",
+          "mangent"
+        ],
+        "passe_compose": [
+          "ai mangé",
+          "as mangé",
+          "a mangé",
+          "avons mangé",
+          "avez mangé",
+          "ont mangé"
+        ],
+        "future": [
+          "mangerai",
+          "mangeras",
+          "mangera",
+          "mangerons",
+          "mangerez",
+          "mangeront"
+        ],
+        "regular": true
+      },
+      "aimer": {
+        "meaning": "to like / love",
+        "present": [
+          "aime",
+          "aimes",
+          "aime",
+          "aimons",
+          "aimez",
+          "aiment"
+        ],
+        "passe_compose": [
+          "ai aimé",
+          "as aimé",
+          "a aimé",
+          "avons aimé",
+          "avez aimé",
+          "ont aimé"
+        ],
+        "future": [
+          "aimerai",
+          "aimeras",
+          "aimera",
+          "aimerons",
+          "aimerez",
+          "aimeront"
+        ],
+        "regular": true
+      },
+      "finir": {
+        "meaning": "to finish",
+        "present": [
+          "finis",
+          "finis",
+          "finit",
+          "finissons",
+          "finissez",
+          "finissent"
+        ],
+        "passe_compose": [
+          "ai fini",
+          "as fini",
+          "a fini",
+          "avons fini",
+          "avez fini",
+          "ont fini"
+        ],
+        "future": [
+          "finirai",
+          "finiras",
+          "finira",
+          "finirons",
+          "finirez",
+          "finiront"
+        ],
+        "regular": true
+      },
+      "choisir": {
+        "meaning": "to choose",
+        "present": [
+          "choisis",
+          "choisis",
+          "choisit",
+          "choisissons",
+          "choisissez",
+          "choisissent"
+        ],
+        "passe_compose": [
+          "ai choisi",
+          "as choisi",
+          "a choisi",
+          "avons choisi",
+          "avez choisi",
+          "ont choisi"
+        ],
+        "future": [
+          "choisirai",
+          "choisiras",
+          "choisira",
+          "choisirons",
+          "choisirez",
+          "choisiront"
+        ],
+        "regular": true
+      },
+      "réussir": {
+        "meaning": "to succeed",
+        "present": [
+          "réussis",
+          "réussis",
+          "réussit",
+          "réussissons",
+          "réussissez",
+          "réussissent"
+        ],
+        "passe_compose": [
+          "ai réussi",
+          "as réussi",
+          "a réussi",
+          "avons réussi",
+          "avez réussi",
+          "ont réussi"
+        ],
+        "future": [
+          "réussirai",
+          "réussiras",
+          "réussira",
+          "réussirons",
+          "réussirez",
+          "réussiront"
+        ],
+        "regular": true
+      },
+      "vendre": {
+        "meaning": "to sell",
+        "present": [
+          "vends",
+          "vends",
+          "vend",
+          "vendons",
+          "vendez",
+          "vendent"
+        ],
+        "passe_compose": [
+          "ai vendu",
+          "as vendu",
+          "a vendu",
+          "avons vendu",
+          "avez vendu",
+          "ont vendu"
+        ],
+        "future": [
+          "vendrai",
+          "vendras",
+          "vendra",
+          "vendrons",
+          "vendrez",
+          "vendront"
+        ],
+        "regular": true
+      },
+      "attendre": {
+        "meaning": "to wait for",
+        "present": [
+          "attends",
+          "attends",
+          "attend",
+          "attendons",
+          "attendez",
+          "attendent"
+        ],
+        "passe_compose": [
+          "ai attendu",
+          "as attendu",
+          "a attendu",
+          "avons attendu",
+          "avez attendu",
+          "ont attendu"
+        ],
+        "future": [
+          "attendrai",
+          "attendras",
+          "attendra",
+          "attendrons",
+          "attendrez",
+          "attendront"
+        ],
+        "regular": true
+      },
+      "être": {
+        "meaning": "to be",
+        "present": [
+          "suis",
+          "es",
+          "est",
+          "sommes",
+          "êtes",
+          "sont"
+        ],
+        "passe_compose": [
+          "ai été",
+          "as été",
+          "a été",
+          "avons été",
+          "avez été",
+          "ont été"
+        ],
+        "future": [
+          "serai",
+          "seras",
+          "sera",
+          "serons",
+          "serez",
+          "seront"
+        ],
+        "regular": false
+      },
+      "avoir": {
+        "meaning": "to have",
+        "present": [
+          "ai",
+          "as",
+          "a",
+          "avons",
+          "avez",
+          "ont"
+        ],
+        "passe_compose": [
+          "ai eu",
+          "as eu",
+          "a eu",
+          "avons eu",
+          "avez eu",
+          "ont eu"
+        ],
+        "future": [
+          "aurai",
+          "auras",
+          "aura",
+          "aurons",
+          "aurez",
+          "auront"
+        ],
+        "regular": false
+      },
+      "aller": {
+        "meaning": "to go",
+        "present": [
+          "vais",
+          "vas",
+          "va",
+          "allons",
+          "allez",
+          "vont"
+        ],
+        "passe_compose": [
+          "suis allé",
+          "es allé",
+          "est allé",
+          "sommes allé",
+          "êtes allé",
+          "sont allé"
+        ],
+        "future": [
+          "irai",
+          "iras",
+          "ira",
+          "irons",
+          "irez",
+          "iront"
+        ],
+        "regular": false
+      },
+      "faire": {
+        "meaning": "to do / make",
+        "present": [
+          "fais",
+          "fais",
+          "fait",
+          "faisons",
+          "faites",
+          "font"
+        ],
+        "passe_compose": [
+          "ai fait",
+          "as fait",
+          "a fait",
+          "avons fait",
+          "avez fait",
+          "ont fait"
+        ],
+        "future": [
+          "ferai",
+          "feras",
+          "fera",
+          "ferons",
+          "ferez",
+          "feront"
+        ],
+        "regular": false
+      },
+      "pouvoir": {
+        "meaning": "to be able to / can",
+        "present": [
+          "peux",
+          "peux",
+          "peut",
+          "pouvons",
+          "pouvez",
+          "peuvent"
+        ],
+        "passe_compose": [
+          "ai pu",
+          "as pu",
+          "a pu",
+          "avons pu",
+          "avez pu",
+          "ont pu"
+        ],
+        "future": [
+          "pourrai",
+          "pourras",
+          "pourra",
+          "pourrons",
+          "pourrez",
+          "pourront"
+        ],
+        "regular": false
+      },
+      "vouloir": {
+        "meaning": "to want",
+        "present": [
+          "veux",
+          "veux",
+          "veut",
+          "voulons",
+          "voulez",
+          "veulent"
+        ],
+        "passe_compose": [
+          "ai voulu",
+          "as voulu",
+          "a voulu",
+          "avons voulu",
+          "avez voulu",
+          "ont voulu"
+        ],
+        "future": [
+          "voudrai",
+          "voudras",
+          "voudra",
+          "voudrons",
+          "voudrez",
+          "voudront"
+        ],
+        "regular": false
+      },
+      "devoir": {
+        "meaning": "to have to / must",
+        "present": [
+          "dois",
+          "dois",
+          "doit",
+          "devons",
+          "devez",
+          "doivent"
+        ],
+        "passe_compose": [
+          "ai dû",
+          "as dû",
+          "a dû",
+          "avons dû",
+          "avez dû",
+          "ont dû"
+        ],
+        "future": [
+          "devrai",
+          "devras",
+          "devra",
+          "devrons",
+          "devrez",
+          "devront"
+        ],
+        "regular": false
+      },
+      "savoir": {
+        "meaning": "to know (facts)",
+        "present": [
+          "sais",
+          "sais",
+          "sait",
+          "savons",
+          "savez",
+          "savent"
+        ],
+        "passe_compose": [
+          "ai su",
+          "as su",
+          "a su",
+          "avons su",
+          "avez su",
+          "ont su"
+        ],
+        "future": [
+          "saurai",
+          "sauras",
+          "saura",
+          "saurons",
+          "saurez",
+          "sauront"
+        ],
+        "regular": false
+      },
+      "voir": {
+        "meaning": "to see",
+        "present": [
+          "vois",
+          "vois",
+          "voit",
+          "voyons",
+          "voyez",
+          "voient"
+        ],
+        "passe_compose": [
+          "ai vu",
+          "as vu",
+          "a vu",
+          "avons vu",
+          "avez vu",
+          "ont vu"
+        ],
+        "future": [
+          "verrai",
+          "verras",
+          "verra",
+          "verrons",
+          "verrez",
+          "verront"
+        ],
+        "regular": false
+      },
+      "prendre": {
+        "meaning": "to take",
+        "present": [
+          "prends",
+          "prends",
+          "prend",
+          "prenons",
+          "prenez",
+          "prennent"
+        ],
+        "passe_compose": [
+          "ai pris",
+          "as pris",
+          "a pris",
+          "avons pris",
+          "avez pris",
+          "ont pris"
+        ],
+        "future": [
+          "prendrai",
+          "prendras",
+          "prendra",
+          "prendrons",
+          "prendrez",
+          "prendront"
+        ],
+        "regular": false
+      }
+    }
+  },
+  "german": {
+    "pronouns": [
+      "ich",
+      "du",
+      "er/sie/es",
+      "wir",
+      "ihr",
+      "sie/Sie"
+    ],
+    "tenses": [
+      "present",
+      "preterite",
+      "future"
+    ],
+    "tenseLabels": {
+      "present": "Präsens",
+      "preterite": "Präteritum",
+      "future": "Futur I"
+    },
+    "verbs": {
+      "spielen": {
+        "meaning": "to play",
+        "present": [
+          "spiele",
+          "spielst",
+          "spielt",
+          "spielen",
+          "spielt",
+          "spielen"
+        ],
+        "preterite": [
+          "spielte",
+          "spieltest",
+          "spielte",
+          "spielten",
+          "spieltet",
+          "spielten"
+        ],
+        "future": [
+          "werde spielen",
+          "wirst spielen",
+          "wird spielen",
+          "werden spielen",
+          "werdet spielen",
+          "werden spielen"
+        ],
+        "regular": true
+      },
+      "machen": {
+        "meaning": "to do / make",
+        "present": [
+          "mache",
+          "machst",
+          "macht",
+          "machen",
+          "macht",
+          "machen"
+        ],
+        "preterite": [
+          "machte",
+          "machtest",
+          "machte",
+          "machten",
+          "machtet",
+          "machten"
+        ],
+        "future": [
+          "werde machen",
+          "wirst machen",
+          "wird machen",
+          "werden machen",
+          "werdet machen",
+          "werden machen"
+        ],
+        "regular": true
+      },
+      "lernen": {
+        "meaning": "to learn",
+        "present": [
+          "lerne",
+          "lernst",
+          "lernt",
+          "lernen",
+          "lernt",
+          "lernen"
+        ],
+        "preterite": [
+          "lernte",
+          "lerntest",
+          "lernte",
+          "lernten",
+          "lerntet",
+          "lernten"
+        ],
+        "future": [
+          "werde lernen",
+          "wirst lernen",
+          "wird lernen",
+          "werden lernen",
+          "werdet lernen",
+          "werden lernen"
+        ],
+        "regular": true
+      },
+      "kaufen": {
+        "meaning": "to buy",
+        "present": [
+          "kaufe",
+          "kaufst",
+          "kauft",
+          "kaufen",
+          "kauft",
+          "kaufen"
+        ],
+        "preterite": [
+          "kaufte",
+          "kauftest",
+          "kaufte",
+          "kauften",
+          "kauftet",
+          "kauften"
+        ],
+        "future": [
+          "werde kaufen",
+          "wirst kaufen",
+          "wird kaufen",
+          "werden kaufen",
+          "werdet kaufen",
+          "werden kaufen"
+        ],
+        "regular": true
+      },
+      "wohnen": {
+        "meaning": "to live / reside",
+        "present": [
+          "wohne",
+          "wohnst",
+          "wohnt",
+          "wohnen",
+          "wohnt",
+          "wohnen"
+        ],
+        "preterite": [
+          "wohnte",
+          "wohntest",
+          "wohnte",
+          "wohnten",
+          "wohntet",
+          "wohnten"
+        ],
+        "future": [
+          "werde wohnen",
+          "wirst wohnen",
+          "wird wohnen",
+          "werden wohnen",
+          "werdet wohnen",
+          "werden wohnen"
+        ],
+        "regular": true
+      },
+      "arbeiten": {
+        "meaning": "to work",
+        "present": [
+          "arbeite",
+          "arbeitest",
+          "arbeitet",
+          "arbeiten",
+          "arbeitet",
+          "arbeiten"
+        ],
+        "preterite": [
+          "arbeitete",
+          "arbeitetest",
+          "arbeitete",
+          "arbeiteten",
+          "arbeitetet",
+          "arbeiteten"
+        ],
+        "future": [
+          "werde arbeiten",
+          "wirst arbeiten",
+          "wird arbeiten",
+          "werden arbeiten",
+          "werdet arbeiten",
+          "werden arbeiten"
+        ],
+        "regular": true
+      },
+      "sagen": {
+        "meaning": "to say",
+        "present": [
+          "sage",
+          "sagst",
+          "sagt",
+          "sagen",
+          "sagt",
+          "sagen"
+        ],
+        "preterite": [
+          "sagte",
+          "sagtest",
+          "sagte",
+          "sagten",
+          "sagtet",
+          "sagten"
+        ],
+        "future": [
+          "werde sagen",
+          "wirst sagen",
+          "wird sagen",
+          "werden sagen",
+          "werdet sagen",
+          "werden sagen"
+        ],
+        "regular": true
+      },
+      "hören": {
+        "meaning": "to hear / listen",
+        "present": [
+          "höre",
+          "hörst",
+          "hört",
+          "hören",
+          "hört",
+          "hören"
+        ],
+        "preterite": [
+          "hörte",
+          "hörtest",
+          "hörte",
+          "hörten",
+          "hörtet",
+          "hörten"
+        ],
+        "future": [
+          "werde hören",
+          "wirst hören",
+          "wird hören",
+          "werden hören",
+          "werdet hören",
+          "werden hören"
+        ],
+        "regular": true
+      },
+      "suchen": {
+        "meaning": "to search / look for",
+        "present": [
+          "suche",
+          "suchst",
+          "sucht",
+          "suchen",
+          "sucht",
+          "suchen"
+        ],
+        "preterite": [
+          "suchte",
+          "suchtest",
+          "suchte",
+          "suchten",
+          "suchtet",
+          "suchten"
+        ],
+        "future": [
+          "werde suchen",
+          "wirst suchen",
+          "wird suchen",
+          "werden suchen",
+          "werdet suchen",
+          "werden suchen"
+        ],
+        "regular": true
+      },
+      "kochen": {
+        "meaning": "to cook",
+        "present": [
+          "koche",
+          "kochst",
+          "kocht",
+          "kochen",
+          "kocht",
+          "kochen"
+        ],
+        "preterite": [
+          "kochte",
+          "kochtest",
+          "kochte",
+          "kochten",
+          "kochtet",
+          "kochten"
+        ],
+        "future": [
+          "werde kochen",
+          "wirst kochen",
+          "wird kochen",
+          "werden kochen",
+          "werdet kochen",
+          "werden kochen"
+        ],
+        "regular": true
+      },
+      "sein": {
+        "meaning": "to be",
+        "present": [
+          "bin",
+          "bist",
+          "ist",
+          "sind",
+          "seid",
+          "sind"
+        ],
+        "preterite": [
+          "war",
+          "warst",
+          "war",
+          "waren",
+          "wart",
+          "waren"
+        ],
+        "future": [
+          "werde sein",
+          "wirst sein",
+          "wird sein",
+          "werden sein",
+          "werdet sein",
+          "werden sein"
+        ],
+        "regular": false
+      },
+      "haben": {
+        "meaning": "to have",
+        "present": [
+          "habe",
+          "hast",
+          "hat",
+          "haben",
+          "habt",
+          "haben"
+        ],
+        "preterite": [
+          "hatte",
+          "hattest",
+          "hatte",
+          "hatten",
+          "hattet",
+          "hatten"
+        ],
+        "future": [
+          "werde haben",
+          "wirst haben",
+          "wird haben",
+          "werden haben",
+          "werdet haben",
+          "werden haben"
+        ],
+        "regular": false
+      },
+      "werden": {
+        "meaning": "to become",
+        "present": [
+          "werde",
+          "wirst",
+          "wird",
+          "werden",
+          "werdet",
+          "werden"
+        ],
+        "preterite": [
+          "wurde",
+          "wurdest",
+          "wurde",
+          "wurden",
+          "wurdet",
+          "wurden"
+        ],
+        "future": [
+          "werde werden",
+          "wirst werden",
+          "wird werden",
+          "werden werden",
+          "werdet werden",
+          "werden werden"
+        ],
+        "regular": false
+      },
+      "gehen": {
+        "meaning": "to go / walk",
+        "present": [
+          "gehe",
+          "gehst",
+          "geht",
+          "gehen",
+          "geht",
+          "gehen"
+        ],
+        "preterite": [
+          "ging",
+          "gingst",
+          "ging",
+          "gingen",
+          "gingt",
+          "gingen"
+        ],
+        "future": [
+          "werde gehen",
+          "wirst gehen",
+          "wird gehen",
+          "werden gehen",
+          "werdet gehen",
+          "werden gehen"
+        ],
+        "regular": false
+      },
+      "kommen": {
+        "meaning": "to come",
+        "present": [
+          "komme",
+          "kommst",
+          "kommt",
+          "kommen",
+          "kommt",
+          "kommen"
+        ],
+        "preterite": [
+          "kam",
+          "kamst",
+          "kam",
+          "kamen",
+          "kamt",
+          "kamen"
+        ],
+        "future": [
+          "werde kommen",
+          "wirst kommen",
+          "wird kommen",
+          "werden kommen",
+          "werdet kommen",
+          "werden kommen"
+        ],
+        "regular": false
+      },
+      "sehen": {
+        "meaning": "to see",
+        "present": [
+          "sehe",
+          "siehst",
+          "sieht",
+          "sehen",
+          "seht",
+          "sehen"
+        ],
+        "preterite": [
+          "sah",
+          "sahst",
+          "sah",
+          "sahen",
+          "saht",
+          "sahen"
+        ],
+        "future": [
+          "werde sehen",
+          "wirst sehen",
+          "wird sehen",
+          "werden sehen",
+          "werdet sehen",
+          "werden sehen"
+        ],
+        "regular": false
+      },
+      "sprechen": {
+        "meaning": "to speak",
+        "present": [
+          "spreche",
+          "sprichst",
+          "spricht",
+          "sprechen",
+          "sprecht",
+          "sprechen"
+        ],
+        "preterite": [
+          "sprach",
+          "sprachst",
+          "sprach",
+          "sprachen",
+          "spracht",
+          "sprachen"
+        ],
+        "future": [
+          "werde sprechen",
+          "wirst sprechen",
+          "wird sprechen",
+          "werden sprechen",
+          "werdet sprechen",
+          "werden sprechen"
+        ],
+        "regular": false
+      },
+      "essen": {
+        "meaning": "to eat",
+        "present": [
+          "esse",
+          "isst",
+          "isst",
+          "essen",
+          "esst",
+          "essen"
+        ],
+        "preterite": [
+          "aß",
+          "aßt",
+          "aß",
+          "aßen",
+          "aßt",
+          "aßen"
+        ],
+        "future": [
+          "werde essen",
+          "wirst essen",
+          "wird essen",
+          "werden essen",
+          "werdet essen",
+          "werden essen"
+        ],
+        "regular": false
+      },
+      "fahren": {
+        "meaning": "to drive / travel",
+        "present": [
+          "fahre",
+          "fährst",
+          "fährt",
+          "fahren",
+          "fahrt",
+          "fahren"
+        ],
+        "preterite": [
+          "fuhr",
+          "fuhrst",
+          "fuhr",
+          "fuhren",
+          "fuhrt",
+          "fuhren"
+        ],
+        "future": [
+          "werde fahren",
+          "wirst fahren",
+          "wird fahren",
+          "werden fahren",
+          "werdet fahren",
+          "werden fahren"
+        ],
+        "regular": false
+      },
+      "geben": {
+        "meaning": "to give",
+        "present": [
+          "gebe",
+          "gibst",
+          "gibt",
+          "geben",
+          "gebt",
+          "geben"
+        ],
+        "preterite": [
+          "gab",
+          "gabst",
+          "gab",
+          "gaben",
+          "gabt",
+          "gaben"
+        ],
+        "future": [
+          "werde geben",
+          "wirst geben",
+          "wird geben",
+          "werden geben",
+          "werdet geben",
+          "werden geben"
+        ],
+        "regular": false
+      }
+    }
+  }
+};
+
+let lang = 'spanish';
+let currentVerb = null;
+let currentTense = null;
+let mode = 'table';
+let quizCorrect = 0, quizTotal = 0;
+let quizAnswer = '';
+
+document.getElementById('langGroup').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  document.querySelectorAll('#langGroup .chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  lang = e.target.dataset.val;
+  currentVerb = null; currentTense = null;
+  document.getElementById('tenseCard').style.display = 'none';
+  document.getElementById('modeCard').style.display = 'none';
+  renderVerbGrid();
+});
+
+function renderVerbGrid() {
+  const grid = document.getElementById('verbGrid');
+  const verbs = DATA[lang].verbs;
+  grid.innerHTML = Object.keys(verbs).map(inf => {
+    const v = verbs[inf];
+    return `<div class="verb-chip${inf===currentVerb?' active':''}" onclick="selectVerb('${inf}')">
+      <div class="verb-inf">${esc(inf)}</div>
+      <div class="verb-meaning">${esc(v.meaning)}</div>
+      <span class="verb-reg ${v.regular?'reg-yes':'reg-no'}">${v.regular?'regular':'irregular'}</span>
+    </div>`;
+  }).join('');
+}
+
+function selectVerb(inf) {
+  currentVerb = inf;
+  renderVerbGrid();
+  document.getElementById('tenseCard').style.display = 'block';
+  renderTenseGroup();
+}
+
+function renderTenseGroup() {
+  const tenses = DATA[lang].tenses;
+  const labels = DATA[lang].tenseLabels;
+  const group = document.getElementById('tenseGroup');
+  group.innerHTML = tenses.map((t,i) => `<button class="chip${i===0?' active':''}" data-val="${t}" onclick="selectTense('${t}',this)">${esc(labels[t])}</button>`).join('');
+  currentTense = tenses[0];
+  document.getElementById('modeCard').style.display = 'block';
+  setMode(mode);
+}
+
+function selectTense(t, el) {
+  currentTense = t;
+  document.querySelectorAll('#tenseGroup .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeTable').classList.toggle('active', m === 'table');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('tableArea').style.display = m === 'table' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'table') renderTable();
+  else { quizCorrect = 0; quizTotal = 0; nextQuizQ(); }
+}
+
+function renderTable() {
+  if (!currentVerb || !currentTense) return;
+  const pronouns = DATA[lang].pronouns;
+  const forms = DATA[lang].verbs[currentVerb][currentTense];
+  const rows = pronouns.map((p,i) => `<tr><td>${esc(p)}</td><td>${esc(forms[i])}</td></tr>`).join('');
+  document.getElementById('tableArea').innerHTML = `<table class="conj-table"><tbody>${rows}</tbody></table>`;
+}
+
+function nextQuizQ() {
+  const verbKeys = Object.keys(DATA[lang].verbs);
+  const inf = verbKeys[Math.floor(Math.random() * verbKeys.length)];
+  const tenses = DATA[lang].tenses;
+  const tense = tenses[Math.floor(Math.random() * tenses.length)];
+  const pronouns = DATA[lang].pronouns;
+  const pi = Math.floor(Math.random() * pronouns.length);
+  const forms = DATA[lang].verbs[inf][tense];
+  quizAnswer = forms[pi];
+  document.getElementById('quizVerb').textContent = inf + ' — ' + DATA[lang].verbs[inf].meaning;
+  document.getElementById('quizMeta').textContent = `${DATA[lang].tenseLabels[tense]} · ${pronouns[pi]}`;
+  const input = document.getElementById('quizInput');
+  input.value = '';
+  input.classList.remove('correct','wrong');
+  document.getElementById('quizFeedback').textContent = '';
+  input.focus();
+  document.getElementById('quizScore').textContent = `Score: ${quizCorrect} / ${quizTotal}`;
+}
+
+function normalize(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+
+function checkAnswer() {
+  const input = document.getElementById('quizInput');
+  const val = input.value;
+  quizTotal++;
+  const correct = normalize(val) === normalize(quizAnswer);
+  if (correct) {
+    quizCorrect++;
+    input.classList.add('correct');
+    document.getElementById('quizFeedback').innerHTML = `<span class="feedback-correct">✓ Correct!</span>`;
+  } else {
+    input.classList.add('wrong');
+    document.getElementById('quizFeedback').innerHTML = `<span class="feedback-wrong">✗ Answer: ${esc(quizAnswer)}</span>`;
+  }
+  document.getElementById('quizScore').textContent = `Score: ${quizCorrect} / ${quizTotal}`;
+  setTimeout(nextQuizQ, 1600);
+}
+
+document.getElementById('quizInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkAnswer();
+});
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderVerbGrid();
+</script>
+</body>
+</html>

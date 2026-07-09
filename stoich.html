@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chemistry Equation Balancer &amp; Stoichiometry Calculator — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:860px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+label{font-size:.72rem;font-weight:800;color:var(--muted);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+input[type=text],input[type=number],select{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:.92rem;font-family:inherit;color:#fff;outline:none;transition:border .15s}
+input[type=text]:focus,input[type=number]:focus,select:focus{border-color:var(--accent)}
+.eq-input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.eq-input-row input{flex:1;min-width:200px}
+.example-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.example-chip{padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;cursor:pointer;font-family:'Courier New',monospace}
+.example-chip:hover{border-color:var(--accent);color:#fff}
+
+.balanced-display{background:#0d1628;border:1.5px solid var(--border);border-radius:12px;padding:24px;text-align:center;font-size:1.25rem;font-weight:700;color:#fff;font-family:'Courier New',monospace;letter-spacing:.5px;margin-top:16px;overflow-x:auto}
+.balanced-display .coeff{color:var(--accent2);font-weight:900}
+.error-box{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:12px 14px;color:#fca5a5;font-size:.85rem;margin-top:14px}
+
+.stoich-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:600px){.stoich-grid{grid-template-columns:1fr}}
+.stoich-result{background:#0d1628;border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-top:16px}
+.stoich-result .answer{font-size:1.5rem;font-weight:900;color:var(--accent2);margin-bottom:10px}
+.step{font-size:.82rem;color:var(--muted);padding:6px 0;border-bottom:1px solid var(--border);line-height:1.6}
+.step:last-child{border-bottom:none}
+.step strong{color:#fff}
+
+.molar-result{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.molar-box{flex:1;min-width:120px;background:#111827;border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center}
+.molar-val{font-size:1.3rem;font-weight:900;color:var(--accent2)}
+.molar-lbl{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="stoich.html">Equation Balancer &amp; Stoichiometry</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>⚗️ Equation Balancer &amp; Stoichiometry</h1>
+  <p>Balance any chemical equation instantly, then calculate moles, grams, and mole ratios between reactants and products.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Step 1 — Enter an Unbalanced Equation</h2>
+    <div class="eq-input-row">
+      <input type="text" id="eqInput" placeholder="e.g. CH4 + O2 -> CO2 + H2O" value="CH4 + O2 -> CO2 + H2O">
+      <button class="btn btn-primary btn-big" onclick="balance()">⚖️ Balance</button>
+    </div>
+    <div style="font-size:.72rem;color:var(--muted);margin-top:8px">Use <code>-></code> or <code>=</code> between reactants and products, <code>+</code> between compounds. Parentheses supported, e.g. Ca(OH)2.</div>
+    <div class="example-row" id="exampleRow"></div>
+    <div id="balanceOutput"></div>
+  </div>
+
+  <div class="card" id="stoichCard" style="display:none">
+    <h2>Step 2 — Stoichiometry Calculator</h2>
+    <div class="stoich-grid">
+      <div>
+        <label>Given</label>
+        <select id="givenCompound"></select>
+        <div style="margin-top:10px">
+          <input type="number" id="givenAmount" placeholder="Amount" value="1" step="any">
+        </div>
+        <div style="margin-top:10px">
+          <select id="givenUnit">
+            <option value="mol">moles (mol)</option>
+            <option value="g">grams (g)</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label>Find</label>
+        <select id="findCompound"></select>
+        <div style="margin-top:10px">
+          <select id="findUnit">
+            <option value="mol">moles (mol)</option>
+            <option value="g">grams (g)</option>
+          </select>
+        </div>
+        <div style="margin-top:10px">
+          <button class="btn btn-primary btn-big" style="width:100%" onclick="calcStoich()">Calculate →</button>
+        </div>
+      </div>
+    </div>
+    <div id="stoichOutput"></div>
+  </div>
+
+  <div class="card">
+    <h2>Molar Mass Calculator</h2>
+    <div class="eq-input-row">
+      <input type="text" id="molarInput" placeholder="e.g. Ca(OH)2" value="H2O">
+      <button class="btn btn-outline" onclick="calcMolarMass()">Calculate</button>
+    </div>
+    <div id="molarOutput"></div>
+  </div>
+
+</div>
+
+<script>
+const ATOMIC_WEIGHTS = {
+  "H": 1.008,
+  "He": 4.003,
+  "Li": 6.94,
+  "Be": 9.012,
+  "B": 10.81,
+  "C": 12.011,
+  "N": 14.007,
+  "O": 15.999,
+  "F": 18.998,
+  "Ne": 20.18,
+  "Na": 22.99,
+  "Mg": 24.305,
+  "Al": 26.982,
+  "Si": 28.085,
+  "P": 30.974,
+  "S": 32.06,
+  "Cl": 35.45,
+  "Ar": 39.948,
+  "K": 39.098,
+  "Ca": 40.078,
+  "Sc": 44.956,
+  "Ti": 47.867,
+  "V": 50.942,
+  "Cr": 51.996,
+  "Mn": 54.938,
+  "Fe": 55.845,
+  "Co": 58.933,
+  "Ni": 58.693,
+  "Cu": 63.546,
+  "Zn": 65.38,
+  "Ga": 69.723,
+  "Ge": 72.63,
+  "As": 74.922,
+  "Se": 78.971,
+  "Br": 79.904,
+  "Kr": 83.798,
+  "Rb": 85.468,
+  "Sr": 87.62,
+  "Y": 88.906,
+  "Zr": 91.224,
+  "Nb": 92.906,
+  "Mo": 95.95,
+  "Tc": 98.0,
+  "Ru": 101.07,
+  "Rh": 102.906,
+  "Pd": 106.42,
+  "Ag": 107.868,
+  "Cd": 112.414,
+  "In": 114.818,
+  "Sn": 118.71,
+  "Sb": 121.76,
+  "Te": 127.6,
+  "I": 126.904,
+  "Xe": 131.293,
+  "Cs": 132.905,
+  "Ba": 137.327,
+  "La": 138.905,
+  "Ce": 140.116,
+  "Pr": 140.908,
+  "Nd": 144.242,
+  "Pm": 145.0,
+  "Sm": 150.36,
+  "Eu": 151.964,
+  "Gd": 157.25,
+  "Tb": 158.925,
+  "Dy": 162.5,
+  "Ho": 164.93,
+  "Er": 167.259,
+  "Tm": 168.934,
+  "Yb": 173.045,
+  "Lu": 174.967,
+  "Hf": 178.49,
+  "Ta": 180.948,
+  "W": 183.84,
+  "Re": 186.207,
+  "Os": 190.23,
+  "Ir": 192.217,
+  "Pt": 195.084,
+  "Au": 196.967,
+  "Hg": 200.592,
+  "Tl": 204.38,
+  "Pb": 207.2,
+  "Bi": 208.98,
+  "Po": 209.0,
+  "At": 210.0,
+  "Rn": 222.0,
+  "Fr": 223.0,
+  "Ra": 226.0,
+  "Ac": 227.0,
+  "Th": 232.038,
+  "Pa": 231.036,
+  "U": 238.029,
+  "Np": 237.0,
+  "Pu": 244.0,
+  "Am": 243.0,
+  "Cm": 247.0,
+  "Bk": 247.0,
+  "Cf": 251.0,
+  "Es": 252.0,
+  "Fm": 257.0,
+  "Md": 258.0,
+  "No": 259.0,
+  "Lr": 262.0,
+  "Rf": 267.0,
+  "Db": 268.0,
+  "Sg": 271.0,
+  "Bh": 272.0,
+  "Hs": 270.0,
+  "Mt": 276.0,
+  "Ds": 281.0,
+  "Rg": 280.0,
+  "Cn": 285.0,
+  "Nh": 284.0,
+  "Fl": 289.0,
+  "Mc": 288.0,
+  "Lv": 293.0,
+  "Ts": 294.0,
+  "Og": 294.0
+};
+
+const EXAMPLES = [
+  "CH4 + O2 -> CO2 + H2O",
+  "Fe + O2 -> Fe2O3",
+  "Al + HCl -> AlCl3 + H2",
+  "Ca(OH)2 + H3PO4 -> Ca3(PO4)2 + H2O",
+  "C3H8 + O2 -> CO2 + H2O",
+  "NH3 + O2 -> NO + H2O",
+  "KClO3 -> KCl + O2",
+  "Na + H2O -> NaOH + H2"
+];
+
+document.getElementById('exampleRow').innerHTML = EXAMPLES.map(ex =>
+  `<button class="example-chip" onclick="document.getElementById('eqInput').value='${ex.replace(/'/g,"\\'")}'; balance();">${esc(ex)}</button>`
+).join('');
+
+// ═══════════════════════════════════════════════════════════
+// FORMULA PARSER
+// ═══════════════════════════════════════════════════════════
+function parseFormula(formula) {
+  let i = 0;
+  function parseGroup() {
+    let counts = {};
+    while (i < formula.length && formula[i] !== ')') {
+      if (formula[i] === '(') {
+        i++;
+        const inner = parseGroup();
+        i++; // skip ')'
+        let numStr = '';
+        while (i < formula.length && /[0-9]/.test(formula[i])) { numStr += formula[i]; i++; }
+        const mult = numStr ? parseInt(numStr, 10) : 1;
+        for (const el in inner) counts[el] = (counts[el] || 0) + inner[el] * mult;
+      } else if (/[A-Z]/.test(formula[i])) {
+        let el = formula[i]; i++;
+        while (i < formula.length && /[a-z]/.test(formula[i])) { el += formula[i]; i++; }
+        let numStr = '';
+        while (i < formula.length && /[0-9]/.test(formula[i])) { numStr += formula[i]; i++; }
+        const count = numStr ? parseInt(numStr, 10) : 1;
+        counts[el] = (counts[el] || 0) + count;
+      } else {
+        i++; // skip unrecognized char (spaces, charges, dots)
+      }
+    }
+    return counts;
+  }
+  return parseGroup();
+}
+
+function molarMass(formula) {
+  const counts = parseFormula(formula);
+  let mass = 0;
+  let unknown = [];
+  for (const el in counts) {
+    if (ATOMIC_WEIGHTS[el] === undefined) unknown.push(el);
+    else mass += ATOMIC_WEIGHTS[el] * counts[el];
+  }
+  return { mass, counts, unknown };
+}
+
+// ═══════════════════════════════════════════════════════════
+// FRACTION CLASS + GAUSSIAN ELIMINATION BALANCER
+// ═══════════════════════════════════════════════════════════
+function gcdInt(a, b) { a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b)); while (b) { [a, b] = [b, a % b]; } return a || 1; }
+
+class Frac {
+  constructor(n, d = 1) {
+    if (d === 0) d = 1;
+    if (d < 0) { n = -n; d = -d; }
+    const g = gcdInt(n, d) || 1;
+    this.n = n / g; this.d = d / g;
+  }
+  add(o) { return new Frac(this.n * o.d + o.n * this.d, this.d * o.d); }
+  sub(o) { return new Frac(this.n * o.d - o.n * this.d, this.d * o.d); }
+  mul(o) { return new Frac(this.n * o.n, this.d * o.d); }
+  div(o) { return new Frac(this.n * o.d, this.d * o.n); }
+  isZero() { return this.n === 0; }
+  neg() { return new Frac(-this.n, this.d); }
+}
+
+function parseEquation(eqStr) {
+  const norm = eqStr.replace(/=/g, '->');
+  const sides = norm.split('->');
+  if (sides.length !== 2) throw new Error("Equation must contain exactly one '->' or '=' separating reactants and products.");
+  const reactants = sides[0].split('+').map(s => s.trim()).filter(Boolean);
+  const products = sides[1].split('+').map(s => s.trim()).filter(Boolean);
+  if (!reactants.length || !products.length) throw new Error("Equation needs at least one reactant and one product.");
+  return { reactants, products };
+}
+
+function balanceEquation(eqStr) {
+  const { reactants, products } = parseEquation(eqStr);
+  const compounds = [...reactants, ...products];
+  const signs = [...reactants.map(() => 1), ...products.map(() => -1)];
+  const parsed = compounds.map(c => parseFormula(c));
+
+  // check for unknown elements
+  const allUnknown = new Set();
+  parsed.forEach(p => { for (const el in p) if (ATOMIC_WEIGHTS[el] === undefined) allUnknown.add(el); });
+  if (allUnknown.size) throw new Error("Unrecognized element symbol(s): " + [...allUnknown].join(', '));
+
+  const elements = [...new Set(parsed.flatMap(p => Object.keys(p)))];
+  const nCompounds = compounds.length;
+  const nElements = elements.length;
+
+  // Build matrix: rows = elements, cols = compounds (with sign)
+  let A = elements.map((el) => compounds.map((c, ci) => new Frac((parsed[ci][el] || 0) * signs[ci])));
+
+  // Gaussian elimination to row echelon form
+  let row = 0;
+  const pivotCols = [];
+  for (let col = 0; col < nCompounds && row < nElements; col++) {
+    let pivotRow = -1;
+    for (let r = row; r < nElements; r++) { if (!A[r][col].isZero()) { pivotRow = r; break; } }
+    if (pivotRow === -1) continue;
+    [A[row], A[pivotRow]] = [A[pivotRow], A[row]];
+    const pivotVal = A[row][col];
+    A[row] = A[row].map(v => v.div(pivotVal));
+    for (let r = 0; r < nElements; r++) {
+      if (r !== row && !A[r][col].isZero()) {
+        const factor = A[r][col];
+        A[r] = A[r].map((v, ci) => v.sub(A[row][ci].mul(factor)));
+      }
+    }
+    pivotCols.push(col);
+    row++;
+  }
+
+  const freeCols = [];
+  for (let c = 0; c < nCompounds; c++) if (!pivotCols.includes(c)) freeCols.push(c);
+
+  if (freeCols.length === 0) throw new Error("Could not find a valid balance — check that your equation's element counts are consistent.");
+
+  // Use the last free column as the free variable, set = 1
+  const freeCol = freeCols[freeCols.length - 1];
+  let coeffs = new Array(nCompounds).fill(null);
+  coeffs[freeCol] = new Frac(1);
+
+  for (let r = pivotCols.length - 1; r >= 0; r--) {
+    const col = pivotCols[r];
+    let val = new Frac(0);
+    for (let c = 0; c < nCompounds; c++) {
+      if (c === col) continue;
+      if (coeffs[c] !== null) val = val.add(A[r][c].mul(coeffs[c]));
+    }
+    coeffs[col] = val.neg();
+  }
+  // any other free columns not chosen: set to 0 (shouldn't normally happen for valid single-solution equations)
+  for (const fc of freeCols) if (coeffs[fc] === null) coeffs[fc] = new Frac(0);
+
+  // find common denominator
+  let denomLCM = 1;
+  coeffs.forEach(f => { denomLCM = denomLCM / gcdInt(denomLCM, f.d) * f.d; });
+  let intCoeffs = coeffs.map(f => Math.round(f.n * (denomLCM / f.d)));
+
+  // reduce by GCD
+  let g = intCoeffs.reduce((a, b) => gcdInt(a, b), 0);
+  if (g > 1) intCoeffs = intCoeffs.map(v => v / g);
+
+  // ensure all positive
+  if (intCoeffs.some(v => v < 0)) intCoeffs = intCoeffs.map(v => -v);
+  if (intCoeffs.some(v => v <= 0)) throw new Error("Balancing produced an invalid (non-positive) coefficient — check your equation.");
+
+  // verify
+  for (const el of elements) {
+    let sum = 0;
+    compounds.forEach((c, ci) => { sum += (parsed[ci][el] || 0) * intCoeffs[ci] * signs[ci]; });
+    if (sum !== 0) throw new Error("Balance verification failed — this equation may not be balanceable as written.");
+  }
+
+  const reactCoeffs = intCoeffs.slice(0, reactants.length);
+  const prodCoeffs = intCoeffs.slice(reactants.length);
+
+  return { reactants, products, reactCoeffs, prodCoeffs, parsed: parsed, compounds };
+}
+
+let lastBalance = null;
+
+function balance() {
+  const eqStr = document.getElementById('eqInput').value;
+  const out = document.getElementById('balanceOutput');
+  try {
+    const result = balanceEquation(eqStr);
+    lastBalance = result;
+    const reactStr = result.reactants.map((c, i) => (result.reactCoeffs[i] > 1 ? `<span class="coeff">${result.reactCoeffs[i]}</span>` : '') + formatFormula(c)).join(' + ');
+    const prodStr = result.products.map((c, i) => (result.prodCoeffs[i] > 1 ? `<span class="coeff">${result.prodCoeffs[i]}</span>` : '') + formatFormula(c)).join(' + ');
+    out.innerHTML = `<div class="balanced-display">${reactStr} &nbsp;→&nbsp; ${prodStr}</div>`;
+    setupStoich(result);
+    document.getElementById('stoichCard').style.display = 'block';
+  } catch (e) {
+    lastBalance = null;
+    out.innerHTML = `<div class="error-box">⚠️ ${esc(e.message)}</div>`;
+    document.getElementById('stoichCard').style.display = 'none';
+  }
+}
+
+function formatFormula(f) {
+  return esc(f).replace(/([0-9]+)/g, '<sub>$1</sub>');
+}
+
+function setupStoich(result) {
+  const allCompounds = [...result.reactants, ...result.products];
+  const allCoeffs = [...result.reactCoeffs, ...result.prodCoeffs];
+  const givenSel = document.getElementById('givenCompound');
+  const findSel = document.getElementById('findCompound');
+  const opts = allCompounds.map((c, i) => `<option value="${i}">${esc(c)} (coeff ${allCoeffs[i]})</option>`).join('');
+  givenSel.innerHTML = opts;
+  findSel.innerHTML = opts;
+  findSel.selectedIndex = allCompounds.length > 1 ? 1 : 0;
+}
+
+function calcStoich() {
+  if (!lastBalance) return;
+  const allCompounds = [...lastBalance.reactants, ...lastBalance.products];
+  const allCoeffs = [...lastBalance.reactCoeffs, ...lastBalance.prodCoeffs];
+  const gi = parseInt(document.getElementById('givenCompound').value, 10);
+  const fi = parseInt(document.getElementById('findCompound').value, 10);
+  const amount = parseFloat(document.getElementById('givenAmount').value);
+  const givenUnit = document.getElementById('givenUnit').value;
+  const findUnit = document.getElementById('findUnit').value;
+  const out = document.getElementById('stoichOutput');
+
+  if (isNaN(amount) || amount < 0) { out.innerHTML = `<div class="error-box">Enter a valid positive amount.</div>`; return; }
+
+  const givenFormula = allCompounds[gi], findFormula = allCompounds[fi];
+  const givenMM = molarMass(givenFormula).mass;
+  const findMM = molarMass(findFormula).mass;
+  const givenCoeff = allCoeffs[gi], findCoeff = allCoeffs[fi];
+
+  let steps = [];
+  let molGiven = amount;
+  if (givenUnit === 'g') {
+    molGiven = amount / givenMM;
+    steps.push(`Convert given mass to moles: ${amount} g ÷ ${givenMM.toFixed(2)} g/mol = <strong>${molGiven.toFixed(4)} mol</strong> ${esc(givenFormula)}`);
+  } else {
+    steps.push(`Given: <strong>${amount} mol</strong> ${esc(givenFormula)}`);
+  }
+
+  const molFind = molGiven * (findCoeff / givenCoeff);
+  steps.push(`Apply mole ratio from balanced equation: ${molGiven.toFixed(4)} mol × (${findCoeff}/${givenCoeff}) = <strong>${molFind.toFixed(4)} mol</strong> ${esc(findFormula)}`);
+
+  let finalAnswer = molFind, finalUnit = 'mol';
+  if (findUnit === 'g') {
+    finalAnswer = molFind * findMM;
+    finalUnit = 'g';
+    steps.push(`Convert moles to mass: ${molFind.toFixed(4)} mol × ${findMM.toFixed(2)} g/mol = <strong>${finalAnswer.toFixed(4)} g</strong> ${esc(findFormula)}`);
+  }
+
+  out.innerHTML = `<div class="stoich-result">
+    <div class="answer">${finalAnswer.toFixed(4)} ${finalUnit} of ${formatFormula(findFormula)}</div>
+    ${steps.map(s => `<div class="step">${s}</div>`).join('')}
+  </div>`;
+}
+
+function calcMolarMass() {
+  const formula = document.getElementById('molarInput').value.trim();
+  const out = document.getElementById('molarOutput');
+  if (!formula) { out.innerHTML = ''; return; }
+  const { mass, counts, unknown } = molarMass(formula);
+  if (unknown.length) {
+    out.innerHTML = `<div class="error-box">⚠️ Unrecognized element symbol(s): ${esc(unknown.join(', '))}</div>`;
+    return;
+  }
+  const breakdown = Object.keys(counts).map(el =>
+    `<div class="molar-box"><div class="molar-val">${el}${counts[el]>1?'<sub>'+counts[el]+'</sub>':''}</div><div class="molar-lbl">${ATOMIC_WEIGHTS[el].toFixed(2)} × ${counts[el]} = ${(ATOMIC_WEIGHTS[el]*counts[el]).toFixed(2)}</div></div>`
+  ).join('');
+  out.innerHTML = `<div class="molar-result">
+    <div class="molar-box" style="border-color:#6366f1"><div class="molar-val">${mass.toFixed(2)} g/mol</div><div class="molar-lbl">Molar Mass</div></div>
+    ${breakdown}
+  </div>`;
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Init
+balance();
+calcMolarMass();
+</script>
+</body>
+</html>
