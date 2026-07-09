@@ -48,6 +48,7 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('unitconvert',this)">📐 Unit Converter</div>
   <div class="tab" onclick="showTool('circuit',this)">🔌 Circuit Calculator</div>
   <div class="tab" onclick="showTool('genetics',this)">🧬 Punnett Square / Genetics</div>
+  <div class="tab" onclick="showTool('gpacalc',this)">🎓 GPA Calculator</div>
 </div>
 
 <div class="frame-area" id="frameArea">
@@ -65,6 +66,7 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-unitconvert" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-circuit" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-genetics" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-gpacalc" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -81,7 +83,8 @@ const SRCS={
   acidbase:'acidbase.html',
   unitconvert:'unitconvert.html',
   circuit:'circuit.html',
-  genetics:'genetics.html'
+  genetics:'genetics.html',
+  gpacalc:'gpacalc.html'
 };
 const loaded=new Set(['graphcalc']);
 
