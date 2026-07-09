@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Art History &amp; Music Theory — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:960px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+label{font-size:.72rem;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+select{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:.92rem;font-family:inherit;color:#fff;outline:none}
+select:focus{border-color:var(--accent)}
+
+.tab-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:130px;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.subject-toggle{display:flex;gap:6px;margin-bottom:14px}
+.subject-toggle button{flex:1;padding:9px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.subject-toggle button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+
+.var-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.result-box{background:#111827;border:1.5px solid var(--accent);border-radius:10px;padding:16px;text-align:center;margin-top:16px}
+.result-val{font-size:1.6rem;font-weight:900;color:var(--accent2)}
+.result-lbl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="apartmusic.html">Art History &amp; Music Theory</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🎨🎵 AP Art History &amp; Music Theory</h1>
+  <p>139 terms across 10 units, plus an interactive interval identifier for Music Theory.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="setTab('concepts')" id="tabConcepts">📚 Concept Drill</button>
+      <button class="tab-btn" onclick="setTab('interval')" id="tabInterval">🎵 Interval Identifier</button>
+    </div>
+  </div>
+
+  <div id="conceptsPanel">
+    <div class="card">
+      <h2>Subject</h2>
+      <div class="subject-toggle">
+        <button class="active" id="btnArt" onclick="setSubject('art')">🎨 Art History</button>
+        <button id="btnMusic" onclick="setSubject('music')">🎵 Music Theory</button>
+      </div>
+      <h2>Choose a Unit</h2>
+      <div class="unit-grid" id="unitGrid"></div>
+    </div>
+
+    <div class="card" id="studyCard" style="display:none">
+      <div class="mode-row">
+        <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+        <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+      </div>
+
+      <div id="flashArea">
+        <div class="flash-progress" id="flashProgress"></div>
+        <div class="flash-wrap">
+          <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+        </div>
+        <div class="flash-nav">
+          <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+          <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+          <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+        </div>
+      </div>
+
+      <div id="quizArea" style="display:none">
+        <div class="score-display" id="quizProgress"></div>
+        <div id="quizQCard"></div>
+        <div id="quizResult" style="display:none">
+          <div class="result-big" id="quizFinalScore"></div>
+          <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+          <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="intervalPanel" style="display:none">
+    <div class="card">
+      <h2>Note + Interval → Result Note</h2>
+      <div class="var-grid">
+        <div>
+          <label>Root Note</label>
+          <select id="ivRoot"></select>
+        </div>
+        <div>
+          <label>Interval</label>
+          <select id="ivInterval"></select>
+        </div>
+      </div>
+      <div style="margin-top:16px"><button class="btn btn-primary btn-big" onclick="solveInterval()">🎵 Find Note</button></div>
+      <div id="intervalOutput"></div>
+    </div>
+
+    <div class="card">
+      <h2>Note + Note → Interval Name</h2>
+      <div class="var-grid">
+        <div><label>Lower Note</label><select id="ivNote1"></select></div>
+        <div><label>Upper Note</label><select id="ivNote2"></select></div>
+      </div>
+      <div style="margin-top:16px"><button class="btn btn-primary btn-big" onclick="identifyInterval()">🎵 Identify Interval</button></div>
+      <div id="identifyOutput"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "art_elements": {
+    "label": "Elements & Principles of Art",
+    "icon": "🎨",
+    "subject": "art",
+    "terms": [
+      [
+        "Line",
+        "A mark with greater length than width; can be actual, implied, or contour."
+      ],
+      [
+        "Form",
+        "A three-dimensional object with height, width, and depth, as opposed to a flat shape."
+      ],
+      [
+        "Space",
+        "The area around, between, and within objects; can be positive or negative."
+      ],
+      [
+        "Texture",
+        "The perceived surface quality of an artwork — actual or implied (visual)."
+      ],
+      [
+        "Value",
+        "The relative lightness or darkness of a color or tone."
+      ],
+      [
+        "Hue",
+        "The name of a color, e.g., red, blue, yellow."
+      ],
+      [
+        "Balance",
+        "The distribution of visual weight in a composition — symmetrical, asymmetrical, or radial."
+      ],
+      [
+        "Contrast",
+        "The use of opposite elements (light/dark, rough/smooth) to create visual interest."
+      ],
+      [
+        "Emphasis",
+        "A technique used to draw attention to a focal point in a composition."
+      ],
+      [
+        "Unity",
+        "The sense that all parts of a composition work together as a coherent whole."
+      ],
+      [
+        "Proportion",
+        "The relationship in size between parts of a work or between the work and the viewer."
+      ],
+      [
+        "Rhythm",
+        "The visual movement created by repeating elements in a composition."
+      ],
+      [
+        "Contrapposto",
+        "A sculptural pose where the figure's weight rests on one leg, creating a naturalistic S-curve."
+      ],
+      [
+        "Chiaroscuro",
+        "The use of strong contrasts between light and dark to model three-dimensional form."
+      ],
+      [
+        "Foreshortening",
+        "A technique for depicting an object at an angle to appear compressed and recede into space."
+      ],
+      [
+        "Linear Perspective",
+        "A mathematical system using converging lines toward a vanishing point to create depth."
+      ],
+      [
+        "Fresco",
+        "A painting technique done on wet plaster, so the pigment becomes part of the wall."
+      ],
+      [
+        "Iconography",
+        "The study of visual symbols and their meanings within an artwork."
+      ]
+    ]
+  },
+  "art_ancient": {
+    "label": "Ancient & Classical Art",
+    "icon": "🏛️",
+    "subject": "art",
+    "terms": [
+      [
+        "Post-and-Lintel",
+        "A basic construction method using two vertical posts supporting a horizontal beam."
+      ],
+      [
+        "Ka",
+        "In Egyptian belief, the spiritual double of a person that needed a body (or statue) to inhabit after death."
+      ],
+      [
+        "Canon of Proportions",
+        "A formal system (notably Egyptian and Greek) for depicting the ideal human figure using set ratios."
+      ],
+      [
+        "Hieratic Scale",
+        "Depicting more important figures as larger than less important ones, regardless of actual size."
+      ],
+      [
+        "Ziggurat",
+        "A massive stepped temple platform built in ancient Mesopotamia."
+      ],
+      [
+        "Post-and-Lintel Megalith",
+        "Large stone construction like Stonehenge using massive upright stones and capstones."
+      ],
+      [
+        "Kouros",
+        "An archaic Greek freestanding sculpture of a nude young male, typically standing rigidly."
+      ],
+      [
+        "Peplos",
+        "A simple draped garment worn by female figures in early Greek sculpture."
+      ],
+      [
+        "Classical Period (Greek)",
+        "5th-century BCE Greek art era emphasizing idealized naturalism and contrapposto."
+      ],
+      [
+        "Hellenistic Period",
+        "Later Greek art era (after Alexander the Great) marked by heightened emotion and drama."
+      ],
+      [
+        "Orders (Doric, Ionic, Corinthian)",
+        "The three classical Greek column styles, from simplest (Doric) to most ornate (Corinthian)."
+      ],
+      [
+        "Atrium",
+        "The open central courtyard of a Roman house, often with a pool to collect rainwater."
+      ],
+      [
+        "Roman Portrait Bust",
+        "A realistic sculpted head/shoulders of an individual, prized for verism (extreme realism) in Rome."
+      ],
+      [
+        "Triumphal Arch",
+        "A freestanding Roman monument built to commemorate a military victory."
+      ],
+      [
+        "Basilica",
+        "A large rectangular Roman public building later adapted as a model for early Christian churches."
+      ]
+    ]
+  },
+  "art_medieval_ren": {
+    "label": "Medieval & Renaissance Art",
+    "icon": "⛪",
+    "subject": "art",
+    "terms": [
+      [
+        "Illuminated Manuscript",
+        "A handwritten book decorated with gold, silver, or vivid painted illustrations."
+      ],
+      [
+        "Reliquary",
+        "A container designed to hold and display sacred relics of saints."
+      ],
+      [
+        "Byzantine Mosaic",
+        "Artwork made from small colored glass/stone tiles, often depicting religious figures with gold backgrounds."
+      ],
+      [
+        "Romanesque",
+        "An early medieval European style marked by thick walls, round arches, and small windows."
+      ],
+      [
+        "Gothic",
+        "A later medieval European style marked by pointed arches, ribbed vaults, flying buttresses, and stained glass."
+      ],
+      [
+        "Flying Buttress",
+        "An exterior stone support that transfers the weight of a roof/wall away from the structure, allowing taller walls."
+      ],
+      [
+        "Altarpiece",
+        "A painted or carved artwork placed behind an altar in a church."
+      ],
+      [
+        "Humanism",
+        "A Renaissance intellectual movement emphasizing the value and potential of human beings, often drawing on classical antiquity."
+      ],
+      [
+        "Sfumato",
+        "A painting technique (associated with Leonardo da Vinci) using subtle gradations to soften outlines."
+      ],
+      [
+        "Vanishing Point",
+        "The single point on the horizon in linear perspective where parallel lines appear to converge."
+      ],
+      [
+        "Patron",
+        "An individual or institution that commissions and funds the creation of an artwork."
+      ],
+      [
+        "High Renaissance",
+        "The peak period of Renaissance art (c. 1490s–1520s) associated with Leonardo, Michelangelo, and Raphael."
+      ],
+      [
+        "Mannerism",
+        "A style following the High Renaissance marked by elongated figures, unusual poses, and artificial color."
+      ],
+      [
+        "Predella",
+        "The small painted panel(s) at the base of an altarpiece, often depicting narrative scenes."
+      ]
+    ]
+  },
+  "art_baroque_modern": {
+    "label": "Baroque to Modern Movements",
+    "icon": "🖼️",
+    "subject": "art",
+    "terms": [
+      [
+        "Baroque",
+        "A dramatic, emotional 17th-century style marked by strong contrast, movement, and grandeur."
+      ],
+      [
+        "Tenebrism",
+        "An extreme form of chiaroscuro with dramatic, dark shadows contrasted against bright light (e.g., Caravaggio)."
+      ],
+      [
+        "Rococo",
+        "An 18th-century style marked by pastel colors, ornate decoration, and lighthearted, playful subjects."
+      ],
+      [
+        "Neoclassicism",
+        "A late 18th-century style reviving classical Greek/Roman forms and emphasizing order, reason, and civic virtue."
+      ],
+      [
+        "Romanticism",
+        "An early 19th-century movement emphasizing emotion, nature, and the sublime over reason and order."
+      ],
+      [
+        "Realism",
+        "A mid-19th-century movement depicting everyday life and ordinary people without idealization."
+      ],
+      [
+        "Impressionism",
+        "A late 19th-century movement using loose brushwork and light to capture fleeting visual impressions, often outdoors."
+      ],
+      [
+        "Post-Impressionism",
+        "A movement following Impressionism that emphasized structure, symbolic color, and personal expression."
+      ],
+      [
+        "Cubism",
+        "An early 20th-century movement (Picasso, Braque) that fragmented forms into geometric planes shown from multiple angles."
+      ],
+      [
+        "Surrealism",
+        "A 20th-century movement exploring the unconscious mind through dreamlike, irrational imagery."
+      ],
+      [
+        "Abstract Expressionism",
+        "A mid-20th-century American movement emphasizing spontaneous, gestural, non-representational mark-making."
+      ],
+      [
+        "Pop Art",
+        "A mid-20th-century movement drawing on popular/commercial imagery like advertising and comics."
+      ],
+      [
+        "Avant-Garde",
+        "Art that is experimental or innovative, pushing beyond the accepted boundaries of its time."
+      ],
+      [
+        "Installation Art",
+        "Art designed to transform a viewer's experience of a particular space, often three-dimensional and site-specific."
+      ]
+    ]
+  },
+  "art_global": {
+    "label": "Global Traditions",
+    "icon": "🌏",
+    "subject": "art",
+    "terms": [
+      [
+        "Pagoda",
+        "A tiered tower with multiple eaves, common in East Asian Buddhist architecture."
+      ],
+      [
+        "Stupa",
+        "A dome-shaped Buddhist shrine, often containing sacred relics, meant to be walked around."
+      ],
+      [
+        "Mandala",
+        "A geometric, symbolic diagram used in Hindu and Buddhist traditions to represent the universe."
+      ],
+      [
+        "Torii Gate",
+        "A traditional Japanese gate marking the entrance to a Shinto shrine."
+      ],
+      [
+        "Ukiyo-e",
+        "A genre of Japanese woodblock prints depicting scenes from everyday life and nature."
+      ],
+      [
+        "Calligraphy (East Asian)",
+        "The art of expressive, stylized brush-written characters, highly valued in Chinese and Japanese art."
+      ],
+      [
+        "Terracotta",
+        "Fired but unglazed clay, used famously for the life-size soldiers of China's First Emperor."
+      ],
+      [
+        "Totem Pole",
+        "A monumental carved wooden post created by Indigenous peoples of the Pacific Northwest, often depicting family crests."
+      ],
+      [
+        "Kente Cloth",
+        "A brightly colored, hand-woven silk and cotton fabric associated with the Akan/Ashanti peoples of Ghana."
+      ],
+      [
+        "Nkisi",
+        "A power figure from Central Africa (Kongo) believed to contain spiritual forces, often studded with nails."
+      ],
+      [
+        "Adinkra Symbols",
+        "Visual symbols from Ghana representing concepts or proverbs, often stamped onto cloth."
+      ],
+      [
+        "Codex",
+        "A folded-page manuscript, notably created by Mesoamerican cultures like the Maya and Aztec."
+      ],
+      [
+        "Quipu",
+        "A system of knotted cords used by the Inca to record numeric and other information."
+      ],
+      [
+        "Kiva",
+        "A ceremonial underground room used by Ancestral Puebloan and Pueblo peoples for rituals."
+      ]
+    ]
+  },
+  "music_notation": {
+    "label": "Notation & Pitch",
+    "icon": "🎼",
+    "subject": "music",
+    "terms": [
+      [
+        "Staff",
+        "The five horizontal lines and four spaces on which musical notes are written."
+      ],
+      [
+        "Clef",
+        "A symbol placed at the start of a staff that indicates the pitch of the notes, e.g., treble or bass."
+      ],
+      [
+        "Ledger Line",
+        "A short line added above or below the staff to notate pitches outside its range."
+      ],
+      [
+        "Accidental",
+        "A symbol (sharp, flat, natural) that raises, lowers, or cancels the pitch of a note."
+      ],
+      [
+        "Sharp (♯)",
+        "An accidental that raises a pitch by a half step."
+      ],
+      [
+        "Flat (♭)",
+        "An accidental that lowers a pitch by a half step."
+      ],
+      [
+        "Natural (♮)",
+        "An accidental that cancels a previous sharp or flat."
+      ],
+      [
+        "Enharmonic",
+        "Two different note names that refer to the same pitch, e.g., C♯ and D♭."
+      ],
+      [
+        "Octave",
+        "The interval between one pitch and another with double (or half) its frequency, sharing the same letter name."
+      ],
+      [
+        "Middle C",
+        "The C note near the middle of the piano keyboard, a common reference pitch (C4)."
+      ],
+      [
+        "Grand Staff",
+        "The combination of the treble and bass staves, joined by a brace, used for piano music."
+      ],
+      [
+        "Whole Step / Half Step",
+        "A whole step is two half steps; a half step is the smallest interval in Western music."
+      ]
+    ]
+  },
+  "music_rhythm": {
+    "label": "Rhythm & Meter",
+    "icon": "🥁",
+    "subject": "music",
+    "terms": [
+      [
+        "Beat",
+        "The basic, steady pulse underlying music."
+      ],
+      [
+        "Measure (Bar)",
+        "A segment of time containing a set number of beats, marked off by bar lines."
+      ],
+      [
+        "Time Signature",
+        "A symbol at the start of a piece indicating how many beats are in each measure and what note value gets one beat."
+      ],
+      [
+        "Tempo",
+        "The speed of the beat in a piece of music, often given in beats per minute (BPM)."
+      ],
+      [
+        "Syncopation",
+        "A rhythmic pattern that accents normally weak beats or off-beats."
+      ],
+      [
+        "Duple Meter",
+        "A meter with two beats per measure (or groupings in twos)."
+      ],
+      [
+        "Triple Meter",
+        "A meter with three beats per measure."
+      ],
+      [
+        "Compound Meter",
+        "A meter where each beat divides naturally into three parts, e.g., 6/8 time."
+      ],
+      [
+        "Simple Meter",
+        "A meter where each beat divides naturally into two parts, e.g., 4/4 time."
+      ],
+      [
+        "Fermata",
+        "A symbol indicating a note or rest should be held longer than its normal duration."
+      ],
+      [
+        "Anacrusis (Pickup)",
+        "One or more notes that occur before the first full measure of a phrase."
+      ],
+      [
+        "Rest",
+        "A symbol indicating a specific duration of silence in music."
+      ]
+    ]
+  },
+  "music_scales": {
+    "label": "Scales & Key Signatures",
+    "icon": "🎹",
+    "subject": "music",
+    "terms": [
+      [
+        "Major Scale",
+        "A seven-note scale with the pattern W-W-H-W-W-W-H, producing a bright sound."
+      ],
+      [
+        "Minor Scale",
+        "A seven-note scale with a characteristic lowered third scale degree, producing a darker sound."
+      ],
+      [
+        "Natural Minor",
+        "The minor scale using only the notes of its relative major's key signature, no raised tones."
+      ],
+      [
+        "Harmonic Minor",
+        "A minor scale with a raised 7th scale degree, creating a distinctive augmented second interval."
+      ],
+      [
+        "Melodic Minor",
+        "A minor scale with raised 6th and 7th degrees ascending, but natural minor descending."
+      ],
+      [
+        "Key Signature",
+        "The set of sharps or flats at the start of a staff indicating the key of a piece."
+      ],
+      [
+        "Circle of Fifths",
+        "A diagram arranging the 12 pitches by ascending perfect fifths, showing key signature relationships."
+      ],
+      [
+        "Relative Minor/Major",
+        "A minor and major key that share the same key signature (e.g., C major and A minor)."
+      ],
+      [
+        "Parallel Minor/Major",
+        "A minor and major key that share the same tonic note but different key signatures (e.g., C major and C minor)."
+      ],
+      [
+        "Chromatic Scale",
+        "A scale made up of all twelve pitches, each a half step apart."
+      ],
+      [
+        "Tonic",
+        "The first and most stable scale degree, the 'home' pitch of a key."
+      ],
+      [
+        "Dominant",
+        "The fifth scale degree, which creates strong tension pulling back toward the tonic."
+      ]
+    ]
+  },
+  "music_intervals": {
+    "label": "Intervals & Chords",
+    "icon": "🎵",
+    "subject": "music",
+    "terms": [
+      [
+        "Interval",
+        "The distance in pitch between two notes."
+      ],
+      [
+        "Perfect Interval",
+        "An interval quality (unison, 4th, 5th, octave) that is neither major nor minor and highly consonant."
+      ],
+      [
+        "Major Interval",
+        "An interval quality applying to 2nds, 3rds, 6ths, and 7ths in the major scale from the tonic."
+      ],
+      [
+        "Minor Interval",
+        "An interval one half step smaller than a major interval of the same number."
+      ],
+      [
+        "Augmented Interval",
+        "An interval one half step larger than a perfect or major interval."
+      ],
+      [
+        "Diminished Interval",
+        "An interval one half step smaller than a perfect or minor interval."
+      ],
+      [
+        "Triad",
+        "A three-note chord built of stacked thirds — root, third, and fifth."
+      ],
+      [
+        "Major Triad",
+        "A triad with a major third and perfect fifth above the root, sounding bright/stable."
+      ],
+      [
+        "Minor Triad",
+        "A triad with a minor third and perfect fifth above the root, sounding darker."
+      ],
+      [
+        "Diminished Triad",
+        "A triad with a minor third and diminished fifth, sounding tense/unstable."
+      ],
+      [
+        "Augmented Triad",
+        "A triad with a major third and augmented fifth, sounding unsettled."
+      ],
+      [
+        "Seventh Chord",
+        "A four-note chord adding a seventh above the root to a triad, e.g., dominant seventh."
+      ],
+      [
+        "Inversion",
+        "A chord voicing where a note other than the root is in the bass."
+      ],
+      [
+        "Root Position",
+        "A chord voicing where the root is the lowest-sounding note."
+      ]
+    ]
+  },
+  "music_harmony": {
+    "label": "Harmony & Form",
+    "icon": "🎶",
+    "subject": "music",
+    "terms": [
+      [
+        "Cadence",
+        "A melodic or harmonic progression that creates a sense of resolution at the end of a phrase."
+      ],
+      [
+        "Authentic Cadence",
+        "A cadence moving from the dominant (V) chord to the tonic (I) chord, sounding conclusive."
+      ],
+      [
+        "Plagal Cadence",
+        "A cadence moving from the subdominant (IV) chord to the tonic (I) chord, the 'Amen' cadence."
+      ],
+      [
+        "Half Cadence",
+        "A cadence that ends on the dominant (V) chord, sounding unresolved/suspended."
+      ],
+      [
+        "Deceptive Cadence",
+        "A cadence where the dominant (V) resolves to an unexpected chord (often vi) instead of the tonic."
+      ],
+      [
+        "Part-Writing (Voice Leading)",
+        "The practice of arranging individual melodic lines (voices) so they move smoothly together in harmony."
+      ],
+      [
+        "Counterpoint",
+        "The relationship between independent melodic lines that are harmonically interdependent."
+      ],
+      [
+        "Homophony",
+        "A musical texture with one main melody supported by chordal accompaniment."
+      ],
+      [
+        "Polyphony",
+        "A musical texture with two or more independent melodic lines occurring simultaneously."
+      ],
+      [
+        "Monophony",
+        "A musical texture consisting of a single melodic line with no accompaniment."
+      ],
+      [
+        "Sonata Form",
+        "A large-scale musical structure with exposition, development, and recapitulation sections."
+      ],
+      [
+        "Binary Form",
+        "A two-part musical structure, often labeled AB."
+      ],
+      [
+        "Ternary Form",
+        "A three-part musical structure, often labeled ABA, where the first section returns after a contrasting middle."
+      ],
+      [
+        "Sequence",
+        "The repetition of a melodic or harmonic pattern at a different pitch level."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentSubject = 'art';
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function setTab(t) {
+  document.getElementById('tabConcepts').classList.toggle('active', t === 'concepts');
+  document.getElementById('tabInterval').classList.toggle('active', t === 'interval');
+  document.getElementById('conceptsPanel').style.display = t === 'concepts' ? 'block' : 'none';
+  document.getElementById('intervalPanel').style.display = t === 'interval' ? 'block' : 'none';
+}
+
+function setSubject(s) {
+  currentSubject = s;
+  document.getElementById('btnArt').classList.toggle('active', s === 'art');
+  document.getElementById('btnMusic').classList.toggle('active', s === 'music');
+  currentUnit = null;
+  document.getElementById('studyCard').style.display = 'none';
+  renderUnitGrid();
+}
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  const keys = unitKeys.filter(k => UNITS[k].subject === currentSubject);
+  grid.innerHTML = keys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ═══════════════════════════════════════════════════════════
+// INTERVAL IDENTIFIER
+// ═══════════════════════════════════════════════════════════
+const CHROMATIC = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const INTERVALS = [
+  { name: 'Perfect Unison', semitones: 0 },
+  { name: 'Minor 2nd', semitones: 1 },
+  { name: 'Major 2nd', semitones: 2 },
+  { name: 'Minor 3rd', semitones: 3 },
+  { name: 'Major 3rd', semitones: 4 },
+  { name: 'Perfect 4th', semitones: 5 },
+  { name: 'Tritone (Aug 4th/Dim 5th)', semitones: 6 },
+  { name: 'Perfect 5th', semitones: 7 },
+  { name: 'Minor 6th', semitones: 8 },
+  { name: 'Major 6th', semitones: 9 },
+  { name: 'Minor 7th', semitones: 10 },
+  { name: 'Major 7th', semitones: 11 },
+  { name: 'Perfect Octave', semitones: 12 },
+];
+
+function populateIntervalSelects() {
+  const noteOpts = CHROMATIC.map(n => `<option>${n}</option>`).join('');
+  document.getElementById('ivRoot').innerHTML = noteOpts;
+  document.getElementById('ivNote1').innerHTML = noteOpts;
+  document.getElementById('ivNote2').innerHTML = noteOpts;
+  document.getElementById('ivInterval').innerHTML = INTERVALS.map(iv => `<option value="${iv.semitones}">${iv.name}</option>`).join('');
+  document.getElementById('ivNote2').selectedIndex = 4;
+}
+
+function solveInterval() {
+  const root = document.getElementById('ivRoot').value;
+  const semitones = parseInt(document.getElementById('ivInterval').value, 10);
+  const out = document.getElementById('intervalOutput');
+  const rootIdx = CHROMATIC.indexOf(root);
+  const resultIdx = (rootIdx + semitones) % 12;
+  const octaveUp = Math.floor((rootIdx + semitones) / 12);
+  const resultNote = CHROMATIC[resultIdx];
+  const ivName = INTERVALS.find(iv => iv.semitones === semitones).name;
+  out.innerHTML = `<div class="result-box">
+    <div class="result-val">${esc(resultNote)}${octaveUp > 0 ? ' (up an octave)' : ''}</div>
+    <div class="result-lbl">${esc(root)} + ${esc(ivName)}</div>
+  </div>`;
+}
+
+function identifyInterval() {
+  const n1 = document.getElementById('ivNote1').value;
+  const n2 = document.getElementById('ivNote2').value;
+  const out = document.getElementById('identifyOutput');
+  const i1 = CHROMATIC.indexOf(n1);
+  const i2 = CHROMATIC.indexOf(n2);
+  let diff = (i2 - i1 + 12) % 12;
+  const iv = INTERVALS.find(iv => iv.semitones === diff);
+  out.innerHTML = `<div class="result-box">
+    <div class="result-val">${esc(iv.name)}</div>
+    <div class="result-lbl">${esc(n1)} → ${esc(n2)} (${diff} semitones)</div>
+  </div>`;
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+populateIntervalSelects();
+</script>
+</body>
+</html>
