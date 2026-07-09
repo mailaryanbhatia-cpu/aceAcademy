@@ -43,6 +43,8 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('equationsolver',this)">🧮 Equation Solver</div>
   <div class="tab" onclick="showTool('periodictable',this)">⚗️ Periodic Table</div>
   <div class="tab" onclick="showTool('stoich',this)">⚖️ Equation Balancer</div>
+  <div class="tab" onclick="showTool('kinematics',this)">🚀 Kinematics Solver</div>
+  <div class="tab" onclick="showTool('acidbase',this)">🧪 Molarity &amp; pH</div>
 </div>
 
 <div class="frame-area" id="frameArea">
@@ -55,6 +57,8 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-equationsolver" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-periodictable" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-stoich" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-kinematics" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-acidbase" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -66,7 +70,9 @@ const SRCS={
   statscalc:'statscalc.html',
   equationsolver:'equationsolver.html',
   periodictable:'periodictable.html',
-  stoich:'stoich.html'
+  stoich:'stoich.html',
+  kinematics:'kinematics.html',
+  acidbase:'acidbase.html'
 };
 const loaded=new Set(['graphcalc']);
 

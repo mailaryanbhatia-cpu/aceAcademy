@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physics Kinematics Solver — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:760px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+label{font-size:.72rem;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+input[type=number]{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:.95rem;font-family:inherit;color:#fff;outline:none;transition:border .15s}
+input[type=number]:focus{border-color:var(--accent)}
+.var-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+.var-field{position:relative}
+.var-unit{font-size:.68rem;color:var(--muted);margin-top:4px}
+.example-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.example-chip{padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;cursor:pointer}
+.example-chip:hover{border-color:var(--accent);color:#fff}
+.error-box{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:12px 14px;color:#fca5a5;font-size:.85rem;margin-top:16px}
+.result-grid{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+.result-box{flex:1;min-width:130px;background:#111827;border:1.5px solid var(--accent);border-radius:10px;padding:14px;text-align:center}
+.result-val{font-size:1.4rem;font-weight:900;color:var(--accent2)}
+.result-lbl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+.step{font-size:.83rem;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);line-height:1.6}
+.step:last-child{border-bottom:none}
+.step strong{color:#fff}
+.steps-box{margin-top:16px;background:#0d1628;border-radius:10px;padding:14px 18px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="kinematics.html">Kinematics Solver</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🚀 Physics Kinematics Solver</h1>
+  <p>Enter any 3 of the 5 kinematics variables — the tool solves for the other 2 with full step-by-step work.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Enter Known Values (leave exactly 2 blank)</h2>
+    <div class="var-grid">
+      <div class="var-field">
+        <label>Initial Velocity (v₀)</label>
+        <input type="number" id="v0" step="any" placeholder="v₀">
+        <div class="var-unit">m/s</div>
+      </div>
+      <div class="var-field">
+        <label>Final Velocity (v)</label>
+        <input type="number" id="v" step="any" placeholder="v">
+        <div class="var-unit">m/s</div>
+      </div>
+      <div class="var-field">
+        <label>Acceleration (a)</label>
+        <input type="number" id="a" step="any" placeholder="a">
+        <div class="var-unit">m/s²</div>
+      </div>
+      <div class="var-field">
+        <label>Time (t)</label>
+        <input type="number" id="t" step="any" placeholder="t">
+        <div class="var-unit">s</div>
+      </div>
+      <div class="var-field">
+        <label>Displacement (Δx)</label>
+        <input type="number" id="dx" step="any" placeholder="Δx">
+        <div class="var-unit">m</div>
+      </div>
+    </div>
+    <div style="margin-top:18px"><button class="btn btn-primary btn-big" onclick="solve()">⚡ Solve</button> <button class="btn btn-outline" onclick="clearAll()">Clear All</button></div>
+    <div class="example-row" id="exampleRow"></div>
+    <div id="output"></div>
+  </div>
+
+  <div class="card">
+    <h2>The 4 Kinematics Equations</h2>
+    <div class="step"><strong>v = v₀ + at</strong> — relates velocity, acceleration, and time</div>
+    <div class="step"><strong>Δx = v₀t + ½at²</strong> — relates displacement, initial velocity, acceleration, and time</div>
+    <div class="step"><strong>v² = v₀² + 2aΔx</strong> — relates velocity, acceleration, and displacement (no time)</div>
+    <div class="step"><strong>Δx = ½(v₀ + v)t</strong> — relates displacement, both velocities, and time (no acceleration)</div>
+  </div>
+
+</div>
+
+<script>
+const EXAMPLES = [
+  { label: "Car accelerating", v0: 0, v: '', a: 3, t: 5, dx: '' },
+  { label: "Free fall (2s)", v0: 0, v: '', a: -9.8, t: 2, dx: '' },
+  { label: "Braking distance", v0: 25, v: 0, a: -5, t: '', dx: '' },
+  { label: "Projectile rise", v0: 20, v: 0, a: -9.8, t: '', dx: '' },
+];
+
+document.getElementById('exampleRow').innerHTML = EXAMPLES.map((ex,i) =>
+  `<button class="example-chip" onclick="loadExample(${i})">${esc(ex.label)}</button>`
+).join('');
+
+function loadExample(i) {
+  const ex = EXAMPLES[i];
+  document.getElementById('v0').value = ex.v0;
+  document.getElementById('v').value = ex.v;
+  document.getElementById('a').value = ex.a;
+  document.getElementById('t').value = ex.t;
+  document.getElementById('dx').value = ex.dx;
+  solve();
+}
+
+function clearAll() {
+  ['v0','v','a','t','dx'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('output').innerHTML = '';
+}
+
+function getVal(id) {
+  const raw = document.getElementById(id).value;
+  return raw === '' ? null : parseFloat(raw);
+}
+
+function fmt(n) {
+  if (n === null || isNaN(n)) return '—';
+  return Math.round(n * 10000) / 10000;
+}
+
+function solve() {
+  const vals = { v0: getVal('v0'), v: getVal('v'), a: getVal('a'), t: getVal('t'), dx: getVal('dx') };
+  const known = Object.keys(vals).filter(k => vals[k] !== null);
+  const unknown = Object.keys(vals).filter(k => vals[k] === null);
+  const out = document.getElementById('output');
+
+  if (known.length !== 3) {
+    out.innerHTML = `<div class="error-box">⚠️ Enter exactly 3 values and leave exactly 2 blank. You currently have ${known.length} filled in.</div>`;
+    return;
+  }
+
+  let { v0, v, a, t, dx } = vals;
+  let steps = [];
+  const has = (x, y) => unknown.includes(x) && unknown.includes(y);
+
+  try {
+    if (has('dx','t')) {
+      // known v0, v, a
+      if (a === 0) {
+        if (v0 !== v) throw new Error("With a = 0, v must equal v₀ — the values given are inconsistent.");
+        throw new Error("With a = 0 and v₀ = v, time and displacement cannot be uniquely determined from v₀, v, a alone.");
+      }
+      t = (v - v0) / a;
+      steps.push(`t = (v − v₀) / a = (${v} − ${v0}) / ${a} = <strong>${fmt(t)} s</strong>`);
+      dx = 0.5 * (v0 + v) * t;
+      steps.push(`Δx = ½(v₀ + v)t = ½(${v0} + ${v})(${fmt(t)}) = <strong>${fmt(dx)} m</strong>`);
+    } else if (has('a','t')) {
+      // known v0, v, dx
+      if (v0 + v === 0) throw new Error("v₀ + v = 0, so t cannot be solved using Δx = ½(v₀+v)t (division by zero). Provide t or a instead.");
+      t = 2 * dx / (v0 + v);
+      steps.push(`t = 2Δx / (v₀ + v) = 2(${dx}) / (${v0} + ${v}) = <strong>${fmt(t)} s</strong>`);
+      if (t === 0) throw new Error("Computed t = 0, so acceleration cannot be determined (division by zero).");
+      a = (v - v0) / t;
+      steps.push(`a = (v − v₀) / t = (${v} − ${v0}) / ${fmt(t)} = <strong>${fmt(a)} m/s²</strong>`);
+    } else if (has('a','dx')) {
+      // known v0, v, t
+      if (t === 0) throw new Error("t = 0, so acceleration cannot be determined (division by zero).");
+      a = (v - v0) / t;
+      steps.push(`a = (v − v₀) / t = (${v} − ${v0}) / ${t} = <strong>${fmt(a)} m/s²</strong>`);
+      dx = 0.5 * (v0 + v) * t;
+      steps.push(`Δx = ½(v₀ + v)t = ½(${v0} + ${v})(${t}) = <strong>${fmt(dx)} m</strong>`);
+    } else if (has('v','dx')) {
+      // known v0, a, t
+      v = v0 + a * t;
+      steps.push(`v = v₀ + at = ${v0} + (${a})(${t}) = <strong>${fmt(v)} m/s</strong>`);
+      dx = v0 * t + 0.5 * a * t * t;
+      steps.push(`Δx = v₀t + ½at² = (${v0})(${t}) + ½(${a})(${t})² = <strong>${fmt(dx)} m</strong>`);
+    } else if (has('v','t')) {
+      // known v0, a, dx
+      const disc = v0 * v0 + 2 * a * dx;
+      if (disc < 0) throw new Error("No real solution: v₀² + 2aΔx is negative, meaning these values are physically inconsistent.");
+      const vMag = Math.sqrt(disc);
+      steps.push(`v² = v₀² + 2aΔx = ${v0}² + 2(${a})(${dx}) = ${fmt(disc)}, so v = ±${fmt(vMag)} m/s`);
+      // pick sign: if a === 0, v = v0's sign; else pick root consistent with direction of motion (same sign as v0 if v0!=0, else sign of a*dx)
+      let vSign;
+      if (v0 !== 0) vSign = v0 > 0 ? 1 : -1;
+      else if (a * dx > 0) vSign = a > 0 ? 1 : -1;
+      else vSign = 1;
+      v = vMag * vSign;
+      steps.push(`Choosing the physically consistent sign: <strong>v = ${fmt(v)} m/s</strong> (double-check direction against your problem's setup — the other root ${fmt(-v)} m/s may apply if motion reverses direction)`);
+      if (a === 0) {
+        if (v0 === 0) throw new Error("v₀ = a = 0, so time cannot be determined.");
+        t = dx / v0;
+        steps.push(`Since a = 0: t = Δx / v₀ = ${dx} / ${v0} = <strong>${fmt(t)} s</strong>`);
+      } else {
+        t = (v - v0) / a;
+        steps.push(`t = (v − v₀) / a = (${fmt(v)} − ${v0}) / ${a} = <strong>${fmt(t)} s</strong>`);
+      }
+    } else if (has('v0','dx')) {
+      // known v, a, t
+      v0 = v - a * t;
+      steps.push(`v₀ = v − at = ${v} − (${a})(${t}) = <strong>${fmt(v0)} m/s</strong>`);
+      dx = 0.5 * (v0 + v) * t;
+      steps.push(`Δx = ½(v₀ + v)t = ½(${fmt(v0)} + ${v})(${t}) = <strong>${fmt(dx)} m</strong>`);
+    } else if (has('v0','t')) {
+      // known v, a, dx
+      const disc = v * v - 2 * a * dx;
+      if (disc < 0) throw new Error("No real solution: v² − 2aΔx is negative, meaning these values are physically inconsistent.");
+      const v0Mag = Math.sqrt(disc);
+      steps.push(`v₀² = v² − 2aΔx = ${v}² − 2(${a})(${dx}) = ${fmt(disc)}, so v₀ = ±${fmt(v0Mag)} m/s`);
+      let v0Sign = v >= 0 ? 1 : -1;
+      v0 = v0Mag * v0Sign;
+      steps.push(`Choosing the physically consistent sign: <strong>v₀ = ${fmt(v0)} m/s</strong> (double-check direction — the other root ${fmt(-v0)} m/s may apply if motion reverses direction)`);
+      if (a === 0) {
+        if (v === 0) throw new Error("v = a = 0, so time cannot be determined.");
+        t = dx / v;
+        steps.push(`Since a = 0: t = Δx / v = ${dx} / ${v} = <strong>${fmt(t)} s</strong>`);
+      } else {
+        t = (v - v0) / a;
+        steps.push(`t = (v − v₀) / a = (${v} − ${fmt(v0)}) / ${a} = <strong>${fmt(t)} s</strong>`);
+      }
+    } else if (has('v0','v')) {
+      // known a, t, dx
+      if (t === 0) throw new Error("t = 0, so v₀ cannot be determined from Δx = v₀t + ½at² (division by zero).");
+      v0 = (dx - 0.5 * a * t * t) / t;
+      steps.push(`v₀ = (Δx − ½at²) / t = (${dx} − ½(${a})(${t})²) / ${t} = <strong>${fmt(v0)} m/s</strong>`);
+      v = v0 + a * t;
+      steps.push(`v = v₀ + at = ${fmt(v0)} + (${a})(${t}) = <strong>${fmt(v)} m/s</strong>`);
+    } else if (has('v0','a')) {
+      // known v, t, dx
+      if (t === 0) throw new Error("t = 0, so these values cannot determine v₀ (division by zero).");
+      v0 = 2 * dx / t - v;
+      steps.push(`v₀ = 2Δx/t − v = 2(${dx})/${t} − ${v} = <strong>${fmt(v0)} m/s</strong>`);
+      a = (v - v0) / t;
+      steps.push(`a = (v − v₀) / t = (${v} − ${fmt(v0)}) / ${t} = <strong>${fmt(a)} m/s²</strong>`);
+    } else if (has('v','a')) {
+      // known v0, t, dx
+      if (t === 0) throw new Error("t = 0, so acceleration cannot be determined from Δx = v₀t + ½at² (division by zero).");
+      a = 2 * (dx - v0 * t) / (t * t);
+      steps.push(`a = 2(Δx − v₀t) / t² = 2(${dx} − (${v0})(${t})) / ${t}² = <strong>${fmt(a)} m/s²</strong>`);
+      v = v0 + a * t;
+      steps.push(`v = v₀ + at = ${v0} + (${fmt(a)})(${t}) = <strong>${fmt(v)} m/s</strong>`);
+    } else {
+      throw new Error("Unexpected combination of known/unknown variables.");
+    }
+
+    const results = { v0, v, a, t, dx };
+    const labels = { v0: 'v₀ (m/s)', v: 'v (m/s)', a: 'a (m/s²)', t: 't (s)', dx: 'Δx (m)' };
+    const resultHTML = unknown.map(k => `<div class="result-box"><div class="result-val">${fmt(results[k])}</div><div class="result-lbl">${labels[k]}</div></div>`).join('');
+
+    out.innerHTML = `<div class="result-grid">${resultHTML}</div><div class="steps-box">${steps.map(s => `<div class="step">${s}</div>`).join('')}</div>`;
+  } catch (e) {
+    out.innerHTML = `<div class="error-box">⚠️ ${esc(e.message)}</div>`;
+  }
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
