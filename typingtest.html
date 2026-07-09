@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Typing Speed / WPM Trainer — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:820px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+label{font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+
+.stats-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.stat-box{flex:1;min-width:100px;background:#111827;border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center}
+.stat-val{font-size:1.6rem;font-weight:900;color:var(--accent2)}
+.stat-lbl{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+
+.type-box{background:#0d1628;border:1.5px solid var(--border);border-radius:12px;padding:22px;font-size:1.15rem;line-height:1.9;font-family:'Courier New',monospace;letter-spacing:.3px;user-select:none;min-height:140px}
+.type-box span{position:relative}
+.ch-correct{color:#34d399}
+.ch-wrong{color:#f87171;background:rgba(248,113,113,.18);border-radius:2px}
+.ch-pending{color:#7d8bab}
+.ch-cursor{border-left:2px solid var(--accent);animation:blink 1s step-end infinite}
+@keyframes blink{50%{border-color:transparent}}
+
+.hidden-input{position:absolute;opacity:0;pointer-events:none}
+.type-wrap{position:relative}
+.type-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,17,32,.85);border-radius:12px;cursor:pointer;font-size:.95rem;color:var(--accent2);font-weight:700;text-align:center;padding:20px}
+
+.history-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:8px;background:#111827;border:1px solid var(--border);margin-bottom:6px;font-size:.82rem}
+.history-row .wpm{font-weight:800;color:var(--accent2)}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="typingtest.html">Typing Trainer</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>⌨️ Typing Speed / WPM Trainer</h1>
+  <p>Build typing speed and accuracy for timed essays and tests. Track your WPM over time.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Settings</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:20px">
+      <div>
+        <label>Difficulty</label>
+        <div class="chip-group" id="diffGroup">
+          <button class="chip active" data-val="easy">Easy</button>
+          <button class="chip" data-val="medium">Medium</button>
+          <button class="chip" data-val="hard">Hard (AP-level)</button>
+          <button class="chip" data-val="punctuation">Punctuation</button>
+        </div>
+      </div>
+      <div>
+        <label>Time Limit</label>
+        <div class="chip-group" id="timeGroup">
+          <button class="chip" data-val="15">15s</button>
+          <button class="chip active" data-val="30">30s</button>
+          <button class="chip" data-val="60">60s</button>
+          <button class="chip" data-val="120">120s</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn btn-primary btn-big" onclick="newTest()">🔄 New Passage</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val" id="statTime">30</div><div class="stat-lbl">Seconds Left</div></div>
+      <div class="stat-box"><div class="stat-val" id="statWPM">0</div><div class="stat-lbl">WPM</div></div>
+      <div class="stat-box"><div class="stat-val" id="statAcc">100%</div><div class="stat-lbl">Accuracy</div></div>
+      <div class="stat-box"><div class="stat-val" id="statErr">0</div><div class="stat-lbl">Errors</div></div>
+    </div>
+    <div class="type-wrap">
+      <div class="type-box" id="typeBox"></div>
+      <div class="type-overlay" id="typeOverlay" onclick="focusInput()">Click here, then just start typing to begin the timer.</div>
+      <textarea class="hidden-input" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div class="card" id="resultsCard" style="display:none">
+    <h2>Result</h2>
+    <div class="result-big" id="finalWPM">0 WPM</div>
+    <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:10px" id="resultMsg"></div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val" id="resAcc">100%</div><div class="stat-lbl">Accuracy</div></div>
+      <div class="stat-box"><div class="stat-val" id="resChars">0</div><div class="stat-lbl">Characters</div></div>
+      <div class="stat-box"><div class="stat-val" id="resErr">0</div><div class="stat-lbl">Errors</div></div>
+      <div class="stat-box"><div class="stat-val" id="resBest">0</div><div class="stat-lbl">Personal Best</div></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+      <button class="btn btn-primary btn-big" onclick="newTest()">Try Again</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Recent Attempts</h2>
+    <div id="historyList" style="color:var(--muted);font-size:.85rem">No attempts yet — finish a test to see your history.</div>
+  </div>
+
+</div>
+
+<script>
+const PASSAGES = {
+  "easy": [
+    "The sun rose over the quiet hills as birds began to sing their morning songs.",
+    "She opened her notebook and started writing down every idea that came to mind.",
+    "A gentle breeze moved through the trees while the children played near the pond.",
+    "He poured a cup of coffee and sat by the window to read the morning paper.",
+    "The library was calm and quiet, perfect for studying before the big exam.",
+    "They walked along the beach collecting shells as the waves rolled softly in.",
+    "My favorite part of the day is when the whole family sits down for dinner.",
+    "The old clock on the wall ticked steadily as the students finished their test.",
+    "A small dog ran across the yard chasing a bright red ball in the sunshine.",
+    "After school, we usually ride our bikes to the park to meet up with friends."
+  ],
+  "medium": [
+    "Photosynthesis is the process by which green plants use sunlight to synthesize nutrients from carbon dioxide and water.",
+    "The Renaissance was a period of great cultural change and achievement that began in Italy during the 14th century.",
+    "Newton's second law states that the force acting on an object is equal to its mass times its acceleration.",
+    "Effective time management requires setting clear priorities and breaking large tasks into smaller, achievable steps.",
+    "The French Revolution fundamentally transformed the political landscape of Europe and inspired movements around the world.",
+    "In economics, supply and demand describes how the price and quantity of goods sold in a market are determined.",
+    "Mitochondria are often called the powerhouse of the cell because they generate most of the cell's ATP energy.",
+    "A strong thesis statement should be specific, arguable, and provide a clear roadmap for the rest of the essay.",
+    "The water cycle includes evaporation, condensation, precipitation, and collection, repeating continuously across the planet.",
+    "Standardized testing has long been debated as an accurate measure of a student's true academic ability."
+  ],
+  "hard": [
+    "Quantum entanglement occurs when pairs of particles interact in ways such that the state of each particle cannot be described independently, even when separated by large distances.",
+    "The doctrine of judicial review, established in Marbury v. Madison (1803), empowers courts to invalidate legislative and executive actions that conflict with the Constitution.",
+    "Thermodynamic entropy, often described as a measure of disorder, tends to increase in an isolated system, a principle formalized by the second law of thermodynamics.",
+    "Post-structuralist critics argue that meaning in a text is inherently unstable, shaped as much by the reader's interpretation as by the author's intent.",
+    "Comparative advantage explains why countries benefit from specializing in the production of goods for which they have a lower opportunity cost, even without an absolute advantage.",
+    "The Krebs cycle, occurring within the mitochondrial matrix, is a series of chemical reactions that release stored energy through the oxidation of acetyl-CoA.",
+    "Existentialist philosophy, particularly as articulated by Sartre, holds that existence precedes essence, meaning individuals must create their own meaning and purpose.",
+    "Monetary policy tools, such as adjusting the federal funds rate, allow central banks to influence inflation, employment, and overall economic activity.",
+    "The Treaty of Westphalia in 1648 is widely regarded as the origin of the modern state system, establishing the principle of state sovereignty.",
+    "Epigenetic modifications can alter gene expression without changing the underlying DNA sequence, and some of these changes may be heritable across generations."
+  ],
+  "punctuation": [
+    "\"Wait,\" she said, \"did you finish the homework — or not?\" He shrugged; it wasn't due until Friday, anyway.",
+    "The list included: apples, oranges, bananas, and (of course) a few snacks for the trip.",
+    "Dr. Smith's report—published in 2023—concluded that the results were, at best, inconclusive.",
+    "\"I can't believe it's already 3:45 p.m.!\" Maria exclaimed, glancing at her watch in disbelief.",
+    "Note: all assignments (including extra credit) are due by 11:59 p.m. on Sunday, no exceptions.",
+    "The recipe calls for 2 cups of flour, 1/2 tsp of salt, and 3 eggs — nothing else.",
+    "\"Well,\" he said slowly, \"I suppose we'll just have to wait and see, won't we?\"",
+    "Her essay's thesis was clear: technology's benefits, though numerous, come with real trade-offs.",
+    "The meeting's agenda: (1) budget review, (2) staffing update, (3) Q&A session.",
+    "\"Congratulations!\" the coach shouted. \"That's a new record — 4:12.6 in the mile!\""
+  ]
+};
+
+let difficulty = 'easy';
+let timeLimit = 30;
+let passage = '';
+let typed = '';
+let startTime = null;
+let timerInterval = null;
+let timeLeft = 30;
+let running = false;
+let finished = false;
+let errorCount = 0;
+let totalKeystrokes = 0;
+
+document.getElementById('diffGroup').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  document.querySelectorAll('#diffGroup .chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  difficulty = e.target.dataset.val;
+  newTest();
+});
+document.getElementById('timeGroup').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  document.querySelectorAll('#timeGroup .chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  timeLimit = parseInt(e.target.dataset.val, 10);
+  newTest();
+});
+
+function pickPassage() {
+  const list = PASSAGES[difficulty] || PASSAGES.easy;
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function newTest() {
+  clearInterval(timerInterval);
+  passage = pickPassage();
+  typed = '';
+  startTime = null;
+  running = false;
+  finished = false;
+  errorCount = 0;
+  totalKeystrokes = 0;
+  timeLeft = timeLimit;
+  document.getElementById('statTime').textContent = timeLeft;
+  document.getElementById('statWPM').textContent = '0';
+  document.getElementById('statAcc').textContent = '100%';
+  document.getElementById('statErr').textContent = '0';
+  document.getElementById('resultsCard').style.display = 'none';
+  document.getElementById('typeOverlay').style.display = 'flex';
+  document.getElementById('typeOverlay').textContent = 'Click here, then just start typing to begin the timer.';
+  const hidden = document.getElementById('hiddenInput');
+  hidden.value = '';
+  renderPassage();
+}
+
+function focusInput() {
+  document.getElementById('hiddenInput').focus();
+  document.getElementById('typeOverlay').style.display = 'none';
+}
+
+function renderPassage() {
+  const box = document.getElementById('typeBox');
+  let html = '';
+  for (let i = 0; i < passage.length; i++) {
+    const ch = passage[i] === ' ' ? '&nbsp;' : escChar(passage[i]);
+    if (i < typed.length) {
+      html += `<span class="${typed[i] === passage[i] ? 'ch-correct' : 'ch-wrong'}">${ch}</span>`;
+    } else if (i === typed.length) {
+      html += `<span class="ch-pending ch-cursor">${ch}</span>`;
+    } else {
+      html += `<span class="ch-pending">${ch}</span>`;
+    }
+  }
+  box.innerHTML = html;
+}
+
+function escChar(c) {
+  if (c === '&') return '&amp;';
+  if (c === '<') return '&lt;';
+  if (c === '>') return '&gt;';
+  return c;
+}
+
+const hiddenInput = document.getElementById('hiddenInput');
+hiddenInput.addEventListener('input', e => {
+  if (finished) return;
+  if (!running) {
+    running = true;
+    startTime = Date.now();
+    timerInterval = setInterval(tick, 1000);
+  }
+  const val = e.target.value;
+  if (val.length > typed.length) {
+    const idx = val.length - 1;
+    totalKeystrokes++;
+    if (val[idx] !== passage[idx]) errorCount++;
+  }
+  typed = val;
+  renderPassage();
+  updateLiveStats();
+  if (typed.length >= passage.length) endTest();
+});
+
+document.getElementById('typeBox').addEventListener('click', focusInput);
+
+function tick() {
+  timeLeft--;
+  document.getElementById('statTime').textContent = timeLeft;
+  updateLiveStats();
+  if (timeLeft <= 0) endTest();
+}
+
+function updateLiveStats() {
+  const elapsedMin = startTime ? Math.max((Date.now() - startTime) / 60000, 1/600) : 1/600;
+  const wordsTyped = typed.length / 5;
+  const wpm = Math.round(wordsTyped / elapsedMin);
+  const acc = totalKeystrokes > 0 ? Math.round(((totalKeystrokes - errorCount) / totalKeystrokes) * 100) : 100;
+  document.getElementById('statWPM').textContent = Math.max(wpm, 0);
+  document.getElementById('statAcc').textContent = Math.max(acc, 0) + '%';
+  document.getElementById('statErr').textContent = errorCount;
+}
+
+function endTest() {
+  if (finished) return;
+  finished = true;
+  running = false;
+  clearInterval(timerInterval);
+  const elapsedMin = startTime ? Math.max((Date.now() - startTime) / 60000, 1/600) : 1/600;
+  const wordsTyped = typed.length / 5;
+  const wpm = Math.round(wordsTyped / elapsedMin);
+  const acc = totalKeystrokes > 0 ? Math.round(((totalKeystrokes - errorCount) / totalKeystrokes) * 100) : 100;
+
+  document.getElementById('resultsCard').style.display = 'block';
+  document.getElementById('finalWPM').textContent = wpm + ' WPM';
+  document.getElementById('resAcc').textContent = acc + '%';
+  document.getElementById('resChars').textContent = typed.length;
+  document.getElementById('resErr').textContent = errorCount;
+
+  const msg = wpm >= 70 ? "Excellent speed! You're built for timed essays." :
+              wpm >= 50 ? "Solid pace — right around average adult typing speed." :
+              wpm >= 30 ? "Good start. Keep practicing to build speed." :
+              "Keep at it — speed comes with practice.";
+  document.getElementById('resultMsg').textContent = msg;
+
+  saveAttempt(wpm, acc, difficulty);
+  const best = getBest();
+  document.getElementById('resBest').textContent = best;
+  renderHistory();
+}
+
+function saveAttempt(wpm, acc, diff) {
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem('ace_typing_history') || '[]'); } catch(e) {}
+  hist.unshift({ wpm, acc, diff, time: Date.now() });
+  hist = hist.slice(0, 20);
+  try { localStorage.setItem('ace_typing_history', JSON.stringify(hist)); } catch(e) {}
+}
+
+function getBest() {
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem('ace_typing_history') || '[]'); } catch(e) {}
+  return hist.reduce((m, h) => Math.max(m, h.wpm), 0);
+}
+
+function renderHistory() {
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem('ace_typing_history') || '[]'); } catch(e) {}
+  const el = document.getElementById('historyList');
+  if (!hist.length) { el.textContent = 'No attempts yet — finish a test to see your history.'; return; }
+  el.innerHTML = hist.map(h => {
+    const d = new Date(h.time);
+    const dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    return `<div class="history-row"><span>${dateStr} · <span style="text-transform:capitalize">${h.diff}</span></span><span class="wpm">${h.wpm} WPM · ${h.acc}% acc</span></div>`;
+  }).join('');
+}
+
+// Init
+newTest();
+renderHistory();
+</script>
+</body>
+</html>

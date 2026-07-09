@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Psychology Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{perspective:1200px;margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-tag{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);position:absolute;top:16px;left:20px}
+.flash-inner{position:relative;width:100%}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="appsych.html">AP Psychology</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🧠 AP Psychology Concept Drill</h1>
+  <p>234 key terms across all 9 AP Psych units. Flip flashcards or quiz yourself with multiple choice.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "foundations": {
+    "label": "Scientific Foundations",
+    "icon": "🔬",
+    "terms": [
+      [
+        "Hypothesis",
+        "A testable prediction about the relationship between two or more variables."
+      ],
+      [
+        "Operational Definition",
+        "A precise statement of how a variable is measured or manipulated in a study."
+      ],
+      [
+        "Independent Variable",
+        "The variable a researcher manipulates to observe its effect on another variable."
+      ],
+      [
+        "Dependent Variable",
+        "The variable that is measured to see if it changes due to the independent variable."
+      ],
+      [
+        "Confounding Variable",
+        "An uncontrolled variable that could explain the results instead of the IV."
+      ],
+      [
+        "Correlation Coefficient",
+        "A number from -1 to +1 indicating the strength and direction of a relationship."
+      ],
+      [
+        "Correlation ≠ Causation",
+        "A strong correlation does not prove that one variable causes the other."
+      ],
+      [
+        "Random Sample",
+        "A sample where every member of the population has an equal chance of being selected."
+      ],
+      [
+        "Random Assignment",
+        "Randomly placing participants into experimental or control groups to reduce bias."
+      ],
+      [
+        "Double-Blind Study",
+        "Neither participants nor researchers know who is in the treatment or control group."
+      ],
+      [
+        "Placebo Effect",
+        "Improvement in symptoms caused by the expectation of treatment, not the treatment itself."
+      ],
+      [
+        "Case Study",
+        "An in-depth investigation of one individual or small group."
+      ],
+      [
+        "Naturalistic Observation",
+        "Observing behavior in its real-world setting without interference."
+      ],
+      [
+        "Longitudinal Study",
+        "Research that follows the same participants over a long period of time."
+      ],
+      [
+        "Cross-Sectional Study",
+        "Research comparing different age groups at a single point in time."
+      ],
+      [
+        "Statistically Significant",
+        "A result unlikely to have occurred by chance alone."
+      ],
+      [
+        "Structuralism",
+        "Early school of psychology focused on breaking down mental processes into basic components (Wundt)."
+      ],
+      [
+        "Functionalism",
+        "Early school of psychology examining how mental processes help organisms adapt (James)."
+      ]
+    ]
+  },
+  "biological": {
+    "label": "Biological Bases of Behavior",
+    "icon": "🧠",
+    "terms": [
+      [
+        "Neuron",
+        "A nerve cell; the basic building block of the nervous system."
+      ],
+      [
+        "Dendrite",
+        "Branch-like extension of a neuron that receives messages from other neurons."
+      ],
+      [
+        "Axon",
+        "The extension of a neuron that carries messages away toward other cells."
+      ],
+      [
+        "Myelin Sheath",
+        "Fatty tissue layer that insulates axons and speeds up neural impulses."
+      ],
+      [
+        "Synapse",
+        "The tiny gap between the axon of one neuron and the dendrite of the next."
+      ],
+      [
+        "Neurotransmitter",
+        "A chemical messenger that crosses the synapse to relay signals between neurons."
+      ],
+      [
+        "Dopamine",
+        "Neurotransmitter linked to reward, motivation, and movement; oversupply linked to schizophrenia."
+      ],
+      [
+        "Serotonin",
+        "Neurotransmitter affecting mood, hunger, and sleep; undersupply linked to depression."
+      ],
+      [
+        "Acetylcholine",
+        "Neurotransmitter involved in muscle movement and learning/memory."
+      ],
+      [
+        "Action Potential",
+        "A brief electrical charge that travels down an axon when a neuron fires."
+      ],
+      [
+        "Reuptake",
+        "The reabsorption of excess neurotransmitters by the sending neuron."
+      ],
+      [
+        "Central Nervous System",
+        "The brain and spinal cord."
+      ],
+      [
+        "Peripheral Nervous System",
+        "Nerves connecting the CNS to the rest of the body."
+      ],
+      [
+        "Sympathetic Nervous System",
+        "Arouses the body for 'fight or flight' in stressful situations."
+      ],
+      [
+        "Parasympathetic Nervous System",
+        "Calms the body down after arousal; 'rest and digest.'"
+      ],
+      [
+        "Amygdala",
+        "Limbic system structure involved in processing fear and other emotions."
+      ],
+      [
+        "Hippocampus",
+        "Limbic system structure critical for forming new explicit/long-term memories."
+      ],
+      [
+        "Hypothalamus",
+        "Regulates hunger, thirst, body temperature, and links the nervous and endocrine systems."
+      ],
+      [
+        "Cerebral Cortex",
+        "The outer layer of the brain responsible for higher-order thinking."
+      ],
+      [
+        "Frontal Lobe",
+        "Brain lobe responsible for planning, decision-making, and personality."
+      ],
+      [
+        "Occipital Lobe",
+        "Brain lobe responsible for processing visual information."
+      ],
+      [
+        "Temporal Lobe",
+        "Brain lobe responsible for processing sound and language comprehension."
+      ],
+      [
+        "Parietal Lobe",
+        "Brain lobe responsible for processing touch and spatial awareness."
+      ],
+      [
+        "Broca's Area",
+        "Frontal lobe region controlling speech production; damage causes halting speech."
+      ],
+      [
+        "Wernicke's Area",
+        "Temporal lobe region controlling language comprehension; damage causes nonsense speech."
+      ],
+      [
+        "Corpus Callosum",
+        "Band of fibers connecting the brain's two hemispheres."
+      ],
+      [
+        "Plasticity",
+        "The brain's ability to change and reorganize itself, especially after damage."
+      ],
+      [
+        "Endocrine System",
+        "The body's network of glands that release hormones into the bloodstream."
+      ]
+    ]
+  },
+  "sensation": {
+    "label": "Sensation & Perception",
+    "icon": "👁️",
+    "terms": [
+      [
+        "Sensation",
+        "The process of detecting physical energy from the environment via sensory receptors."
+      ],
+      [
+        "Perception",
+        "The process of organizing and interpreting sensory information."
+      ],
+      [
+        "Absolute Threshold",
+        "The minimum stimulation needed to detect a stimulus 50% of the time."
+      ],
+      [
+        "Difference Threshold",
+        "The minimum difference needed to detect a change between two stimuli."
+      ],
+      [
+        "Weber's Law",
+        "The idea that two stimuli must differ by a constant proportion to be perceived as different."
+      ],
+      [
+        "Signal Detection Theory",
+        "A theory predicting how and when we detect a faint stimulus amid background noise."
+      ],
+      [
+        "Sensory Adaptation",
+        "Diminished sensitivity as a result of constant, unchanging stimulation."
+      ],
+      [
+        "Transduction",
+        "Converting physical energy (light, sound) into neural signals the brain can process."
+      ],
+      [
+        "Cornea",
+        "The eye's clear outer covering that bends light to help focus it."
+      ],
+      [
+        "Retina",
+        "The light-sensitive inner surface of the eye containing rods and cones."
+      ],
+      [
+        "Rods",
+        "Retinal receptors that detect black, white, and gray; sensitive in dim light."
+      ],
+      [
+        "Cones",
+        "Retinal receptors concentrated near the center of the retina that detect color."
+      ],
+      [
+        "Optic Nerve",
+        "The nerve that carries neural impulses from the eye to the brain."
+      ],
+      [
+        "Trichromatic Theory",
+        "Theory that the retina has three color receptor types: red, green, and blue."
+      ],
+      [
+        "Opponent-Process Theory",
+        "Theory that color vision relies on opposing pairs: red-green, blue-yellow, black-white."
+      ],
+      [
+        "Cochlea",
+        "Fluid-filled inner ear structure where sound waves trigger nerve impulses."
+      ],
+      [
+        "Place Theory",
+        "Theory that pitch is determined by the specific place on the cochlea that is stimulated."
+      ],
+      [
+        "Frequency Theory",
+        "Theory that pitch is determined by the rate at which the cochlea vibrates."
+      ],
+      [
+        "Gate-Control Theory",
+        "Theory that the spinal cord contains a gate that blocks or allows pain signals."
+      ],
+      [
+        "Gestalt",
+        "The tendency to organize stimuli into meaningful, coherent wholes."
+      ],
+      [
+        "Figure-Ground",
+        "The organization of the visual field into an object (figure) and its surroundings (ground)."
+      ],
+      [
+        "Depth Perception",
+        "The ability to see objects in three dimensions and judge distance."
+      ],
+      [
+        "Binocular Cue",
+        "A depth cue, like retinal disparity, that requires both eyes."
+      ],
+      [
+        "Monocular Cue",
+        "A depth cue, like relative size or linear perspective, available to either eye alone."
+      ],
+      [
+        "Perceptual Constancy",
+        "Perceiving objects as unchanging even as illumination and retinal image change."
+      ],
+      [
+        "Selective Attention",
+        "Focusing conscious awareness on a particular stimulus while filtering out others."
+      ],
+      [
+        "Inattentional Blindness",
+        "Failing to notice a fully visible object because attention is focused elsewhere."
+      ]
+    ]
+  },
+  "learning": {
+    "label": "Learning",
+    "icon": "📘",
+    "terms": [
+      [
+        "Classical Conditioning",
+        "Learning in which a neutral stimulus becomes associated with a meaningful stimulus (Pavlov)."
+      ],
+      [
+        "Unconditioned Stimulus",
+        "A stimulus that naturally triggers a response without prior learning."
+      ],
+      [
+        "Unconditioned Response",
+        "An unlearned, natural reaction to an unconditioned stimulus."
+      ],
+      [
+        "Conditioned Stimulus",
+        "A previously neutral stimulus that, after association, triggers a conditioned response."
+      ],
+      [
+        "Conditioned Response",
+        "A learned response to a previously neutral stimulus."
+      ],
+      [
+        "Acquisition",
+        "The initial stage in classical conditioning where an association is formed."
+      ],
+      [
+        "Extinction",
+        "The diminishing of a learned response when the conditioned stimulus is no longer paired with the UCS."
+      ],
+      [
+        "Spontaneous Recovery",
+        "The reappearance of an extinguished response after a rest period."
+      ],
+      [
+        "Stimulus Generalization",
+        "Tendency to respond to stimuli similar to the original conditioned stimulus."
+      ],
+      [
+        "Stimulus Discrimination",
+        "Learning to distinguish between a conditioned stimulus and similar stimuli."
+      ],
+      [
+        "Operant Conditioning",
+        "Learning in which behavior is strengthened by reinforcement or weakened by punishment (Skinner)."
+      ],
+      [
+        "Positive Reinforcement",
+        "Adding a desirable stimulus to increase a behavior."
+      ],
+      [
+        "Negative Reinforcement",
+        "Removing an unpleasant stimulus to increase a behavior."
+      ],
+      [
+        "Positive Punishment",
+        "Adding an unpleasant stimulus to decrease a behavior."
+      ],
+      [
+        "Negative Punishment",
+        "Removing a desirable stimulus to decrease a behavior."
+      ],
+      [
+        "Shaping",
+        "Reinforcing successive approximations of a desired behavior."
+      ],
+      [
+        "Fixed-Ratio Schedule",
+        "Reinforcement after a set number of responses; produces high, steady response rates."
+      ],
+      [
+        "Variable-Ratio Schedule",
+        "Reinforcement after an unpredictable number of responses; very resistant to extinction."
+      ],
+      [
+        "Fixed-Interval Schedule",
+        "Reinforcement for the first response after a set time period."
+      ],
+      [
+        "Variable-Interval Schedule",
+        "Reinforcement for the first response after unpredictable time intervals."
+      ],
+      [
+        "Primary Reinforcer",
+        "An innately reinforcing stimulus, like food or water."
+      ],
+      [
+        "Secondary Reinforcer",
+        "A learned reinforcer, like money, that gains value through association."
+      ],
+      [
+        "Observational Learning",
+        "Learning by watching and imitating others (Bandura)."
+      ],
+      [
+        "Modeling",
+        "The process of observing and imitating a specific behavior."
+      ],
+      [
+        "Latent Learning",
+        "Learning that occurs but is not apparent until there is an incentive to demonstrate it."
+      ],
+      [
+        "Insight Learning",
+        "Sudden realization of a problem's solution, not through trial and error."
+      ]
+    ]
+  },
+  "cognitive": {
+    "label": "Cognitive Psychology",
+    "icon": "💭",
+    "terms": [
+      [
+        "Sensory Memory",
+        "The immediate, very brief recording of sensory information."
+      ],
+      [
+        "Short-Term Memory",
+        "Activated memory holding a few items briefly before storage or forgetting."
+      ],
+      [
+        "Working Memory",
+        "A newer model of short-term memory that actively processes information."
+      ],
+      [
+        "Long-Term Memory",
+        "The relatively permanent, unlimited-capacity memory store."
+      ],
+      [
+        "Explicit Memory",
+        "Memory of facts and experiences that one can consciously know and 'declare.'"
+      ],
+      [
+        "Implicit Memory",
+        "Retention of learned skills or classically conditioned associations, without conscious recall."
+      ],
+      [
+        "Episodic Memory",
+        "Memory of personally experienced events."
+      ],
+      [
+        "Semantic Memory",
+        "Memory of general knowledge and facts."
+      ],
+      [
+        "Procedural Memory",
+        "Memory for skills and how to perform tasks."
+      ],
+      [
+        "Encoding",
+        "The process of getting information into the memory system."
+      ],
+      [
+        "Storage",
+        "The process of retaining encoded information over time."
+      ],
+      [
+        "Retrieval",
+        "The process of getting information out of memory storage."
+      ],
+      [
+        "Chunking",
+        "Organizing items into familiar, manageable units to improve memory."
+      ],
+      [
+        "Mnemonic Device",
+        "A memory aid, often using vivid imagery or organizational devices."
+      ],
+      [
+        "Serial Position Effect",
+        "Tendency to recall best the first and last items in a list."
+      ],
+      [
+        "Proactive Interference",
+        "Older learning disrupting the recall of newer information."
+      ],
+      [
+        "Retroactive Interference",
+        "Newer learning disrupting the recall of older information."
+      ],
+      [
+        "Misinformation Effect",
+        "Incorporating misleading information into one's memory of an event."
+      ],
+      [
+        "Source Amnesia",
+        "Attributing an event to the wrong source of memory."
+      ],
+      [
+        "Algorithm",
+        "A step-by-step procedure that guarantees a correct solution."
+      ],
+      [
+        "Heuristic",
+        "A mental shortcut that is faster but more error-prone than an algorithm."
+      ],
+      [
+        "Availability Heuristic",
+        "Judging likelihood based on how easily examples come to mind."
+      ],
+      [
+        "Representativeness Heuristic",
+        "Judging likelihood by how well something matches a prototype."
+      ],
+      [
+        "Confirmation Bias",
+        "Tendency to search for and favor information that confirms existing beliefs."
+      ],
+      [
+        "Anchoring Bias",
+        "Relying too heavily on the first piece of information encountered."
+      ],
+      [
+        "Framing Effect",
+        "The way an issue is worded/presented can influence decisions and judgments."
+      ],
+      [
+        "Functional Fixedness",
+        "Tendency to think of objects only in terms of their typical use."
+      ],
+      [
+        "Mental Set",
+        "Tendency to approach a problem using a strategy that worked in the past."
+      ],
+      [
+        "Divergent Thinking",
+        "Creative thinking that generates multiple possible solutions."
+      ]
+    ]
+  },
+  "development": {
+    "label": "Developmental Psychology",
+    "icon": "👶",
+    "terms": [
+      [
+        "Nature vs. Nurture",
+        "The long-standing debate over genetic vs. environmental contributions to development."
+      ],
+      [
+        "Critical Period",
+        "An optimal window of time when exposure to certain stimuli produces normal development."
+      ],
+      [
+        "Attachment",
+        "An emotional tie with another person, shown by seeking closeness and distress at separation."
+      ],
+      [
+        "Imprinting",
+        "The process by which some animals form attachments during a critical period (Lorenz)."
+      ],
+      [
+        "Strange Situation",
+        "Ainsworth's procedure for testing infant attachment security."
+      ],
+      [
+        "Secure Attachment",
+        "Attachment style with comfortable exploration and distress/comfort upon caregiver return."
+      ],
+      [
+        "Insecure Attachment",
+        "Attachment marked by anxiety or avoidance of the caregiver."
+      ],
+      [
+        "Object Permanence",
+        "Understanding that objects continue to exist even when not perceived (Piaget)."
+      ],
+      [
+        "Sensorimotor Stage",
+        "Piaget's stage (birth–2) where infants know the world through senses and actions."
+      ],
+      [
+        "Preoperational Stage",
+        "Piaget's stage (2–7) marked by symbolic thinking and egocentrism."
+      ],
+      [
+        "Concrete Operational Stage",
+        "Piaget's stage (7–11) marked by logical thought about concrete events."
+      ],
+      [
+        "Formal Operational Stage",
+        "Piaget's stage (12+) marked by abstract and hypothetical reasoning."
+      ],
+      [
+        "Egocentrism",
+        "Difficulty seeing a situation from another person's point of view."
+      ],
+      [
+        "Theory of Mind",
+        "The ability to infer other people's mental states, beliefs, and intentions."
+      ],
+      [
+        "Zone of Proximal Development",
+        "Vygotsky's concept: tasks a child can do with guidance but not alone yet."
+      ],
+      [
+        "Scaffolding",
+        "Temporary support given to a child to help them accomplish a task."
+      ],
+      [
+        "Authoritative Parenting",
+        "Parenting style that is both demanding and responsive; linked to best outcomes."
+      ],
+      [
+        "Authoritarian Parenting",
+        "Parenting style that is demanding but not responsive; strict, low warmth."
+      ],
+      [
+        "Permissive Parenting",
+        "Parenting style that is responsive but not demanding; few rules."
+      ],
+      [
+        "Erikson's Psychosocial Stages",
+        "Eight life stages, each with a developmental crisis to resolve (e.g., trust vs. mistrust)."
+      ],
+      [
+        "Identity vs. Role Confusion",
+        "Erikson's adolescent stage focused on developing a sense of self."
+      ],
+      [
+        "Kohlberg's Moral Development",
+        "Theory describing stages of moral reasoning: preconventional, conventional, postconventional."
+      ],
+      [
+        "Menarche",
+        "The first menstrual period, marking the onset of female puberty."
+      ],
+      [
+        "Adolescence",
+        "The transition period from childhood to adulthood, from puberty to independence."
+      ]
+    ]
+  },
+  "motivation": {
+    "label": "Motivation, Emotion & Personality",
+    "icon": "🔥",
+    "terms": [
+      [
+        "Drive-Reduction Theory",
+        "Idea that physiological needs create an aroused state (drive) that motivates behavior."
+      ],
+      [
+        "Homeostasis",
+        "The body's tendency to maintain a balanced internal state."
+      ],
+      [
+        "Maslow's Hierarchy of Needs",
+        "Pyramid of needs from physiological up to self-actualization."
+      ],
+      [
+        "Self-Actualization",
+        "Maslow's term for fulfilling one's full personal potential."
+      ],
+      [
+        "Intrinsic Motivation",
+        "Desire to perform a behavior for its own sake."
+      ],
+      [
+        "Extrinsic Motivation",
+        "Desire to perform a behavior for external rewards or to avoid punishment."
+      ],
+      [
+        "James-Lange Theory",
+        "Theory that physiological arousal comes first, then the subjective emotion (we feel afraid because we tremble)."
+      ],
+      [
+        "Cannon-Bard Theory",
+        "Theory that the physiological response and emotional experience happen simultaneously."
+      ],
+      [
+        "Schachter-Singer Two-Factor Theory",
+        "Theory that emotion depends on both physiological arousal and cognitive labeling."
+      ],
+      [
+        "Polygraph",
+        "A machine measuring physiological arousal (heart rate, sweating) used to try to detect lies."
+      ],
+      [
+        "Facial Feedback Effect",
+        "The tendency for facial muscle states to trigger corresponding feelings."
+      ],
+      [
+        "Trait Theory",
+        "Approach to personality focused on identifying and measuring stable characteristics."
+      ],
+      [
+        "Big Five Traits",
+        "OCEAN: Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism."
+      ],
+      [
+        "Psychodynamic Theory",
+        "Freud's approach emphasizing unconscious drives and childhood experience in shaping personality."
+      ],
+      [
+        "Id",
+        "Freud's term for unconscious psychic energy seeking immediate gratification of drives."
+      ],
+      [
+        "Ego",
+        "Freud's term for the 'executive' part of personality mediating between the id, superego, and reality."
+      ],
+      [
+        "Superego",
+        "Freud's term for the internalized ideals and conscience."
+      ],
+      [
+        "Defense Mechanism",
+        "Ego's unconscious protective methods for reducing anxiety, e.g., repression, denial."
+      ],
+      [
+        "Humanistic Theory",
+        "Approach to personality emphasizing growth potential, e.g., Maslow and Rogers."
+      ],
+      [
+        "Unconditional Positive Regard",
+        "Rogers's term for total acceptance of a person regardless of behavior."
+      ],
+      [
+        "Self-Concept",
+        "All the thoughts and feelings people have in response to 'Who am I?'"
+      ],
+      [
+        "Social-Cognitive Theory",
+        "Bandura's view that behavior is shaped by the interaction of person, behavior, and environment."
+      ],
+      [
+        "Reciprocal Determinism",
+        "The interacting influences of behavior, internal cognition, and environment."
+      ],
+      [
+        "Self-Efficacy",
+        "One's sense of competence and effectiveness in accomplishing a goal."
+      ]
+    ]
+  },
+  "clinical": {
+    "label": "Clinical Psychology",
+    "icon": "🩺",
+    "terms": [
+      [
+        "DSM-5",
+        "The Diagnostic and Statistical Manual used to classify psychological disorders."
+      ],
+      [
+        "Medical Model",
+        "The concept that psychological disorders have physical causes and can be diagnosed/treated like an illness."
+      ],
+      [
+        "Biopsychosocial Model",
+        "Approach viewing disorders as caused by biological, psychological, and social factors together."
+      ],
+      [
+        "Generalized Anxiety Disorder",
+        "Disorder marked by continuous, excessive worry unrelated to a specific threat."
+      ],
+      [
+        "Panic Disorder",
+        "Disorder marked by unpredictable, sudden episodes of intense fear/physical symptoms."
+      ],
+      [
+        "Specific Phobia",
+        "Disorder marked by persistent, irrational fear of a specific object or situation."
+      ],
+      [
+        "Social Anxiety Disorder",
+        "Intense fear of being negatively judged or evaluated in social situations."
+      ],
+      [
+        "OCD",
+        "Disorder marked by unwanted repetitive thoughts (obsessions) and/or actions (compulsions)."
+      ],
+      [
+        "PTSD",
+        "Disorder involving haunting memories, nightmares, and anxiety following a traumatic event."
+      ],
+      [
+        "Major Depressive Disorder",
+        "Disorder marked by at least two weeks of significantly depressed mood and/or loss of interest."
+      ],
+      [
+        "Bipolar Disorder",
+        "Disorder marked by alternating between depressive and manic (elevated/irritable) episodes."
+      ],
+      [
+        "Mania",
+        "An abnormally elevated, expansive, or irritable mood state."
+      ],
+      [
+        "Schizophrenia",
+        "Disorder marked by disorganized thinking, disturbed perceptions, and inappropriate emotion/actions."
+      ],
+      [
+        "Positive Symptoms",
+        "Presence of inappropriate behaviors in schizophrenia, e.g., hallucinations, delusions."
+      ],
+      [
+        "Negative Symptoms",
+        "Absence of appropriate behaviors in schizophrenia, e.g., flat affect, social withdrawal."
+      ],
+      [
+        "Hallucination",
+        "A sensory experience of something that isn't actually present."
+      ],
+      [
+        "Delusion",
+        "A false belief, often of persecution or grandeur, maintained despite contrary evidence."
+      ],
+      [
+        "Antisocial Personality Disorder",
+        "Disorder marked by a lack of conscience and disregard for others' rights, often since childhood."
+      ],
+      [
+        "Dissociative Identity Disorder",
+        "Disorder in which a person exhibits two or more distinct personality states."
+      ],
+      [
+        "Anorexia Nervosa",
+        "Eating disorder marked by self-starvation despite being underweight."
+      ],
+      [
+        "Bulimia Nervosa",
+        "Eating disorder marked by binge eating followed by purging or other compensatory behavior."
+      ],
+      [
+        "Psychoanalysis",
+        "Freudian therapy seeking to bring unconscious conflicts into conscious awareness."
+      ],
+      [
+        "Client-Centered Therapy",
+        "Rogers's humanistic therapy using empathy, genuineness, and unconditional positive regard."
+      ],
+      [
+        "Cognitive-Behavioral Therapy",
+        "Therapy that combines changing negative thoughts with changing problematic behaviors."
+      ],
+      [
+        "Systematic Desensitization",
+        "Behavioral technique pairing relaxation with a graduated hierarchy of anxiety-triggers."
+      ],
+      [
+        "Exposure Therapy",
+        "Behavioral therapy exposing patients to what they fear/avoid to reduce anxiety over time."
+      ],
+      [
+        "Token Economy",
+        "Operant conditioning-based therapy rewarding desired behavior with tokens exchangeable for privileges."
+      ],
+      [
+        "SSRI",
+        "Selective serotonin reuptake inhibitor; common antidepressant medication class."
+      ]
+    ]
+  },
+  "social": {
+    "label": "Social Psychology",
+    "icon": "🤝",
+    "terms": [
+      [
+        "Attribution Theory",
+        "Theory of how we explain others' behavior — as due to the person or the situation."
+      ],
+      [
+        "Fundamental Attribution Error",
+        "Tendency to overestimate personality/underestimate the situation in explaining others' behavior."
+      ],
+      [
+        "Actor-Observer Bias",
+        "Tendency to attribute our own behavior to situation, but others' to their disposition."
+      ],
+      [
+        "Self-Serving Bias",
+        "Tendency to take credit for success and blame external factors for failure."
+      ],
+      [
+        "Attitude",
+        "A feeling, shaped by beliefs, that predisposes a person to respond to objects/people/events."
+      ],
+      [
+        "Cognitive Dissonance",
+        "Tension felt when actions and attitudes conflict; motivates attitude change (Festinger)."
+      ],
+      [
+        "Foot-in-the-Door Phenomenon",
+        "Tendency to comply with a large request after first agreeing to a small one."
+      ],
+      [
+        "Conformity",
+        "Adjusting behavior or thinking to match a group standard."
+      ],
+      [
+        "Asch's Conformity Experiments",
+        "Classic studies showing people will conform to obviously wrong group judgments."
+      ],
+      [
+        "Normative Social Influence",
+        "Conforming to be liked and accepted, avoiding rejection."
+      ],
+      [
+        "Informational Social Influence",
+        "Conforming because we believe the group is right, especially in ambiguous situations."
+      ],
+      [
+        "Obedience",
+        "Compliance with orders from an authority figure."
+      ],
+      [
+        "Milgram's Obedience Studies",
+        "Classic studies showing high rates of obedience to authority, even to harm others."
+      ],
+      [
+        "Social Facilitation",
+        "Improved performance on simple/well-learned tasks in the presence of others."
+      ],
+      [
+        "Social Loafing",
+        "Tendency to exert less effort in a group when individual contributions aren't identifiable."
+      ],
+      [
+        "Deindividuation",
+        "Loss of self-awareness/restraint in group situations that foster arousal and anonymity."
+      ],
+      [
+        "Group Polarization",
+        "Enhancement of a group's prevailing attitudes through group discussion."
+      ],
+      [
+        "Groupthink",
+        "Mode of thinking where desire for harmony overrides realistic appraisal of alternatives."
+      ],
+      [
+        "Bystander Effect",
+        "Tendency for a person to be less likely to help when other bystanders are present."
+      ],
+      [
+        "Diffusion of Responsibility",
+        "Reduced sense of personal responsibility to act when others are present."
+      ],
+      [
+        "Social Exchange Theory",
+        "Idea that we help others when the perceived benefits outweigh the perceived costs."
+      ],
+      [
+        "Prejudice",
+        "An unjustifiable, usually negative attitude toward a group and its members."
+      ],
+      [
+        "Stereotype",
+        "A generalized, often exaggerated belief about a group of people."
+      ],
+      [
+        "Discrimination",
+        "Unjustifiable negative behavior toward a group and its members."
+      ],
+      [
+        "In-Group Bias",
+        "Tendency to favor one's own group over outsiders."
+      ],
+      [
+        "Out-Group Homogeneity",
+        "Perceiving members of an out-group as more similar to one another than they really are."
+      ],
+      [
+        "Scapegoat Theory",
+        "Theory that prejudice offers an outlet for anger by providing someone to blame."
+      ],
+      [
+        "Mere Exposure Effect",
+        "Repeated exposure to novel stimuli increases liking of them."
+      ],
+      [
+        "Passionate vs. Companionate Love",
+        "Passionate love = intense arousal/absorption; companionate = deep affection/attachment."
+      ],
+      [
+        "Altruism",
+        "Unselfish regard for the welfare of others."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

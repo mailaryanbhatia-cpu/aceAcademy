@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<link rel="stylesheet" href="/ace-shared.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Short Answer Question Practice — aceAcademy</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/firebase-auth.js"></script>
+<script src="/firestore.js"></script>
+<script src="/sync-indicator.js"></script>
+<script src="auth-guard.js"></script>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav.topnav{background:var(--bg);border-bottom:1px solid #2a3a55;padding:0 20px;height:60px;display:flex;align-items:center;gap:2px;position:sticky;top:0;z-index:500;overflow-x:auto}
+nav.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.1rem;font-weight:800;color:#fff;text-decoration:none;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#a5b4fc}
+.nav-link{text-decoration:none;padding:6px 9px;border-radius:7px;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--muted2);transition:background .15s,color .15s}
+.nav-link:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.nav-link.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+
+.hero{background:linear-gradient(135deg,#06091a 0%,#0d1a40 50%,#1a0a40 100%);padding:36px 40px 28px;border-bottom:1px solid #2a3a55}
+.hero h1{font-size:1.8rem;font-weight:900;margin-bottom:6px}
+.hero h1 span{color:#a5b4fc}
+.hero p{color:var(--muted2);font-size:.9rem;max-width:560px;line-height:1.6}
+
+.layout{display:grid;grid-template-columns:280px 1fr;gap:0;min-height:calc(100vh - 160px)}
+.sidebar{background:var(--bg);border-right:1px solid #2a3a55;padding:20px 16px;overflow-y:auto}
+.main{padding:28px 32px;overflow-y:auto}
+@media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid #2a3a55}.hero{padding:24px 20px 20px}.main{padding:20px 16px}}
+
+.sb-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin:16px 0 8px}
+.sb-label:first-child{margin-top:0}
+.sb-btn{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;border:none;background:transparent;color:var(--muted2);font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
+.sb-btn:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.sb-btn.active{background:rgba(99,102,241,.18);color:#a5b4fc}
+.sb-score{display:inline-block;margin-left:auto;float:right;font-size:.7rem;padding:1px 7px;border-radius:20px;background:rgba(99,102,241,.2);color:#a5b4fc}
+
+.prompt-card{background:#111c32;border:1.5px solid #2a3a55;border-radius:16px;padding:24px;margin-bottom:20px}
+.prompt-meta{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.prompt-subject{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;padding:3px 10px;border-radius:20px;background:rgba(99,102,241,.2);color:#a5b4fc}
+.prompt-type{font-size:.72rem;font-weight:700;color:var(--muted2)}
+.prompt-points{font-size:.72rem;font-weight:700;color:#fcd34d;background:rgba(245,158,11,.15);padding:3px 9px;border-radius:20px}
+.prompt-q{font-size:.97rem;font-weight:600;line-height:1.65;color:var(--text);margin-bottom:18px;white-space:pre-line}
+.prompt-parts{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.prompt-part{background:#0d1628;border-radius:10px;padding:14px 16px}
+.prompt-part-label{font-size:.72rem;font-weight:800;color:#a5b4fc;margin-bottom:4px}
+.prompt-part-text{font-size:.85rem;color:#b8c4d8;line-height:1.55}
+
+.response-area{margin-top:18px}
+.response-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted2);margin-bottom:8px}
+.response-ta{width:100%;min-height:100px;background:#0d1628;border:1.5px solid #2a3a55;border-radius:10px;color:var(--text);font-size:.88rem;font-family:inherit;padding:14px;resize:vertical;outline:none;line-height:1.6;transition:border-color .15s;margin-bottom:12px}
+.response-ta:focus{border-color:#6366f1}
+.response-ta::placeholder{color:#8899aa}
+
+.rubric-section{margin-top:20px;background:#0d1628;border-radius:12px;padding:18px}
+.rubric-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:12px}
+.rubric-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #1a2540;cursor:pointer;user-select:none}
+.rubric-item:last-child{border-bottom:none}
+.rubric-check{width:20px;height:20px;border-radius:6px;border:2px solid #2a3a55;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:.15s;margin-top:1px}
+.rubric-item.checked .rubric-check{background:#6366f1;border-color:#6366f1;color:#fff}
+.rubric-text{font-size:.83rem;color:#b8c4d8;line-height:1.5}
+.rubric-pts{font-size:.7rem;font-weight:700;color:#fcd34d;white-space:nowrap;margin-top:2px}
+
+.score-bar-wrap{margin-top:16px;background:#111c32;border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.score-display{font-size:1.4rem;font-weight:900;color:#a5b4fc;min-width:60px}
+.score-bar{flex:1;height:8px;background:#1a2540;border-radius:4px;overflow:hidden}
+.score-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;transition:width .4s}
+.score-label{font-size:.78rem;color:var(--muted2);font-weight:600;white-space:nowrap}
+
+.btn-row{display:flex;gap:10px;margin-top:18px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.btn{padding:9px 20px;border-radius:9px;border:none;font-size:.83rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:#6366f1;color:#fff}
+.btn-primary:hover{background:#5254d8}
+.btn-ghost{background:transparent;border:1.5px solid #2a3a55;color:var(--muted2)}
+.btn-ghost:hover{border-color:#6366f1;color:#a5b4fc}
+
+.empty{text-align:center;padding:60px 20px;color:var(--muted2)}
+.empty-icon{font-size:2.5rem;margin-bottom:12px}
+.empty-text{font-size:.9rem;line-height:1.6}
+
+.tip-box{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:.8rem;color:#a5b4fc;line-height:1.55}
+.tip-box strong{font-weight:700}
+</style>
+<script src="theme.js"></script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AcerAcademy">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <script src="/streak.js"></script>
+  <script src="/sounds.js"></script>
+  <script src="/coins.js"></script>
+  <script src="/nav-profile.js"></script>
+  <script src="/splash.js"></script>
+<script src="/timer.js"></script>
+</head>
+<body>
+<header class="ace-header">
+  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-nav-link">← Home</a>
+  
+  <div class="ace-spacer"></div>
+  <a href="alltools.html" class="ace-nav-link">All Tools</a>
+</header>
+
+<div class="hero">
+  <h1>✍️ AP Short Answer <span>Question Practice</span></h1>
+  <p>Practice stimulus-based SAQs across 5 AP subjects. Short, direct answers — no thesis or full essay required. Self-score against the official 3-point rubric.</p>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-label">Subject</div>
+    <button class="sb-btn active" onclick="setSubject('ush',this)">🗽 AP US History</button>
+    <button class="sb-btn" onclick="setSubject('whap',this)">🌍 AP World History</button>
+    <button class="sb-btn" onclick="setSubject('euro',this)">🏰 AP European History</button>
+    <button class="sb-btn" onclick="setSubject('gov',this)">🏛️ AP Gov & Politics</button>
+    <button class="sb-btn" onclick="setSubject('humangeo',this)">🗺️ AP Human Geography</button>
+
+    <div class="sb-label" style="margin-top:20px">Prompt</div>
+    <div id="promptList"></div>
+
+    <div class="sb-label" style="margin-top:20px">Session Score</div>
+    <div style="font-size:1.5rem;font-weight:900;color:#a5b4fc;padding:8px 12px" id="sessionScore">0 / 0 pts</div>
+  </div>
+
+  <div class="main" id="mainArea">
+    <div class="empty">
+      <div class="empty-icon">✍️</div>
+      <div class="empty-text">Select a subject and prompt to begin.<br>Write short, direct answers for each part, then self-score.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROMPTS = {
+  "ush": [
+    {
+      "title": "Reconstruction — Black Political Participation",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Historian Eric Foner has argued that Reconstruction (1865–1877) was a period of remarkable, if temporary, expansion of Black political power in the American South, followed by its systematic dismantling.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE specific historical development related to the expansion of Black political participation during Reconstruction (1865–1877).",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE specific event or factor from the period that contributed to the expansion described in Part A.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE specific event or factor from 1877–1900 that contributed to the decline of Black political participation.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Identifies a specific development (e.g., Black officeholders, 15th Amendment, Reconstruction-era state constitutions) — not just a vague statement.",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a specific cause (e.g., Radical Republicans, Reconstruction Acts, Freedmen's Bureau, Union League organizing) connected to Part A.",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific cause of decline (e.g., Compromise of 1877, Black Codes/Jim Crow, KKK violence, Plessy v. Ferguson, poll taxes/literacy tests).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "Gilded Age Immigration",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Between 1880 and 1920, the sources of immigration to the United States shifted substantially, and this shift provoked new political and social responses.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE similarity between 'old' immigration (pre-1880) and 'new' immigration (1880–1920) to the United States.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE specific reason nativist sentiment grew in the United States between 1880 and 1920.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE specific way the federal government responded to immigration during this period.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Identifies a real similarity (e.g., both groups sought economic opportunity, settled in ethnic enclaves, faced discrimination).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a specific cause of nativism (e.g., Social Darwinism, labor competition, religious/cultural difference, urban crowding) with a concrete reason.",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Names a specific federal response (e.g., Chinese Exclusion Act, Immigration Act of 1917/1924, Ellis Island processing, literacy test requirement).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "The New Deal and Federal Power",
+      "type": "SAQ",
+      "points": 3,
+      "q": "\"The New Deal did not simply respond to the Great Depression — it permanently redefined what Americans expected of their federal government.\" — adapted from a historian's assessment of the 1930s.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE specific example of how a New Deal program expanded the role of the federal government.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE specific similarity between the New Deal and Progressive Era (1890s–1910s) reforms.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE specific way the New Deal differed from Progressive Era reforms.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Names a specific program (e.g., Social Security Act, SEC, TVA, WPA) and explains how it expanded federal authority.",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a genuine similarity (e.g., both regulated business, both responded to industrialization's effects) with specific evidence.",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a genuine difference (e.g., scale of federal spending, direct relief to individuals, labor rights protections under Wagner Act) with specific evidence.",
+          "pts": 1
+        }
+      ]
+    }
+  ],
+  "whap": [
+    {
+      "title": "Indian Ocean Trade Network, c. 1200–1450",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Stimulus: A world map highlighting trade routes connecting East Africa, Arabia, India, and Southeast Asia via monsoon winds, with port cities such as Kilwa, Calicut, and Malacca marked as major hubs.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE way the Indian Ocean trade network facilitated cultural or religious diffusion between 1200 and 1450.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE continuity in Indian Ocean trade networks from the period 1200–1450 to the period 1450–1750.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE change in Indian Ocean trade networks from the period 1200–1450 to the period 1450–1750.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Describes a specific diffusion (e.g., spread of Islam to Southeast Asia via merchants, spread of Buddhism/Hinduism earlier influence).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a real continuity (e.g., reliance on monsoon winds, dominance of port city-states, multi-ethnic merchant communities).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a real change (e.g., arrival of European powers, Portuguese use of naval force/cartaz system, shift toward mercantilist control of trade).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "Global Effects of Industrialization, 1750–1900",
+      "type": "SAQ",
+      "points": 3,
+      "q": "\"Industrialization did not merely transform how goods were made — it restructured the economic relationship between Europe and the rest of the world.\" — adapted from a world historian.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE way industrialization changed global trade patterns between 1750 and 1900.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE similarity in the causes of industrialization in two different regions of the world.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE way industrialization contributed to the growth of European imperialism in this period.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Describes a specific trade change (e.g., raw-material export economies, cash crop specialization, growth of global shipping networks).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a specific shared cause (e.g., access to capital, availability of resources, government support) across two named regions.",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific link to imperialism (e.g., demand for raw materials, need for new markets, technological/military advantage enabling conquest).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "Decolonization Movements, 1900–Present",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Stimulus: A map showing the year of independence for former colonies across Africa and Asia, most clustered between 1945 and 1975.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE method used by colonized peoples to achieve independence in the 20th century.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE similarity between decolonization movements in two different regions.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE long-term effect of decolonization on a specific region's economy or politics.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Names a specific method (e.g., nonviolent resistance/Gandhi, armed insurgency/Algeria, negotiated transfer/Ghana).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a genuine similarity (e.g., use of nationalist ideology, WWII's weakening of imperial powers, Cold War superpower support) across two named regions.",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific long-term effect (e.g., arbitrary borders causing conflict, neocolonial economic dependence, one-party states).",
+          "pts": 1
+        }
+      ]
+    }
+  ],
+  "euro": [
+    {
+      "title": "Renaissance Humanism",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Stimulus: An excerpt from a 15th-century humanist text praising the study of classical Greek and Roman texts as essential to human dignity and civic virtue.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE way Renaissance humanism changed European intellectual life.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE way the printing press contributed to the spread of humanist ideas.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE way the Protestant Reformation was influenced by Renaissance humanism.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Describes a specific change (e.g., revival of classical texts, emphasis on individual potential, secular subjects like history/rhetoric).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a specific mechanism (e.g., cheaper/faster book production, standardized texts, vernacular translations reaching wider audiences).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific link (e.g., Erasmus's textual criticism of the Church, humanist emphasis on returning to original sources influencing Luther).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "European Population Growth, 1700–1900",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Stimulus: A line graph showing European population roughly tripling between 1700 and 1900, with sharpest growth after 1800.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE cause of European population growth between 1700 and 1900.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE effect of population growth on urbanization in this period.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE way population growth contributed to emigration from Europe.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Names a specific cause (e.g., improved agricultural yields, decline in famine/plague, early public health improvements).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a specific urbanization effect (e.g., rural-to-city migration for factory work, growth of slums, expansion of city infrastructure).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific emigration link (e.g., land scarcity, urban overcrowding and unemployment pushing people to the Americas).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "Cold War Europe",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Question (no stimulus): The division of Europe after 1945 shaped the continent's politics for nearly half a century.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE way the Soviet Union maintained control over Eastern Europe after 1945.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE specific example of resistance to Soviet control in Eastern Europe before 1989.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE long-term consequence of the collapse of Soviet control in 1989–1991.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Names a specific method (e.g., Warsaw Pact, installing communist puppet governments, Brezhnev Doctrine, secret police surveillance).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Names a specific example (e.g., Hungarian Revolution 1956, Prague Spring 1968, Solidarity movement in Poland).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific consequence (e.g., German reunification, EU/NATO eastward expansion, transition to market economies).",
+          "pts": 1
+        }
+      ]
+    }
+  ],
+  "gov": [
+    {
+      "title": "Concept Application — Federalism and Marijuana Policy",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Scenario: Several states have legalized recreational marijuana, even though it remains illegal under federal law. In United States v. Lopez and other cases, the Supreme Court has placed some limits on federal power under the Commerce Clause.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe the constitutional provision or power most relevant to the conflict between state marijuana laws and federal law.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "In the context of the scenario, explain how the power described in Part A shapes the relationship between state and federal governments.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain how this scenario reflects a broader principle of federalism in the U.S. constitutional system.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Correctly identifies the relevant provision (e.g., Commerce Clause, Supremacy Clause, 10th Amendment).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains, using the scenario, how that power creates tension or cooperation between state and federal authority.",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Connects the scenario to a broader federalism principle (e.g., states as 'laboratories of democracy,' concurrent powers, preemption).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "Quantitative Analysis — Voter Turnout by Age",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Stimulus: A bar chart shows voter turnout by age group in two presidential elections. Turnout among voters 18–29 rose from 39% to 50%, while turnout among voters 65+ stayed roughly flat at around 70% in both elections.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Identify a trend illustrated by the data described above.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Describe a plausible explanation for the trend identified in Part A that is consistent with the data.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain how the trend in the data could affect campaign strategy in future elections.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Correctly identifies the trend (e.g., youth turnout increased more than older-voter turnout, which stayed stable).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Gives a plausible, data-consistent explanation (e.g., youth mobilization efforts, a salient issue driving young voters, social media outreach).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific strategic implication (e.g., campaigns increasing youth-targeted messaging, digital ad spending, campus outreach).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "SCOTUS Comparison — Engel v. Vitale",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Required case: Engel v. Vitale (1962) — the Supreme Court ruled that state-sponsored prayer in public schools violates the Establishment Clause. Non-required case: a lower court case in which a public school's moment-of-silence policy was challenged as an indirect form of school-sponsored prayer.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Identify the constitutional clause common to both Engel v. Vitale and the non-required case.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain how the facts of the non-required case are similar to or different from the facts in Engel v. Vitale.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain how the reasoning used in Engel v. Vitale could be used to support a ruling in the non-required case.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Correctly identifies the Establishment Clause (First Amendment).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Draws a specific factual comparison (e.g., both involve school-sponsored religious activity, but one is explicit prayer vs. implicit moment of silence).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains how Engel's reasoning (no state endorsement of religion, even if nondenominational/voluntary) transfers to the new case.",
+          "pts": 1
+        }
+      ]
+    }
+  ],
+  "humangeo": [
+    {
+      "title": "Population Pyramid Analysis",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Stimulus: A population pyramid for a developing country shows a wide base (large youth population) that narrows sharply with age, indicating high birth rates and relatively low life expectancy.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE characteristic of the population pyramid shown.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain ONE factor that has led to the population structure shown in the pyramid.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE economic or social challenge this country may face because of its population structure.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Accurately describes the shape (e.g., expansive/wide base, youth-heavy, Stage 2 of the demographic transition model).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains a specific cause (e.g., high total fertility rate, limited access to family planning/education, high infant mortality driving replacement births).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific challenge (e.g., strain on schools/healthcare, high youth dependency ratio, unemployment pressure as the cohort ages).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "Urban Land Use Models",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Stimulus: A diagram of a city divided into concentric rings, with a central business district at the core surrounded by successive zones of transition, working-class housing, better residences, and commuter suburbs.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Identify the urban land use model illustrated by the diagram.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Describe ONE characteristic of a specific zone in the model.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE limitation of applying this model to cities outside of North America.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: Correctly identifies the Concentric Zone Model (Burgess Model).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Accurately describes a named zone (e.g., zone of transition has mixed industrial/low-income housing; CBD has high land value).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a real limitation (e.g., doesn't account for cities with colonial-era layouts, informal settlements, or polycentric development elsewhere).",
+          "pts": 1
+        }
+      ]
+    },
+    {
+      "title": "Von Thünen's Agricultural Land Use Model",
+      "type": "SAQ",
+      "points": 3,
+      "q": "Stimulus: A diagram shows concentric rings of agricultural land use around a central market town — dairy/market gardening closest in, then forest, then grain, then ranching furthest out.",
+      "parts": [
+        {
+          "label": "Part A",
+          "text": "Describe ONE assumption of von Thünen's model of agricultural land use.",
+          "pts": 1
+        },
+        {
+          "label": "Part B",
+          "text": "Explain how transportation cost affects the location of a specific type of agriculture in the model.",
+          "pts": 1
+        },
+        {
+          "label": "Part C",
+          "text": "Explain ONE way modern technology has changed the applicability of von Thünen's model.",
+          "pts": 1
+        }
+      ],
+      "rubric": [
+        {
+          "text": "Part A: States a real assumption (e.g., isolated state, single market, flat uniform terrain, transportation cost proportional to distance).",
+          "pts": 1
+        },
+        {
+          "text": "Part B: Explains the cost-distance tradeoff for a specific good (e.g., perishable dairy must be close in; bulky/cheap grain can be farther out).",
+          "pts": 1
+        },
+        {
+          "text": "Part C: Explains a specific technological effect (e.g., refrigerated transport, global supply chains, and improved roads reducing the friction of distance).",
+          "pts": 1
+        }
+      ]
+    }
+  ]
+};
+
+let currentSubject = 'ush';
+let currentPromptIdx = 0;
+
+function setSubject(subj, el) {
+  currentSubject = subj;
+  currentPromptIdx = 0;
+  document.querySelectorAll('.sidebar > .sb-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderPromptList();
+  renderPrompt();
+}
+
+function renderPromptList() {
+  const list = document.getElementById('promptList');
+  const prompts = PROMPTS[currentSubject] || [];
+  list.innerHTML = prompts.map((p, i) =>
+    `<button class="sb-btn${i===currentPromptIdx?' active':''}" onclick="selectPrompt(${i},this)">${p.title}<span class="sb-score">${p.points}pt</span></button>`
+  ).join('');
+}
+
+function selectPrompt(idx, el) {
+  currentPromptIdx = idx;
+  document.querySelectorAll('#promptList .sb-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderPrompt();
+}
+
+function renderPrompt() {
+  const prompts = PROMPTS[currentSubject] || [];
+  const p = prompts[currentPromptIdx];
+  if (!p) { document.getElementById('mainArea').innerHTML = '<div class="empty"><div class="empty-icon">✍️</div><div class="empty-text">Select a prompt to begin.</div></div>'; return; }
+
+  const storageKey = `saq-${currentSubject}-${currentPromptIdx}`;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch(e) {}
+
+  const partsHTML = p.parts.map((pt, pi) => `
+    <div class="prompt-part">
+      <div class="prompt-part-label">${pt.label} <span style="color:#fcd34d;font-size:.68rem">(${pt.pts} pt)</span></div>
+      <div class="prompt-part-text">${pt.text}</div>
+      <textarea class="response-ta" style="min-height:70px;margin-top:10px" id="responseTA-${pi}" placeholder="Write a short, direct answer…" oninput="autoSave(${pi})">${(saved.responses&&saved.responses[pi])||''}</textarea>
+    </div>
+  `).join('');
+
+  const rubricHTML = p.rubric.map((r, ri) => {
+    const checked = saved.rubric && saved.rubric[ri];
+    return `<div class="rubric-item${checked?' checked':''}" onclick="toggleRubric(${ri})" data-idx="${ri}">
+      <div class="rubric-check">${checked?'✓':''}</div>
+      <div style="flex:1"><div class="rubric-text">${r.text}</div><div class="rubric-pts">+${r.pts} pt</div></div>
+    </div>`;
+  }).join('');
+
+  const earned = saved.rubric ? saved.rubric.filter(Boolean).length : 0;
+  const pct = Math.round(earned / p.rubric.length * 100);
+
+  document.getElementById('mainArea').innerHTML = `
+    <div class="prompt-card">
+      <div class="prompt-meta">
+        <span class="prompt-subject">${currentSubject.toUpperCase()}</span>
+        <span class="prompt-type">${p.type}</span>
+        <span class="prompt-points">${p.points} pts total</span>
+      </div>
+      <div class="prompt-q">${p.q}</div>
+      <div class="response-label" style="margin-top:6px">Answer each part below</div>
+      <div class="prompt-parts">${partsHTML}</div>
+    </div>
+
+    <div class="tip-box">
+      <strong>📌 Tip:</strong> SAQs need short, specific answers — no thesis, no intro paragraph. One sentence per part is often enough if it's precise.
+    </div>
+
+    <div class="rubric-section">
+      <div class="rubric-title">Self-Score Rubric</div>
+      <div id="rubricItems">${rubricHTML}</div>
+      <div class="score-bar-wrap">
+        <div class="score-display" id="scoreDisplay">${earned}/${p.rubric.length}</div>
+        <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:${pct}%"></div></div>
+        <div class="score-label" id="scoreLabel">${pct}%</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="clearResponse()">🗑 Clear</button>
+      ${currentPromptIdx < (PROMPTS[currentSubject]||[]).length-1 ? `<button class="btn btn-primary" onclick="nextPrompt()">Next Prompt →</button>` : ''}
+    </div>
+  `;
+}
+
+function autoSave(pi) {
+  const storageKey = `saq-${currentSubject}-${currentPromptIdx}`;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch(e) {}
+  if (!saved.responses) saved.responses = [];
+  saved.responses[pi] = document.getElementById(`responseTA-${pi}`).value;
+  try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch(e) {}
+}
+
+function toggleRubric(ri) {
+  const storageKey = `saq-${currentSubject}-${currentPromptIdx}`;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch(e) {}
+  if (!saved.rubric) saved.rubric = new Array(PROMPTS[currentSubject][currentPromptIdx].rubric.length).fill(false);
+  saved.rubric[ri] = !saved.rubric[ri];
+  try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch(e) {}
+
+  const item = document.querySelector(`.rubric-item[data-idx="${ri}"]`);
+  item.classList.toggle('checked', saved.rubric[ri]);
+  item.querySelector('.rubric-check').textContent = saved.rubric[ri] ? '✓' : '';
+
+  updateScore(saved.rubric);
+}
+
+function updateScore(rubric) {
+  const p = PROMPTS[currentSubject][currentPromptIdx];
+  const earned = rubric.filter(Boolean).length;
+  const pct = Math.round(earned / p.rubric.length * 100);
+  document.getElementById('scoreDisplay').textContent = `${earned}/${p.rubric.length}`;
+  document.getElementById('scoreFill').style.width = pct + '%';
+  document.getElementById('scoreLabel').textContent = pct + '%';
+}
+
+function clearResponse() {
+  if (!confirm('Clear your responses and rubric for this prompt?')) return;
+  const storageKey = `saq-${currentSubject}-${currentPromptIdx}`;
+  try { localStorage.removeItem(storageKey); } catch(e) {}
+  renderPrompt();
+}
+
+function nextPrompt() {
+  currentPromptIdx++;
+  renderPromptList();
+  renderPrompt();
+}
+
+renderPromptList();
+renderPrompt();
+</script>
+</body>
+</html>
