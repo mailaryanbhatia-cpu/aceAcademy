@@ -42,6 +42,7 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('statscalc',this)">📊 Statistics Calculator</div>
   <div class="tab" onclick="showTool('equationsolver',this)">🧮 Equation Solver</div>
   <div class="tab" onclick="showTool('periodictable',this)">⚗️ Periodic Table</div>
+  <div class="tab" onclick="showTool('stoich',this)">⚖️ Equation Balancer</div>
 </div>
 
 <div class="frame-area" id="frameArea">
@@ -53,6 +54,7 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-statscalc" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-equationsolver" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-periodictable" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-stoich" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -63,7 +65,8 @@ const SRCS={
   numtheory:'numtheory.html',
   statscalc:'statscalc.html',
   equationsolver:'equationsolver.html',
-  periodictable:'periodictable.html'
+  periodictable:'periodictable.html',
+  stoich:'stoich.html'
 };
 const loaded=new Set(['graphcalc']);
 
