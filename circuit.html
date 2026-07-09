@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Circuit Calculator — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:820px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.btn-sm{padding:5px 12px;font-size:.75rem;border-radius:7px}
+label{font-size:.72rem;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+input[type=number]{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:.95rem;font-family:inherit;color:#fff;outline:none;transition:border .15s}
+input[type=number]:focus{border-color:var(--accent)}
+.var-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+.var-unit{font-size:.68rem;color:var(--muted);margin-top:4px}
+.tab-row{display:flex;gap:8px;margin-bottom:16px}
+.tab-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.error-box{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:12px 14px;color:#fca5a5;font-size:.85rem;margin-top:16px}
+.result-grid{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+.result-box{flex:1;min-width:120px;background:#111827;border:1.5px solid var(--accent);border-radius:10px;padding:14px;text-align:center}
+.result-val{font-size:1.3rem;font-weight:900;color:var(--accent2)}
+.result-lbl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+.step{font-size:.83rem;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);line-height:1.6}
+.step:last-child{border-bottom:none}
+.step strong{color:#fff}
+.steps-box{margin-top:16px;background:#0d1628;border-radius:10px;padding:14px 18px}
+.resistor-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.resistor-row input{flex:1}
+.resistor-row .rm-btn{flex-shrink:0;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:#fca5a5;border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:.9rem}
+.mode-toggle{display:flex;gap:6px;margin-bottom:14px}
+.mode-toggle button{flex:1;padding:9px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-toggle button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="circuit.html">Circuit Calculator</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🔌 Circuit Calculator</h1>
+  <p>Ohm's Law &amp; power relationships, plus series and parallel resistance for any number of resistors.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="setTab('ohm')" id="tabOhm">⚡ Ohm's Law &amp; Power</button>
+      <button class="tab-btn" onclick="setTab('resist')" id="tabResist">🔗 Series / Parallel Resistance</button>
+    </div>
+  </div>
+
+  <div class="card" id="ohmPanel">
+    <h2>Enter exactly 2 of the 4 values</h2>
+    <div class="var-grid">
+      <div><label>Voltage (V)</label><input type="number" id="ohmV" step="any" placeholder="V"><div class="var-unit">volts</div></div>
+      <div><label>Current (I)</label><input type="number" id="ohmI" step="any" placeholder="I"><div class="var-unit">amps</div></div>
+      <div><label>Resistance (R)</label><input type="number" id="ohmR" step="any" placeholder="R"><div class="var-unit">ohms (Ω)</div></div>
+      <div><label>Power (P)</label><input type="number" id="ohmP" step="any" placeholder="P"><div class="var-unit">watts</div></div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-primary btn-big" onclick="solveOhm()">⚡ Solve</button> <button class="btn btn-outline" onclick="clearOhm()">Clear</button></div>
+    <div id="ohmOutput"></div>
+  </div>
+
+  <div class="card" id="resistPanel" style="display:none">
+    <h2>Resistor Network</h2>
+    <div class="mode-toggle">
+      <button class="active" id="btnSeries" onclick="setResistMode('series')">Series</button>
+      <button id="btnParallel" onclick="setResistMode('parallel')">Parallel</button>
+    </div>
+    <div id="resistorList"></div>
+    <button class="btn btn-outline btn-sm" onclick="addResistor()">+ Add Resistor</button>
+    <div style="margin-top:16px"><button class="btn btn-primary btn-big" onclick="solveResist()">⚡ Calculate Total</button></div>
+    <div id="resistOutput"></div>
+  </div>
+
+</div>
+
+<script>
+function setTab(t) {
+  document.getElementById('tabOhm').classList.toggle('active', t === 'ohm');
+  document.getElementById('tabResist').classList.toggle('active', t === 'resist');
+  document.getElementById('ohmPanel').style.display = t === 'ohm' ? 'block' : 'none';
+  document.getElementById('resistPanel').style.display = t === 'resist' ? 'block' : 'none';
+}
+
+function fmt(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return Math.round(n * 100000) / 100000;
+}
+
+// ═══════════════ OHM'S LAW & POWER ═══════════════
+function clearOhm() {
+  ['ohmV','ohmI','ohmR','ohmP'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ohmOutput').innerHTML = '';
+}
+
+function solveOhm() {
+  const ids = ['ohmV','ohmI','ohmR','ohmP'];
+  const vals = {};
+  ids.forEach(id => { const raw = document.getElementById(id).value; vals[id.slice(3)] = raw === '' ? null : parseFloat(raw); });
+  const known = Object.keys(vals).filter(k => vals[k] !== null);
+  const unknown = Object.keys(vals).filter(k => vals[k] === null);
+  const out = document.getElementById('ohmOutput');
+
+  if (known.length !== 2) {
+    out.innerHTML = `<div class="error-box">⚠️ Enter exactly 2 values and leave the other 2 blank. You have ${known.length} filled in.</div>`;
+    return;
+  }
+
+  let { V, I, R, P } = vals;
+  let steps = [];
+  const has = (x, y) => known.includes(x) && known.includes(y);
+
+  try {
+    if (has('V', 'I')) {
+      R = V / I;
+      P = V * I;
+      steps.push(`R = V / I = ${V} / ${I} = <strong>${fmt(R)} Ω</strong>`);
+      steps.push(`P = V × I = ${V} × ${I} = <strong>${fmt(P)} W</strong>`);
+    } else if (has('V', 'R')) {
+      I = V / R;
+      P = (V * V) / R;
+      steps.push(`I = V / R = ${V} / ${R} = <strong>${fmt(I)} A</strong>`);
+      steps.push(`P = V² / R = ${V}² / ${R} = <strong>${fmt(P)} W</strong>`);
+    } else if (has('V', 'P')) {
+      I = P / V;
+      R = (V * V) / P;
+      steps.push(`I = P / V = ${P} / ${V} = <strong>${fmt(I)} A</strong>`);
+      steps.push(`R = V² / P = ${V}² / ${P} = <strong>${fmt(R)} Ω</strong>`);
+    } else if (has('I', 'R')) {
+      V = I * R;
+      P = I * I * R;
+      steps.push(`V = I × R = ${I} × ${R} = <strong>${fmt(V)} V</strong>`);
+      steps.push(`P = I² × R = ${I}² × ${R} = <strong>${fmt(P)} W</strong>`);
+    } else if (has('I', 'P')) {
+      V = P / I;
+      R = P / (I * I);
+      steps.push(`V = P / I = ${P} / ${I} = <strong>${fmt(V)} V</strong>`);
+      steps.push(`R = P / I² = ${P} / ${I}² = <strong>${fmt(R)} Ω</strong>`);
+    } else if (has('R', 'P')) {
+      if (P < 0 || R < 0) throw new Error("Power and resistance must be non-negative for a real solution.");
+      I = Math.sqrt(P / R);
+      V = Math.sqrt(P * R);
+      steps.push(`I = √(P / R) = √(${P} / ${R}) = <strong>${fmt(I)} A</strong>`);
+      steps.push(`V = √(P × R) = √(${P} × ${R}) = <strong>${fmt(V)} V</strong>`);
+    } else {
+      throw new Error("Unexpected combination of known/unknown variables.");
+    }
+
+    const results = { V, I, R, P };
+    const labels = { V: 'V (volts)', I: 'I (amps)', R: 'R (ohms)', P: 'P (watts)' };
+    const resultHTML = unknown.map(k => `<div class="result-box"><div class="result-val">${fmt(results[k])}</div><div class="result-lbl">${labels[k]}</div></div>`).join('');
+    out.innerHTML = `<div class="result-grid">${resultHTML}</div><div class="steps-box">${steps.map(s => `<div class="step">${s}</div>`).join('')}</div>`;
+  } catch (e) {
+    out.innerHTML = `<div class="error-box">⚠️ ${esc(e.message)}</div>`;
+  }
+}
+
+// ═══════════════ SERIES / PARALLEL RESISTANCE ═══════════════
+let resistMode = 'series';
+let resistorCount = 3;
+
+function setResistMode(m) {
+  resistMode = m;
+  document.getElementById('btnSeries').classList.toggle('active', m === 'series');
+  document.getElementById('btnParallel').classList.toggle('active', m === 'parallel');
+}
+
+function renderResistorList() {
+  const list = document.getElementById('resistorList');
+  let html = '';
+  for (let i = 0; i < resistorCount; i++) {
+    html += `<div class="resistor-row">
+      <input type="number" id="resistor-${i}" step="any" placeholder="R${i+1} (Ω)" value="${i===0?100:i===1?220:i===2?330:''}">
+      <button class="rm-btn" onclick="removeResistor(${i})">✕</button>
+    </div>`;
+  }
+  list.innerHTML = html;
+}
+
+function addResistor() {
+  resistorCount++;
+  renderResistorList();
+}
+
+function removeResistor(i) {
+  const vals = [];
+  for (let j = 0; j < resistorCount; j++) {
+    if (j === i) continue;
+    const v = document.getElementById(`resistor-${j}`).value;
+    vals.push(v);
+  }
+  resistorCount = Math.max(1, resistorCount - 1);
+  renderResistorList();
+  vals.forEach((v, idx) => { if (document.getElementById(`resistor-${idx}`)) document.getElementById(`resistor-${idx}`).value = v; });
+}
+
+function solveResist() {
+  const out = document.getElementById('resistOutput');
+  const values = [];
+  for (let i = 0; i < resistorCount; i++) {
+    const raw = document.getElementById(`resistor-${i}`).value;
+    if (raw === '') continue;
+    const v = parseFloat(raw);
+    if (isNaN(v) || v < 0) { out.innerHTML = `<div class="error-box">⚠️ Resistor values must be non-negative numbers.</div>`; return; }
+    values.push(v);
+  }
+  if (values.length < 1) { out.innerHTML = `<div class="error-box">⚠️ Enter at least 1 resistor value.</div>`; return; }
+
+  let total;
+  let steps = [];
+  if (resistMode === 'series') {
+    total = values.reduce((a, b) => a + b, 0);
+    steps.push(`R_total = R₁ + R₂ + ... + Rₙ = ${values.join(' + ')} = <strong>${fmt(total)} Ω</strong>`);
+  } else {
+    if (values.some(v => v === 0)) {
+      total = 0;
+      steps.push(`A 0 Ω resistor short-circuits the parallel network — total resistance = <strong>0 Ω</strong>`);
+    } else {
+      const sumRecip = values.reduce((a, b) => a + 1/b, 0);
+      total = 1 / sumRecip;
+      steps.push(`1/R_total = 1/R₁ + 1/R₂ + ... + 1/Rₙ = ${values.map(v => '1/'+v).join(' + ')} = ${fmt(sumRecip)}`);
+      steps.push(`R_total = 1 / ${fmt(sumRecip)} = <strong>${fmt(total)} Ω</strong>`);
+    }
+  }
+
+  out.innerHTML = `<div class="result-grid"><div class="result-box"><div class="result-val">${fmt(total)} Ω</div><div class="result-lbl">Total Resistance</div></div></div>
+    <div class="steps-box">${steps.map(s => `<div class="step">${s}</div>`).join('')}</div>`;
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderResistorList();
+</script>
+</body>
+</html>
