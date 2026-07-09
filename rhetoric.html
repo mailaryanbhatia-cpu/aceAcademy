@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rhetorical Appeals Analyzer — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#60a5fa;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+textarea{background:#0d1728;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:12px;font-size:.92rem;width:100%;resize:vertical;line-height:1.6;font-family:inherit;min-height:160px;outline:none}
+textarea:focus{border-color:var(--accent)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:.78rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.dot-ethos{background:var(--blue)}
+.dot-pathos{background:#f472b6}
+.dot-logos{background:var(--green)}
+.dot-device{background:var(--amber)}
+.highlighted-text{line-height:2.1;font-size:.92rem;background:#0d1728;border-radius:10px;padding:18px;border:1px solid var(--border);min-height:120px;white-space:pre-wrap}
+.mk-ethos{background:rgba(96,165,250,.22);border-bottom:2px solid var(--blue);border-radius:3px;padding:1px 2px}
+.mk-pathos{background:rgba(244,114,182,.22);border-bottom:2px solid #f472b6;border-radius:3px;padding:1px 2px}
+.mk-logos{background:rgba(52,211,153,.22);border-bottom:2px solid var(--green);border-radius:3px;padding:1px 2px}
+.mk-device{background:rgba(251,191,36,.22);border-bottom:2px dotted var(--amber);border-radius:3px;padding:1px 2px}
+.stat-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+.stat-box{flex:1;min-width:110px;background:#111827;border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.stat-val{font-size:1.5rem;font-weight:900}
+.stat-lbl{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+.device-list{margin-top:16px}
+.device-item{background:#111827;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:.85rem}
+.device-item .dtag{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--amber);margin-bottom:4px}
+.device-item .dquote{color:var(--muted);font-style:italic}
+.empty-msg{color:var(--muted);font-size:.85rem;text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="rhetoric.html">Rhetorical Appeals Analyzer</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🗣️ Rhetorical Appeals Analyzer</h1>
+  <p>Paste an argumentative passage to see where it leans on ethos, pathos, and logos — plus common rhetorical devices. For AP Lang &amp; AP Seminar.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Paste Your Passage</h2>
+    <textarea id="textIn" placeholder="Paste an argumentative essay, speech, or editorial paragraph here…"></textarea>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-big" onclick="analyze()">🔍 Analyze</button>
+      <button class="btn btn-outline" onclick="loadSample()">Try Sample Passage</button>
+    </div>
+    <div class="legend">
+      <span><span class="dot dot-ethos"></span>Ethos (credibility)</span>
+      <span><span class="dot dot-pathos"></span>Pathos (emotion)</span>
+      <span><span class="dot dot-logos"></span>Logos (logic/evidence)</span>
+      <span><span class="dot dot-device"></span>Rhetorical device</span>
+    </div>
+  </div>
+
+  <div class="card" id="resultsCard" style="display:none">
+    <h2>Appeal Balance</h2>
+    <div class="stat-row" id="statRow"></div>
+    <h2 style="margin-top:20px">Highlighted Passage</h2>
+    <div class="highlighted-text" id="highlightedText"></div>
+    <h2 style="margin-top:20px">Rhetorical Devices Detected</h2>
+    <div class="device-list" id="deviceList"></div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════ WORD LISTS (heuristic markers) ═══════════════
+const ETHOS_PATTERNS = [
+  /\bexpert(s)?\b/i, /\bprofessor\b/i, /\bdoctor(s)?\b/i, /\bPh\.?D\b/i, /\bresearcher(s)?\b/i,
+  /\bstudies show\b/i, /\baccording to\b/i, /\byears of experience\b/i, /\bcredential(s|ed)?\b/i,
+  /\bas a\b.{0,25}\bI\b/i, /\bmy own experience\b/i, /\bI have (spent|worked|studied)\b/i,
+  /\bhonest(y)?\b/i, /\bintegrity\b/i, /\btrustworthy\b/i, /\breputable\b/i, /\bwell[- ]respected\b/i,
+  /\buniversity\b/i, /\binstitute\b/i, /\bpeer[- ]reviewed\b/i, /\bpublished\b/i, /\bcertified\b/i,
+  /\bfair(ness)?\b/i, /\bresponsible\b/i, /\bethical(ly)?\b/i
+];
+
+const PATHOS_PATTERNS = [
+  /\bimagine\b/i, /\bheartbreak(ing)?\b/i, /\btragic(ally)?\b/i, /\bdevastat(e|ing|ed)\b/i,
+  /\bfear\b/i, /\bafraid\b/i, /\bterrify(ing)?\b/i, /\bhope(ful)?\b/i, /\bdream(s)?\b/i,
+  /\bsuffer(ing)?\b/i, /\bpain(ful)?\b/i, /\bjoy(ful)?\b/i, /\bproud\b/i, /\bangry\b/i, /\bfury\b/i,
+  /\bfamily\b/i, /\bchildren\b/i, /\bchild\b/i, /\bdying\b/i, /\bprecious\b/i, /\bdanger(ous)?\b/i,
+  /\bthreat(en(s|ed|ing)?)?\b/i, /\bfreedom\b/i, /\bjustice\b/i, /\bcruel(ty)?\b/i, /\bbeautiful\b/i,
+  /\blove\b/i, /\blost\b/i, /\bloss\b/i, /\bdesperate(ly)?\b/i, /\bpowerless\b/i, /\bvulnerable\b/i,
+  /\byou(r)?\b/i
+];
+
+const LOGOS_PATTERNS = [
+  /\b\d+(\.\d+)?\s?%/i, /\b\d{2,}\b/, /\btherefore\b/i, /\bbecause\b/i, /\bconsequently\b/i,
+  /\bresearch (shows|indicates|suggests|found)\b/i, /\bdata\b/i, /\bstatistic(s|ally)?\b/i,
+  /\bevidence\b/i, /\blogically\b/i, /\bif\b.{0,40}\bthen\b/i, /\bstudy\b/i, /\bstudies\b/i,
+  /\bproves?\b/i, /\bdemonstrates?\b/i, /\bas a result\b/i, /\bcauses?\b/i, /\bcorrelat(es|ion)\b/i,
+  /\bpercent\b/i, /\baverage\b/i, /\bcompared to\b/i, /\bfor example\b/i, /\bfor instance\b/i,
+  /\bin fact\b/i, /\bthus\b/i, /\bsince\b/i
+];
+
+function splitSentences(text) {
+  return text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+}
+
+function scoreSentence(sentence) {
+  let scores = { ethos: 0, pathos: 0, logos: 0 };
+  ETHOS_PATTERNS.forEach(p => { if (p.test(sentence)) scores.ethos++; });
+  PATHOS_PATTERNS.forEach(p => { if (p.test(sentence)) scores.pathos++; });
+  LOGOS_PATTERNS.forEach(p => { if (p.test(sentence)) scores.logos++; });
+  return scores;
+}
+
+function detectDevices(sentences, fullText) {
+  const devices = [];
+
+  // Rhetorical questions
+  sentences.forEach(s => {
+    const trimmed = s.trim();
+    if (trimmed.endsWith('?')) devices.push({ type: 'Rhetorical Question', quote: trimmed });
+  });
+
+  // Tricolon (rule of three): three comma/and-separated parallel items
+  sentences.forEach(s => {
+    const commaParts = s.split(',').map(p => p.trim()).filter(Boolean);
+    if (commaParts.length >= 3) {
+      const last = commaParts[commaParts.length - 1];
+      if (/\band\b/i.test(last) || commaParts.length === 3) {
+        devices.push({ type: 'Tricolon (Rule of Three)', quote: s.trim() });
+      }
+    }
+  });
+
+  // Anaphora: repeated opening word/phrase across consecutive sentences
+  for (let i = 0; i < sentences.length - 1; i++) {
+    const w1 = sentences[i].trim().split(/\s+/).slice(0, 2).join(' ').toLowerCase().replace(/[^a-z\s]/g,'');
+    const w2 = sentences[i+1].trim().split(/\s+/).slice(0, 2).join(' ').toLowerCase().replace(/[^a-z\s]/g,'');
+    if (w1 && w1 === w2 && w1.split(' ').length >= 2) {
+      devices.push({ type: 'Anaphora (Repeated Opening)', quote: sentences[i].trim() + ' / ' + sentences[i+1].trim() });
+    }
+  }
+
+  // Antithesis: contrast markers within a sentence
+  sentences.forEach(s => {
+    if (/\b(but|yet|however|while|whereas)\b/i.test(s) && s.split(/\b(but|yet|however|while|whereas)\b/i).length >= 3) {
+      devices.push({ type: 'Antithesis (Contrast)', quote: s.trim() });
+    }
+  });
+
+  // Hyperbole markers
+  sentences.forEach(s => {
+    if (/\b(never|always|everyone|no one|nobody|everybody|the (best|worst) (thing|ever)|a million|forever|impossible|completely destroy)\b/i.test(s)) {
+      devices.push({ type: 'Hyperbole (Exaggeration)', quote: s.trim() });
+    }
+  });
+
+  return devices.slice(0, 12); // cap for readability
+}
+
+function loadSample() {
+  document.getElementById('textIn').value = `As a physician who has spent twenty years treating patients in underserved communities, I have seen firsthand what happens when families cannot afford basic medical care. Imagine watching your own child suffer from a treatable illness simply because you cannot pay for the medicine that would save them. This is not a hypothetical — it is the daily reality for millions of Americans. Research shows that nearly 30 percent of low-income families delay medical treatment due to cost, and studies indicate that this delay leads to significantly worse health outcomes. Therefore, expanding access to affordable healthcare is not just a moral imperative, it is a practical necessity. Shouldn't every child have the chance to grow up healthy? We built this nation on the promise of opportunity for all, on fairness, on justice — and it is time we lived up to that promise.`;
+  analyze();
+}
+
+function analyze() {
+  const text = document.getElementById('textIn').value.trim();
+  if (!text) return;
+  const sentences = splitSentences(text);
+  let totals = { ethos: 0, pathos: 0, logos: 0 };
+  const sentenceScores = sentences.map(s => {
+    const sc = scoreSentence(s);
+    totals.ethos += sc.ethos; totals.pathos += sc.pathos; totals.logos += sc.logos;
+    return { sentence: s, scores: sc };
+  });
+
+  const grandTotal = totals.ethos + totals.pathos + totals.logos || 1;
+  const pctE = Math.round(totals.ethos / grandTotal * 100);
+  const pctP = Math.round(totals.pathos / grandTotal * 100);
+  const pctL = Math.round(totals.logos / grandTotal * 100);
+
+  document.getElementById('statRow').innerHTML = `
+    <div class="stat-box"><div class="stat-val" style="color:var(--blue)">${pctE}%</div><div class="stat-lbl">Ethos</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#f472b6">${pctP}%</div><div class="stat-lbl">Pathos</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:var(--green)">${pctL}%</div><div class="stat-lbl">Logos</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:var(--amber)">${sentences.length}</div><div class="stat-lbl">Sentences</div></div>
+  `;
+
+  const highlighted = sentenceScores.map(({ sentence, scores }) => {
+    const dominant = scores.ethos >= scores.pathos && scores.ethos >= scores.logos && scores.ethos > 0 ? 'ethos'
+      : scores.pathos >= scores.logos && scores.pathos > 0 ? 'pathos'
+      : scores.logos > 0 ? 'logos' : null;
+    if (!dominant) return esc(sentence);
+    return `<span class="mk-${dominant}" title="${dominant} score: e${scores.ethos} p${scores.pathos} l${scores.logos}">${esc(sentence)}</span>`;
+  }).join('');
+  document.getElementById('highlightedText').innerHTML = highlighted;
+
+  const devices = detectDevices(sentences, text);
+  const deviceList = document.getElementById('deviceList');
+  if (devices.length === 0) {
+    deviceList.innerHTML = `<div class="empty-msg">No strong rhetorical devices detected — this is a heuristic scan, so re-read manually for devices like irony or allusion that are harder to flag automatically.</div>`;
+  } else {
+    deviceList.innerHTML = devices.map(d => `<div class="device-item"><div class="dtag">${esc(d.type)}</div><div class="dquote">"${esc(d.quote)}"</div></div>`).join('');
+  }
+
+  document.getElementById('resultsCard').style.display = 'block';
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>

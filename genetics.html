@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Punnett Square / Genetics Calculator — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+label{font-size:.72rem;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+input[type=text],select{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:.92rem;font-family:inherit;color:#fff;outline:none;transition:border .15s}
+input[type=text]:focus,select:focus{border-color:var(--accent)}
+.var-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.tab-row{display:flex;gap:8px;margin-bottom:16px}
+.tab-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.error-box{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:12px 14px;color:#fca5a5;font-size:.85rem;margin-top:16px}
+.punnett-wrap{overflow-x:auto;margin-top:18px}
+table.punnett{border-collapse:collapse;margin:0 auto}
+table.punnett td, table.punnett th{border:1.5px solid var(--border);padding:12px 16px;text-align:center;font-size:.92rem;font-weight:700;min-width:60px}
+table.punnett th{background:#111827;color:var(--accent2)}
+table.punnett td{background:#0d1628;color:#fff}
+.ratio-grid{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+.ratio-box{flex:1;min-width:150px;background:#111827;border:1px solid var(--border);border-radius:10px;padding:14px}
+.ratio-title{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.ratio-item{display:flex;justify-content:space-between;font-size:.85rem;padding:4px 0;color:#fff}
+.ratio-item .pct{color:var(--accent2);font-weight:700}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="genetics.html">Punnett Square / Genetics</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🧬 Punnett Square / Genetics Calculator</h1>
+  <p>Monohybrid and dihybrid crosses with full genotype and phenotype ratios.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="setTab('mono')" id="tabMono">🔤 Monohybrid Cross</button>
+      <button class="tab-btn" onclick="setTab('di')" id="tabDi">🔠 Dihybrid Cross</button>
+    </div>
+  </div>
+
+  <div class="card" id="monoPanel">
+    <h2>Monohybrid Cross (1 gene, 2 alleles)</h2>
+    <div class="var-grid">
+      <div>
+        <label>Allele Letter</label>
+        <input type="text" id="monoLetter" maxlength="1" value="A">
+      </div>
+      <div>
+        <label>Dominant Trait Name</label>
+        <input type="text" id="monoDomName" value="Tall">
+      </div>
+      <div>
+        <label>Recessive Trait Name</label>
+        <input type="text" id="monoRecName" value="Short">
+      </div>
+    </div>
+    <div class="var-grid" style="margin-top:14px">
+      <div>
+        <label>Parent 1 Genotype</label>
+        <select id="monoP1"><option>AA</option><option selected>Aa</option><option>aa</option></select>
+      </div>
+      <div>
+        <label>Parent 2 Genotype</label>
+        <select id="monoP2"><option>AA</option><option selected>Aa</option><option>aa</option></select>
+      </div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-primary btn-big" onclick="solveMono()">🧬 Cross</button></div>
+    <div id="monoOutput"></div>
+  </div>
+
+  <div class="card" id="diPanel" style="display:none">
+    <h2>Dihybrid Cross (2 genes, 4 alleles)</h2>
+    <div class="var-grid">
+      <div><label>Gene 1 Letter</label><input type="text" id="diLetter1" maxlength="1" value="A"></div>
+      <div><label>Gene 2 Letter</label><input type="text" id="diLetter2" maxlength="1" value="B"></div>
+    </div>
+    <div class="var-grid" style="margin-top:14px">
+      <div>
+        <label>Parent 1 Genotype</label>
+        <select id="diP1"></select>
+      </div>
+      <div>
+        <label>Parent 2 Genotype</label>
+        <select id="diP2"></select>
+      </div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-primary btn-big" onclick="solveDi()">🧬 Cross</button></div>
+    <div id="diOutput"></div>
+  </div>
+
+</div>
+
+<script>
+function setTab(t) {
+  document.getElementById('tabMono').classList.toggle('active', t === 'mono');
+  document.getElementById('tabDi').classList.toggle('active', t === 'di');
+  document.getElementById('monoPanel').style.display = t === 'mono' ? 'block' : 'none';
+  document.getElementById('diPanel').style.display = t === 'di' ? 'block' : 'none';
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Normalize a 2-allele pair string like "aA" -> "Aa" (uppercase first)
+function normalizePair(a1, a2) {
+  const arr = [a1, a2];
+  arr.sort((x, y) => {
+    const xUpper = x === x.toUpperCase();
+    const yUpper = y === y.toUpperCase();
+    if (xUpper && !yUpper) return -1;
+    if (!xUpper && yUpper) return 1;
+    return 0;
+  });
+  return arr.join('');
+}
+
+// ═══════════════ MONOHYBRID ═══════════════
+function solveMono() {
+  const letter = (document.getElementById('monoLetter').value || 'A').trim()[0] || 'A';
+  const upper = letter.toUpperCase();
+  const lower = letter.toLowerCase();
+  const domName = document.getElementById('monoDomName').value.trim() || 'Dominant';
+  const recName = document.getElementById('monoRecName').value.trim() || 'Recessive';
+  const p1raw = document.getElementById('monoP1').value;
+  const p2raw = document.getElementById('monoP2').value;
+  const out = document.getElementById('monoOutput');
+
+  const toAlleles = g => g.split('').map(c => c === 'A' ? upper : lower);
+  const p1 = toAlleles(p1raw);
+  const p2 = toAlleles(p2raw);
+
+  const grid = [];
+  const genotypeCounts = {};
+  p1.forEach(g1 => {
+    const row = [];
+    p2.forEach(g2 => {
+      const geno = normalizePair(g1, g2);
+      row.push(geno);
+      genotypeCounts[geno] = (genotypeCounts[geno] || 0) + 1;
+    });
+    grid.push(row);
+  });
+
+  const total = p1.length * p2.length;
+  let tableHTML = '<table class="punnett"><tr><th></th>' + p2.map(g => `<th>${esc(g)}</th>`).join('') + '</tr>';
+  grid.forEach((row, i) => {
+    tableHTML += `<tr><th>${esc(p1[i])}</th>` + row.map(g => `<td>${esc(g)}</td>`).join('') + '</tr>';
+  });
+  tableHTML += '</table>';
+
+  const phenotypeCounts = {};
+  Object.keys(genotypeCounts).forEach(geno => {
+    const isDom = geno.includes(upper);
+    const pheno = isDom ? domName : recName;
+    phenotypeCounts[pheno] = (phenotypeCounts[pheno] || 0) + genotypeCounts[geno];
+  });
+
+  const genoRatioHTML = Object.keys(genotypeCounts).sort().map(g =>
+    `<div class="ratio-item"><span>${esc(g)}</span><span class="pct">${genotypeCounts[g]}/${total} (${Math.round(genotypeCounts[g]/total*100)}%)</span></div>`
+  ).join('');
+  const phenoRatioHTML = Object.keys(phenotypeCounts).map(p =>
+    `<div class="ratio-item"><span>${esc(p)}</span><span class="pct">${phenotypeCounts[p]}/${total} (${Math.round(phenotypeCounts[p]/total*100)}%)</span></div>`
+  ).join('');
+
+  out.innerHTML = `<div class="punnett-wrap">${tableHTML}</div>
+    <div class="ratio-grid">
+      <div class="ratio-box"><div class="ratio-title">Genotype Ratio</div>${genoRatioHTML}</div>
+      <div class="ratio-box"><div class="ratio-title">Phenotype Ratio</div>${phenoRatioHTML}</div>
+    </div>`;
+}
+
+// ═══════════════ DIHYBRID ═══════════════
+function buildDiOptions(letter1, letter2) {
+  const U1 = letter1.toUpperCase(), L1 = letter1.toLowerCase();
+  const U2 = letter2.toUpperCase(), L2 = letter2.toLowerCase();
+  const gene1opts = [U1+U1, U1+L1, L1+L1];
+  const gene2opts = [U2+U2, U2+L2, L2+L2];
+  const combos = [];
+  gene1opts.forEach(g1 => gene2opts.forEach(g2 => combos.push(g1 + g2)));
+  return combos;
+}
+
+function refreshDiSelects() {
+  const l1 = (document.getElementById('diLetter1').value || 'A').trim()[0] || 'A';
+  const l2 = (document.getElementById('diLetter2').value || 'B').trim()[0] || 'B';
+  const combos = buildDiOptions(l1, l2);
+  const opts = combos.map(c => `<option${c===combos[4]?' selected':''}>${c}</option>`).join('');
+  document.getElementById('diP1').innerHTML = opts;
+  document.getElementById('diP2').innerHTML = opts;
+}
+
+function getGametesDihybrid(genotype, u1, l1, u2, l2) {
+  // genotype like "AaBb": positions 0-1 = gene1 pair, 2-3 = gene2 pair
+  const gene1 = [genotype[0], genotype[1]];
+  const gene2 = [genotype[2], genotype[3]];
+  const gametes = [];
+  gene1.forEach(a => gene2.forEach(b => gametes.push(a + b)));
+  return gametes;
+}
+
+function solveDi() {
+  const l1 = (document.getElementById('diLetter1').value || 'A').trim()[0] || 'A';
+  const l2 = (document.getElementById('diLetter2').value || 'B').trim()[0] || 'B';
+  const U1 = l1.toUpperCase(), L1 = l1.toLowerCase(), U2 = l2.toUpperCase(), L2 = l2.toLowerCase();
+  const p1geno = document.getElementById('diP1').value;
+  const p2geno = document.getElementById('diP2').value;
+  const out = document.getElementById('diOutput');
+
+  const gametes1 = getGametesDihybrid(p1geno, U1, L1, U2, L2);
+  const gametes2 = getGametesDihybrid(p2geno, U1, L1, U2, L2);
+
+  const grid = [];
+  const genotypeCounts = {};
+  gametes1.forEach(g1 => {
+    const row = [];
+    gametes2.forEach(g2 => {
+      const allele1a = g1[0], allele1b = g2[0];
+      const allele2a = g1[1], allele2b = g2[1];
+      const gene1pair = normalizePair(allele1a, allele1b);
+      const gene2pair = normalizePair(allele2a, allele2b);
+      const geno = gene1pair + gene2pair;
+      row.push(geno);
+      genotypeCounts[geno] = (genotypeCounts[geno] || 0) + 1;
+    });
+    grid.push(row);
+  });
+
+  const total = gametes1.length * gametes2.length;
+  let tableHTML = '<table class="punnett"><tr><th></th>' + gametes2.map(g => `<th>${esc(g)}</th>`).join('') + '</tr>';
+  grid.forEach((row, i) => {
+    tableHTML += `<tr><th>${esc(gametes1[i])}</th>` + row.map(g => `<td>${esc(g)}</td>`).join('') + '</tr>';
+  });
+  tableHTML += '</table>';
+
+  const phenotypeCounts = {};
+  Object.keys(genotypeCounts).forEach(geno => {
+    const gene1pair = geno.slice(0,2), gene2pair = geno.slice(2,4);
+    const trait1 = gene1pair.includes(U1) ? `${U1}_` : `${L1}${L1}`;
+    const trait2 = gene2pair.includes(U2) ? `${U2}_` : `${L2}${L2}`;
+    const pheno = trait1 + trait2;
+    phenotypeCounts[pheno] = (phenotypeCounts[pheno] || 0) + genotypeCounts[geno];
+  });
+
+  const genoRatioHTML = Object.keys(genotypeCounts).sort().map(g =>
+    `<div class="ratio-item"><span>${esc(g)}</span><span class="pct">${genotypeCounts[g]}/${total}</span></div>`
+  ).join('');
+  const phenoRatioHTML = Object.keys(phenotypeCounts).sort((a,b)=>phenotypeCounts[b]-phenotypeCounts[a]).map(p =>
+    `<div class="ratio-item"><span>${esc(p)} phenotype</span><span class="pct">${phenotypeCounts[p]}/${total} (${Math.round(phenotypeCounts[p]/total*100)}%)</span></div>`
+  ).join('');
+
+  out.innerHTML = `<div class="punnett-wrap">${tableHTML}</div>
+    <div class="ratio-grid">
+      <div class="ratio-box"><div class="ratio-title">Genotype Ratio (${Object.keys(genotypeCounts).length} types)</div>${genoRatioHTML}</div>
+      <div class="ratio-box"><div class="ratio-title">Phenotype Ratio</div>${phenoRatioHTML}</div>
+    </div>`;
+}
+
+document.getElementById('diLetter1').addEventListener('input', refreshDiSelects);
+document.getElementById('diLetter2').addEventListener('input', refreshDiSelects);
+
+refreshDiSelects();
+</script>
+</body>
+</html>
