@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP World History Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="apwh.html">AP World History</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🌐 AP World History Concept Drill</h1>
+  <p>72 key terms across 6 eras of world history. Flip flashcards or quiz yourself with multiple choice.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "foundations": {
+    "label": "Foundations & Networks (1200-1450)",
+    "icon": "🕌",
+    "terms": [
+      [
+        "Silk Roads",
+        "A network of overland trade routes connecting East Asia, Central Asia, the Middle East, and Europe."
+      ],
+      [
+        "Indian Ocean Trade Network",
+        "A maritime trade system connecting East Africa, the Middle East, India, and Southeast Asia."
+      ],
+      [
+        "Trans-Saharan Trade",
+        "A network of routes across the Sahara Desert connecting West Africa to the Mediterranean world."
+      ],
+      [
+        "Feudalism",
+        "A decentralized political and social system in medieval Europe based on land grants for loyalty and service."
+      ],
+      [
+        "Manorialism",
+        "An economic system in medieval Europe organizing agricultural labor around self-sufficient estates."
+      ],
+      [
+        "Dar al-Islam",
+        "The territories under Islamic rule, unified by a shared religion, language, and legal system."
+      ],
+      [
+        "Song Dynasty",
+        "A Chinese dynasty (960-1279) known for economic growth, technological innovation, and Neo-Confucianism."
+      ],
+      [
+        "Mongol Empire",
+        "The largest contiguous land empire in history, which facilitated trade and cultural exchange across Eurasia."
+      ],
+      [
+        "Pax Mongolica",
+        "The period of relative stability across the Mongol Empire that promoted safe long-distance trade."
+      ],
+      [
+        "Swahili Coast",
+        "A network of East African trading city-states that blended African, Arab, and Indian cultural influences."
+      ],
+      [
+        "Great Zimbabwe",
+        "A powerful trading kingdom in southeastern Africa known for its massive stone architecture."
+      ],
+      [
+        "Bantu Migrations",
+        "The gradual spread of Bantu-speaking peoples and their languages, agriculture, and technology across Africa."
+      ],
+      [
+        "Byzantine Empire",
+        "The eastern continuation of the Roman Empire, centered on Constantinople, that preserved Greco-Roman culture."
+      ],
+      [
+        "Caliphate",
+        "An Islamic state led by a caliph, considered a successor to the Prophet Muhammad's political authority."
+      ]
+    ]
+  },
+  "empires": {
+    "label": "Land Empires & Maritime Connections (1450-1750)",
+    "icon": "🚢",
+    "terms": [
+      [
+        "Ottoman Empire",
+        "A Muslim empire centered in Anatolia that expanded across the Middle East, North Africa, and Southeast Europe."
+      ],
+      [
+        "Safavid Empire",
+        "A Shia Muslim empire centered in Persia, known for its distinct religious and cultural identity."
+      ],
+      [
+        "Mughal Empire",
+        "A Muslim empire that ruled much of South Asia, known for religious tolerance and architectural achievements like the Taj Mahal."
+      ],
+      [
+        "Gunpowder Empire",
+        "A term for large land-based empires (Ottoman, Safavid, Mughal) that used gunpowder weapons to expand and consolidate power."
+      ],
+      [
+        "Age of Exploration",
+        "The period of European maritime expansion and exploration beginning in the 15th century."
+      ],
+      [
+        "Columbian Exchange",
+        "The transfer of plants, animals, diseases, and peoples between the Eastern and Western Hemispheres after 1492."
+      ],
+      [
+        "Atlantic Slave Trade",
+        "The forced transportation of millions of enslaved Africans to the Americas."
+      ],
+      [
+        "Mercantilism",
+        "An economic policy in which colonial powers sought to maximize exports and accumulate wealth through trade control."
+      ],
+      [
+        "Encomienda System",
+        "A Spanish colonial labor system granting colonists control over Indigenous labor and tribute."
+      ],
+      [
+        "Tokugawa Shogunate",
+        "A Japanese military government (1603-1868) that enforced isolationist policies and social stability."
+      ],
+      [
+        "Absolutism",
+        "A political system in which a monarch holds total, unchecked power, exemplified by Louis XIV of France."
+      ],
+      [
+        "Divine Right of Kings",
+        "The belief that a monarch's authority to rule comes directly from God."
+      ],
+      [
+        "Protestant Reformation",
+        "A 16th-century religious movement that challenged the authority of the Catholic Church."
+      ],
+      [
+        "Treaty of Tordesillas",
+        "A 1494 agreement dividing New World territorial claims between Spain and Portugal."
+      ]
+    ]
+  },
+  "revolutions": {
+    "label": "Revolutions & Industrialization (1750-1900)",
+    "icon": "⚙️",
+    "terms": [
+      [
+        "Enlightenment",
+        "An intellectual movement emphasizing reason, individual rights, and skepticism of traditional authority."
+      ],
+      [
+        "Scientific Revolution",
+        "A period of major advances in scientific thought and method that reshaped views of the natural world."
+      ],
+      [
+        "American Revolution",
+        "The 1775-1783 rebellion in which the thirteen American colonies won independence from Britain."
+      ],
+      [
+        "French Revolution",
+        "The 1789-1799 upheaval that overthrew the French monarchy and spread ideas of popular sovereignty."
+      ],
+      [
+        "Haitian Revolution",
+        "The successful 1791-1804 slave revolt that established Haiti as the first Black-led republic."
+      ],
+      [
+        "Latin American Wars of Independence",
+        "A series of early 19th-century revolutions that ended Spanish and Portuguese colonial rule in the Americas."
+      ],
+      [
+        "Industrial Revolution",
+        "The transformation of production from hand labor to machine-based manufacturing beginning in Britain."
+      ],
+      [
+        "Factory System",
+        "A method of production concentrating labor and machinery in centralized factories."
+      ],
+      [
+        "Nationalism",
+        "A political ideology emphasizing loyalty and devotion to one's nation, driving unification and independence movements."
+      ],
+      [
+        "Congress of Vienna",
+        "An 1815 diplomatic meeting that redrew European borders and restored conservative order after Napoleon."
+      ],
+      [
+        "Second Industrial Revolution",
+        "A late 19th-century wave of industrial innovation involving steel, electricity, and chemicals."
+      ],
+      [
+        "New Imperialism",
+        "The late 19th-century wave of European colonization of Africa and Asia driven by industrial and nationalist motives."
+      ],
+      [
+        "Scramble for Africa",
+        "The rapid colonization and division of the African continent by European powers in the late 19th century."
+      ],
+      [
+        "Opium Wars",
+        "19th-century conflicts between China and Western powers over trade, resulting in unequal treaties."
+      ]
+    ]
+  },
+  "globalconflict": {
+    "label": "Global Conflict (1900-Present)",
+    "icon": "💣",
+    "terms": [
+      [
+        "World War I",
+        "A 1914-1918 global conflict triggered by militarism, alliances, imperialism, and nationalism."
+      ],
+      [
+        "Treaty of Versailles",
+        "The 1919 peace treaty that ended World War I and imposed harsh terms on Germany."
+      ],
+      [
+        "Russian Revolution",
+        "The 1917 upheaval that overthrew the tsarist government and established the world's first communist state."
+      ],
+      [
+        "Great Depression",
+        "The severe global economic downturn of the 1930s that destabilized economies and governments worldwide."
+      ],
+      [
+        "Totalitarianism",
+        "A political system in which the state seeks total control over public and private life."
+      ],
+      [
+        "World War II",
+        "A 1939-1945 global conflict involving the Axis and Allied powers, resulting in unprecedented destruction."
+      ],
+      [
+        "The Holocaust",
+        "The systematic genocide of six million Jews and millions of others by Nazi Germany."
+      ],
+      [
+        "United Nations",
+        "An international organization founded in 1945 to promote peace, security, and cooperation among nations."
+      ],
+      [
+        "Atomic Bomb",
+        "A powerful nuclear weapon, first used by the U.S. against Japan in 1945, ending World War II."
+      ],
+      [
+        "Genocide",
+        "The deliberate, systematic destruction of a national, ethnic, racial, or religious group."
+      ]
+    ]
+  },
+  "coldwardecolonization": {
+    "label": "Cold War & Decolonization (1900-Present)",
+    "icon": "🕊️",
+    "terms": [
+      [
+        "Cold War",
+        "The prolonged ideological and geopolitical rivalry between the United States and the Soviet Union after WWII."
+      ],
+      [
+        "Decolonization",
+        "The process by which colonies gained independence from European imperial powers after World War II."
+      ],
+      [
+        "Non-Aligned Movement",
+        "A group of states not formally aligned with either the U.S. or Soviet bloc during the Cold War."
+      ],
+      [
+        "Proxy War",
+        "A conflict in which two rival powers support opposing sides without directly fighting each other."
+      ],
+      [
+        "Iron Curtain",
+        "The ideological and physical divide separating communist Eastern Europe from the West during the Cold War."
+      ],
+      [
+        "Partition of India",
+        "The 1947 division of British India into India and Pakistan, causing mass displacement and violence."
+      ],
+      [
+        "Chinese Communist Revolution",
+        "The 1949 victory of Mao Zedong's Communist Party, establishing the People's Republic of China."
+      ],
+      [
+        "Apartheid",
+        "The institutionalized system of racial segregation and discrimination in South Africa until 1994."
+      ],
+      [
+        "Green Revolution",
+        "A mid-20th-century movement that increased agricultural productivity through new technology and crop varieties."
+      ],
+      [
+        "Fall of the Berlin Wall",
+        "The 1989 collapse of the barrier dividing East and West Berlin, symbolizing the end of the Cold War."
+      ]
+    ]
+  },
+  "globalization": {
+    "label": "Globalization & Contemporary Era",
+    "icon": "🌐",
+    "terms": [
+      [
+        "Globalization",
+        "The increasing interconnectedness of the world's economies, cultures, and populations."
+      ],
+      [
+        "European Union",
+        "A political and economic union of European countries promoting free trade and cooperation."
+      ],
+      [
+        "World Trade Organization",
+        "An international body that regulates and facilitates trade between nations."
+      ],
+      [
+        "Multinational Corporation",
+        "A large company that operates and produces goods or services in multiple countries."
+      ],
+      [
+        "Global Migration",
+        "The large-scale movement of people across international borders in the modern era, driven by economic and political factors."
+      ],
+      [
+        "Human Rights Movement",
+        "A global effort to promote and protect fundamental rights and freedoms for all individuals."
+      ],
+      [
+        "Climate Change (Global)",
+        "Long-term shifts in global temperature and weather patterns caused largely by human activity."
+      ],
+      [
+        "Terrorism",
+        "The use of violence and intimidation, often by non-state actors, to achieve political goals."
+      ],
+      [
+        "Digital Revolution",
+        "The shift from mechanical technology to digital electronics, transforming global communication and economies."
+      ],
+      [
+        "Arab Spring",
+        "A wave of pro-democracy protests and uprisings across the Middle East and North Africa beginning in 2010."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

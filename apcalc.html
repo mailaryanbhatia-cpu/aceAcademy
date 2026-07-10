@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Calculus Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="apcalc.html">AP Calculus</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>📐 AP Calculus Concept Drill</h1>
+  <p>78 key terms across 9 units covering AB and BC topics. Flip flashcards or quiz yourself.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "limits": {
+    "label": "Limits & Continuity",
+    "icon": "➡️",
+    "terms": [
+      [
+        "Limit",
+        "The value a function approaches as its input approaches a given point."
+      ],
+      [
+        "One-Sided Limit",
+        "The value a function approaches as the input approaches a point from only the left or right side."
+      ],
+      [
+        "Continuity",
+        "A function is continuous at a point if the limit there equals the function's value at that point."
+      ],
+      [
+        "Removable Discontinuity",
+        "A discontinuity that can be 'fixed' by redefining a single point, appearing as a hole in the graph."
+      ],
+      [
+        "Jump Discontinuity",
+        "A discontinuity where the left and right limits exist but are not equal."
+      ],
+      [
+        "Infinite Discontinuity",
+        "A discontinuity where the function approaches infinity, often caused by a vertical asymptote."
+      ],
+      [
+        "Intermediate Value Theorem",
+        "The theorem stating a continuous function takes on every value between f(a) and f(b) on [a,b]."
+      ],
+      [
+        "Squeeze Theorem",
+        "A theorem used to find a limit by bounding a function between two others with the same limit."
+      ],
+      [
+        "Limit at Infinity",
+        "The behavior of a function's value as the input grows without bound."
+      ],
+      [
+        "Horizontal Asymptote",
+        "A horizontal line that a function's graph approaches as x approaches positive or negative infinity."
+      ],
+      [
+        "Vertical Asymptote",
+        "A vertical line where a function's value approaches infinity, often at a point where the denominator is zero."
+      ],
+      [
+        "Indeterminate Form",
+        "An expression like 0/0 whose limiting value cannot be determined without further analysis."
+      ]
+    ]
+  },
+  "diffbasics": {
+    "label": "Differentiation: Definition & Properties",
+    "icon": "📉",
+    "terms": [
+      [
+        "Derivative",
+        "A function representing the instantaneous rate of change of another function."
+      ],
+      [
+        "Difference Quotient",
+        "The expression [f(x+h)-f(x)]/h, whose limit as h→0 defines the derivative."
+      ],
+      [
+        "Differentiability",
+        "A function is differentiable at a point if its derivative exists there."
+      ],
+      [
+        "Power Rule",
+        "The rule stating that the derivative of x^n is n·x^(n-1)."
+      ],
+      [
+        "Product Rule",
+        "The rule for differentiating the product of two functions: (fg)' = f'g + fg'."
+      ],
+      [
+        "Quotient Rule",
+        "The rule for differentiating the ratio of two functions."
+      ],
+      [
+        "Tangent Line",
+        "A line that touches a curve at a single point and has the same slope as the curve there."
+      ],
+      [
+        "Normal Line",
+        "A line perpendicular to the tangent line at a given point on a curve."
+      ],
+      [
+        "Instantaneous Rate of Change",
+        "The rate of change of a function at a single specific point, given by the derivative."
+      ],
+      [
+        "Average Rate of Change",
+        "The slope of the secant line between two points on a function's graph."
+      ]
+    ]
+  },
+  "diffadvanced": {
+    "label": "Composite, Implicit & Inverse Functions",
+    "icon": "🔁",
+    "terms": [
+      [
+        "Chain Rule",
+        "The rule for differentiating a composite function by multiplying the derivatives of its parts."
+      ],
+      [
+        "Implicit Differentiation",
+        "A technique for finding the derivative of a relation not explicitly solved for y."
+      ],
+      [
+        "Inverse Function Derivative",
+        "The rule relating the derivative of a function to the derivative of its inverse."
+      ],
+      [
+        "Derivative of Trigonometric Functions",
+        "The set of standard derivative formulas for sin, cos, tan, and other trig functions."
+      ],
+      [
+        "Derivative of Exponential Functions",
+        "The rule that the derivative of e^x is e^x, and more generally for a^x."
+      ],
+      [
+        "Derivative of Logarithmic Functions",
+        "The rule that the derivative of ln(x) is 1/x."
+      ],
+      [
+        "Derivative of Inverse Trig Functions",
+        "The set of standard formulas for differentiating arcsin, arccos, and arctan."
+      ],
+      [
+        "Logarithmic Differentiation",
+        "A technique using logarithms to differentiate functions with variable exponents or complex products."
+      ]
+    ]
+  },
+  "diffapp": {
+    "label": "Contextual Applications of Differentiation",
+    "icon": "🚗",
+    "terms": [
+      [
+        "Related Rates",
+        "Problems involving finding the rate of change of one quantity in terms of another's known rate."
+      ],
+      [
+        "Position, Velocity, Acceleration",
+        "The relationship where velocity is the derivative of position and acceleration is the derivative of velocity."
+      ],
+      [
+        "Linearization",
+        "Using a tangent line to approximate the value of a function near a point."
+      ],
+      [
+        "L'Hôpital's Rule",
+        "A method for evaluating indeterminate limits by differentiating the numerator and denominator."
+      ],
+      [
+        "Marginal Cost/Revenue",
+        "The derivative of a cost or revenue function, representing the cost or revenue of one additional unit."
+      ],
+      [
+        "Differential (dy)",
+        "An approximation of the change in a function's output using its derivative and a small change in input."
+      ]
+    ]
+  },
+  "diffanalytical": {
+    "label": "Analytical Applications of Differentiation",
+    "icon": "📈",
+    "terms": [
+      [
+        "Critical Point",
+        "A point where a function's derivative is zero or undefined, a candidate for a local extremum."
+      ],
+      [
+        "Local Maximum/Minimum",
+        "A point where a function's value is greater or less than all nearby points."
+      ],
+      [
+        "Global (Absolute) Extremum",
+        "The highest or lowest value of a function over its entire domain or a closed interval."
+      ],
+      [
+        "First Derivative Test",
+        "A method using the sign change of f' to determine whether a critical point is a max or min."
+      ],
+      [
+        "Second Derivative Test",
+        "A method using the sign of f'' at a critical point to classify it as a max or min."
+      ],
+      [
+        "Concavity",
+        "A description of a curve's shape, determined by the sign of the second derivative."
+      ],
+      [
+        "Inflection Point",
+        "A point where a function changes concavity."
+      ],
+      [
+        "Mean Value Theorem",
+        "The theorem stating a differentiable function has a point where the instantaneous rate equals the average rate over an interval."
+      ],
+      [
+        "Rolle's Theorem",
+        "A special case of the Mean Value Theorem where the function has equal values at the endpoints."
+      ],
+      [
+        "Optimization Problem",
+        "A problem that uses derivatives to find the maximum or minimum value of a quantity in context."
+      ]
+    ]
+  },
+  "integration": {
+    "label": "Integration & Accumulation of Change",
+    "icon": "∫",
+    "terms": [
+      [
+        "Antiderivative",
+        "A function whose derivative is a given function."
+      ],
+      [
+        "Indefinite Integral",
+        "The general antiderivative of a function, including an arbitrary constant of integration."
+      ],
+      [
+        "Definite Integral",
+        "The signed area between a function's curve and the x-axis over a specific interval."
+      ],
+      [
+        "Fundamental Theorem of Calculus",
+        "The theorem connecting differentiation and integration, linking definite integrals to antiderivatives."
+      ],
+      [
+        "Riemann Sum",
+        "An approximation of a definite integral using the sum of areas of rectangles."
+      ],
+      [
+        "Trapezoidal Rule",
+        "A numerical method for approximating a definite integral using trapezoids."
+      ],
+      [
+        "u-Substitution",
+        "A technique for integration that simplifies an integral by changing variables."
+      ],
+      [
+        "Accumulation Function",
+        "A function defined as the definite integral of another function with a variable upper limit."
+      ],
+      [
+        "Average Value of a Function",
+        "The value found by dividing a definite integral by the length of the interval."
+      ]
+    ]
+  },
+  "diffeq": {
+    "label": "Differential Equations",
+    "icon": "📐",
+    "terms": [
+      [
+        "Differential Equation",
+        "An equation relating a function to its derivatives."
+      ],
+      [
+        "Slope Field",
+        "A graphical representation showing the slope of solutions to a differential equation at many points."
+      ],
+      [
+        "Separation of Variables",
+        "A technique for solving differential equations by isolating variables on each side of the equation."
+      ],
+      [
+        "Exponential Growth/Decay Model",
+        "A differential equation model, dy/dx = ky, describing quantities that grow or shrink proportionally to their size."
+      ],
+      [
+        "Logistic Growth Model",
+        "A differential equation model describing growth that slows as it approaches a carrying capacity."
+      ],
+      [
+        "General Solution",
+        "A solution to a differential equation that includes an arbitrary constant."
+      ],
+      [
+        "Particular Solution",
+        "A specific solution to a differential equation that satisfies a given initial condition."
+      ]
+    ]
+  },
+  "intapp": {
+    "label": "Applications of Integration",
+    "icon": "📏",
+    "terms": [
+      [
+        "Area Between Curves",
+        "The definite integral of the difference between two functions over an interval."
+      ],
+      [
+        "Volume by Disks/Washers",
+        "A method for finding the volume of a solid of revolution using circular cross-sections."
+      ],
+      [
+        "Volume by Cross-Sections",
+        "A method for finding volume by integrating the area of known cross-sectional shapes."
+      ],
+      [
+        "Arc Length",
+        "The distance along a curve, calculated using a definite integral involving the derivative."
+      ],
+      [
+        "Net Change Theorem",
+        "The principle that the definite integral of a rate of change equals the total net change in the quantity."
+      ],
+      [
+        "Motion Along a Line (Integral)",
+        "Using integration of velocity or acceleration to find displacement, position, or total distance traveled."
+      ]
+    ]
+  },
+  "series": {
+    "label": "Sequences, Series & Polar/Parametric (BC)",
+    "icon": "🌀",
+    "terms": [
+      [
+        "Sequence",
+        "An ordered list of numbers following a specific pattern or rule."
+      ],
+      [
+        "Series",
+        "The sum of the terms of a sequence."
+      ],
+      [
+        "Convergence / Divergence",
+        "Properties describing whether an infinite series approaches a finite value (converges) or not (diverges)."
+      ],
+      [
+        "Geometric Series",
+        "A series in which each term is a constant multiple of the previous term."
+      ],
+      [
+        "Taylor Series",
+        "A series representation of a function as an infinite sum of terms calculated from its derivatives at a point."
+      ],
+      [
+        "Maclaurin Series",
+        "A Taylor series centered at zero."
+      ],
+      [
+        "Ratio Test",
+        "A test for convergence that examines the limit of the ratio of consecutive terms in a series."
+      ],
+      [
+        "Parametric Equations",
+        "Equations that define a curve using a separate variable, or parameter, for x and y."
+      ],
+      [
+        "Polar Coordinates",
+        "A coordinate system defining points by a distance from the origin and an angle from a reference direction."
+      ],
+      [
+        "Vector-Valued Function",
+        "A function that outputs a vector, often used to describe motion in the plane."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

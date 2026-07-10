@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Biology Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="apbio.html">AP Biology</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🧬 AP Biology Concept Drill</h1>
+  <p>142 key terms across all 8 AP Bio units. Flip flashcards or quiz yourself with multiple choice.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "chemistry": {
+    "label": "Chemistry of Life",
+    "icon": "🧪",
+    "terms": [
+      [
+        "Polarity",
+        "A covalent bond or molecule with unequal electron sharing, creating partial positive and negative charges."
+      ],
+      [
+        "Hydrogen Bond",
+        "A weak attraction between a partially positive hydrogen atom and an electronegative atom on another molecule."
+      ],
+      [
+        "Cohesion",
+        "The attraction between like molecules, such as water molecules sticking to each other."
+      ],
+      [
+        "Adhesion",
+        "The attraction between unlike molecules, such as water sticking to a glass surface."
+      ],
+      [
+        "pH Scale",
+        "A scale from 0 to 14 measuring hydrogen ion concentration, indicating how acidic or basic a solution is."
+      ],
+      [
+        "Buffer",
+        "A substance that resists changes in pH by absorbing excess H+ or OH- ions."
+      ],
+      [
+        "Monomer",
+        "A small molecular subunit that links together with others to form a polymer."
+      ],
+      [
+        "Polymer",
+        "A large molecule built from many repeating monomer subunits."
+      ],
+      [
+        "Dehydration Synthesis",
+        "A reaction that joins two monomers by removing a water molecule, forming a covalent bond."
+      ],
+      [
+        "Hydrolysis",
+        "A reaction that breaks a polymer apart by adding a water molecule across the bond."
+      ],
+      [
+        "Carbohydrate",
+        "A macromolecule made of sugar units, used mainly for energy storage and structural support."
+      ],
+      [
+        "Lipid",
+        "A hydrophobic macromolecule category including fats, phospholipids, and steroids."
+      ],
+      [
+        "Protein",
+        "A macromolecule made of amino acids folded into a specific three-dimensional shape for function."
+      ],
+      [
+        "Amino Acid",
+        "The monomer subunit of proteins, containing an amino group, a carboxyl group, and a variable side chain."
+      ],
+      [
+        "Nucleic Acid",
+        "A macromolecule (DNA or RNA) made of nucleotide monomers that stores and transmits genetic information."
+      ],
+      [
+        "Enzyme",
+        "A protein catalyst that speeds up biochemical reactions by lowering the activation energy required."
+      ],
+      [
+        "Active Site",
+        "The specific region of an enzyme where a substrate binds and the reaction is catalyzed."
+      ],
+      [
+        "Denaturation",
+        "The loss of a protein's functional shape due to heat, pH change, or other environmental stress."
+      ]
+    ]
+  },
+  "cell": {
+    "label": "Cell Structure & Function",
+    "icon": "🔬",
+    "terms": [
+      [
+        "Plasma Membrane",
+        "The phospholipid bilayer that encloses a cell and regulates what enters and exits."
+      ],
+      [
+        "Phospholipid Bilayer",
+        "Two layers of phospholipids arranged with hydrophilic heads out and hydrophobic tails in."
+      ],
+      [
+        "Fluid Mosaic Model",
+        "The model describing the cell membrane as a fluid structure with embedded, mobile proteins."
+      ],
+      [
+        "Selective Permeability",
+        "A property of membranes that allows some substances to cross more easily than others."
+      ],
+      [
+        "Nucleus",
+        "The membrane-bound organelle that houses a eukaryotic cell's DNA."
+      ],
+      [
+        "Ribosome",
+        "The organelle, free or bound to the ER, where proteins are synthesized from mRNA."
+      ],
+      [
+        "Endoplasmic Reticulum",
+        "An organelle network involved in protein folding (rough ER) and lipid synthesis (smooth ER)."
+      ],
+      [
+        "Golgi Apparatus",
+        "The organelle that modifies, sorts, and packages proteins and lipids for transport."
+      ],
+      [
+        "Mitochondria",
+        "The organelle where cellular respiration produces most of a cell's ATP."
+      ],
+      [
+        "Chloroplast",
+        "The plant organelle where photosynthesis converts light energy into chemical energy."
+      ],
+      [
+        "Lysosome",
+        "A membrane-bound organelle containing enzymes that break down waste and macromolecules."
+      ],
+      [
+        "Cytoskeleton",
+        "A network of protein filaments that gives a cell its shape and enables movement."
+      ],
+      [
+        "Cell Wall",
+        "A rigid structure outside the plasma membrane in plants, fungi, and bacteria that provides support."
+      ],
+      [
+        "Passive Transport",
+        "Movement of substances across a membrane without energy input, down their concentration gradient."
+      ],
+      [
+        "Osmosis",
+        "The passive diffusion of water across a selectively permeable membrane."
+      ],
+      [
+        "Facilitated Diffusion",
+        "Passive transport of molecules across a membrane through specific channel or carrier proteins."
+      ],
+      [
+        "Active Transport",
+        "Movement of substances across a membrane against their concentration gradient, requiring ATP."
+      ],
+      [
+        "Endocytosis / Exocytosis",
+        "Processes by which cells engulf material into vesicles (endo) or expel material from vesicles (exo)."
+      ]
+    ]
+  },
+  "energetics": {
+    "label": "Cellular Energetics",
+    "icon": "⚡",
+    "terms": [
+      [
+        "ATP",
+        "Adenosine triphosphate, the primary energy-carrying molecule used by cells."
+      ],
+      [
+        "Photosynthesis",
+        "The process by which plants and other autotrophs convert light energy into chemical energy in glucose."
+      ],
+      [
+        "Light-Dependent Reactions",
+        "The stage of photosynthesis that captures light energy and produces ATP, NADPH, and oxygen."
+      ],
+      [
+        "Calvin Cycle",
+        "The light-independent reactions of photosynthesis that use ATP and NADPH to build glucose from CO2."
+      ],
+      [
+        "Chlorophyll",
+        "The green pigment in chloroplasts that absorbs light energy for photosynthesis."
+      ],
+      [
+        "Cellular Respiration",
+        "The process that breaks down glucose in the presence of oxygen to produce ATP."
+      ],
+      [
+        "Glycolysis",
+        "The first stage of cellular respiration, splitting glucose into pyruvate in the cytoplasm."
+      ],
+      [
+        "Krebs Cycle (Citric Acid Cycle)",
+        "The stage of respiration in the mitochondrial matrix that produces NADH, FADH2, and CO2."
+      ],
+      [
+        "Electron Transport Chain",
+        "A series of proteins in the inner mitochondrial membrane that pass electrons to generate a proton gradient."
+      ],
+      [
+        "Oxidative Phosphorylation",
+        "The production of ATP using energy released by the electron transport chain and chemiosmosis."
+      ],
+      [
+        "Chemiosmosis",
+        "The movement of ions across a membrane through ATP synthase to generate ATP."
+      ],
+      [
+        "Fermentation",
+        "An anaerobic pathway that regenerates NAD+ without oxygen, producing lactic acid or ethanol."
+      ],
+      [
+        "NADH / FADH2",
+        "Electron carrier molecules that transport high-energy electrons to the electron transport chain."
+      ],
+      [
+        "Substrate-Level Phosphorylation",
+        "Direct transfer of a phosphate group to ADP to form ATP during glycolysis and the Krebs cycle."
+      ],
+      [
+        "Autotroph",
+        "An organism that produces its own food from inorganic sources, such as through photosynthesis."
+      ],
+      [
+        "Heterotroph",
+        "An organism that obtains energy by consuming other organisms."
+      ],
+      [
+        "Metabolic Pathway",
+        "A series of connected chemical reactions occurring within a cell."
+      ],
+      [
+        "Free Energy (Gibbs)",
+        "The energy available in a system to do work, determining whether a reaction is spontaneous."
+      ]
+    ]
+  },
+  "cellcycle": {
+    "label": "Cell Communication & Cell Cycle",
+    "icon": "🔄",
+    "terms": [
+      [
+        "Cell Cycle",
+        "The ordered sequence of events, including growth and division, that a cell goes through."
+      ],
+      [
+        "Interphase",
+        "The longest phase of the cell cycle, during which the cell grows and replicates its DNA."
+      ],
+      [
+        "Mitosis",
+        "The process of nuclear division that produces two genetically identical daughter nuclei."
+      ],
+      [
+        "Cytokinesis",
+        "The division of the cytoplasm that follows mitosis, producing two separate daughter cells."
+      ],
+      [
+        "Checkpoint (Cell Cycle)",
+        "A control point in the cell cycle where the cell verifies conditions are suitable to proceed."
+      ],
+      [
+        "Signal Transduction Pathway",
+        "A series of molecular steps that convert an extracellular signal into a cellular response."
+      ],
+      [
+        "Ligand",
+        "A signaling molecule that binds to a specific receptor to trigger a response."
+      ],
+      [
+        "Receptor",
+        "A protein that binds a specific signaling molecule and initiates a cellular response."
+      ],
+      [
+        "Second Messenger",
+        "A small molecule that relays signals from receptors to target molecules inside the cell."
+      ],
+      [
+        "Apoptosis",
+        "Programmed cell death that eliminates damaged or unneeded cells in an organized way."
+      ],
+      [
+        "Cancer (uncontrolled cell division)",
+        "A disease caused by loss of cell cycle control, leading to uncontrolled cell division."
+      ],
+      [
+        "Cyclin / CDK",
+        "Regulatory proteins whose fluctuating levels drive progression through cell cycle checkpoints."
+      ],
+      [
+        "G0 Phase",
+        "A resting phase outside the active cell cycle in which a cell is not preparing to divide."
+      ],
+      [
+        "Feedback Inhibition",
+        "A regulatory mechanism where a pathway's end product inhibits an earlier step in the same pathway."
+      ],
+      [
+        "Quorum Sensing",
+        "A form of cell communication in bacteria based on population density."
+      ],
+      [
+        "Cell Communication",
+        "The process by which cells detect and respond to signals from their environment or other cells."
+      ]
+    ]
+  },
+  "heredity": {
+    "label": "Heredity",
+    "icon": "🧬",
+    "terms": [
+      [
+        "Meiosis",
+        "A type of cell division that produces four genetically unique haploid gametes from one diploid cell."
+      ],
+      [
+        "Homologous Chromosomes",
+        "A pair of chromosomes, one from each parent, that carry genes for the same traits."
+      ],
+      [
+        "Crossing Over",
+        "The exchange of genetic material between homologous chromosomes during meiosis, increasing variation."
+      ],
+      [
+        "Independent Assortment",
+        "The random distribution of homologous chromosome pairs into gametes during meiosis."
+      ],
+      [
+        "Gamete",
+        "A haploid reproductive cell, such as a sperm or egg, that fuses with another to form a zygote."
+      ],
+      [
+        "Allele",
+        "One of two or more alternative versions of a gene."
+      ],
+      [
+        "Genotype",
+        "The genetic makeup of an organism for a particular trait."
+      ],
+      [
+        "Phenotype",
+        "The observable physical or biochemical characteristics of an organism, resulting from its genotype."
+      ],
+      [
+        "Dominant / Recessive",
+        "Terms describing alleles where a dominant allele masks the expression of a recessive one in a heterozygote."
+      ],
+      [
+        "Punnett Square",
+        "A diagram used to predict the possible genotypes of offspring from a genetic cross."
+      ],
+      [
+        "Law of Segregation",
+        "Mendel's principle that allele pairs separate during gamete formation, so each gamete carries only one allele."
+      ],
+      [
+        "Law of Independent Assortment",
+        "Mendel's principle that genes for different traits are inherited independently of one another."
+      ],
+      [
+        "Nondisjunction",
+        "The failure of chromosomes to separate properly during meiosis, resulting in gametes with abnormal chromosome numbers."
+      ],
+      [
+        "Linked Genes",
+        "Genes located close together on the same chromosome that tend to be inherited together."
+      ],
+      [
+        "Sex-Linked Trait",
+        "A trait controlled by a gene located on a sex chromosome, typically the X chromosome."
+      ],
+      [
+        "Pedigree",
+        "A chart showing the occurrence of a genetic trait across multiple generations of a family."
+      ],
+      [
+        "Incomplete Dominance",
+        "A pattern of inheritance in which the heterozygous phenotype is a blend of both alleles."
+      ],
+      [
+        "Codominance",
+        "A pattern of inheritance in which both alleles are fully and separately expressed in the heterozygote."
+      ]
+    ]
+  },
+  "geneexpression": {
+    "label": "Gene Expression & Regulation",
+    "icon": "🧫",
+    "terms": [
+      [
+        "DNA Replication",
+        "The process by which a cell copies its DNA before cell division."
+      ],
+      [
+        "Semi-Conservative Replication",
+        "The mode of DNA replication in which each new double helix contains one original and one new strand."
+      ],
+      [
+        "DNA Polymerase",
+        "The enzyme that synthesizes new DNA strands by adding nucleotides complementary to a template strand."
+      ],
+      [
+        "Transcription",
+        "The process of synthesizing an mRNA molecule from a DNA template."
+      ],
+      [
+        "mRNA",
+        "Messenger RNA, which carries genetic information from DNA to the ribosome for protein synthesis."
+      ],
+      [
+        "RNA Polymerase",
+        "The enzyme that synthesizes RNA from a DNA template during transcription."
+      ],
+      [
+        "Translation",
+        "The process of synthesizing a protein from the sequence of codons in an mRNA molecule."
+      ],
+      [
+        "Codon",
+        "A three-nucleotide sequence in mRNA that specifies a particular amino acid or stop signal."
+      ],
+      [
+        "Anticodon",
+        "The three-nucleotide sequence on tRNA that pairs with a complementary codon on mRNA."
+      ],
+      [
+        "tRNA",
+        "Transfer RNA, which carries a specific amino acid to the ribosome and matches it to its mRNA codon."
+      ],
+      [
+        "Genetic Code",
+        "The set of rules by which nucleotide sequences are translated into amino acid sequences."
+      ],
+      [
+        "Gene Regulation",
+        "The processes cells use to control which genes are turned on or off, and to what degree."
+      ],
+      [
+        "Operon",
+        "A cluster of genes in bacteria that is transcribed together under the control of a single promoter."
+      ],
+      [
+        "Transcription Factor",
+        "A protein that binds DNA and helps regulate the transcription of nearby genes."
+      ],
+      [
+        "Mutation",
+        "A change in the nucleotide sequence of DNA that can alter gene function."
+      ],
+      [
+        "Point Mutation",
+        "A mutation that changes a single nucleotide base in a DNA sequence."
+      ],
+      [
+        "Frameshift Mutation",
+        "A mutation caused by insertion or deletion of nucleotides that shifts the reading frame of a gene."
+      ],
+      [
+        "Biotechnology (e.g., CRISPR, PCR)",
+        "The use of living systems and organisms to develop technologies and tools, including gene-editing methods."
+      ]
+    ]
+  },
+  "evolution": {
+    "label": "Natural Selection",
+    "icon": "🌱",
+    "terms": [
+      [
+        "Natural Selection",
+        "The process by which organisms with favorable traits survive and reproduce at higher rates."
+      ],
+      [
+        "Fitness",
+        "A measure of an organism's reproductive success relative to others in the population."
+      ],
+      [
+        "Adaptation",
+        "A heritable trait that increases an organism's fitness in its environment."
+      ],
+      [
+        "Genetic Variation",
+        "Differences in DNA sequences among individuals in a population, the raw material for evolution."
+      ],
+      [
+        "Gene Pool",
+        "The complete set of alleles present in a population at a given time."
+      ],
+      [
+        "Allele Frequency",
+        "The proportion of a specific allele among all allele copies for a gene in a population."
+      ],
+      [
+        "Hardy-Weinberg Equilibrium",
+        "A model describing a population's allele frequencies that remain constant when no evolutionary forces act."
+      ],
+      [
+        "Genetic Drift",
+        "Random changes in allele frequencies in a population, especially significant in small populations."
+      ],
+      [
+        "Bottleneck Effect",
+        "A sharp reduction in population size that drastically reduces genetic variation by chance."
+      ],
+      [
+        "Founder Effect",
+        "A loss of genetic variation when a new population is established by a small number of individuals."
+      ],
+      [
+        "Gene Flow",
+        "The transfer of alleles between populations through migration and interbreeding."
+      ],
+      [
+        "Speciation",
+        "The evolutionary process by which new, distinct species form."
+      ],
+      [
+        "Reproductive Isolation",
+        "Barriers that prevent members of different species from interbreeding successfully."
+      ],
+      [
+        "Convergent Evolution",
+        "The independent evolution of similar traits in unrelated species facing similar environments."
+      ],
+      [
+        "Divergent Evolution",
+        "The evolution of different traits in related species as they adapt to different environments."
+      ],
+      [
+        "Common Ancestor",
+        "A species from which two or more other species descended."
+      ],
+      [
+        "Phylogenetic Tree",
+        "A diagram depicting evolutionary relationships among species based on shared ancestry."
+      ],
+      [
+        "Fossil Record",
+        "The collection of preserved remains or traces of past organisms, providing evidence for evolution."
+      ]
+    ]
+  },
+  "ecology": {
+    "label": "Ecology",
+    "icon": "🌍",
+    "terms": [
+      [
+        "Population (biology)",
+        "A group of individuals of the same species living in the same area and interbreeding."
+      ],
+      [
+        "Community (ecology)",
+        "All the different species populations that live and interact in the same area."
+      ],
+      [
+        "Ecosystem",
+        "A community of organisms together with the physical environment they interact with."
+      ],
+      [
+        "Biotic / Abiotic Factors",
+        "Living components (biotic) and nonliving components (abiotic) of an environment."
+      ],
+      [
+        "Carrying Capacity",
+        "The maximum population size an environment can sustain given available resources."
+      ],
+      [
+        "Population Growth Rate",
+        "The rate at which the number of individuals in a population increases or decreases over time."
+      ],
+      [
+        "Exponential Growth",
+        "Population growth that occurs at a constant rate under unlimited resources, producing a J-shaped curve."
+      ],
+      [
+        "Logistic Growth",
+        "Population growth that slows as it approaches carrying capacity, producing an S-shaped curve."
+      ],
+      [
+        "Trophic Level",
+        "A position in a food chain, such as producer, primary consumer, or secondary consumer."
+      ],
+      [
+        "Energy Pyramid",
+        "A diagram showing the decrease in usable energy at each successive trophic level."
+      ],
+      [
+        "Nutrient Cycling",
+        "The movement and exchange of organic and inorganic matter through an ecosystem."
+      ],
+      [
+        "Species Interaction",
+        "Relationships between species in a community, including competition, predation, and symbiosis."
+      ],
+      [
+        "Niche",
+        "The full range of environmental conditions and resources a species uses within a habitat."
+      ],
+      [
+        "Keystone Species",
+        "A species that has a disproportionately large effect on its ecosystem relative to its abundance."
+      ],
+      [
+        "Ecological Succession",
+        "The gradual process of change in the species composition of a community over time."
+      ],
+      [
+        "Biodiversity",
+        "The variety of species and genetic variation within an ecosystem or region."
+      ],
+      [
+        "Human Impact on Ecosystems",
+        "The effects of human activity, such as habitat destruction and pollution, on ecological systems."
+      ],
+      [
+        "Climate Change (Biological Impact)",
+        "Long-term shifts in climate that alter species distributions, phenology, and ecosystem function."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

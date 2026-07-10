@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Statistics Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="apstats.html">AP Statistics</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>📊 AP Statistics Concept Drill</h1>
+  <p>77 key terms across 6 units covering data, probability, and inference. Flip flashcards or quiz yourself.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "univariate": {
+    "label": "Exploring One-Variable Data",
+    "icon": "📊",
+    "terms": [
+      [
+        "Categorical Variable",
+        "A variable that places individuals into distinct groups or categories."
+      ],
+      [
+        "Quantitative Variable",
+        "A variable that takes numerical values on which arithmetic operations make sense."
+      ],
+      [
+        "Distribution",
+        "A description of the values a variable takes and how often it takes those values."
+      ],
+      [
+        "Mean",
+        "The arithmetic average of a data set."
+      ],
+      [
+        "Median",
+        "The middle value of an ordered data set."
+      ],
+      [
+        "Mode",
+        "The most frequently occurring value in a data set."
+      ],
+      [
+        "Standard Deviation",
+        "A measure of the typical distance of data values from the mean."
+      ],
+      [
+        "Variance",
+        "The average of the squared deviations from the mean."
+      ],
+      [
+        "Interquartile Range (IQR)",
+        "The range between the first and third quartiles, measuring the spread of the middle 50% of data."
+      ],
+      [
+        "Outlier",
+        "A data point that differs significantly from other observations in a data set."
+      ],
+      [
+        "Boxplot",
+        "A graphical summary showing a data set's minimum, quartiles, and maximum."
+      ],
+      [
+        "Histogram",
+        "A graph displaying the distribution of a quantitative variable using bars of varying heights."
+      ],
+      [
+        "Skewness",
+        "A description of the asymmetry of a distribution, either left-skewed or right-skewed."
+      ],
+      [
+        "Z-Score",
+        "A standardized value indicating how many standard deviations a data point is from the mean."
+      ],
+      [
+        "Normal Distribution",
+        "A symmetric, bell-shaped distribution defined by its mean and standard deviation."
+      ],
+      [
+        "Empirical Rule (68-95-99.7)",
+        "The rule describing the percentage of data within 1, 2, and 3 standard deviations of the mean in a normal distribution."
+      ]
+    ]
+  },
+  "bivariate": {
+    "label": "Exploring Two-Variable Data",
+    "icon": "📉",
+    "terms": [
+      [
+        "Scatterplot",
+        "A graph showing the relationship between two quantitative variables."
+      ],
+      [
+        "Correlation Coefficient (r)",
+        "A number between -1 and 1 measuring the strength and direction of a linear relationship."
+      ],
+      [
+        "Coefficient of Determination (r²)",
+        "A value representing the proportion of variability in y explained by the linear relationship with x."
+      ],
+      [
+        "Least-Squares Regression Line",
+        "The line that minimizes the sum of squared residuals between observed and predicted values."
+      ],
+      [
+        "Residual",
+        "The difference between an observed value and the value predicted by a regression model."
+      ],
+      [
+        "Residual Plot",
+        "A graph of residuals used to assess whether a linear model is appropriate for the data."
+      ],
+      [
+        "Extrapolation",
+        "Using a regression model to make predictions outside the range of observed data, which can be unreliable."
+      ],
+      [
+        "Influential Point",
+        "A data point whose removal would significantly change the regression line."
+      ],
+      [
+        "Two-Way Table",
+        "A table displaying the relationship between two categorical variables."
+      ],
+      [
+        "Marginal Distribution",
+        "The distribution of a single variable within a two-way table, ignoring the other variable."
+      ],
+      [
+        "Conditional Distribution",
+        "The distribution of one variable restricted to a specific value of another variable."
+      ],
+      [
+        "Association",
+        "A relationship between two variables in which knowing one gives information about the other."
+      ]
+    ]
+  },
+  "collecting": {
+    "label": "Collecting Data",
+    "icon": "🧪",
+    "terms": [
+      [
+        "Sample",
+        "A subset of a population that is studied to draw conclusions about the whole."
+      ],
+      [
+        "Population (Statistics)",
+        "The entire group of individuals about which information is desired."
+      ],
+      [
+        "Simple Random Sample",
+        "A sample in which every possible group of a given size has an equal chance of being selected."
+      ],
+      [
+        "Stratified Random Sample",
+        "A sample obtained by dividing the population into groups and randomly sampling from each."
+      ],
+      [
+        "Cluster Sample",
+        "A sample obtained by randomly selecting whole groups, or clusters, from the population."
+      ],
+      [
+        "Convenience Sample",
+        "A non-random sample chosen because it is easy to obtain, often introducing bias."
+      ],
+      [
+        "Sampling Bias",
+        "A systematic error caused by a sample that does not represent the population."
+      ],
+      [
+        "Voluntary Response Bias",
+        "Bias that occurs when a sample consists of people who choose to participate, often overrepresenting strong opinions."
+      ],
+      [
+        "Undercoverage",
+        "A source of bias where some groups in the population are inadequately represented in the sample."
+      ],
+      [
+        "Observational Study",
+        "A study in which researchers observe subjects without imposing a treatment."
+      ],
+      [
+        "Experiment (Statistics)",
+        "A study in which researchers impose a treatment on subjects to observe the response."
+      ],
+      [
+        "Confounding Variable",
+        "An outside variable associated with both the explanatory and response variables, obscuring their true relationship."
+      ],
+      [
+        "Random Assignment",
+        "Randomly placing experimental subjects into treatment groups to reduce bias."
+      ],
+      [
+        "Control Group",
+        "A group in an experiment that does not receive the treatment, used as a baseline for comparison."
+      ],
+      [
+        "Blocking",
+        "Grouping experimental units by a shared characteristic before random assignment, to reduce variability."
+      ],
+      [
+        "Double-Blind Experiment",
+        "An experiment in which neither subjects nor researchers know who received which treatment."
+      ]
+    ]
+  },
+  "probability": {
+    "label": "Probability, Random Variables & Distributions",
+    "icon": "🎲",
+    "terms": [
+      [
+        "Probability",
+        "A number between 0 and 1 describing the likelihood that an event will occur."
+      ],
+      [
+        "Law of Large Numbers",
+        "The principle that as sample size increases, the sample proportion approaches the true population proportion."
+      ],
+      [
+        "Independent Events",
+        "Two events where the occurrence of one does not affect the probability of the other."
+      ],
+      [
+        "Mutually Exclusive Events",
+        "Two events that cannot occur at the same time."
+      ],
+      [
+        "Conditional Probability",
+        "The probability of an event occurring given that another event has already occurred."
+      ],
+      [
+        "Random Variable",
+        "A variable whose value is a numerical outcome of a random phenomenon."
+      ],
+      [
+        "Discrete Random Variable",
+        "A random variable that takes a countable number of distinct values."
+      ],
+      [
+        "Continuous Random Variable",
+        "A random variable that can take any value within a given range."
+      ],
+      [
+        "Binomial Distribution",
+        "A distribution describing the number of successes in a fixed number of independent trials with constant probability."
+      ],
+      [
+        "Geometric Distribution",
+        "A distribution describing the number of trials needed to get the first success."
+      ],
+      [
+        "Expected Value",
+        "The long-run average value of a random variable over many repetitions."
+      ]
+    ]
+  },
+  "samplingdist": {
+    "label": "Sampling Distributions",
+    "icon": "🔔",
+    "terms": [
+      [
+        "Sampling Distribution",
+        "The distribution of a statistic (like sample mean) across all possible samples of a given size."
+      ],
+      [
+        "Sampling Variability",
+        "The natural variation in a statistic's value from one sample to another."
+      ],
+      [
+        "Unbiased Estimator",
+        "A statistic whose sampling distribution is centered at the true population parameter."
+      ],
+      [
+        "Central Limit Theorem",
+        "The theorem stating that the sampling distribution of the sample mean approaches normality as sample size increases."
+      ],
+      [
+        "Standard Error",
+        "An estimate of the standard deviation of a sampling distribution."
+      ],
+      [
+        "Sample Proportion",
+        "The fraction of a sample possessing a particular characteristic, used to estimate a population proportion."
+      ]
+    ]
+  },
+  "inference": {
+    "label": "Statistical Inference",
+    "icon": "🔬",
+    "terms": [
+      [
+        "Confidence Interval",
+        "A range of plausible values for a population parameter, calculated from sample data."
+      ],
+      [
+        "Margin of Error",
+        "The maximum expected difference between a sample statistic and the true population parameter."
+      ],
+      [
+        "Confidence Level",
+        "The proportion of all possible samples that would produce an interval containing the true parameter."
+      ],
+      [
+        "Hypothesis Test",
+        "A statistical procedure for testing a claim about a population parameter using sample data."
+      ],
+      [
+        "Null Hypothesis",
+        "The statement of no effect or no difference that a hypothesis test seeks to challenge."
+      ],
+      [
+        "Alternative Hypothesis",
+        "The claim being tested for, stating there is an effect or difference."
+      ],
+      [
+        "P-Value",
+        "The probability of observing a result as extreme as the sample data, assuming the null hypothesis is true."
+      ],
+      [
+        "Significance Level (alpha)",
+        "The threshold p-value below which the null hypothesis is rejected."
+      ],
+      [
+        "Type I Error",
+        "Incorrectly rejecting a true null hypothesis (a false positive)."
+      ],
+      [
+        "Type II Error",
+        "Incorrectly failing to reject a false null hypothesis (a false negative)."
+      ],
+      [
+        "Statistical Power",
+        "The probability that a hypothesis test correctly rejects a false null hypothesis."
+      ],
+      [
+        "t-Distribution",
+        "A probability distribution used for inference about a mean when the population standard deviation is unknown."
+      ],
+      [
+        "Chi-Square Test",
+        "A hypothesis test used to assess relationships between categorical variables or goodness of fit."
+      ],
+      [
+        "Two-Sample t-Test",
+        "A test comparing the means of two independent samples."
+      ],
+      [
+        "Paired t-Test",
+        "A test comparing means of two related or matched samples."
+      ],
+      [
+        "Slope Inference (Regression)",
+        "A hypothesis test or confidence interval for the slope of a population regression line."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

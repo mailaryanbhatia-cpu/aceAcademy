@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP US History Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="apush.html">AP US History</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🗽 AP US History Concept Drill</h1>
+  <p>88 key terms across 7 eras of U.S. history. Flip flashcards or quiz yourself with multiple choice.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "colonial": {
+    "label": "Colonial Era (1491-1754)",
+    "icon": "⛵",
+    "terms": [
+      [
+        "Columbian Exchange",
+        "The widespread transfer of plants, animals, diseases, and people between the Americas and Afro-Eurasia after 1492."
+      ],
+      [
+        "Encomienda System",
+        "A Spanish labor system that granted colonists the right to demand labor or tribute from Native Americans."
+      ],
+      [
+        "Triangular Trade",
+        "The trade network linking Europe, Africa, and the Americas, including the exchange of enslaved people."
+      ],
+      [
+        "Middle Passage",
+        "The brutal transatlantic voyage that transported enslaved Africans to the Americas."
+      ],
+      [
+        "Mercantilism",
+        "An economic theory holding that colonies exist to enrich the mother country through trade and resource extraction."
+      ],
+      [
+        "Navigation Acts",
+        "English laws restricting colonial trade to benefit England, fostering resentment among colonists."
+      ],
+      [
+        "Indentured Servitude",
+        "A labor system in which individuals worked for a set period in exchange for passage to the colonies."
+      ],
+      [
+        "Headright System",
+        "A land grant system used in the Chesapeake colonies to encourage settlement and labor recruitment."
+      ],
+      [
+        "Puritanism",
+        "A religious movement seeking to purify the Church of England, influential in New England settlement."
+      ],
+      [
+        "Great Awakening",
+        "A religious revival movement in the 1730s-1740s that emphasized individual, emotional faith."
+      ],
+      [
+        "Salutary Neglect",
+        "Britain's policy of loosely enforcing trade laws in the colonies before the mid-18th century."
+      ],
+      [
+        "Bacon's Rebellion",
+        "A 1676 Virginia uprising against colonial rule that hastened the shift toward African slave labor."
+      ]
+    ]
+  },
+  "revolution": {
+    "label": "Revolution & Founding (1754-1800)",
+    "icon": "🗽",
+    "terms": [
+      [
+        "French and Indian War",
+        "The North American theater of the Seven Years' War, which left Britain deeply in debt."
+      ],
+      [
+        "Stamp Act",
+        "A 1765 British tax on printed materials in the colonies, sparking the \"no taxation without representation\" protest."
+      ],
+      [
+        "Sons of Liberty",
+        "A colonial organization that organized resistance to British taxation policies."
+      ],
+      [
+        "Boston Massacre",
+        "An 1770 confrontation in which British soldiers killed colonists, used as propaganda against British rule."
+      ],
+      [
+        "Boston Tea Party",
+        "A 1773 protest in which colonists destroyed British tea to oppose the Tea Act."
+      ],
+      [
+        "Common Sense",
+        "Thomas Paine's 1776 pamphlet arguing for American independence from Britain."
+      ],
+      [
+        "Declaration of Independence",
+        "The 1776 document proclaiming the American colonies' separation from Britain."
+      ],
+      [
+        "Articles of Confederation",
+        "The first U.S. governing document, creating a weak central government with limited powers."
+      ],
+      [
+        "Shays' Rebellion",
+        "An armed uprising by indebted farmers in 1786-87 that exposed weaknesses in the Articles of Confederation."
+      ],
+      [
+        "Constitutional Convention",
+        "The 1787 meeting in Philadelphia that produced the U.S. Constitution."
+      ],
+      [
+        "Federalists",
+        "Supporters of the Constitution who favored a strong central government."
+      ],
+      [
+        "Anti-Federalists",
+        "Opponents of the Constitution who feared a strong central government would threaten liberty."
+      ],
+      [
+        "Bill of Rights",
+        "The first ten amendments to the Constitution, guaranteeing individual liberties."
+      ],
+      [
+        "Great Compromise",
+        "The Constitutional Convention agreement creating a bicameral legislature with proportional and equal representation."
+      ]
+    ]
+  },
+  "earlyrepublic": {
+    "label": "Early Republic & Expansion (1800-1848)",
+    "icon": "🦅",
+    "terms": [
+      [
+        "Louisiana Purchase",
+        "The 1803 U.S. acquisition of French territory that doubled the nation's size."
+      ],
+      [
+        "Marbury v. Madison",
+        "The 1803 Supreme Court case that established the principle of judicial review."
+      ],
+      [
+        "War of 1812",
+        "A conflict between the U.S. and Britain that fostered a surge of American nationalism."
+      ],
+      [
+        "Monroe Doctrine",
+        "An 1823 U.S. policy declaring the Western Hemisphere off-limits to further European colonization."
+      ],
+      [
+        "Indian Removal Act",
+        "An 1830 law authorizing the forced relocation of Native American tribes from the Southeast."
+      ],
+      [
+        "Trail of Tears",
+        "The forced, deadly relocation of the Cherokee and other tribes to Indian Territory in the 1830s."
+      ],
+      [
+        "Manifest Destiny",
+        "The 19th-century belief that American expansion across the continent was justified and inevitable."
+      ],
+      [
+        "Second Great Awakening",
+        "An early 19th-century religious revival that fueled reform movements including abolition and temperance."
+      ],
+      [
+        "Market Revolution",
+        "The rapid expansion of commerce, industry, and transportation in the early 19th-century U.S."
+      ],
+      [
+        "Erie Canal",
+        "A canal completed in 1825 that linked the Great Lakes to the Atlantic, boosting western trade."
+      ],
+      [
+        "Nullification Crisis",
+        "An 1832 conflict in which South Carolina claimed the right to nullify federal tariff laws."
+      ],
+      [
+        "Jacksonian Democracy",
+        "A movement associated with Andrew Jackson emphasizing expanded suffrage for white men and executive power."
+      ]
+    ]
+  },
+  "civilwar": {
+    "label": "Sectionalism & Civil War (1844-1877)",
+    "icon": "⚔️",
+    "terms": [
+      [
+        "Missouri Compromise",
+        "An 1820 agreement that admitted Missouri as a slave state and Maine as a free state, setting a boundary for future slavery."
+      ],
+      [
+        "Compromise of 1850",
+        "A package of laws addressing slavery in territories gained from the Mexican-American War, including a stronger Fugitive Slave Act."
+      ],
+      [
+        "Kansas-Nebraska Act",
+        "An 1854 law that allowed popular sovereignty to decide slavery in new territories, provoking violent conflict."
+      ],
+      [
+        "Dred Scott v. Sandford",
+        "An 1857 Supreme Court decision ruling that enslaved people were not citizens and Congress could not ban slavery in territories."
+      ],
+      [
+        "Secession",
+        "The act of a state formally withdrawing from the Union, undertaken by Southern states in 1860-61."
+      ],
+      [
+        "Emancipation Proclamation",
+        "Lincoln's 1863 executive order declaring enslaved people in Confederate states to be free."
+      ],
+      [
+        "13th Amendment",
+        "The constitutional amendment that formally abolished slavery in the United States."
+      ],
+      [
+        "Reconstruction",
+        "The 1865-1877 period of rebuilding the South and integrating formerly enslaved people into society."
+      ],
+      [
+        "Freedmen's Bureau",
+        "A federal agency established in 1865 to assist formerly enslaved people with education, employment, and legal aid."
+      ],
+      [
+        "Black Codes",
+        "Restrictive laws passed by Southern states after the Civil War to limit the rights of freed Black Americans."
+      ],
+      [
+        "14th Amendment",
+        "The constitutional amendment granting citizenship and equal protection under the law to all persons born in the U.S."
+      ],
+      [
+        "Compromise of 1877",
+        "The informal deal that ended Reconstruction by withdrawing federal troops from the South."
+      ]
+    ]
+  },
+  "gildedprogressive": {
+    "label": "Gilded Age & Progressive Era (1865-1920)",
+    "icon": "🏭",
+    "terms": [
+      [
+        "Gilded Age",
+        "The late 19th-century period marked by rapid industrialization alongside vast economic inequality."
+      ],
+      [
+        "Robber Baron",
+        "A derogatory term for wealthy, powerful industrialists accused of exploiting workers and monopolizing industry."
+      ],
+      [
+        "Social Darwinism",
+        "The application of \"survival of the fittest\" to justify economic inequality and laissez-faire policy."
+      ],
+      [
+        "Transcontinental Railroad",
+        "The rail line completed in 1869 connecting the eastern and western United States."
+      ],
+      [
+        "Populist Party",
+        "A late 19th-century political party representing farmers and laborers against corporate power."
+      ],
+      [
+        "Progressivism",
+        "An early 20th-century reform movement addressing corruption, inequality, and social problems of industrialization."
+      ],
+      [
+        "Muckrakers",
+        "Progressive Era journalists who exposed corruption and social injustices."
+      ],
+      [
+        "Trust-Busting",
+        "The Progressive Era effort, led by Theodore Roosevelt, to break up monopolistic corporate trusts."
+      ],
+      [
+        "16th Amendment",
+        "The constitutional amendment establishing a federal income tax."
+      ],
+      [
+        "19th Amendment",
+        "The constitutional amendment granting women the right to vote."
+      ],
+      [
+        "Ellis Island",
+        "The immigration processing station in New York Harbor that processed millions of immigrants."
+      ],
+      [
+        "Jim Crow Laws",
+        "State and local laws that enforced racial segregation in the South after Reconstruction."
+      ]
+    ]
+  },
+  "worldwars": {
+    "label": "World Wars & Depression (1890-1945)",
+    "icon": "🌎",
+    "terms": [
+      [
+        "Spanish-American War",
+        "An 1898 conflict that marked the U.S. emergence as an imperial power with colonies overseas."
+      ],
+      [
+        "Woodrow Wilson's Fourteen Points",
+        "A 1918 peace plan proposing self-determination and a League of Nations after World War I."
+      ],
+      [
+        "Red Scare",
+        "A period of intense fear of communism and radicalism in the U.S., occurring after both world wars."
+      ],
+      [
+        "Great Depression",
+        "The severe worldwide economic downturn beginning in 1929 that caused mass unemployment."
+      ],
+      [
+        "New Deal",
+        "Franklin Roosevelt's set of programs to combat the Great Depression through relief, recovery, and reform."
+      ],
+      [
+        "Social Security Act",
+        "A 1935 New Deal law establishing a system of old-age, unemployment, and disability insurance."
+      ],
+      [
+        "Isolationism",
+        "A U.S. foreign policy stance favoring noninvolvement in foreign conflicts and alliances."
+      ],
+      [
+        "Pearl Harbor",
+        "The 1941 surprise Japanese attack that brought the United States into World War II."
+      ],
+      [
+        "Japanese Internment",
+        "The forced relocation and imprisonment of Japanese Americans during World War II."
+      ],
+      [
+        "Manhattan Project",
+        "The secret U.S. program that developed the first atomic bombs during World War II."
+      ],
+      [
+        "Rosie the Riveter",
+        "A cultural icon representing American women who worked in factories during World War II."
+      ],
+      [
+        "GI Bill",
+        "A 1944 law providing veterans with education benefits, loans, and support after World War II."
+      ]
+    ]
+  },
+  "coldwarmodern": {
+    "label": "Cold War & Modern America (1945-Present)",
+    "icon": "🕊️",
+    "terms": [
+      [
+        "Cold War",
+        "The prolonged geopolitical tension between the U.S. and Soviet Union following World War II."
+      ],
+      [
+        "Containment",
+        "The U.S. Cold War strategy of preventing the spread of communism worldwide."
+      ],
+      [
+        "Truman Doctrine",
+        "A 1947 policy pledging U.S. support to nations resisting communist expansion."
+      ],
+      [
+        "Marshall Plan",
+        "A U.S. program providing economic aid to rebuild Western Europe after World War II."
+      ],
+      [
+        "McCarthyism",
+        "The practice of making accusations of communist subversion, associated with Senator Joseph McCarthy."
+      ],
+      [
+        "Brown v. Board of Education",
+        "The 1954 Supreme Court decision that declared racial segregation in public schools unconstitutional."
+      ],
+      [
+        "Civil Rights Act of 1964",
+        "Landmark legislation outlawing discrimination based on race, color, religion, sex, or national origin."
+      ],
+      [
+        "Voting Rights Act of 1965",
+        "A law that prohibited racial discrimination in voting practices."
+      ],
+      [
+        "Vietnam War",
+        "A prolonged Cold War-era conflict in Southeast Asia that deeply divided American public opinion."
+      ],
+      [
+        "Great Society",
+        "Lyndon Johnson's set of domestic programs aimed at eliminating poverty and racial injustice."
+      ],
+      [
+        "Watergate Scandal",
+        "The political scandal that led to President Nixon's resignation in 1974."
+      ],
+      [
+        "Reaganomics",
+        "Ronald Reagan's economic policy emphasizing tax cuts, deregulation, and reduced government spending."
+      ],
+      [
+        "September 11 Attacks",
+        "The 2001 terrorist attacks that reshaped U.S. foreign and domestic policy."
+      ],
+      [
+        "Great Recession",
+        "The severe global economic downturn beginning in 2007-2008."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

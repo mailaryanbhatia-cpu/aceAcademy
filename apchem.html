@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Chemistry Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="apchem.html">AP Chemistry</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>⚗️ AP Chemistry Concept Drill</h1>
+  <p>109 key terms across all 9 AP Chem units. Flip flashcards or quiz yourself with multiple choice.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "atomic": {
+    "label": "Atomic Structure & Properties",
+    "icon": "⚛️",
+    "terms": [
+      [
+        "Atomic Number",
+        "The number of protons in an atom's nucleus, which defines the element."
+      ],
+      [
+        "Mass Number",
+        "The total number of protons and neutrons in an atom's nucleus."
+      ],
+      [
+        "Isotope",
+        "Atoms of the same element with the same number of protons but different numbers of neutrons."
+      ],
+      [
+        "Average Atomic Mass",
+        "The weighted average mass of an element's naturally occurring isotopes."
+      ],
+      [
+        "Electron Configuration",
+        "The arrangement of electrons in an atom's orbitals, following the aufbau principle."
+      ],
+      [
+        "Orbital",
+        "A region of space around the nucleus where there is a high probability of finding an electron."
+      ],
+      [
+        "Photoelectron Spectroscopy (PES)",
+        "A technique that measures the energy needed to remove electrons, revealing orbital energies."
+      ],
+      [
+        "Periodic Trend",
+        "A predictable pattern in element properties, such as atomic radius or electronegativity, across the periodic table."
+      ],
+      [
+        "Ionization Energy",
+        "The energy required to remove an electron from a gaseous atom or ion."
+      ],
+      [
+        "Electronegativity",
+        "A measure of an atom's ability to attract shared electrons in a chemical bond."
+      ],
+      [
+        "Atomic Radius",
+        "A measure of the size of an atom, typically decreasing across a period and increasing down a group."
+      ],
+      [
+        "Coulomb's Law",
+        "The principle describing the force of attraction or repulsion between charged particles."
+      ],
+      [
+        "Mole",
+        "A unit representing 6.022 × 10^23 particles, used to count atoms and molecules."
+      ],
+      [
+        "Molar Mass",
+        "The mass of one mole of a substance, expressed in grams per mole."
+      ],
+      [
+        "Empirical Formula",
+        "The simplest whole-number ratio of atoms of each element in a compound."
+      ],
+      [
+        "Mass Spectrometry",
+        "A technique used to determine the mass and abundance of isotopes in a sample."
+      ]
+    ]
+  },
+  "molecular": {
+    "label": "Molecular & Ionic Compound Structure",
+    "icon": "🔗",
+    "terms": [
+      [
+        "Ionic Bond",
+        "A chemical bond formed by the electrostatic attraction between oppositely charged ions."
+      ],
+      [
+        "Covalent Bond",
+        "A chemical bond formed when two atoms share one or more pairs of electrons."
+      ],
+      [
+        "Metallic Bond",
+        "A bond formed by the attraction between metal cations and a shared sea of delocalized electrons."
+      ],
+      [
+        "Lewis Structure",
+        "A diagram showing the bonding and lone pairs of electrons in a molecule."
+      ],
+      [
+        "VSEPR Theory",
+        "A model that predicts molecular geometry based on minimizing electron pair repulsion."
+      ],
+      [
+        "Molecular Geometry",
+        "The three-dimensional arrangement of atoms in a molecule."
+      ],
+      [
+        "Hybridization",
+        "The mixing of atomic orbitals to form new hybrid orbitals suited for bonding."
+      ],
+      [
+        "Resonance Structure",
+        "One of two or more valid Lewis structures for a molecule that differ only in electron placement."
+      ],
+      [
+        "Formal Charge",
+        "A calculated charge assigned to an atom in a molecule assuming equal electron sharing."
+      ],
+      [
+        "Bond Polarity",
+        "The unequal sharing of electrons in a covalent bond due to differing electronegativities."
+      ],
+      [
+        "Sigma Bond",
+        "A covalent bond formed by the direct, head-on overlap of atomic orbitals."
+      ],
+      [
+        "Pi Bond",
+        "A covalent bond formed by the sideways overlap of parallel atomic orbitals."
+      ],
+      [
+        "Network Solid",
+        "A solid held together entirely by covalent bonds throughout its structure, like diamond."
+      ],
+      [
+        "Alloy",
+        "A mixture of a metal with one or more other elements, often another metal, to enhance properties."
+      ]
+    ]
+  },
+  "imf": {
+    "label": "Intermolecular Forces & Properties",
+    "icon": "💧",
+    "terms": [
+      [
+        "Intermolecular Force",
+        "An attractive force between molecules, weaker than the covalent or ionic bonds within them."
+      ],
+      [
+        "London Dispersion Force",
+        "A weak, temporary intermolecular attraction caused by momentary shifts in electron distribution."
+      ],
+      [
+        "Dipole-Dipole Force",
+        "An attraction between the positive end of one polar molecule and the negative end of another."
+      ],
+      [
+        "Hydrogen Bonding (IMF)",
+        "A strong dipole-dipole attraction involving hydrogen bonded to N, O, or F."
+      ],
+      [
+        "Viscosity",
+        "A liquid's resistance to flow, generally increasing with stronger intermolecular forces."
+      ],
+      [
+        "Surface Tension",
+        "The elastic tendency of a liquid surface caused by cohesive intermolecular forces."
+      ],
+      [
+        "Vapor Pressure",
+        "The pressure exerted by a vapor in equilibrium with its liquid, related to intermolecular force strength."
+      ],
+      [
+        "Phase Diagram",
+        "A graph showing the physical states of a substance under varying temperature and pressure."
+      ],
+      [
+        "Solubility",
+        "The maximum amount of a solute that can dissolve in a solvent at a given temperature."
+      ],
+      [
+        "Like Dissolves Like",
+        "The principle that polar solvents dissolve polar solutes, and nonpolar solvents dissolve nonpolar solutes."
+      ],
+      [
+        "Crystalline Solid",
+        "A solid with a highly ordered, repeating microscopic structure, such as an ionic or metallic lattice."
+      ],
+      [
+        "Amorphous Solid",
+        "A solid lacking a long-range ordered structure, such as glass."
+      ],
+      [
+        "Boiling Point Trend",
+        "The pattern by which stronger intermolecular forces raise a substance's boiling point."
+      ]
+    ]
+  },
+  "reactions": {
+    "label": "Chemical Reactions",
+    "icon": "⚗️",
+    "terms": [
+      [
+        "Chemical Equation",
+        "A symbolic representation of a chemical reaction showing reactants and products."
+      ],
+      [
+        "Balancing Equations",
+        "Adjusting coefficients in a chemical equation so atoms are conserved on both sides."
+      ],
+      [
+        "Stoichiometry",
+        "The calculation of quantities of reactants and products in a chemical reaction."
+      ],
+      [
+        "Limiting Reactant",
+        "The reactant that is completely consumed first, determining the maximum amount of product formed."
+      ],
+      [
+        "Percent Yield",
+        "The ratio of actual yield to theoretical yield of a reaction, expressed as a percentage."
+      ],
+      [
+        "Synthesis Reaction",
+        "A reaction in which two or more substances combine to form a single product."
+      ],
+      [
+        "Decomposition Reaction",
+        "A reaction in which a single compound breaks down into two or more simpler substances."
+      ],
+      [
+        "Single Replacement Reaction",
+        "A reaction in which one element replaces another in a compound."
+      ],
+      [
+        "Double Replacement Reaction",
+        "A reaction in which the cations and anions of two compounds switch places."
+      ],
+      [
+        "Combustion Reaction",
+        "A reaction in which a substance reacts rapidly with oxygen, releasing heat and light."
+      ],
+      [
+        "Net Ionic Equation",
+        "An equation showing only the species that actually participate in a reaction, omitting spectator ions."
+      ],
+      [
+        "Precipitate",
+        "An insoluble solid that forms and separates from a solution during a chemical reaction."
+      ],
+      [
+        "Oxidation-Reduction (Redox) Reaction",
+        "A reaction involving the transfer of electrons between species."
+      ],
+      [
+        "Oxidation Number",
+        "A number assigned to an atom that represents its degree of oxidation in a compound."
+      ]
+    ]
+  },
+  "kinetics": {
+    "label": "Kinetics",
+    "icon": "⏱️",
+    "terms": [
+      [
+        "Reaction Rate",
+        "The change in concentration of a reactant or product per unit time."
+      ],
+      [
+        "Rate Law",
+        "An equation relating reaction rate to the concentrations of reactants raised to experimentally determined powers."
+      ],
+      [
+        "Rate Constant (k)",
+        "The proportionality constant in a rate law, which depends on temperature and activation energy."
+      ],
+      [
+        "Reaction Order",
+        "The exponent of a reactant's concentration in the rate law, describing how rate depends on that reactant."
+      ],
+      [
+        "Reaction Mechanism",
+        "A series of elementary steps that describe how a reaction proceeds at the molecular level."
+      ],
+      [
+        "Elementary Step",
+        "A single molecular event in a reaction mechanism."
+      ],
+      [
+        "Rate-Determining Step",
+        "The slowest step in a reaction mechanism, which controls the overall reaction rate."
+      ],
+      [
+        "Collision Theory",
+        "The model stating that reactions occur when particles collide with sufficient energy and proper orientation."
+      ],
+      [
+        "Activation Energy",
+        "The minimum energy required for a chemical reaction to occur."
+      ],
+      [
+        "Catalyst",
+        "A substance that increases reaction rate by lowering activation energy without being consumed."
+      ],
+      [
+        "Arrhenius Equation",
+        "An equation relating the rate constant to temperature and activation energy."
+      ],
+      [
+        "Half-Life (Kinetics)",
+        "The time required for the concentration of a reactant to decrease by half, used to describe first-order reactions."
+      ]
+    ]
+  },
+  "thermo": {
+    "label": "Thermodynamics",
+    "icon": "🔥",
+    "terms": [
+      [
+        "Enthalpy (H)",
+        "A measure of the total heat content of a system at constant pressure."
+      ],
+      [
+        "Exothermic Reaction",
+        "A reaction that releases energy to the surroundings, resulting in negative enthalpy change."
+      ],
+      [
+        "Endothermic Reaction",
+        "A reaction that absorbs energy from the surroundings, resulting in positive enthalpy change."
+      ],
+      [
+        "Hess's Law",
+        "The principle that the total enthalpy change of a reaction is the same regardless of the number of steps."
+      ],
+      [
+        "Bond Enthalpy",
+        "The energy required to break a specific chemical bond."
+      ],
+      [
+        "Entropy (S)",
+        "A measure of the disorder or randomness of a system."
+      ],
+      [
+        "Second Law of Thermodynamics",
+        "The principle that the entropy of the universe increases for any spontaneous process."
+      ],
+      [
+        "Gibbs Free Energy (G)",
+        "A thermodynamic quantity that predicts whether a process will occur spontaneously."
+      ],
+      [
+        "Spontaneous Process",
+        "A process that occurs without continuous outside intervention, associated with negative Gibbs free energy."
+      ],
+      [
+        "Calorimetry",
+        "The technique of measuring the heat released or absorbed during a chemical or physical process."
+      ],
+      [
+        "Specific Heat Capacity",
+        "The amount of heat required to raise the temperature of one gram of a substance by one degree Celsius."
+      ],
+      [
+        "Standard Enthalpy of Formation",
+        "The enthalpy change when one mole of a compound forms from its elements in their standard states."
+      ]
+    ]
+  },
+  "equilibrium": {
+    "label": "Equilibrium",
+    "icon": "⚖️",
+    "terms": [
+      [
+        "Chemical Equilibrium",
+        "The state of a reversible reaction in which the forward and reverse rates are equal."
+      ],
+      [
+        "Equilibrium Constant (K)",
+        "A value expressing the ratio of product to reactant concentrations at equilibrium."
+      ],
+      [
+        "Reaction Quotient (Q)",
+        "A value calculated like K but using current, non-equilibrium concentrations, used to predict reaction direction."
+      ],
+      [
+        "Le Chatelier's Principle",
+        "The principle that a system at equilibrium shifts to counteract any imposed change."
+      ],
+      [
+        "Common Ion Effect",
+        "The suppression of solubility or ionization caused by adding an ion already present in the equilibrium."
+      ],
+      [
+        "Solubility Product Constant (Ksp)",
+        "The equilibrium constant for the dissolution of a slightly soluble ionic compound."
+      ],
+      [
+        "Heterogeneous Equilibrium",
+        "An equilibrium involving reactants and products in different physical states."
+      ]
+    ]
+  },
+  "acidsbases": {
+    "label": "Acids & Bases",
+    "icon": "🧫",
+    "terms": [
+      [
+        "Brønsted-Lowry Acid",
+        "A substance that donates a proton (H+) in a chemical reaction."
+      ],
+      [
+        "Brønsted-Lowry Base",
+        "A substance that accepts a proton (H+) in a chemical reaction."
+      ],
+      [
+        "Conjugate Acid-Base Pair",
+        "Two species that differ by the presence or absence of a single proton."
+      ],
+      [
+        "Strong Acid",
+        "An acid that fully dissociates into ions in aqueous solution."
+      ],
+      [
+        "Weak Acid",
+        "An acid that only partially dissociates into ions in aqueous solution, establishing an equilibrium."
+      ],
+      [
+        "Acid Dissociation Constant (Ka)",
+        "The equilibrium constant describing the extent of ionization of a weak acid."
+      ],
+      [
+        "pH / pOH",
+        "Logarithmic scales measuring hydrogen ion and hydroxide ion concentration, respectively."
+      ],
+      [
+        "Titration",
+        "A technique used to determine the concentration of an acid or base using a solution of known concentration."
+      ],
+      [
+        "Equivalence Point",
+        "The point in a titration where moles of acid equal moles of base."
+      ],
+      [
+        "Buffer Solution",
+        "A solution that resists changes in pH upon addition of small amounts of acid or base."
+      ],
+      [
+        "Henderson-Hasselbalch Equation",
+        "An equation used to calculate the pH of a buffer solution."
+      ],
+      [
+        "Indicator (Acid-Base)",
+        "A substance that changes color depending on the pH of the solution it is in."
+      ]
+    ]
+  },
+  "electrochem": {
+    "label": "Applications: Thermo & Electrochemistry",
+    "icon": "🔋",
+    "terms": [
+      [
+        "Electrochemical Cell",
+        "A device that converts chemical energy into electrical energy, or vice versa, through redox reactions."
+      ],
+      [
+        "Galvanic (Voltaic) Cell",
+        "An electrochemical cell that generates electricity from a spontaneous redox reaction."
+      ],
+      [
+        "Electrolytic Cell",
+        "An electrochemical cell that uses electrical energy to drive a nonspontaneous redox reaction."
+      ],
+      [
+        "Anode",
+        "The electrode in an electrochemical cell where oxidation occurs."
+      ],
+      [
+        "Cathode",
+        "The electrode in an electrochemical cell where reduction occurs."
+      ],
+      [
+        "Standard Cell Potential (E°cell)",
+        "The voltage generated by a galvanic cell under standard conditions."
+      ],
+      [
+        "Salt Bridge",
+        "A component that maintains charge balance between half-cells in a galvanic cell."
+      ],
+      [
+        "Faraday's Law of Electrolysis",
+        "A law relating the amount of substance produced at an electrode to the quantity of electric charge passed."
+      ],
+      [
+        "Nernst Equation",
+        "An equation that relates cell potential to the concentrations of reactants and products."
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>
