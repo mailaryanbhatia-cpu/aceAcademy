@@ -211,6 +211,12 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 <!-- GRADE BAR -->
 <div class="grade-bar" id="gradeBar">
   <span style="font-size:.85rem;font-weight:600;color:var(--muted);align-self:center">Grade:</span>
+  <button class="grade-btn" data-grade="k" onclick="selectGrade('k',this)">K</button>
+  <button class="grade-btn" data-grade="1" onclick="selectGrade(1,this)">1st</button>
+  <button class="grade-btn" data-grade="2" onclick="selectGrade(2,this)">2nd</button>
+  <button class="grade-btn" data-grade="3" onclick="selectGrade(3,this)">3rd</button>
+  <button class="grade-btn" data-grade="4" onclick="selectGrade(4,this)">4th</button>
+  <button class="grade-btn" data-grade="5" onclick="selectGrade(5,this)">5th</button>
   <button class="grade-btn active" data-grade="6" onclick="selectGrade(6,this)">6th</button>
   <button class="grade-btn" data-grade="7" onclick="selectGrade(7,this)">7th</button>
   <button class="grade-btn" data-grade="8" onclick="selectGrade(8,this)">8th</button>
@@ -314,7 +320,7 @@ function openWorksheet(grade, subj, unitIdx, topicIdx){
   const sheet = WORKSHEETS[grade]?.[subj]?.[unitIdx]?.[topicIdx];
   if(!sheet){ clearWorksheet(); return; }
 
-  const gradeLabel = `Grade ${grade}`;
+  const gradeLabel = grade === 'k' ? 'Kindergarten' : `Grade ${grade}`;
   const subjMeta = ((grade === 'ap') ? AP_SUBJECTS : SUBJECTS)[subj] || {label: subj, icon: '📚'};
   const unitLabel = `Unit ${unitIdx+1}`;
   const problems = sheet.problems || [];
