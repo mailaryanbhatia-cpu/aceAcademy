@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phonics & Sight Words Practice — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="phonics.html">Phonics & Sight Words</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🔤 Phonics & Sight Words Practice</h1>
+  <p>142 words across 8 units — short & long vowels, blends, digraphs, and grade-leveled sight words. Flip flashcards or quiz yourself.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "short_vowels": {
+    "label": "Short Vowel Sounds",
+    "icon": "🔤",
+    "terms": [
+      [
+        "cat",
+        "Short A sound, as in the word 'cat' — the vowel makes a quick 'a' sound like in 'apple'."
+      ],
+      [
+        "bed",
+        "Short E sound, as in the word 'bed' — the vowel makes a quick 'e' sound like in 'egg'."
+      ],
+      [
+        "pig",
+        "Short I sound, as in the word 'pig' — the vowel makes a quick 'i' sound like in 'igloo'."
+      ],
+      [
+        "hop",
+        "Short O sound, as in the word 'hop' — the vowel makes a quick 'o' sound like in 'octopus'."
+      ],
+      [
+        "sun",
+        "Short U sound, as in the word 'sun' — the vowel makes a quick 'u' sound like in 'umbrella'."
+      ],
+      [
+        "map",
+        "Short A sound — a flat picture used to find places, rhymes with 'cap' and 'tap'."
+      ],
+      [
+        "hen",
+        "Short E sound — a female chicken, rhymes with 'pen' and 'ten'."
+      ],
+      [
+        "sit",
+        "Short I sound — to rest on a chair, rhymes with 'hit' and 'bit'."
+      ],
+      [
+        "dog",
+        "Short O sound — a furry pet that barks, rhymes with 'log' and 'fog'."
+      ],
+      [
+        "cup",
+        "Short U sound — something you drink from, rhymes with 'pup' and 'up'."
+      ],
+      [
+        "bat",
+        "Short A sound — a flying animal, or something used to hit a ball."
+      ],
+      [
+        "net",
+        "Short E sound — used to catch fish or butterflies."
+      ],
+      [
+        "fin",
+        "Short I sound — the part a fish uses to swim."
+      ],
+      [
+        "pot",
+        "Short O sound — a container used for cooking."
+      ],
+      [
+        "bug",
+        "Short U sound — a small insect."
+      ],
+      [
+        "ram",
+        "Short A sound — a male sheep with curved horns."
+      ],
+      [
+        "leg",
+        "Short E sound — the body part used for walking."
+      ],
+      [
+        "lid",
+        "Short I sound — the top that covers a container."
+      ],
+      [
+        "fox",
+        "Short O sound — a clever animal with a bushy tail."
+      ],
+      [
+        "bus",
+        "Short U sound — a large vehicle that carries many people."
+      ]
+    ]
+  },
+  "long_vowels": {
+    "label": "Long Vowel Sounds",
+    "icon": "🔡",
+    "terms": [
+      [
+        "cake",
+        "Long A sound (silent e) — the final 'e' makes the 'a' say its name, as in 'bake' and 'lake'."
+      ],
+      [
+        "bike",
+        "Long I sound (silent e) — the final 'e' makes the 'i' say its name, as in 'like' and 'hike'."
+      ],
+      [
+        "rope",
+        "Long O sound (silent e) — the final 'e' makes the 'o' say its name, as in 'hope' and 'nope'."
+      ],
+      [
+        "cube",
+        "Long U sound (silent e) — the final 'e' makes the 'u' say its name, as in 'tube' and 'cute'."
+      ],
+      [
+        "rain",
+        "Long A sound (vowel team 'ai') — two vowels together, the first says its name."
+      ],
+      [
+        "boat",
+        "Long O sound (vowel team 'oa') — two vowels together, the first says its name."
+      ],
+      [
+        "tree",
+        "Long E sound (vowel team 'ee') — two vowels together making one long E sound."
+      ],
+      [
+        "pie",
+        "Long I sound (vowel team 'ie') — two vowels together making one long I sound."
+      ],
+      [
+        "blue",
+        "Long U sound (vowel team 'ue') — two vowels together making one long U sound."
+      ],
+      [
+        "snake",
+        "Long A sound (silent e) — a legless reptile that slithers."
+      ],
+      [
+        "time",
+        "Long I sound (silent e) — what a clock shows."
+      ],
+      [
+        "home",
+        "Long O sound (silent e) — the place where you live."
+      ],
+      [
+        "flute",
+        "Long U sound (silent e) — a musical instrument you blow into."
+      ],
+      [
+        "play",
+        "Long A sound (vowel team 'ay') — to have fun with toys or games."
+      ],
+      [
+        "read",
+        "Long E sound (vowel team 'ea') — to look at and understand words."
+      ],
+      [
+        "light",
+        "Long I sound (silent gh) — brightness, or something that is not heavy."
+      ],
+      [
+        "goat",
+        "Long O sound (vowel team 'oa') — a farm animal with horns."
+      ],
+      [
+        "seat",
+        "Long E sound (vowel team 'ea') — a place to sit."
+      ]
+    ]
+  },
+  "blends": {
+    "label": "Consonant Blends",
+    "icon": "🧩",
+    "terms": [
+      [
+        "black",
+        "Blend 'bl' — two consonants blended together, each sound is still heard."
+      ],
+      [
+        "clap",
+        "Blend 'cl' — to hit your hands together, making a sound."
+      ],
+      [
+        "flag",
+        "Blend 'fl' — a piece of cloth with a symbol representing a country."
+      ],
+      [
+        "glad",
+        "Blend 'gl' — feeling happy."
+      ],
+      [
+        "plan",
+        "Blend 'pl' — an idea for how to do something."
+      ],
+      [
+        "slide",
+        "Blend 'sl' — a playground equipment you slide down."
+      ],
+      [
+        "brush",
+        "Blend 'br' — a tool used to clean hair or teeth."
+      ],
+      [
+        "crab",
+        "Blend 'cr' — a sea animal with claws that walks sideways."
+      ],
+      [
+        "drum",
+        "Blend 'dr' — a musical instrument you hit to make sound."
+      ],
+      [
+        "frog",
+        "Blend 'fr' — an amphibian that jumps and says 'ribbit'."
+      ],
+      [
+        "grass",
+        "Blend 'gr' — the green plants that cover a lawn."
+      ],
+      [
+        "truck",
+        "Blend 'tr' — a large vehicle used to carry things."
+      ],
+      [
+        "scarf",
+        "Blend 'sc' — a piece of clothing worn around the neck."
+      ],
+      [
+        "skip",
+        "Blend 'sk' — to move by hopping on alternating feet."
+      ],
+      [
+        "smile",
+        "Blend 'sm' — an expression showing happiness."
+      ],
+      [
+        "snail",
+        "Blend 'sn' — a small creature with a shell that moves slowly."
+      ],
+      [
+        "spin",
+        "Blend 'sp' — to turn around quickly in a circle."
+      ],
+      [
+        "star",
+        "Blend 'st' — a bright object seen in the night sky."
+      ],
+      [
+        "swim",
+        "Blend 'sw' — to move through water using your arms and legs."
+      ],
+      [
+        "twin",
+        "Blend 'tw' — one of two children born at the same time to the same parents."
+      ]
+    ]
+  },
+  "digraphs": {
+    "label": "Consonant Digraphs",
+    "icon": "🔠",
+    "terms": [
+      [
+        "ship",
+        "Digraph 'sh' — two letters that make one new sound, as in a boat that sails."
+      ],
+      [
+        "chip",
+        "Digraph 'ch' — two letters that make one new sound, as in a small piece of food."
+      ],
+      [
+        "thin",
+        "Digraph 'th' — two letters that make one new sound, meaning not thick."
+      ],
+      [
+        "when",
+        "Digraph 'wh' — two letters that make one new sound, used to ask about time."
+      ],
+      [
+        "phone",
+        "Digraph 'ph' — two letters that make an 'f' sound, as in a telephone."
+      ],
+      [
+        "fish",
+        "Digraph 'sh' — an animal that swims in water."
+      ],
+      [
+        "chair",
+        "Digraph 'ch' — a piece of furniture you sit on."
+      ],
+      [
+        "bath",
+        "Digraph 'th' — washing yourself in a tub of water."
+      ],
+      [
+        "whale",
+        "Digraph 'wh' — a huge animal that lives in the ocean."
+      ],
+      [
+        "graph",
+        "Digraph 'ph' — a chart that shows information visually."
+      ],
+      [
+        "shell",
+        "Digraph 'sh' — the hard covering of some sea animals."
+      ],
+      [
+        "much",
+        "Digraph 'ch' — a large amount of something."
+      ],
+      [
+        "with",
+        "Digraph 'th' — a word showing you are together with someone."
+      ],
+      [
+        "wheel",
+        "Digraph 'wh' — a round object that turns and helps things move."
+      ],
+      [
+        "shop",
+        "Digraph 'sh' — a store where you buy things."
+      ],
+      [
+        "chick",
+        "Digraph 'ch' — a baby chicken."
+      ],
+      [
+        "moth",
+        "Digraph 'th' — a flying insect similar to a butterfly, active at night."
+      ]
+    ]
+  },
+  "sight_words_k": {
+    "label": "Sight Words — Kindergarten",
+    "icon": "⭐",
+    "terms": [
+      [
+        "the",
+        "A common sight word used before a noun: 'The dog ran.'"
+      ],
+      [
+        "a",
+        "A common sight word meaning one: 'I see a cat.'"
+      ],
+      [
+        "I",
+        "A common sight word used to talk about yourself: 'I am happy.'"
+      ],
+      [
+        "see",
+        "A common sight word meaning to look: 'I see a bird.'"
+      ],
+      [
+        "go",
+        "A common sight word meaning to move: 'Let's go outside.'"
+      ],
+      [
+        "is",
+        "A common sight word showing something exists now: 'She is nice.'"
+      ],
+      [
+        "it",
+        "A common sight word used for a thing: 'It is fun.'"
+      ],
+      [
+        "to",
+        "A common sight word showing direction: 'I went to school.'"
+      ],
+      [
+        "and",
+        "A common sight word joining two things: 'Cats and dogs.'"
+      ],
+      [
+        "my",
+        "A common sight word showing ownership: 'This is my book.'"
+      ],
+      [
+        "you",
+        "A common sight word for the person being spoken to: 'You are kind.'"
+      ],
+      [
+        "like",
+        "A common sight word showing preference: 'I like ice cream.'"
+      ],
+      [
+        "can",
+        "A common sight word showing ability: 'I can run fast.'"
+      ],
+      [
+        "we",
+        "A common sight word for a group including yourself: 'We play together.'"
+      ],
+      [
+        "up",
+        "A common sight word showing direction: 'Look up at the sky.'"
+      ],
+      [
+        "big",
+        "A common sight word describing size: 'The elephant is big.'"
+      ],
+      [
+        "red",
+        "A common sight word for a color: 'The apple is red.'"
+      ],
+      [
+        "run",
+        "A common sight word for a fast movement: 'I run to the park.'"
+      ]
+    ]
+  },
+  "sight_words_1": {
+    "label": "Sight Words — Grade 1",
+    "icon": "🌟",
+    "terms": [
+      [
+        "was",
+        "A common sight word showing past tense of 'is': 'It was sunny yesterday.'"
+      ],
+      [
+        "they",
+        "A common sight word for a group of people: 'They went home.'"
+      ],
+      [
+        "have",
+        "A common sight word showing possession: 'I have a pet dog.'"
+      ],
+      [
+        "said",
+        "A common sight word showing past tense of 'say': 'She said hello.'"
+      ],
+      [
+        "what",
+        "A common sight word used to ask a question: 'What is your name?'"
+      ],
+      [
+        "were",
+        "A common sight word showing past tense of 'are': 'They were happy.'"
+      ],
+      [
+        "there",
+        "A common sight word showing a place: 'The ball is over there.'"
+      ],
+      [
+        "about",
+        "A common sight word meaning concerning: 'Tell me about your day.'"
+      ],
+      [
+        "out",
+        "A common sight word showing direction away: 'Go out and play.'"
+      ],
+      [
+        "many",
+        "A common sight word meaning a large number: 'There are many stars.'"
+      ],
+      [
+        "then",
+        "A common sight word showing sequence: 'First we eat, then we play.'"
+      ],
+      [
+        "them",
+        "A common sight word referring to a group: 'I saw them at the park.'"
+      ],
+      [
+        "these",
+        "A common sight word pointing to nearby things: 'These are my toys.'"
+      ],
+      [
+        "so",
+        "A common sight word showing result: 'I was tired, so I slept.'"
+      ],
+      [
+        "some",
+        "A common sight word meaning a small amount: 'I want some water.'"
+      ],
+      [
+        "her",
+        "A common sight word referring to a female: 'This is her house.'"
+      ],
+      [
+        "would",
+        "A common sight word showing a possibility: 'I would like to go.'"
+      ],
+      [
+        "make",
+        "A common sight word meaning to create: 'Let's make a cake.'"
+      ]
+    ]
+  },
+  "sight_words_2": {
+    "label": "Sight Words — Grade 2",
+    "icon": "🌠",
+    "terms": [
+      [
+        "because",
+        "A common sight word explaining a reason: 'I stayed home because I was sick.'"
+      ],
+      [
+        "different",
+        "A common sight word meaning not the same: 'These shoes are different colors.'"
+      ],
+      [
+        "together",
+        "A common sight word meaning as a group: 'We worked together on the project.'"
+      ],
+      [
+        "another",
+        "A common sight word meaning one more: 'Can I have another cookie?'"
+      ],
+      [
+        "through",
+        "A common sight word showing movement inside and out: 'We walked through the tunnel.'"
+      ],
+      [
+        "before",
+        "A common sight word showing something earlier in time: 'Wash your hands before eating.'"
+      ],
+      [
+        "always",
+        "A common sight word meaning every time: 'She always smiles.'"
+      ],
+      [
+        "never",
+        "A common sight word meaning not ever: 'He never gives up.'"
+      ],
+      [
+        "until",
+        "A common sight word showing a time limit: 'Wait until the light turns green.'"
+      ],
+      [
+        "around",
+        "A common sight word showing surrounding motion: 'We walked around the block.'"
+      ],
+      [
+        "found",
+        "A common sight word showing past tense of 'find': 'I found my keys.'"
+      ],
+      [
+        "today",
+        "A common sight word meaning this current day: 'Today is a sunny day.'"
+      ],
+      [
+        "upon",
+        "A common sight word meaning on top of: 'Once upon a time.'"
+      ],
+      [
+        "should",
+        "A common sight word showing recommendation: 'You should study for the test.'"
+      ],
+      [
+        "little",
+        "A common sight word meaning small: 'The little puppy was cute.'"
+      ],
+      [
+        "watch",
+        "A common sight word meaning to look carefully: 'Watch the movie with me.'"
+      ]
+    ]
+  },
+  "sight_words_3": {
+    "label": "Sight Words — Grade 3",
+    "icon": "💫",
+    "terms": [
+      [
+        "although",
+        "A common sight word showing contrast: 'Although it rained, we still played outside.'"
+      ],
+      [
+        "particular",
+        "A common sight word meaning specific: 'I have no particular preference.'"
+      ],
+      [
+        "experience",
+        "A common sight word meaning something you have lived through: 'That was a fun experience.'"
+      ],
+      [
+        "important",
+        "A common sight word meaning significant: 'It is important to be kind.'"
+      ],
+      [
+        "probably",
+        "A common sight word showing likelihood: 'It will probably rain today.'"
+      ],
+      [
+        "several",
+        "A common sight word meaning more than two: 'There are several books on the shelf.'"
+      ],
+      [
+        "therefore",
+        "A common sight word showing a conclusion: 'It was late, therefore we went home.'"
+      ],
+      [
+        "although",
+        "A common sight word showing contrast: 'Although tired, she finished her homework.'"
+      ],
+      [
+        "beautiful",
+        "A common sight word describing something lovely: 'The sunset was beautiful.'"
+      ],
+      [
+        "surprise",
+        "A common sight word meaning an unexpected event: 'The party was a surprise.'"
+      ],
+      [
+        "different",
+        "A common sight word meaning not alike: 'Every snowflake is different.'"
+      ],
+      [
+        "complete",
+        "A common sight word meaning finished: 'Please complete your homework.'"
+      ],
+      [
+        "decided",
+        "A common sight word showing past tense of 'decide': 'She decided to stay home.'"
+      ],
+      [
+        "continue",
+        "A common sight word meaning to keep going: 'Let's continue reading the story.'"
+      ],
+      [
+        "remember",
+        "A common sight word meaning to recall: 'I remember my first day of school.'"
+      ]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

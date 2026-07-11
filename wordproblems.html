@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Math Word Problem Generator (K-8) — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:820px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:520px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat-box{background:#111827;border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.stat-box .val{font-size:1.3rem;font-weight:800;color:var(--accent2)}
+.stat-box .lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.controls-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;color:#fff;background:#111827;outline:none;min-width:150px}
+select:focus{border-color:var(--accent)}
+.score-bar{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#111827;border:1px solid var(--border);border-radius:10px;margin-bottom:14px;font-size:.85rem;flex-wrap:wrap}
+.s-correct{font-weight:800;color:var(--green)}
+.s-wrong{font-weight:800;color:var(--red)}
+.q-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;transition:.2s}
+.q-card.correct-card{border-color:var(--green);background:rgba(52,211,153,.07)}
+.q-card.wrong-card{border-color:var(--red);background:rgba(248,113,113,.07)}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.q-tag{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:20px;background:rgba(99,102,241,.2);color:var(--accent2)}
+.q-text{font-size:.98rem;font-weight:600;line-height:1.6;margin-bottom:12px}
+.answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.answer-row input{width:130px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;text-align:center;font-weight:700;background:#0d1628;color:#fff;outline:none}
+.answer-row input:focus{border-color:var(--accent)}
+.check-btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:.88rem;background:var(--accent);color:#fff}
+.hint-btn{padding:9px 14px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-weight:600;font-size:.82rem}
+.hint-box{margin-top:10px;padding:10px 14px;border-radius:9px;background:rgba(251,191,36,.1);border-left:3px solid var(--amber);color:#fde68a;font-size:.85rem;display:none;line-height:1.5}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:9px;font-size:.85rem;font-weight:600;display:none;line-height:1.5}
+.feedback.ok{background:rgba(52,211,153,.12);border-left:3px solid var(--green);color:#6ee7b7;display:block}
+.feedback.err{background:rgba(248,113,113,.1);border-left:3px solid var(--red);color:#fca5a5;display:block}
+.result-big{font-size:2.6rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="wordproblems.html">Math Word Problems</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🧮 Math Word Problem Generator</h1>
+  <p>Grade-leveled word problems from Kindergarten through 8th grade — with step-by-step hints when you're stuck.</p>
+</div>
+
+<div class="container">
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="val" id="st-sessions">0</div><div class="lbl">Sessions</div></div>
+    <div class="stat-box"><div class="val" id="st-solved">0</div><div class="lbl">Problems Solved</div></div>
+    <div class="stat-box"><div class="val" id="st-acc">—</div><div class="lbl">Accuracy</div></div>
+    <div class="stat-box"><div class="val" id="st-streak">0</div><div class="lbl">Best Streak</div></div>
+  </div>
+
+  <div class="card">
+    <div class="controls-row">
+      <div class="field"><label>Grade Band</label>
+        <select id="g-grade">
+          <option value="k2">K-2 (Addition & Subtraction)</option>
+          <option value="g34" selected>Grades 3-4 (Multiply & Divide)</option>
+          <option value="g56">Grades 5-6 (Fractions, Decimals, %)</option>
+          <option value="g78">Grades 7-8 (Ratios & Pre-Algebra)</option>
+        </select>
+      </div>
+      <div class="field"><label>Problems</label>
+        <select id="g-count">
+          <option value="5">5</option>
+          <option value="8" selected>8</option>
+          <option value="12">12</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="generate()">⚡ Generate Problems</button>
+    </div>
+  </div>
+
+  <div id="scoreBar" class="score-bar" style="display:none">
+    <span>Q: <b id="s-answered">0</b>/<b id="s-total">0</b></span>
+    <span class="s-correct">✓ <span id="s-correct">0</span></span>
+    <span class="s-wrong">✗ <span id="s-wrong">0</span></span>
+    <span style="margin-left:auto"><button class="btn btn-outline" onclick="generate()" style="padding:5px 14px;font-size:.8rem">New Set</button></span>
+  </div>
+
+  <div id="problemsArea"></div>
+
+  <div class="card" id="summaryCard" style="display:none">
+    <h2>📊 Session Results</h2>
+    <div class="result-big" id="sum-score"></div>
+    <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="sum-msg"></div>
+    <div style="text-align:center"><button class="btn btn-primary" onclick="generate()">Try Another Set</button></div>
+  </div>
+
+</div>
+
+<script>
+const LS_STATS='ace_wp_stats';
+const NAMES = ['Maya','Liam','Zoe','Noah','Ava','Ethan','Priya','Diego','Chloe','Omar','Lucy','Ken'];
+const ITEMS = ['apples','stickers','marbles','pencils','books','cookies','baseball cards','crayons','balloons','toy cars'];
+function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+const GENERATORS = {
+  k2: [
+    () => { const name=choice(NAMES), item=choice(ITEMS), a=rnd(3,12), b=rnd(1,8);
+      return { q:`${name} has ${a} ${item}. ${name} gets ${b} more ${item}. How many ${item} does ${name} have now?`, a:a+b,
+        hint:`Add the two amounts together: ${a} + ${b}.` }; },
+    () => { const name=choice(NAMES), item=choice(ITEMS), a=rnd(8,20), b=rnd(1,a-1);
+      return { q:`${name} has ${a} ${item}. ${name} gives away ${b} ${item}. How many ${item} does ${name} have left?`, a:a-b,
+        hint:`Subtract: ${a} − ${b}.` }; },
+    () => { const n1=choice(NAMES), n2=choice(NAMES.filter(n=>n!==n1)), item=choice(ITEMS), a=rnd(2,10), b=rnd(2,10);
+      return { q:`${n1} has ${a} ${item}. ${n2} has ${b} ${item}. How many ${item} do they have altogether?`, a:a+b,
+        hint:`Add ${a} and ${b} together.` }; },
+  ],
+  g34: [
+    () => { const name=choice(NAMES), item=choice(ITEMS), rows=rnd(2,9), cols=rnd(2,9);
+      return { q:`${name} arranges ${item} into ${rows} rows with ${cols} ${item} in each row. How many ${item} are there in total?`, a:rows*cols,
+        hint:`Multiply the number of rows by the number in each row: ${rows} × ${cols}.` }; },
+    () => { const name=choice(NAMES), item=choice(ITEMS), groups=rnd(2,9), total=groups*rnd(2,12);
+      return { q:`${name} has ${total} ${item} to share equally among ${groups} friends. How many ${item} does each friend get?`, a:total/groups,
+        hint:`Divide the total by the number of friends: ${total} ÷ ${groups}.` }; },
+    () => { const name=choice(NAMES), item=choice(ITEMS), a=rnd(15,60), b=rnd(3,9);
+      return { q:`${name} buys ${b} bags of ${item}, with ${a} ${item} in each bag. How many ${item} does ${name} have in total?`, a:a*b,
+        hint:`Multiply: ${a} × ${b}.` }; },
+    () => { const name=choice(NAMES), item=choice(ITEMS), a=rnd(20,90), b=rnd(2,8);
+      return { q:`${name} has ${a} ${item} and wants to put an equal number into ${b} boxes, with none left over. If it works out evenly, how many go in each box? (Round down if needed and check.)`, a:Math.floor(a/b),
+        hint:`Divide ${a} by ${b} and round down to the nearest whole number.` }; },
+  ],
+  g56: [
+    () => { const name=choice(NAMES), d=rnd(2,8), n=rnd(1,d-1), total=rnd(2,6)*d;
+      return { q:`${name} read ${n}/${d} of a ${total}-page book. How many pages did ${name} read?`, a:(n*total)/d,
+        hint:`Multiply the fraction by the total: (${n}/${d}) × ${total}.` }; },
+    () => { const name=choice(NAMES), price=(rnd(200,2000)/100).toFixed(2), qty=rnd(2,9);
+      const total=(price*qty).toFixed(2);
+      return { q:`${name} buys ${qty} notebooks that cost $${price} each. How much does ${name} spend in total? (in dollars)`, a:parseFloat(total),
+        hint:`Multiply the price by the quantity: $${price} × ${qty}.` }; },
+    () => { const name=choice(NAMES), pct=choice([10,20,25,50,75]), total=rnd(2,20)*4;
+      return { q:`${name} has ${total} stickers and gives away ${pct}% of them. How many stickers did ${name} give away?`, a:(pct/100)*total,
+        hint:`Convert the percent to a decimal and multiply: ${pct/100} × ${total}.` }; },
+    () => { const l=rnd(4,20), w=rnd(3,15);
+      return { q:`A rectangular garden is ${l} meters long and ${w} meters wide. What is its area in square meters?`, a:l*w,
+        hint:`Area of a rectangle = length × width = ${l} × ${w}.` }; },
+    () => { const l=rnd(4,20), w=rnd(3,15);
+      return { q:`A rectangular garden is ${l} meters long and ${w} meters wide. What is its perimeter in meters?`, a:2*(l+w),
+        hint:`Perimeter of a rectangle = 2 × (length + width) = 2 × (${l} + ${w}).` }; },
+  ],
+  g78: [
+    () => { const name=choice(NAMES), a=rnd(2,12), b=rnd(2,12), scale=rnd(2,6);
+      return { q:`A recipe uses ${a} cups of flour for every ${b} cups of sugar. If ${name} uses ${a*scale} cups of flour, how many cups of sugar are needed (keeping the ratio the same)?`, a:b*scale,
+        hint:`Set up a proportion: ${a}/${b} = ${a*scale}/x, then solve for x.` }; },
+    () => { const price=rnd(20,200), pct=choice([10,15,20,25,30]);
+      const discount=(price*pct/100);
+      return { q:`A jacket costs $${price}. It is on sale for ${pct}% off. What is the sale price in dollars?`, a:price-discount,
+        hint:`Find ${pct}% of $${price}, then subtract that from $${price}.` }; },
+    () => { const a=rnd(2,10), b=rnd(-20,20), x=rnd(-10,10), c=a*x+b;
+      return { q:`Solve for x: ${a}x + ${b} = ${c}`, a:x,
+        hint:`Subtract ${b} from both sides, then divide by ${a}.` }; },
+    () => { const speed=rnd(20,80), time=rnd(2,8);
+      return { q:`A car travels at a constant speed of ${speed} miles per hour for ${time} hours. How far does it travel, in miles?`, a:speed*time,
+        hint:`Distance = speed × time = ${speed} × ${time}.` }; },
+    () => { const total=rnd(40,200), part=rnd(5,total-5);
+      const pct = Math.round((part/total)*1000)/10;
+      return { q:`Out of ${total} students surveyed, ${part} said they prefer science class. What percent of students prefer science? (round to 1 decimal place)`, a:pct,
+        hint:`Divide the part by the total and multiply by 100: (${part}/${total}) × 100.` }; },
+  ],
+};
+
+let session=[], answered={}, streak=0, bestStreak=0;
+
+function generate(){
+  const grade = document.getElementById('g-grade').value;
+  const count = parseInt(document.getElementById('g-count').value);
+  answered={}; streak=0; bestStreak=0;
+  session = [];
+  const gens = GENERATORS[grade];
+  for(let i=0;i<count;i++){
+    const gen = choice(gens);
+    session.push({...gen(), id:i});
+  }
+  document.getElementById('summaryCard').style.display='none';
+  document.getElementById('scoreBar').style.display='flex';
+  document.getElementById('s-total').textContent = session.length;
+  renderProblems();
+  updateScore();
+  document.getElementById('problemsArea').scrollIntoView({behavior:'smooth'});
+}
+
+function renderProblems(){
+  document.getElementById('problemsArea').innerHTML = session.map((p,i) => `
+    <div class="q-card" id="qcard${i}">
+      <div class="q-header"><span class="q-tag">Problem ${i+1}</span></div>
+      <div class="q-text">${p.q}</div>
+      <div class="answer-row">
+        <input type="text" id="ans${i}" placeholder="Your answer" onkeydown="if(event.key==='Enter')checkAnswer(${i})">
+        <button class="check-btn" onclick="checkAnswer(${i})">Check ✓</button>
+        <button class="hint-btn" onclick="toggleHint(${i})">💡 Hint</button>
+      </div>
+      <div class="hint-box" id="hint${i}">${p.hint}</div>
+      <div class="feedback" id="fb${i}"></div>
+    </div>`).join('');
+}
+function toggleHint(i){
+  const box = document.getElementById('hint'+i);
+  box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+function normalize(s){ return String(s).toLowerCase().replace(/\s+/g,'').replace(/\$/g,'').replace(/%/g,''); }
+function checkAnswer(i){
+  if(answered[i]!==undefined) return;
+  const p = session[i];
+  const userRaw = document.getElementById('ans'+i).value.trim();
+  if(!userRaw) return;
+  const userNum = parseFloat(normalize(userRaw));
+  const correctNum = parseFloat(p.a);
+  const ok = !isNaN(userNum) && Math.abs(userNum - correctNum) < 0.05;
+  answered[i] = ok;
+  const card = document.getElementById('qcard'+i);
+  const fb = document.getElementById('fb'+i);
+  if(ok){
+    card.classList.add('correct-card');
+    fb.className = 'feedback ok';
+    fb.innerHTML = '✅ Correct!';
+    streak++; if(streak>bestStreak) bestStreak=streak;
+  } else {
+    card.classList.add('wrong-card');
+    fb.className = 'feedback err';
+    fb.innerHTML = `✗ Not quite — the answer is <strong>${p.a}</strong>`;
+    streak=0;
+  }
+  document.getElementById('ans'+i).disabled = true;
+  updateScore();
+  if(Object.keys(answered).length === session.length) showSummary();
+}
+function updateScore(){
+  const an = Object.keys(answered).length, co = Object.values(answered).filter(Boolean).length;
+  document.getElementById('s-answered').textContent = an;
+  document.getElementById('s-correct').textContent = co;
+  document.getElementById('s-wrong').textContent = an-co;
+}
+function showSummary(){
+  const an = Object.keys(answered).length, co = Object.values(answered).filter(Boolean).length;
+  const pct = Math.round(co/an*100);
+  document.getElementById('sum-score').textContent = `${co}/${an}`;
+  document.getElementById('sum-msg').textContent = pct>=90 ? "Outstanding work!" : pct>=70 ? "Great job — nice problem solving." : pct>=50 ? "Good effort, keep practicing." : "Keep at it — you'll get faster with practice.";
+  document.getElementById('summaryCard').style.display='block';
+  document.getElementById('summaryCard').scrollIntoView({behavior:'smooth'});
+  saveStats(co, an);
+}
+function saveStats(correct,total){
+  const stats = JSON.parse(localStorage.getItem(LS_STATS) || '{"sessions":0,"solved":0,"correct":0,"bestStreak":0}');
+  stats.sessions++; stats.solved+=total; stats.correct+=correct;
+  if(bestStreak>stats.bestStreak) stats.bestStreak=bestStreak;
+  localStorage.setItem(LS_STATS, JSON.stringify(stats));
+  updateAllTimeStats();
+}
+function updateAllTimeStats(){
+  const s = JSON.parse(localStorage.getItem(LS_STATS) || '{"sessions":0,"solved":0,"correct":0,"bestStreak":0}');
+  document.getElementById('st-sessions').textContent = s.sessions;
+  document.getElementById('st-solved').textContent = s.solved;
+  document.getElementById('st-acc').textContent = s.solved>0 ? Math.round(s.correct/s.solved*100)+'%' : '—';
+  document.getElementById('st-streak').textContent = s.bestStreak;
+}
+updateAllTimeStats();
+</script>
+</body>
+</html>

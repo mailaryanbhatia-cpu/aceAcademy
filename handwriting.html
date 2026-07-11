@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Handwriting & Cursive Practice — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:820px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.mode-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.mode-btn{flex:1;min-width:130px;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.controls-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;justify-content:center}
+select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;color:#fff;background:#111827;outline:none}
+select:focus{border-color:var(--accent)}
+.letter-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-bottom:16px;max-width:520px;margin-left:auto;margin-right:auto}
+@media(max-width:520px){.letter-grid{grid-template-columns:repeat(6,1fr)}}
+.letter-btn{padding:8px 0;border-radius:7px;border:1.5px solid var(--border);background:#111827;color:var(--muted);cursor:pointer;font-weight:700;font-size:.85rem;text-align:center}
+.letter-btn.active{border-color:var(--accent);background:rgba(99,102,241,.18);color:#fff}
+.canvas-wrap{display:flex;justify-content:center;margin-bottom:14px}
+#traceCanvas{background:#111827;border:1.5px solid var(--border);border-radius:12px;touch-action:none;cursor:crosshair}
+.canvas-controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.color-swatch{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:inline-block}
+.color-swatch.active{border-color:#fff}
+.print-page{display:none}
+@media print{
+  body *{visibility:hidden}
+  .print-page, .print-page *{visibility:visible}
+  .print-page{display:block;position:absolute;top:0;left:0;width:100%}
+}
+.print-row{display:flex;gap:6px;align-items:center;padding:10px 0;border-bottom:1.5px dashed #999}
+.print-guide{font-size:2.6rem;color:#bbb;font-family:'Georgia',serif;letter-spacing:6px}
+.print-guide.cursive{font-family:cursive}
+.print-blank{flex:1;height:60px;border-bottom:1.5px dashed #999;position:relative}
+.print-blank::before{content:'';position:absolute;top:50%;left:0;right:0;border-top:1px dotted #ccc}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="handwriting.html">Handwriting Practice</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>✏️ Handwriting & Cursive Practice</h1>
+  <p>Trace letters on screen or print a practice sheet — uppercase, lowercase, numbers, and cursive.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeTrace" onclick="setMode('trace')">🖊️ Trace on Screen</button>
+      <button class="mode-btn" id="modePrint" onclick="setMode('print')">🖨️ Print Practice Sheet</button>
+    </div>
+
+    <div id="traceArea">
+      <div class="controls-row">
+        <select id="letterSet" onchange="renderLetterGrid()">
+          <option value="upper">Uppercase (Print)</option>
+          <option value="lower">Lowercase (Print)</option>
+          <option value="numbers">Numbers 0-9</option>
+          <option value="cursiveUpper">Uppercase (Cursive)</option>
+          <option value="cursiveLower">Lowercase (Cursive)</option>
+        </select>
+      </div>
+      <div class="letter-grid" id="letterGrid"></div>
+      <div class="canvas-wrap">
+        <canvas id="traceCanvas" width="360" height="360"></canvas>
+      </div>
+      <div class="canvas-controls">
+        <span class="color-swatch active" style="background:#6366f1" onclick="setPenColor('#6366f1',this)"></span>
+        <span class="color-swatch" style="background:#34d399" onclick="setPenColor('#34d399',this)"></span>
+        <span class="color-swatch" style="background:#fbbf24" onclick="setPenColor('#fbbf24',this)"></span>
+        <span class="color-swatch" style="background:#f87171" onclick="setPenColor('#f87171',this)"></span>
+        <button class="btn btn-outline" onclick="clearCanvas()">🧹 Clear</button>
+        <button class="btn btn-primary" onclick="nextLetter()">Next Letter →</button>
+      </div>
+    </div>
+
+    <div id="printArea" style="display:none">
+      <div class="controls-row">
+        <select id="printLetterSet">
+          <option value="upper">Uppercase (Print)</option>
+          <option value="lower">Lowercase (Print)</option>
+          <option value="numbers">Numbers 0-9</option>
+          <option value="cursiveUpper">Uppercase (Cursive)</option>
+          <option value="cursiveLower">Lowercase (Cursive)</option>
+        </select>
+        <select id="printCount">
+          <option value="5">5 letters</option>
+          <option value="10" selected>10 letters</option>
+          <option value="26">Full alphabet</option>
+        </select>
+        <button class="btn btn-primary" onclick="buildPrintSheet()">Generate Sheet</button>
+        <button class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:10px">Preview will appear below — use the Print button to print it out.</div>
+      <div id="printPreview" style="margin-top:16px;background:#fff;color:#111;border-radius:10px;padding:16px"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="print-page" id="printPage"></div>
+
+<script>
+const SETS = {
+  upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+  lower: 'abcdefghijklmnopqrstuvwxyz'.split(''),
+  numbers: '0123456789'.split(''),
+  cursiveUpper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+  cursiveLower: 'abcdefghijklmnopqrstuvwxyz'.split('')
+};
+let currentLetterIdx = 0;
+let penColor = '#6366f1';
+let drawing = false;
+const canvas = document.getElementById('traceCanvas');
+const ctx = canvas.getContext('2d');
+
+function setMode(m){
+  document.getElementById('modeTrace').classList.toggle('active', m==='trace');
+  document.getElementById('modePrint').classList.toggle('active', m==='print');
+  document.getElementById('traceArea').style.display = m==='trace' ? 'block' : 'none';
+  document.getElementById('printArea').style.display = m==='print' ? 'block' : 'none';
+}
+
+function renderLetterGrid(){
+  const set = document.getElementById('letterSet').value;
+  const letters = SETS[set];
+  const grid = document.getElementById('letterGrid');
+  grid.innerHTML = letters.map((l,i) => `<div class="letter-btn${i===currentLetterIdx?' active':''}" onclick="selectLetter(${i})">${l}</div>`).join('');
+  drawGuide();
+}
+function selectLetter(i){ currentLetterIdx = i; renderLetterGrid(); clearCanvas(); }
+function nextLetter(){
+  const set = document.getElementById('letterSet').value;
+  currentLetterIdx = (currentLetterIdx + 1) % SETS[set].length;
+  renderLetterGrid(); clearCanvas();
+}
+
+function drawGuide(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const set = document.getElementById('letterSet').value;
+  const letter = SETS[set][currentLetterIdx];
+  const isCursive = set.startsWith('cursive');
+  // Ruled paper lines: top, dashed middle, bottom
+  const top = 90, mid = 200, bottom = 310;
+  ctx.strokeStyle = '#3a4a6b';
+  ctx.lineWidth = 2;
+  [top, bottom].forEach(y => {
+    ctx.beginPath(); ctx.moveTo(10,y); ctx.lineTo(350,y); ctx.stroke();
+  });
+  ctx.setLineDash([6,6]);
+  ctx.beginPath(); ctx.moveTo(10,mid); ctx.lineTo(350,mid); ctx.stroke();
+  ctx.setLineDash([]);
+  // Faint guide letter
+  ctx.font = `${isCursive ? 'italic ' : ''}220px ${isCursive ? 'cursive' : 'Georgia, serif'}`;
+  ctx.fillStyle = 'rgba(176,190,222,0.28)';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText(letter, 180, 300);
+}
+
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: (clientX-rect.left) * (canvas.width/rect.width), y: (clientY-rect.top) * (canvas.height/rect.height) };
+}
+function startDraw(e){ drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); }
+function moveDraw(e){
+  if(!drawing) return;
+  const p = getPos(e);
+  ctx.strokeStyle = penColor;
+  ctx.lineWidth = 6;
+  ctx.lineCap = 'round';
+  ctx.lineTo(p.x,p.y);
+  ctx.stroke();
+  e.preventDefault();
+}
+function endDraw(){ drawing = false; }
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', moveDraw);
+canvas.addEventListener('mouseup', endDraw);
+canvas.addEventListener('mouseleave', endDraw);
+canvas.addEventListener('touchstart', startDraw);
+canvas.addEventListener('touchmove', moveDraw);
+canvas.addEventListener('touchend', endDraw);
+
+function setPenColor(c, el){
+  penColor = c;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+function clearCanvas(){ drawGuide(); }
+
+function buildPrintSheet(){
+  const set = document.getElementById('printLetterSet').value;
+  const count = document.getElementById('printCount').value;
+  const isCursive = set.startsWith('cursive');
+  let letters = SETS[set];
+  letters = count==='26' ? letters : letters.slice(0, parseInt(count));
+  const rows = letters.map(l => `
+    <div class="print-row">
+      <div class="print-guide${isCursive?' cursive':''}">${l} ${l} ${l}</div>
+      <div class="print-blank"></div>
+    </div>`).join('');
+  const html = `<h2 style="margin-bottom:10px">Handwriting Practice — ${set}</h2>${rows}`;
+  document.getElementById('printPreview').innerHTML = html;
+  document.getElementById('printPage').innerHTML = html;
+}
+
+renderLetterGrid();
+buildPrintSheet();
+</script>
+</body>
+</html>
