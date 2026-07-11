@@ -55,6 +55,7 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-b
 
 /* Difficulty badge */
 .diff-badge{font-size:.68rem;font-weight:800;padding:2px 9px;border-radius:10px;margin-left:8px}
+.diff-elem{background:rgba(96,165,250,.15);color:#60a5fa}
 .diff-easy{background:rgba(52,211,153,.15);color:var(--green)}
 .diff-med{background:rgba(251,191,36,.15);color:var(--amber)}
 .diff-hard{background:rgba(248,113,113,.15);color:var(--red)}
@@ -83,6 +84,7 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-b
         <label>DIFFICULTY</label>
         <div class="chip-group" id="diffGroup">
           <button class="chip active" data-val="all">All</button>
+          <button class="chip" data-val="elem">Grades K–5</button>
           <button class="chip" data-val="easy">Grades 6–8</button>
           <button class="chip" data-val="medium">Grades 9–10</button>
           <button class="chip" data-val="hard">SAT / AP</button>
@@ -142,6 +144,16 @@ label{font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-b
 
 <script>
 const QUESTIONS = [
+    // ── Elementary (K-5) ──
+  {diff:'elem',passage:'The puppy was so <u>tiny</u> that it could fit inside a shoebox.',word:'tiny',stem:'As used in the passage, "tiny" most nearly means:',opts:['very loud','very small','very fast','very old'],ans:1,exp:'<strong>Tiny</strong> means very small. The clue is that the puppy could fit inside a shoebox.'},
+  {diff:'elem',passage:'After running around the playground for an hour, Sam felt completely <u>exhausted</u> and just wanted to sit down.',word:'exhausted',stem:'As used in the passage, "exhausted" most nearly means:',opts:['very hungry','very excited','very tired','very confused'],ans:2,exp:'<strong>Exhausted</strong> means very tired. The clue is that Sam wanted to sit down after running for an hour.'},
+  {diff:'elem',passage:'The classroom was <u>silent</u> as everyone listened carefully to the story.',word:'silent',stem:'As used in the passage, "silent" most nearly means:',opts:['very noisy','completely quiet','very colorful','extremely large'],ans:1,exp:'<strong>Silent</strong> means completely quiet. The clue is that everyone was listening carefully, with no noise.'},
+  {diff:'elem',passage:'Grandma\'s cookies smelled so <u>delicious</u> that Mia could not wait to try one.',word:'delicious',stem:'As used in the passage, "delicious" most nearly means:',opts:['tasting very good','looking very strange','feeling very cold','sounding very loud'],ans:0,exp:'<strong>Delicious</strong> means tasting very good. The clue is that Mia could not wait to try the cookies.'},
+  {diff:'elem',passage:'The kitten was very <u>curious</u>, sniffing and poking at every new object in the room.',word:'curious',stem:'As used in the passage, "curious" most nearly means:',opts:['sleepy and tired','eager to learn or explore','scared and hiding','angry and upset'],ans:1,exp:'<strong>Curious</strong> means eager to explore or find out about something. The clue is the kitten sniffing and poking at new things.'},
+  {diff:'elem',passage:'It was so <u>chilly</u> outside that everyone put on their warmest coats.',word:'chilly',stem:'As used in the passage, "chilly" most nearly means:',opts:['very hot','somewhat cold','extremely windy','very sunny'],ans:1,exp:'<strong>Chilly</strong> means somewhat cold. The clue is that people put on their warmest coats.'},
+  {diff:'elem',passage:'The magician\'s trick was truly <u>amazing</u>, and the whole audience gasped in surprise.',word:'amazing',stem:'As used in the passage, "amazing" most nearly means:',opts:['very boring','causing great wonder or surprise','very quiet','somewhat confusing'],ans:1,exp:'<strong>Amazing</strong> means causing great surprise or wonder. The clue is that the audience gasped in surprise.'},
+  {diff:'elem',passage:'The little boy was <u>brave</u> when he climbed to the top of the tall slide, even though it looked scary at first.',word:'brave',stem:'As used in the passage, "brave" most nearly means:',opts:['showing no fear even when scared','feeling very tired','being extremely fast','acting very silly'],ans:0,exp:'<strong>Brave</strong> means showing courage even when something feels scary. The clue is that he climbed the slide even though it looked scary.'},
+
   // ── Easy (6-8) ──
   {diff:'easy',passage:'The ancient ruins were <u>desolate</u>, with no sign of life anywhere in the crumbling stone structures.',word:'desolate',stem:'As used in the passage, "desolate" most nearly means:',opts:['crowded and busy','empty and abandoned','beautifully decorated','recently constructed'],ans:1,exp:'<strong>Desolate</strong> means deserted and empty. The clue is "no sign of life" — the place is completely abandoned.'},
   {diff:'easy',passage:'She was so <u>famished</u> after the long hike that she ate three sandwiches without stopping.',word:'famished',stem:'As used in the passage, "famished" most nearly means:',opts:['exhausted','extremely hungry','slightly tired','very thirsty'],ans:1,exp:'<strong>Famished</strong> means extremely hungry. The context clue is that she "ate three sandwiches without stopping" after a long hike — clear signs of intense hunger.'},
@@ -202,7 +214,7 @@ function showQ(){
   const q = queue[idx];
   answered = false;
   document.getElementById('qMeta').innerHTML =
-    `Question ${idx+1} of ${queue.length} <span class="diff-badge diff-${q.diff}">${q.diff==='easy'?'Gr 6–8':q.diff==='medium'?'Gr 9–10':'SAT/AP'}</span>`;
+    `Question ${idx+1} of ${queue.length} <span class="diff-badge diff-${q.diff}">${q.diff==='elem'?'Gr K–5':q.diff==='easy'?'Gr 6–8':q.diff==='medium'?'Gr 9–10':'SAT/AP'}</span>`;
   document.getElementById('qPassage').innerHTML = q.passage;
   document.getElementById('qStem').textContent = q.stem;
   document.getElementById('qExp').style.display='none';
