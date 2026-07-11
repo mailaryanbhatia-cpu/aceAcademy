@@ -518,23 +518,6 @@
   .mistake-btn:hover{background:rgba(239,68,68,.08)}
 
   /* ── TIMED PRACTICE ──────────────── */
-  .timer-fab{position:fixed;bottom:80px;right:20px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;font-size:1.35rem;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;z-index:900;transition:transform .2s}
-  .timer-fab:hover{transform:scale(1.08)}
-  .timer-fab.running{background:linear-gradient(135deg,#ef4444,#f97316);animation:tpulse 1.5s infinite}
-  @keyframes tpulse{0%,100%{box-shadow:0 4px 16px rgba(239,68,68,.4)}50%{box-shadow:0 4px 24px rgba(239,68,68,.7)}}
-  .timer-panel{position:fixed;bottom:142px;right:20px;width:215px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:14px;z-index:900;display:none}
-  .timer-panel.open{display:block}
-  .timer-presets{display:flex;gap:4px;justify-content:center;margin-bottom:8px}
-  .timer-preset{padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-size:.7rem;cursor:pointer}
-  .timer-preset.active,.timer-preset:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .timer-display{font-size:2.2rem;font-weight:700;text-align:center;letter-spacing:2px;color:var(--accent);margin:4px 0;font-variant-numeric:tabular-nums}
-  .timer-label{font-size:.68rem;color:var(--muted);text-align:center;margin-bottom:8px}
-  .timer-controls{display:flex;gap:6px;justify-content:center}
-  .timer-btn{padding:6px 14px;border-radius:8px;border:none;font-size:.75rem;font-weight:600;cursor:pointer}
-  .timer-btn.start{background:#22c55e;color:#fff}
-  .timer-btn.stop{background:#ef4444;color:#fff}
-  .timer-btn.reset{background:var(--border);color:var(--text)}
-  .timer-stats{font-size:.67rem;color:var(--muted);text-align:center;margin-top:6px}
 
   /* ── FORMULA REFERENCE ───────────── */
   .formula-fab{position:fixed;bottom:80px;right:78px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:1.2rem;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;z-index:900;transition:transform .2s;font-family:monospace}
@@ -11945,51 +11928,6 @@ function updateMjWidget() {
   } catch(e) {}
 }
 
-// -- TIMED PRACTICE ------------------------------------------
-let tpInterval = null, tpLeft = 600, tpTotal = 600, tpRunning = false;
-function toggleTimerPanel() { document.getElementById('timerPanel').classList.toggle('open'); }
-function setTimerPreset(mins, btn) {
-  tpLeft = tpTotal = mins * 60; tpRunning = false; clearInterval(tpInterval);
-  document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  updateTimerDisplay();
-  const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
-  const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Start';
-  const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = 'Set your focus time';
-}
-function startTimer() {
-  if (tpRunning) {
-    clearInterval(tpInterval); tpRunning = false;
-    const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Resume';
-    const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = 'Paused';
-    const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
-  } else {
-    tpRunning = true;
-    const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Pause';
-    const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = 'Focus!';
-    const fab = document.getElementById('timerFab'); if (fab) fab.classList.add('running');
-    tpInterval = setInterval(() => {
-      tpLeft--; updateTimerDisplay();
-      if (tpLeft <= 0) {
-        clearInterval(tpInterval); tpRunning = false;
-        const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = '⏰ Time\'s up!';
-        const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
-        const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Start';
-      }
-    }, 1000);
-  }
-}
-function resetTimer() {
-  clearInterval(tpInterval); tpRunning = false; tpLeft = tpTotal; updateTimerDisplay();
-  const sb = document.getElementById('timerStartBtn'); if (sb) sb.textContent = 'Start';
-  const lb = document.getElementById('timerLabel'); if (lb) lb.textContent = 'Set your focus time';
-  const fab = document.getElementById('timerFab'); if (fab) fab.classList.remove('running');
-}
-function updateTimerDisplay() {
-  const m = Math.floor(tpLeft / 60), s = tpLeft % 60;
-  const el = document.getElementById('timerDisplay');
-  if (el) el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-}
 
 // -- FORMULA REFERENCE ---------------------------------------
 const FORMULAS = {
@@ -12446,21 +12384,6 @@ window.addEventListener('online', () => { const b = document.getElementById('off
   </div>
 </div>
 
-<!-- TIMED PRACTICE FAB -->
-<button class="timer-fab" id="timerFab" onclick="toggleTimerPanel()" title="Timed Practice">⏱</button>
-<div class="timer-panel" id="timerPanel">
-  <div class="timer-presets">
-    <button class="timer-preset active" onclick="setTimerPreset(10,this)">10 min</button>
-    <button class="timer-preset" onclick="setTimerPreset(20,this)">20 min</button>
-    <button class="timer-preset" onclick="setTimerPreset(30,this)">30 min</button>
-  </div>
-  <div class="timer-display" id="timerDisplay">10:00</div>
-  <div class="timer-label" id="timerLabel">Set your focus time</div>
-  <div class="timer-controls">
-    <button class="timer-btn start" id="timerStartBtn" onclick="startTimer()">Start</button>
-    <button class="timer-btn reset" onclick="resetTimer()">Reset</button>
-  </div>
-  <div class="timer-stats" id="timerStats"></div>
 </div>
 
 <!-- FORMULA REFERENCE FAB -->
