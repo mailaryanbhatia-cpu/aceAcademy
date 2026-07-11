@@ -106,6 +106,7 @@ label{font-size:.8rem;font-weight:700;color:var(--muted);display:block;margin-bo
         <label>GRADE</label>
         <div class="chip-group" id="gradeGroup">
           <button class="chip active" data-val="all">All</button>
+          <button class="chip" data-val="k-5">K–5</button>
           <button class="chip" data-val="6-8">6–8</button>
           <button class="chip" data-val="9-10">9–10</button>
           <button class="chip" data-val="11-12">11–12</button>
@@ -178,6 +179,26 @@ label{font-size:.8rem;font-weight:700;color:var(--muted);display:block;margin-bo
 <script>
 // ── Prompt bank ─────────────────────────────────────────
 const PROMPTS = [
+  // Argumentative/Opinion K-5
+  {g:'argumentative',grade:'k-5',p:'Should students get more recess time at school? Write your opinion and give at least two reasons why.'},
+  {g:'argumentative',grade:'k-5',p:'What is the best pet to have: a dog, a cat, or a fish? Write your opinion and explain your reasons.'},
+  {g:'argumentative',grade:'k-5',p:'Should kids be allowed to choose their own bedtime? Write your opinion with reasons to support it.'},
+  // Narrative K-5
+  {g:'narrative',grade:'k-5',p:'Write a story about a magical animal that can talk. What happens when you meet it?'},
+  {g:'narrative',grade:'k-5',p:'Tell the story of your favorite day ever. What made it so special?'},
+  {g:'narrative',grade:'k-5',p:'Imagine you found a secret door in your backyard. Write about where it leads and what you discover.'},
+  // Expository K-5
+  {g:'expository',grade:'k-5',p:'Explain how to make your favorite snack, step by step, so a friend could make it too.'},
+  {g:'expository',grade:'k-5',p:'Explain why it is important to recycle. Give two or three reasons.'},
+  {g:'expository',grade:'k-5',p:'Explain how a caterpillar turns into a butterfly, using the steps in order.'},
+  // Descriptive K-5
+  {g:'descriptive',grade:'k-5',p:'Describe your favorite place in the whole world. Use words that help the reader see, hear, and feel what it is like there.'},
+  {g:'descriptive',grade:'k-5',p:'Describe your best friend using details about how they look, act, and make you feel.'},
+  {g:'descriptive',grade:'k-5',p:'Describe a rainy day using all five senses — what do you see, hear, smell, taste, and touch?'},
+  // Persuasive K-5
+  {g:'persuasive',grade:'k-5',p:'Write a letter to your teacher trying to convince them to let the class have a pizza party. Give good reasons.'},
+  {g:'persuasive',grade:'k-5',p:'Try to convince your parents to let you get a new pet. Write your best reasons.'},
+  {g:'persuasive',grade:'k-5',p:'Write a persuasive paragraph convincing a friend to read your favorite book.'},
   // Argumentative 6-8
   {g:'argumentative',grade:'6-8',p:'Should students be required to wear uniforms at school? Write an essay arguing your position with at least two reasons and evidence.'},
   {g:'argumentative',grade:'6-8',p:'Is social media helpful or harmful for middle school students? Take a clear position and support it with specific examples.'},
@@ -273,7 +294,7 @@ const PROMPTS = [
 ];
 
 const GENRE_LABELS = {all:'All',argumentative:'Argumentative',narrative:'Narrative',expository:'Expository',descriptive:'Descriptive',persuasive:'Persuasive'};
-const GRADE_LABELS = {all:'All Grades','6-8':'Grades 6–8','9-10':'Grades 9–10','11-12':'Grades 11–12',ap:'AP / College'};
+const GRADE_LABELS = {all:'All Grades','k-5':'Grades K–5','6-8':'Grades 6–8','9-10':'Grades 9–10','11-12':'Grades 11–12',ap:'AP / College'};
 
 let selectedGenre = 'all';
 let selectedGrade = 'all';
