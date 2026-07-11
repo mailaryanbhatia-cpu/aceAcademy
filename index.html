@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AcerAcademy — Grades 6–12</title>
+<title>AcerAcademy — Grades K–12</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -797,6 +797,12 @@ main#mainContent{flex:1;padding:0 36px 36px;}
     </div>
     <h3>Grade</h3>
     <ul class="grade-list" id="gradeList">
+      <li><a href="#" data-grade="k">Kindergarten</a></li>
+      <li><a href="#" data-grade="1">Grade 1</a></li>
+      <li><a href="#" data-grade="2">Grade 2</a></li>
+      <li><a href="#" data-grade="3">Grade 3</a></li>
+      <li><a href="#" data-grade="4">Grade 4</a></li>
+      <li><a href="#" data-grade="5">Grade 5</a></li>
       <li><a href="#" data-grade="6" class="active">Grade 6</a></li>
       <li><a href="#" data-grade="7">Grade 7</a></li>
       <li><a href="#" data-grade="8">Grade 8</a></li>
@@ -952,7 +958,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   </div><!-- /content-col -->
 </div>
 
-<footer>AcerAcademy — Free grades 6–12 curriculum, aligned to Common Core, NGSS &amp; CSTA standards.</footer>
+<footer>AcerAcademy — Free grades K–12 curriculum, aligned to Common Core, NGSS &amp; CSTA standards.</footer>
 
 <script>
 // ----------------------------------------------
@@ -6588,6 +6594,219 @@ const AP_SUBJECTS = [
 ];
 
 const CURRICULUM = {
+  'k': {
+    math: [
+      { unit: "Counting & Number Sense", topics: ["Counting objects to 20","Number recognition 0-20","One-to-one correspondence","Counting on and counting back","Ordering numbers"] },
+      { unit: "Comparing Numbers", topics: ["More, less, and equal","Comparing groups of objects","Comparing lengths and heights","Comparing weights"] },
+      { unit: "Shapes & Spatial Sense", topics: ["2D shapes","3D shapes","Positional words","Sorting and classifying shapes"] },
+      { unit: "Addition & Subtraction Within 10", topics: ["Combining sets (addition)","Taking away (subtraction)","Making 10","Addition and subtraction word problems"] },
+      { unit: "Patterns, Data & Time", topics: ["Simple patterns (AB, ABC)","Picture graphs and counting data","Telling time basics (day parts)","Recognizing coins (penny, nickel, dime)"] },
+    ],
+    science: [
+      { unit: "My Senses & My Body", topics: ["The five senses","Body parts basics"] },
+      { unit: "Living Things: Animals", topics: ["Living vs. nonliving things","Animal needs","Animal babies, parents, and sounds","Animal habitats basics"] },
+      { unit: "Living Things: Plants", topics: ["Plant parts","What plants need to grow","Plant life cycle basics"] },
+      { unit: "Weather & Earth", topics: ["Weather types","Seasons and their signs","Day and night","The sun's light and heat","Push and pull forces","Materials and their properties","Caring for the Earth"] },
+    ],
+    ela: [
+      { unit: "Letters & Sounds", topics: ["Uppercase letter names","Lowercase letter names","Letter sounds","Beginning sounds","Rhyming words"] },
+      { unit: "Sight Words & Vocabulary", topics: ["Sight words: the, and, is, see","Sight words: a, I, my, like","Opposites"] },
+      { unit: "Sentences & Print", topics: ["What a sentence is","Print concepts (left to right, top to bottom)","Letter formation"] },
+      { unit: "Stories", topics: ["Story characters","Story setting","Beginning, middle, and end"] },
+      { unit: "Sounds & Syllables", topics: ["Syllables (clapping words)","Blending sounds","Segmenting sounds","Ending sounds"] },
+    ],
+    history: [
+      { unit: "Family & Community", topics: ["Family members and roles","Community helpers and their jobs","Rules at home and school"] },
+      { unit: "Citizenship & Symbols", topics: ["The American flag","National holidays and their meaning","Being a good citizen/helper","Feelings and getting along with others","Sharing and taking turns"] },
+      { unit: "Maps & Time", topics: ["What a map is","Comparing long ago and now","Needs vs. wants basics","Where we live"] },
+    ],
+    cs: [
+      { unit: "Using a Computer", topics: ["Parts of a computer","What a computer can do","Turning a device on and off safely","Being kind when using a device"] },
+      { unit: "Thinking Like a Computer", topics: ["Step-by-step directions (algorithms)","What a robot is","Patterns and sequences","Asking a grown-up before going online","Following instructions in order"] },
+    ],
+    health: [
+      { unit: "Staying Healthy", topics: ["Handwashing","Brushing teeth","Healthy foods vs. treats","Staying active and exercise","Getting enough sleep"] },
+      { unit: "Staying Safe", topics: ["Body parts","Safety rules","Naming feelings and emotions","Calling 911 for help"] },
+    ],
+  },
+  1: {
+    math: [
+      { unit: "Addition & Subtraction Within 20", topics: ["Addition fact families","Doubles and near-doubles","Subtraction within 20","Addition and subtraction word problems","Counting to 120"] },
+      { unit: "Place Value", topics: ["Tens and ones","Comparing two-digit numbers","Skip counting by 2s, 5s, and 10s","Comparing three numbers"] },
+      { unit: "Measurement & Time", topics: ["Measuring length with nonstandard units","Measuring length with standard units","Telling time to the hour","Telling time to the half hour"] },
+      { unit: "Geometry", topics: ["2D shapes and attributes","3D shapes","Simple fractions (halves and fourths)","Equal shares"] },
+      { unit: "Money & Data", topics: ["Identifying coins","Coin values","Tally charts","Simple graphs"] },
+    ],
+    science: [
+      { unit: "Plants", topics: ["Plant needs and parts","Plant life cycle","Parts of a seed"] },
+      { unit: "Animals", topics: ["Animal life cycles","Animal habitats and adaptations","Animal coverings and body parts"] },
+      { unit: "Matter & Energy", topics: ["States of matter","Sound: how it's made","Light and shadows","Push and pull forces","Magnets"] },
+      { unit: "Weather & Sky", topics: ["Weather patterns and tools","How seasons affect living things","Day and night and the sun's path","The moon and stars"] },
+    ],
+    ela: [
+      { unit: "Phonics", topics: ["Short vowel sounds","Long vowel sounds","Consonant blends","Consonant digraphs","R-controlled vowels basics"] },
+      { unit: "Sight Words & Vocabulary", topics: ["Grade 1 sight words","Compound words","Contractions basics"] },
+      { unit: "Grammar & Mechanics", topics: ["Nouns","Verbs","Complete sentences vs. fragments","Capitalization and punctuation basics"] },
+      { unit: "Reading Comprehension", topics: ["Story elements: setting and character","Problem and solution","Main idea","Sequencing events"] },
+      { unit: "Word Study", topics: ["Syllables","Rhyming word families","Prefixes basics"] },
+    ],
+    history: [
+      { unit: "Communities", topics: ["Community helpers and their tools","Goods and services","Needs vs. wants","Rules and laws and consequences"] },
+      { unit: "Maps & Symbols", topics: ["Map basics (map key and legend)","Globes vs. maps and simple directions","American symbols and landmarks"] },
+      { unit: "Past & Present", topics: ["National holidays and their meaning","Transportation long ago vs. now","Communication long ago vs. now","School long ago vs. now","Being a good citizen"] },
+    ],
+    cs: [
+      { unit: "Computers & Devices", topics: ["Computer hardware parts","Input vs. output devices","Basic keyboard/typing familiarity","What apps and programs do"] },
+      { unit: "Thinking Like a Computer", topics: ["Following step-by-step directions","Sequencing events in order","Simple if/then decision thinking","Internet safety basics","Being a responsible digital citizen"] },
+    ],
+    health: [
+      { unit: "Healthy Habits", topics: ["Food groups and healthy eating","Personal hygiene routines","Exercise and physical activity","Sleep habits","Dental care"] },
+      { unit: "Safety & Feelings", topics: ["Safety rules (streets, bikes, fire)","Germs and staying healthy","Emotions and how to express them","The five senses and body parts review","Stranger safety"] },
+    ],
+  },
+  2: {
+    math: [
+      { unit: "Addition & Subtraction Within 100", topics: ["Addition with regrouping","Subtraction with regrouping","Two-step word problems","3-digit addition/subtraction basics","Estimating sums and differences"] },
+      { unit: "Place Value", topics: ["Place value to hundreds","Comparing three-digit numbers","Skip counting","Odd and even numbers"] },
+      { unit: "Measurement, Money & Time", topics: ["Measuring length in inches and feet","Measuring length in centimeters and meters","Telling time to 5-minute intervals","Counting money and making change","Comparing amounts of money"] },
+      { unit: "Geometry & Fractions", topics: ["2D and 3D shape attributes","Partitioning shapes into equal parts","Fractions of a whole and a set"] },
+      { unit: "Multiplication Foundations & Data", topics: ["Arrays and repeated addition","Bar graphs","Picture graphs"] },
+    ],
+    science: [
+      { unit: "Life Cycles & Habitats", topics: ["Life cycles of animals","Habitats around the world","Plant and animal adaptations for survival","Food chains basics"] },
+      { unit: "Matter", topics: ["States of matter","Changes in matter (melting, freezing, evaporation)","Mixtures and solutions basics"] },
+      { unit: "Earth Science", topics: ["Earth's materials (rocks, soil, water)","The water cycle basics","Weather instruments and patterns"] },
+      { unit: "Forces, Energy & Machines", topics: ["Force and motion basics","Energy sources (sun, wind, water)","Simple machines: lever and pulley","Simple machines: inclined plane, wedge, and screw","Simple machines: wheel and axle"] },
+    ],
+    ela: [
+      { unit: "Grammar", topics: ["Nouns, adjectives, and verbs","Plural nouns","Compound words","Contractions","Pronouns basics"] },
+      { unit: "Vocabulary", topics: ["Synonyms and antonyms","Context clues basics","Prefixes and suffixes basics"] },
+      { unit: "Spelling & Mechanics", topics: ["Long vowel teams","Silent e patterns","Capitalization and punctuation rules"] },
+      { unit: "Reading Comprehension", topics: ["Story elements: plot and theme basics","Main idea and supporting details","Sequencing events","Fact vs. opinion","Comparing and contrasting characters"] },
+      { unit: "Reading Strategies", topics: ["Predicting","Questioning while reading","Summarizing basics"] },
+    ],
+    history: [
+      { unit: "Communities & Government", topics: ["Local government basics","Communities: urban, suburban, rural","Rules, laws, and citizenship","Immigration and diverse cultures basics","Being a responsible citizen"] },
+      { unit: "Economics", topics: ["Goods and services","Producers and consumers","Needs vs. wants review"] },
+      { unit: "Geography & Symbols", topics: ["Map skills: cardinal directions","Map key and compass rose","US symbols and monuments","National holidays and historical figures","Comparing communities around the world"] },
+    ],
+    cs: [
+      { unit: "Computers & the Internet", topics: ["Input and output devices","Typing and keyboard basics","What the internet is","Software vs. hardware basics"] },
+      { unit: "Coding & Safety", topics: ["Sequencing and algorithms","Loops as repeated steps","Debugging as fixing mistakes","Internet safety and digital citizenship","Saving and organizing files basics"] },
+    ],
+    health: [
+      { unit: "Nutrition & Fitness", topics: ["Nutrition and food groups","Physical activity and exercise benefits","Body systems intro: skeleton and muscles","Personal hygiene"] },
+      { unit: "Safety & Wellness", topics: ["Safety rules: bike and pedestrian","Fire and poison safety","Germs and disease prevention","Emotions and friendship skills","Sleep and rest importance"] },
+    ],
+  },
+  3: {
+    math: [
+      { unit: "Multiplication & Division", topics: ["Multiplication facts 0-10","Multiplying by multiples of 10","Division facts and the relationship to multiplication","Multiplication word problems","Division word problems"] },
+      { unit: "Fractions", topics: ["Understanding fractions as parts of a whole","Fractions on a number line","Equivalent fractions","Comparing fractions","Mixed numbers basics"] },
+      { unit: "Place Value & Rounding", topics: ["Place value to thousands","Comparing multi-digit numbers","Rounding to the nearest 10","Rounding to the nearest 100"] },
+      { unit: "Measurement & Geometry", topics: ["Area","Perimeter","Elapsed time","Liquid volume and mass","Classifying quadrilaterals"] },
+      { unit: "Data & Patterns", topics: ["Bar graphs and pictographs","Patterns in numbers and tables","Line plots"] },
+    ],
+    science: [
+      { unit: "Life Cycles & Ecosystems", topics: ["Life cycles and metamorphosis","Ecosystems and food chains","Plant and animal adaptations","Habitats and biomes"] },
+      { unit: "Matter & Forces", topics: ["States of matter and physical changes","Forces and motion: gravity","Forces and motion: friction","Balanced and unbalanced forces"] },
+      { unit: "Earth Science", topics: ["Weather vs. climate","The water cycle in detail","Earth's structure: layers","Rocks and minerals basics"] },
+      { unit: "Space & Machines", topics: ["The solar system intro","Simple machines and mechanical advantage","Phases of the moon basics","Day and night causes"] },
+    ],
+    ela: [
+      { unit: "Grammar", topics: ["Nouns, verbs, adjectives, adverbs","Pronouns","Subject-verb agreement basics","Types of sentences"] },
+      { unit: "Vocabulary", topics: ["Context clues","Prefixes","Suffixes","Dictionary and glossary use"] },
+      { unit: "Reading Comprehension", topics: ["Main idea and key details","Text structure: compare and contrast","Text structure: cause and effect","Summarizing","Point of view basics"] },
+      { unit: "Figurative Language & Writing", topics: ["Simile and metaphor basics","Research skills basics","Writing a paragraph","Persuasive writing basics"] },
+      { unit: "Mechanics", topics: ["Commas","Quotation marks basics","Capitalization review"] },
+    ],
+    history: [
+      { unit: "Government & Citizenship", topics: ["Local government basics","State government basics","Citizenship rights and responsibilities"] },
+      { unit: "Economics", topics: ["Goods and services review","Supply and demand intro","Scarcity","Opportunity cost intro"] },
+      { unit: "Geography & Culture", topics: ["Map skills: latitude and longitude intro","Map scale","Regions of the United States","Colonial life basics","Cultures and traditions around the world","Natural resources and conservation"] },
+    ],
+    cs: [
+      { unit: "Computer Basics", topics: ["Hardware vs. software","Basic typing skills","How the internet connects devices","Using search engines responsibly"] },
+      { unit: "Coding Concepts", topics: ["Coding vocabulary: sequence, loop, algorithm","Debugging as a concept","Intro to block-based coding: sprites and blocks","Digital citizenship and online safety","Event-based programming basics"] },
+    ],
+    health: [
+      { unit: "Body & Nutrition", topics: ["Nutrition and balanced meals","Digestive system basics","Respiratory system basics","Circulatory system basics"] },
+      { unit: "Safety & Wellness", topics: ["Disease prevention: bacteria vs. viruses","Basic first aid","Physical fitness components","Personal hygiene","Emotional health and stress basics"] },
+    ],
+  },
+  4: {
+    math: [
+      { unit: "Multiplication & Division", topics: ["Multi-digit multiplication","Multi-digit division","Interpreting remainders","Factors and multiples","Prime and composite numbers"] },
+      { unit: "Fractions & Decimals", topics: ["Equivalent fractions","Fraction addition and subtraction with like denominators","Comparing fractions","Decimal place value","Comparing decimals","Relating fractions and decimals"] },
+      { unit: "Geometry", topics: ["Angles and angle measurement","Classifying lines: parallel and perpendicular","Classifying triangles and quadrilaterals","Area and perimeter formulas","Symmetry basics"] },
+      { unit: "Measurement & Data", topics: ["Customary unit conversions","Metric unit conversions","Line plots and interpreting data","Using data to solve problems"] },
+      { unit: "Number Sense", topics: ["Rounding multi-digit numbers","Multi-step word problems","Multiplicative comparison"] },
+    ],
+    science: [
+      { unit: "Ecosystems & Energy", topics: ["Ecosystems and food webs","Energy transfer in food webs","Producers, consumers, and decomposers review"] },
+      { unit: "Matter & Energy", topics: ["States of matter and energy","Heat transfer and conduction","Light waves basics","Sound waves basics"] },
+      { unit: "Earth Science", topics: ["The rock cycle","Erosion and weathering","The water cycle in depth","Weather patterns and climate zones"] },
+      { unit: "Body Systems & Space", topics: ["Digestive, respiratory, and circulatory systems","Skeletal and muscular systems","Electricity basics","Magnetism basics","The solar system in depth","Moons and orbits"] },
+    ],
+    ela: [
+      { unit: "Figurative Language", topics: ["Simile and metaphor","Personification","Idioms","Hyperbole basics","Onomatopoeia basics"] },
+      { unit: "Text Structures", topics: ["Cause and effect","Compare and contrast","Sequence","Problem and solution"] },
+      { unit: "Vocabulary", topics: ["Context clues","Greek and Latin roots intro","Prefixes and suffixes review","Multiple-meaning words"] },
+      { unit: "Comprehension & Genre", topics: ["Main idea and theme","Narrative vs. informational text","Point of view basics","Summarizing longer texts","Comparing texts on the same topic"] },
+      { unit: "Grammar & Writing", topics: ["Verb tenses","Subject-verb agreement","Commas in a series","Narrative writing","Opinion writing","Informative writing"] },
+    ],
+    history: [
+      { unit: "Early America", topics: ["Age of Exploration","The 13 colonies","Colonial life and jobs","The American Revolution","Native American cultures before colonization"] },
+      { unit: "Government", topics: ["Legislative branch","Executive branch","Judicial branch","US Constitution basics"] },
+      { unit: "Geography", topics: ["US geography and regions","Regions and their resources","State history basics","Westward expansion intro"] },
+      { unit: "Economics & Citizenship", topics: ["Scarcity and trade","Resources and supply/demand","Citizenship responsibilities"] },
+    ],
+    cs: [
+      { unit: "Internet & Digital Citizenship", topics: ["Internet basics: websites and browsers","URLs and search engines","Online etiquette","Cyberbullying awareness","Hardware and software deep dive"] },
+      { unit: "Coding Concepts", topics: ["Variables intro","Loops intro","Conditionals intro","Debugging strategies","Block-based programming: events and actions","Data and databases basics"] },
+    ],
+    health: [
+      { unit: "Nutrition & Body Systems", topics: ["Reading food labels basics","Nervous system basics","Endocrine system basics","Immune system basics"] },
+      { unit: "Safety & Wellness", topics: ["First aid: burns and cuts","First aid: choking basics","Physical fitness and goal setting","Stress management","Self-esteem","Tobacco and alcohol awareness","Personal hygiene and puberty intro"] },
+    ],
+  },
+  5: {
+    math: [
+      { unit: "Fraction Operations", topics: ["Adding and subtracting fractions with unlike denominators","Multiplying fractions","Dividing fractions","Mixed number operations","Comparing and ordering fractions"] },
+      { unit: "Decimal Operations", topics: ["Adding and subtracting decimals","Multiplying decimals","Dividing decimals","Estimating decimal computations"] },
+      { unit: "Number Sense", topics: ["Order of operations (PEMDAS)","Prime and composite numbers","Factors, multiples, GCF, and LCM","Powers of 10 and exponents basics","Rounding decimals","Comparing large numbers"] },
+      { unit: "Geometry & Measurement", topics: ["Volume of rectangular prisms","Coordinate plane: ordered pairs","Classifying 2D shapes by properties","Classifying triangles by angles"] },
+      { unit: "Ratios & Percents", topics: ["Ratios intro","Rates and unit rates intro","Converting fractions, decimals, and percents intro"] },
+      { unit: "Data", topics: ["Line plots with fractions","Interpreting data","Mean, median, mode, and range intro"] },
+    ],
+    science: [
+      { unit: "Ecosystems", topics: ["Producers, consumers, and decomposers","Food webs and energy flow","Biomes and habitats review","Human impact on ecosystems"] },
+      { unit: "Matter", topics: ["Physical vs. chemical changes","Chemical reactions basics","Mixtures and solutions","Properties of matter"] },
+      { unit: "Earth & Space", topics: ["The solar system in depth","Phases of the moon","Causes of day and night","Causes of seasons","The water cycle and weather systems"] },
+      { unit: "Body Systems & Method", topics: ["Nervous system","Endocrine system","Digestive, respiratory, and circulatory systems in depth","Forces and simple machines review","Scientific method: hypothesis and variables"] },
+    ],
+    ela: [
+      { unit: "Figurative Language", topics: ["Simile and metaphor review","Personification","Hyperbole and idioms","Symbolism basics"] },
+      { unit: "Text Structures & Nonfiction", topics: ["Nonfiction text features","Text structures review","Comparing informational texts","Author's purpose and perspective"] },
+      { unit: "Comprehension", topics: ["Theme and central idea","Character analysis","Point of view","Drawing conclusions and inferences","Summarizing longer texts"] },
+      { unit: "Vocabulary", topics: ["Greek and Latin roots","Affixes","Multiple-meaning words review","Context clues in complex texts","Denotation and connotation"] },
+      { unit: "Grammar & Writing Process", topics: ["Clauses","Conjunctions","Pronoun and verb agreement","The writing process: drafting","The writing process: revising and editing","Writing types review"] },
+    ],
+    history: [
+      { unit: "Founding of the Nation", topics: ["Causes of the American Revolution","Key events of the Revolution","Declaration of Independence basics","Founding documents","Key founding figures"] },
+      { unit: "Government & Civics", topics: ["The US Constitution and Bill of Rights","Federal government branches","State and local government","Citizen responsibilities"] },
+      { unit: "Colonial & Native History", topics: ["Colonial life and economy","Native American history and culture","Interactions between colonists and Native Americans","The 13 colonies review"] },
+      { unit: "Geography & Economics", topics: ["Geography of North America","Supply and demand","Trade and entrepreneurship intro","Scarcity and resources"] },
+    ],
+    cs: [
+      { unit: "Computational Thinking", topics: ["Decomposition","Pattern recognition","Abstraction","How the internet works: client and server basics","Data representation basics: binary intro"] },
+      { unit: "Coding Concepts", topics: ["Variables","Loops","Conditionals","Functions intro","Debugging strategies","Block-based programming: sprites, events, sequences","Robotics and algorithms basics"] },
+    ],
+    health: [
+      { unit: "Body & Nutrition", topics: ["Reading nutrition labels","Body systems review","Communicable vs. noncommunicable disease","Puberty and body changes basics"] },
+      { unit: "Safety & Wellness", topics: ["Managing stress","Self-esteem and empathy","Safety and first aid review","Substance abuse prevention","Healthy relationships","Communication skills","Mental and emotional health","Setting personal health goals"] },
+    ],
+  },
   6: {
     math: [
       { unit: 'Ratios & Proportional Relationships', topics: ['Understanding ratios','Unit rates','Ratio tables','Proportional relationships','Percent problems'] },
@@ -6905,9 +7124,9 @@ function render() {
   if (!gradeData || !main) return;
 
   // Grade header
-  const gradeNames = { 6:'Sixth',7:'Seventh',8:'Eighth',9:'Ninth',10:'Tenth',11:'Eleventh',12:'Twelfth', ap:'AP' };
+  const gradeNames = { k:'Kindergarten', 1:'First',2:'Second',3:'Third',4:'Fourth',5:'Fifth', 6:'Sixth',7:'Seventh',8:'Eighth',9:'Ninth',10:'Tenth',11:'Eleventh',12:'Twelfth', ap:'AP' };
   const isAP = currentGrade === 'ap';
-  const gradeTitle = isAP ? 'AP Courses' : gradeNames[currentGrade] + ' Grade';
+  const gradeTitle = isAP ? 'AP Courses' : (currentGrade === 'k' ? 'Kindergarten' : gradeNames[currentGrade] + ' Grade');
   const gradeSubtitle = isAP ? '38 College Board AP courses — click a unit to expand topics' : 'Full curriculum — select a subject to filter';
   let html = `<div class="grade-header"><h1>${gradeTitle}</h1><span>${gradeSubtitle}</span></div>`;
 
@@ -7120,7 +7339,7 @@ function setSubject(id) {
 document.querySelectorAll('#gradeList a').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
-    const g = a.dataset.grade; setGrade(g === 'ap' ? 'ap' : parseInt(g));
+    const g = a.dataset.grade; setGrade(g === 'ap' ? 'ap' : (g === 'k' ? 'k' : parseInt(g)));
   });
 });
 
