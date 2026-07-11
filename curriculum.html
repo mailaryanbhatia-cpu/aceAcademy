@@ -399,6 +399,578 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 // ex = worked example (optional, shown in green)
 // ──────────────────────────────────────────────
 const PRACTICE = {
+  1: {
+    math: [
+      [
+        { title: "Addition Fact Families", problems: [
+          { q: "If 6 + 4 = 10, what other addition fact is in the same fact family?", ex: "Fact families use the same 3 numbers", a: "4 + 6 = 10" },
+          { q: "What subtraction fact belongs to the same fact family as 7 + 3 = 10?", ex: "Use the same 3 numbers: 7, 3, and 10", a: "10 - 3 = 7 (or 10 - 7 = 3)" },
+          { q: "Write all four facts in the family for 5, 3, and 8.", ex: "Two addition and two subtraction facts", a: "5 + 3 = 8, 3 + 5 = 8, 8 - 3 = 5, 8 - 5 = 3" },
+          { q: "If 9 - 4 = 5, what addition fact is in the same family?", ex: "Use the same 3 numbers: 9, 4, and 5", a: "5 + 4 = 9 (or 4 + 5 = 9)" },
+        ]},
+        { title: "Doubles and Near-doubles", problems: [
+          { q: "What is 6 + 6?", ex: "This is a doubles fact", a: "12" },
+          { q: "What is 7 + 8 using a near-double?", ex: "Think of 7 + 7 = 14, then add 1 more", a: "15" },
+          { q: "What is 5 + 5?", ex: "This is a doubles fact", a: "10" },
+          { q: "What is 4 + 5 using a near-double?", ex: "Think of 4 + 4 = 8, then add 1 more", a: "9" },
+        ]},
+        { title: "Subtraction Within 20", problems: [
+          { q: "What is 15 - 7?", ex: "Count back from 15, or think of the addition fact", a: "8" },
+          { q: "What is 18 - 9?", ex: "Think: 9 + 9 = 18", a: "9" },
+          { q: "What is 12 - 5?", ex: "Count back from 12", a: "7" },
+          { q: "What is 20 - 8?", ex: "Think: 8 + 12 = 20", a: "12" },
+        ]},
+        { title: "Addition and Subtraction Word Problems", problems: [
+          { q: "There are 8 birds on a fence. 5 more birds land on the fence. How many birds are there now?", ex: "Add the new birds to the total", a: "13 birds" },
+          { q: "Jenny has 14 marbles. She gives 6 to her friend. How many marbles does she have left?", ex: "Subtract the marbles she gave away", a: "8 marbles" },
+          { q: "There are 9 red balloons and 7 blue balloons. How many balloons in all?", ex: "Add the two groups together", a: "16 balloons" },
+          { q: "A basket has 17 apples. 8 are eaten. How many apples are left?", ex: "Subtract the eaten apples", a: "9 apples" },
+        ]},
+        { title: "Counting to 120", problems: [
+          { q: "What number comes right after 99?", ex: "Think about what happens after the last two-digit number", a: "100" },
+          { q: "What number comes right before 110?", ex: "Count back one number from 110", a: "109" },
+          { q: "Count by ones from 115 to 118. What numbers do you say?", ex: "Add one each time", a: "116, 117, 118" },
+          { q: "What number is 10 more than 100?", ex: "Add 10 to 100", a: "110" },
+        ]},
+      ],
+      [
+        { title: "Tens and Ones", problems: [
+          { q: "In the number 34, how many tens and how many ones are there?", ex: "The first digit is tens, the second is ones", a: "3 tens and 4 ones" },
+          { q: "What number has 5 tens and 2 ones?", ex: "5 tens is 50, plus 2 ones", a: "52" },
+          { q: "In the number 78, how many tens are there?", ex: "Look at the first digit", a: "7 tens" },
+          { q: "What number has 6 tens and 0 ones?", ex: "6 tens is 60, plus 0 ones", a: "60" },
+        ]},
+        { title: "Comparing Two-digit Numbers", problems: [
+          { q: "Which is greater: 45 or 54?", ex: "Compare the tens digits first", a: "54, because 5 tens is more than 4 tens" },
+          { q: "Which is less: 62 or 26?", ex: "Compare the tens digits first", a: "26, because 2 tens is less than 6 tens" },
+          { q: "Use <, >, or = to compare 38 and 38.", ex: "Compare the tens and ones of both numbers", a: "38 = 38" },
+          { q: "Which is greater: 90 or 89?", ex: "Compare the tens digits first", a: "90, because 9 tens is more than 8 tens" },
+        ]},
+        { title: "Skip Counting By 2s, 5s, and 10s", problems: [
+          { q: "Count by 2s starting at 2: 2, 4, 6, ___, ___.", ex: "Add 2 each time", a: "8, 10" },
+          { q: "Count by 5s starting at 5: 5, 10, 15, ___, ___.", ex: "Add 5 each time", a: "20, 25" },
+          { q: "Count by 10s starting at 10: 10, 20, 30, ___, ___.", ex: "Add 10 each time", a: "40, 50" },
+          { q: "What comes next when skip counting by 2s: 12, 14, 16, ___?", ex: "Add 2 to 16", a: "18" },
+        ]},
+        { title: "Comparing Three Numbers", problems: [
+          { q: "Put these numbers in order from least to greatest: 45, 12, 30.", ex: "Find the smallest first", a: "12, 30, 45" },
+          { q: "Which is the greatest of these three numbers: 67, 76, 60?", ex: "Compare the tens digits first", a: "76" },
+          { q: "Which is the least of these three numbers: 23, 32, 19?", ex: "Compare all three numbers", a: "19" },
+          { q: "Put these numbers in order from greatest to least: 8, 80, 18.", ex: "Find the biggest number first", a: "80, 18, 8" },
+        ]},
+      ],
+      [
+        { title: "Measuring Length with Nonstandard Units", problems: [
+          { q: "You measure a book using paperclips and it is 6 paperclips long. What is the length of the book?", ex: "Count the number of paperclips end to end", a: "6 paperclips long" },
+          { q: "Why might two people get different answers when measuring the same table with their hands?", ex: "Think about how hand sizes are different", a: "Because hands are different sizes, so the measurement is not exact" },
+          { q: "If a pencil is 4 blocks long and a crayon is 2 blocks long, which is longer?", ex: "Compare the two measurements", a: "The pencil is longer" },
+          { q: "What is a nonstandard unit of measurement?", ex: "Think about objects like paperclips or hand spans used to measure", a: "A unit that is not an official measurement tool, like paperclips, blocks, or hand spans" },
+        ]},
+        { title: "Measuring Length with Standard Units", problems: [
+          { q: "What tool do you use to measure length in inches?", ex: "Think of a tool with numbered markings", a: "A ruler" },
+          { q: "A pencil measures 7 inches on a ruler. How long is the pencil?", ex: "Read the number where the pencil ends", a: "7 inches" },
+          { q: "Why do we use standard units like inches instead of paperclips?", ex: "Think about getting the same answer every time", a: "Because standard units give the same measurement no matter who measures" },
+          { q: "If a table is 3 feet long, about how many inches long is it (using 1 foot = 12 inches)?", ex: "Multiply the number of feet by 12", a: "36 inches" },
+        ]},
+        { title: "Telling Time to the Hour", problems: [
+          { q: "The short hand points to 3 and the long hand points to 12. What time is it?", ex: "The short hand shows the hour, the long hand at 12 means 'o'clock'", a: "3:00 (three o'clock)" },
+          { q: "If it is 8 o'clock, where does the long hand point?", ex: "Think about where the minute hand points at the top of the hour", a: "It points to the 12" },
+          { q: "The short hand points to 11 and the long hand points to 12. What time is it?", ex: "Read the hour from the short hand", a: "11:00 (eleven o'clock)" },
+          { q: "How many hours are on a clock face?", ex: "Count the numbers around the clock", a: "12 hours" },
+        ]},
+        { title: "Telling Time to the Half Hour", problems: [
+          { q: "The short hand is between 4 and 5, and the long hand points to 6. What time is it?", ex: "The long hand at 6 means 30 minutes past the hour", a: "4:30" },
+          { q: "If it is 9:30, where does the long hand point?", ex: "Think about the halfway mark on the clock", a: "It points to the 6" },
+          { q: "What does it mean when the long hand points to the 6?", ex: "Think about how many minutes have passed", a: "It means 30 minutes have passed (half past the hour)" },
+          { q: "The short hand is between 2 and 3, and the long hand points to 6. What time is it?", ex: "Read the hour and add 30 minutes", a: "2:30" },
+        ]},
+      ],
+      [
+        { title: "2D Shapes and Attributes", problems: [
+          { q: "How many sides and corners does a pentagon have?", ex: "Think of a 5-sided shape", a: "5 sides and 5 corners" },
+          { q: "What makes a square different from a rectangle?", ex: "Think about the side lengths", a: "A square has all 4 sides the same length, while a rectangle usually has 2 long and 2 short sides" },
+          { q: "How many sides does a hexagon have?", ex: "Think of a 6-sided shape", a: "6 sides" },
+          { q: "Does a circle have any corners?", ex: "Think about the round, curved shape", a: "No, a circle has no corners because it is curved" },
+        ]},
+        { title: "3D Shapes", problems: [
+          { q: "How many flat faces does a cube have?", ex: "Think about a dice with 6 sides", a: "6 faces" },
+          { q: "What 3D shape has one flat circular face and comes to a point?", ex: "Think of an ice cream cone shape", a: "A cone" },
+          { q: "Name a real-world object shaped like a sphere.", ex: "Think of something round like a ball", a: "Many answers work, such as a ball or a globe" },
+          { q: "What 3D shape has two flat circular faces and one curved side?", ex: "Think of a can shape", a: "A cylinder" },
+        ]},
+        { title: "Simple Fractions (halves and Fourths)", problems: [
+          { q: "If a pizza is cut into 2 equal pieces, what is each piece called?", ex: "Think of the fraction word for 2 equal parts", a: "A half" },
+          { q: "If a sandwich is cut into 4 equal pieces, what is each piece called?", ex: "Think of the fraction word for 4 equal parts", a: "A fourth (quarter)" },
+          { q: "How many halves make a whole?", ex: "Think about how many equal parts of 2 make the whole thing", a: "2 halves" },
+          { q: "How many fourths make a whole?", ex: "Think about how many equal parts of 4 make the whole thing", a: "4 fourths" },
+        ]},
+        { title: "Equal Shares", problems: [
+          { q: "You want to split a candy bar equally between 2 friends. How much does each friend get?", ex: "Think about dividing into 2 equal parts", a: "Each friend gets half (1/2)" },
+          { q: "Why must the pieces be the same size for equal shares?", ex: "Think about what 'equal' means", a: "Because equal shares means everyone gets the exact same amount" },
+          { q: "You split a pie into 4 equal pieces for 4 friends. Is that a fair share?", ex: "Think about whether each person gets the same amount", a: "Yes, because each friend gets one equal fourth of the pie" },
+          { q: "If you cut a paper into 2 pieces but one piece is bigger, are those equal shares?", ex: "Think about whether the pieces are the same size", a: "No, equal shares must be the same size" },
+        ]},
+      ],
+      [
+        { title: "Identifying Coins", problems: [
+          { q: "Which coin is silver-colored and the smallest in size?", ex: "Think about the smallest US coin", a: "The dime" },
+          { q: "Which coin has Abraham Lincoln on it?", ex: "Think of the copper-colored coin", a: "The penny" },
+          { q: "Which coin is the biggest of the four common coins (penny, nickel, dime, quarter)?", ex: "Think about coin sizes", a: "The quarter" },
+          { q: "Which coin is silver-colored and bigger than a penny but smaller than a quarter?", ex: "Think about the coin worth 5 cents", a: "The nickel" },
+        ]},
+        { title: "Coin Values", problems: [
+          { q: "How much is a nickel worth?", ex: "A nickel is worth five of something", a: "5 cents" },
+          { q: "How much is a quarter worth?", ex: "A quarter is worth twenty-five of something", a: "25 cents" },
+          { q: "If you have 2 dimes, how much money do you have?", ex: "Add 10 cents + 10 cents", a: "20 cents" },
+          { q: "If you have 1 quarter and 1 dime, how much money do you have?", ex: "Add 25 cents + 10 cents", a: "35 cents" },
+        ]},
+        { title: "Tally Charts", problems: [
+          { q: "How many tally marks are grouped together before you draw a line through them?", ex: "Think about counting by 5s with tally marks", a: "5 tally marks" },
+          { q: "If a tally chart shows IIII (4 marks) for apples, how many apples were counted?", ex: "Count each single mark", a: "4 apples" },
+          { q: "If a tally chart shows one group of 5 marks and 2 more marks for oranges, how many oranges in total?", ex: "5 plus 2 more", a: "7 oranges" },
+          { q: "Why do people use tally marks to count things?", ex: "Think about how it makes counting easier to track", a: "They make it easy to count and keep track of items quickly, especially in groups of 5" },
+        ]},
+        { title: "Simple Graphs", problems: [
+          { q: "A bar graph shows 5 kids like apples and 3 kids like bananas. Which fruit is more popular?", ex: "Compare the two bars", a: "Apples, because 5 is more than 3" },
+          { q: "What does the height of a bar in a bar graph usually show?", ex: "Think about what the bar represents", a: "The amount or number of something being counted" },
+          { q: "If a graph shows 6 red cars and 6 blue cars, are they equal or different amounts?", ex: "Compare the two numbers", a: "Equal, because both are 6" },
+          { q: "Why are graphs helpful for showing data?", ex: "Think about how pictures can make numbers easier to understand", a: "They make it easy to see and compare information quickly using pictures or bars" },
+        ]},
+      ],
+    ],
+    science: [
+      [
+        { title: "Plant Needs and Parts", problems: [
+          { q: "What are the main parts of a plant?", ex: "Think of the parts from the ground up: roots, stem, leaves, flower", a: "Roots, stem, leaves, and flower" },
+          { q: "What does the stem of a plant do?", ex: "Think about what holds the plant up and moves water", a: "It holds the plant up and carries water and nutrients to the leaves" },
+          { q: "What do plants need to grow?", ex: "Think about sunlight, water, air, and soil", a: "Sunlight, water, air, and soil" },
+          { q: "Why do plants need sunlight?", ex: "Think about how plants make their own food", a: "Plants use sunlight to make their own food" },
+        ]},
+        { title: "Plant Life Cycle", problems: [
+          { q: "What is the correct order of a plant's life cycle: seed, adult plant, sprout, or seed, sprout, adult plant?", ex: "Think about how a plant grows over time", a: "Seed, sprout, adult plant" },
+          { q: "What happens to a flower after it is pollinated?", ex: "Think about how new seeds form", a: "It can turn into fruit that holds new seeds" },
+          { q: "What is germination?", ex: "Think about when a seed starts to grow", a: "When a seed begins to sprout and grow into a plant" },
+          { q: "Do all plants go through a life cycle?", ex: "Think about whether plants are born, grow, and make new plants", a: "Yes, all plants grow from a seed (or similar start) and eventually make new seeds" },
+        ]},
+        { title: "Parts of a Seed", problems: [
+          { q: "What part of a seed protects the inside of the seed?", ex: "Think of the outer covering", a: "The seed coat" },
+          { q: "What part of the seed grows into the new plant?", ex: "Think of the tiny baby plant inside the seed", a: "The embryo" },
+          { q: "What part of the seed provides food for the new plant as it starts to grow?", ex: "Think of the stored food inside the seed", a: "The stored food (cotyledon)" },
+          { q: "What does a seed need to begin growing?", ex: "Think about water and warmth", a: "Water, warmth, and sometimes light and air" },
+        ]},
+      ],
+      [
+        { title: "Animal Life Cycles", problems: [
+          { q: "What is the order of a butterfly's life cycle: egg, caterpillar, chrysalis, butterfly?", ex: "Think about the stages of change", a: "Egg, caterpillar (larva), chrysalis (pupa), butterfly" },
+          { q: "What is a frog's life cycle, starting from an egg?", ex: "Think about tadpoles turning into frogs", a: "Egg, tadpole, froglet, adult frog" },
+          { q: "What do we call a baby frog before it grows legs?", ex: "Think of the swimming stage after hatching", a: "A tadpole" },
+          { q: "Do all animals go through the same life cycle stages?", ex: "Think about how a dog grows compared to a butterfly", a: "No, different animals have different life cycles" },
+        ]},
+        { title: "Animal Habitats and Adaptations", problems: [
+          { q: "What is an adaptation?", ex: "Think about a special feature that helps an animal survive", a: "A special feature or behavior that helps an animal survive in its environment" },
+          { q: "Why do polar bears have thick white fur?", ex: "Think about staying warm and hiding in the snow", a: "To stay warm in the cold and to blend in with the snow" },
+          { q: "Why do ducks have webbed feet?", ex: "Think about how it helps them move in water", a: "To help them swim through water" },
+          { q: "How do camels survive in the hot desert?", ex: "Think about storing water and having special body features", a: "They store fat in their humps and can go a long time without water" },
+        ]},
+        { title: "Animal Coverings and Body Parts", problems: [
+          { q: "What kind of covering does a bird have?", ex: "Think about what helps it fly", a: "Feathers" },
+          { q: "What kind of covering does a fish have?", ex: "Think about what protects its body in water", a: "Scales" },
+          { q: "What body part does a fish use to breathe underwater?", ex: "Think about the special organs on the side of its head", a: "Gills" },
+          { q: "What kind of covering does a dog usually have?", ex: "Think about what keeps it warm", a: "Fur" },
+        ]},
+      ],
+      [
+        { title: "States of Matter", problems: [
+          { q: "Is water in a cup a solid, liquid, or gas?", ex: "Think about how it flows and takes the shape of the cup", a: "A liquid" },
+          { q: "Is an ice cube a solid, liquid, or gas?", ex: "Think about whether it keeps its shape", a: "A solid" },
+          { q: "What happens to ice when it melts?", ex: "Think about a solid changing into a liquid", a: "It turns from a solid into a liquid (water)" },
+          { q: "Is steam a solid, liquid, or gas?", ex: "Think about water that has evaporated into the air", a: "A gas" },
+        ]},
+        { title: "Sound: How It's Made", problems: [
+          { q: "How is sound made?", ex: "Think about something moving quickly back and forth", a: "Sound is made when something vibrates" },
+          { q: "If you pluck a guitar string, what makes the sound?", ex: "Think about the string moving quickly", a: "The vibrating string" },
+          { q: "What happens to sound when you talk louder?", ex: "Think about the strength of the vibration", a: "The vibrations get stronger, making the sound louder" },
+          { q: "Can sound travel through the air?", ex: "Think about how you hear someone talking across a room", a: "Yes, sound travels through the air as vibrations" },
+        ]},
+        { title: "Light and Shadows", problems: [
+          { q: "What do you need to make a shadow?", ex: "Think about light and an object blocking it", a: "A light source and an object blocking the light" },
+          { q: "Why is a shadow dark?", ex: "Think about light being blocked", a: "Because the object blocks the light from reaching that spot" },
+          { q: "Can you see a shadow in a completely dark room with no light?", ex: "Think about whether shadows need light to form", a: "No, shadows need light to be made" },
+          { q: "What happens to your shadow's size as the light source gets closer to you?", ex: "Think about how shadows change with the distance of light", a: "Your shadow usually gets bigger" },
+        ]},
+        { title: "Push and Pull Forces", problems: [
+          { q: "What force do you use to open a drawer by pulling it toward you?", ex: "Think about the direction of the movement", a: "A pull" },
+          { q: "What force do you use when you push a swing away from you?", ex: "Think about moving something away", a: "A push" },
+          { q: "Can a push or pull make something move faster or slower?", ex: "Think about how force changes motion", a: "Yes, forces like pushes and pulls can speed up, slow down, or stop motion" },
+          { q: "What force is used to throw a ball?", ex: "Think about moving the ball away from your hand", a: "A push" },
+        ]},
+        { title: "Magnets", problems: [
+          { q: "What kinds of objects do magnets attract?", ex: "Think about metal objects like paperclips", a: "Objects made of certain metals, like iron and steel" },
+          { q: "Will a magnet attract a plastic spoon?", ex: "Think about whether plastic is magnetic", a: "No, magnets do not attract plastic" },
+          { q: "What happens when you put two magnets' matching poles (like north to north) together?", ex: "Think about magnets pushing apart", a: "They push apart (repel)" },
+          { q: "What happens when you put two magnets' opposite poles together?", ex: "Think about magnets sticking together", a: "They pull together (attract)" },
+        ]},
+      ],
+      [
+        { title: "Weather Patterns and Tools", problems: [
+          { q: "What tool measures temperature?", ex: "Think about the tool with numbers that tells how hot or cold it is", a: "A thermometer" },
+          { q: "What tool shows which direction the wind is blowing?", ex: "Think about a spinning arrow outside", a: "A weather vane" },
+          { q: "What tool measures how much rain has fallen?", ex: "Think about a container that collects rain", a: "A rain gauge" },
+          { q: "Why do we track weather patterns?", ex: "Think about predicting what the weather will be like", a: "To help us know what to expect and plan accordingly, like bringing an umbrella" },
+        ]},
+        { title: "How Seasons Affect Living Things", problems: [
+          { q: "Why do some animals grow thicker fur in winter?", ex: "Think about staying warm in cold weather", a: "To stay warm in the cold weather" },
+          { q: "What happens to many trees' leaves in the fall?", ex: "Think about leaves changing color and falling", a: "The leaves change color and fall off the trees" },
+          { q: "Why do some birds migrate south in the winter?", ex: "Think about finding warmer weather and food", a: "To find warmer weather and more food" },
+          { q: "What do bears do during the winter to survive the cold?", ex: "Think about a long winter sleep", a: "Many bears hibernate (sleep) through the winter" },
+        ]},
+        { title: "Day and Night and the Sun's Path", problems: [
+          { q: "Where does the sun appear to rise in the morning?", ex: "Think of the direction the sun comes up", a: "In the east" },
+          { q: "Where does the sun appear to set in the evening?", ex: "Think of the direction the sun goes down", a: "In the west" },
+          { q: "Why does the sun seem to move across the sky during the day?", ex: "Think about the Earth spinning", a: "Because the Earth is spinning (rotating)" },
+          { q: "Is the sun higher in the sky at noon or in the early morning?", ex: "Think about the sun's path throughout the day", a: "At noon, the sun is usually highest in the sky" },
+        ]},
+        { title: "The Moon and Stars", problems: [
+          { q: "Does the moon make its own light?", ex: "Think about where moonlight actually comes from", a: "No, the moon reflects light from the sun" },
+          { q: "When can you usually see stars in the sky?", ex: "Think about when the sky gets dark", a: "At night, when the sky is dark" },
+          { q: "Does the moon look the same every night?", ex: "Think about the moon's changing shape (phases)", a: "No, the moon appears to change shape throughout the month (its phases)" },
+          { q: "What is a star?", ex: "Think about a giant ball of hot, glowing gas", a: "A giant ball of hot, glowing gas in space" },
+        ]},
+      ],
+    ],
+    ela: [
+      [
+        { title: "Short Vowel Sounds", problems: [
+          { q: "What vowel sound do you hear in the word 'cat'?", ex: "Say the word slowly and listen to the middle sound", a: "The short /a/ sound" },
+          { q: "What vowel sound do you hear in the word 'bed'?", ex: "Say the word slowly and listen to the middle sound", a: "The short /e/ sound" },
+          { q: "What vowel sound do you hear in the word 'sit'?", ex: "Say the word slowly and listen to the middle sound", a: "The short /i/ sound" },
+          { q: "What vowel sound do you hear in the word 'top'?", ex: "Say the word slowly and listen to the middle sound", a: "The short /o/ sound" },
+        ]},
+        { title: "Long Vowel Sounds", problems: [
+          { q: "What vowel sound do you hear in the word 'cake'?", ex: "Say the word slowly; the vowel says its own name", a: "The long /a/ sound" },
+          { q: "What vowel sound do you hear in the word 'bike'?", ex: "Say the word slowly; the vowel says its own name", a: "The long /i/ sound" },
+          { q: "What is a common way to make a vowel sound 'long', like adding a silent letter at the end?", ex: "Think about the silent e rule", a: "Adding a silent 'e' at the end of the word, like in 'cake' or 'bike'" },
+          { q: "What vowel sound do you hear in the word 'rope'?", ex: "Say the word slowly; the vowel says its own name", a: "The long /o/ sound" },
+        ]},
+        { title: "Consonant Blends", problems: [
+          { q: "What two letters blend together at the start of the word 'stop'?", ex: "Say the word slowly and listen to the first two sounds", a: "St" },
+          { q: "What two letters blend together at the start of the word 'frog'?", ex: "Say the word slowly and listen to the first two sounds", a: "Fr" },
+          { q: "What is a consonant blend?", ex: "Think about two consonants next to each other that keep their own sounds", a: "Two or more consonants next to each other where you can still hear each letter's sound, like 'bl' or 'st'" },
+          { q: "What two letters blend together at the start of the word 'plan'?", ex: "Say the word slowly and listen to the first two sounds", a: "Pl" },
+        ]},
+        { title: "Consonant Digraphs", problems: [
+          { q: "What two letters make one new sound in the word 'ship'?", ex: "Think of two letters that blend into a single sound", a: "Sh" },
+          { q: "What two letters make one new sound in the word 'chip'?", ex: "Think of two letters that blend into a single sound", a: "Ch" },
+          { q: "What is a digraph?", ex: "Think about two letters that make one brand-new sound together", a: "Two letters that together make one new sound, like 'sh', 'ch', or 'th'" },
+          { q: "What two letters make one sound at the end of the word 'bath'?", ex: "Think of the two letters that blend into a single sound", a: "Th" },
+        ]},
+        { title: "R-controlled Vowels Basics", problems: [
+          { q: "What sound does 'ar' make in the word 'car'?", ex: "Say the word and listen to the vowel-r sound", a: "The /ar/ sound" },
+          { q: "What sound does 'er' make in the word 'her'?", ex: "Say the word and listen to the vowel-r sound", a: "The /er/ sound" },
+          { q: "What happens to a vowel's sound when it is followed by the letter r?", ex: "Think about how 'car' sounds different from 'cat'", a: "The r changes the vowel's sound, so it doesn't sound short or long like usual" },
+          { q: "What sound does 'or' make in the word 'for'?", ex: "Say the word and listen to the vowel-r sound", a: "The /or/ sound" },
+        ]},
+      ],
+      [
+        { title: "Grade 1 Sight Words", problems: [
+          { q: "Fill in the blank: 'They ___ going to the park.' Use the word that means 'were'.", ex: "Think of a small common word for past tense of 'are'", a: "Was" },
+          { q: "Fill in the blank: 'She ___ that I like dogs.' Use the word that means someone spoke.", ex: "Think of the past tense of 'say'", a: "Said" },
+          { q: "Fill in the blank: 'I got a gift ___ my grandma.' Use the word that shows where something came from.", ex: "Think of a small word meaning 'starting at' or 'given by'", a: "From" },
+          { q: "Fill in the blank: 'We ___ one dog and two cats.' Use the word for owning something.", ex: "Think of the word that means to own something", a: "Have" },
+        ]},
+        { title: "Compound Words", problems: [
+          { q: "What two smaller words make up the compound word 'sunflower'?", ex: "Break the word into two parts", a: "Sun and flower" },
+          { q: "What compound word do you get when you put 'basket' and 'ball' together?", ex: "Combine the two words", a: "Basketball" },
+          { q: "What two smaller words make up the compound word 'football'?", ex: "Break the word into two parts", a: "Foot and ball" },
+          { q: "What is a compound word?", ex: "Think about two small words joined to make a new word", a: "A word made by joining two smaller words together, like 'sunflower' or 'football'" },
+        ]},
+        { title: "Contractions Basics", problems: [
+          { q: "What contraction is made from 'do not'?", ex: "Combine the two words and add an apostrophe", a: "Don't" },
+          { q: "What contraction is made from 'I am'?", ex: "Combine the two words and add an apostrophe", a: "I'm" },
+          { q: "What two words make up the contraction 'can't'?", ex: "Think about what letters are missing", a: "Cannot (can + not)" },
+          { q: "What contraction is made from 'it is'?", ex: "Combine the two words and add an apostrophe", a: "It's" },
+        ]},
+      ],
+      [
+        { title: "Nouns", problems: [
+          { q: "What is a noun?", ex: "Think about a word for a person, place, or thing", a: "A word that names a person, place, thing, or animal" },
+          { q: "Which word in this sentence is a noun: 'The dog ran fast'?", ex: "Look for the person, place, or thing", a: "Dog" },
+          { q: "Name a noun that names a place.", ex: "Think of a location, like a park or school", a: "Many answers work, such as 'park', 'school', or 'house'" },
+          { q: "Which word is a noun: 'jump', 'happy', or 'table'?", ex: "Think about which word names a thing", a: "Table" },
+        ]},
+        { title: "Verbs", problems: [
+          { q: "What is a verb?", ex: "Think about a word that shows action", a: "A word that shows an action or state of being" },
+          { q: "Which word in this sentence is a verb: 'The cat jumps high'?", ex: "Look for the action word", a: "Jumps" },
+          { q: "Name a verb that means to move quickly.", ex: "Think of an action word for fast movement", a: "Many answers work, such as 'run' or 'race'" },
+          { q: "Which word is a verb: 'swim', 'happy', or 'dog'?", ex: "Think about which word shows an action", a: "Swim" },
+        ]},
+        { title: "Complete Sentences vs. Fragments", problems: [
+          { q: "Is 'The big dog' a complete sentence or a fragment?", ex: "Think about whether it tells a full idea, including an action", a: "A fragment, because it doesn't have a verb or tell a complete idea" },
+          { q: "Is 'The dog barked loudly.' a complete sentence or a fragment?", ex: "Think about whether it has a subject and a verb", a: "A complete sentence, because it has a subject and a verb and tells a full idea" },
+          { q: "What two things does a sentence usually need to be complete?", ex: "Think about who or what, and what they do", a: "A subject (who or what) and a verb (what they do)" },
+          { q: "Is 'running in the park' a complete sentence?", ex: "Think about whether it has a clear subject", a: "No, it is a fragment because it is missing a subject" },
+        ]},
+        { title: "Capitalization and Punctuation Basics", problems: [
+          { q: "What letter should always be capitalized in a sentence?", ex: "Think about the very first letter", a: "The first letter of the sentence" },
+          { q: "What punctuation mark do you use at the end of a question?", ex: "Think about the curved mark", a: "A question mark (?)" },
+          { q: "Should the word 'I' always be capitalized?", ex: "Think about this special one-letter word", a: "Yes, the word 'I' is always capitalized" },
+          { q: "What punctuation mark ends a sentence that shows excitement?", ex: "Think about the mark that shows strong feeling", a: "An exclamation point (!)" },
+        ]},
+      ],
+      [
+        { title: "Story Elements: Setting and Character", problems: [
+          { q: "What is the setting of a story?", ex: "Think about where and when a story happens", a: "The place and time where the story happens" },
+          { q: "What is a character in a story?", ex: "Think about who the story is about", a: "A person or animal in the story" },
+          { q: "If a story happens in a snowy forest, what is the setting?", ex: "Think about the place described", a: "A snowy forest" },
+          { q: "Can a story have more than one character?", ex: "Think about stories with a main character and other characters", a: "Yes, stories often have a main character and other characters too" },
+        ]},
+        { title: "Problem and Solution", problems: [
+          { q: "What is the 'problem' in a story?", ex: "Think about a challenge the character faces", a: "A challenge or issue that a character needs to solve" },
+          { q: "What is the 'solution' in a story?", ex: "Think about how the problem gets fixed", a: "The way the problem gets solved or fixed" },
+          { q: "In a story where a boy loses his dog and then finds it, what is the problem?", ex: "Think about what challenge the boy faces", a: "The boy loses his dog" },
+          { q: "In the same story, what is the solution?", ex: "Think about how the story is resolved", a: "The boy finds his dog" },
+        ]},
+        { title: "Main Idea", problems: [
+          { q: "What is the 'main idea' of a story or text?", ex: "Think about the most important point", a: "The most important point or message of the text" },
+          { q: "If a story is mostly about a girl learning to ride a bike, what is the main idea?", ex: "Think about the central topic", a: "A girl learning to ride a bike" },
+          { q: "How can finding the title help you figure out the main idea?", ex: "Think about how titles often hint at what the text is about", a: "Titles often give a clue about what the text is mostly about" },
+          { q: "Are small details usually the main idea, or do they support the main idea?", ex: "Think about how details relate to the big picture", a: "Small details usually support the main idea rather than being the main idea themselves" },
+        ]},
+        { title: "Sequencing Events", problems: [
+          { q: "What words help show the order of events, like 'first' or 'next'?", ex: "Think about sequence words", a: "First, next, then, and last" },
+          { q: "If a story says 'First she woke up, then she ate breakfast,' what happened first?", ex: "Look at the word 'first'", a: "She woke up" },
+          { q: "Why is it important to understand the order of events in a story?", ex: "Think about how the story makes sense in order", a: "It helps you understand how and why things happen in the story" },
+          { q: "What word usually signals the last event in a sequence?", ex: "Think of a word like 'finally'", a: "'Last' or 'finally'" },
+        ]},
+      ],
+      [
+        { title: "Syllables", problems: [
+          { q: "How many syllables are in the word 'rabbit'?", ex: "Clap for each beat: rab-bit", a: "2 syllables" },
+          { q: "How many syllables are in the word 'elephant'?", ex: "Clap for each beat: el-e-phant", a: "3 syllables" },
+          { q: "How many syllables are in the word 'sun'?", ex: "Clap once for the one beat", a: "1 syllable" },
+          { q: "What is a syllable?", ex: "Think about a beat or chunk of sound in a word", a: "A beat or chunk of sound in a word, usually with one vowel sound" },
+        ]},
+        { title: "Rhyming Word Families", problems: [
+          { q: "Name two words in the '-at' word family.", ex: "Think of words that end in -at, like cat", a: "Many answers work, such as 'cat', 'hat', 'bat', or 'mat'" },
+          { q: "Name two words in the '-og' word family.", ex: "Think of words that end in -og, like dog", a: "Many answers work, such as 'dog', 'log', 'fog', or 'jog'" },
+          { q: "What is a word family?", ex: "Think about words that share the same ending sound and letters", a: "A group of words that share the same ending sound and spelling pattern, like 'cat', 'hat', and 'mat'" },
+          { q: "Which word belongs in the '-in' word family: pin or top?", ex: "Compare the endings of the words", a: "Pin" },
+        ]},
+        { title: "Prefixes Basics", problems: [
+          { q: "What does adding 'un-' to the word 'happy' create, and what does it mean?", ex: "Think about the prefix that means 'not'", a: "Unhappy, meaning not happy" },
+          { q: "What does the prefix 're-' usually mean, as in 'redo'?", ex: "Think about doing something again", a: "It usually means 'again', so 'redo' means to do again" },
+          { q: "What is a prefix?", ex: "Think about letters added to the beginning of a word that change its meaning", a: "A group of letters added to the beginning of a word that changes its meaning" },
+          { q: "What does adding 'un-' to the word 'tie' create, and what does it mean?", ex: "Think about the prefix that means 'not' or 'opposite of'", a: "Untie, meaning to undo a tie" },
+        ]},
+      ],
+    ],
+    history: [
+      [
+        { title: "Community Helpers and Their Tools", problems: [
+          { q: "What tool does a firefighter use to put out fires?", ex: "Think about water and hoses", a: "A hose (and water)" },
+          { q: "What tool does a doctor use to listen to your heartbeat?", ex: "Think of the tool that goes around the neck", a: "A stethoscope" },
+          { q: "What vehicle does a mail carrier often use to deliver mail?", ex: "Think about a special truck or vehicle", a: "A mail truck" },
+          { q: "What tool might a police officer use to direct traffic?", ex: "Think of hand signals or a whistle", a: "A whistle (or hand signals)" },
+        ]},
+        { title: "Goods and Services", problems: [
+          { q: "Is a haircut a good or a service?", ex: "Think about whether it is something you can hold, or something someone does for you", a: "A service, because it's something someone does for you" },
+          { q: "Is a loaf of bread a good or a service?", ex: "Think about whether it is a physical object", a: "A good, because it is something you can buy and hold" },
+          { q: "What do we call things people make or grow to sell?", ex: "Think about the word for physical items you can buy", a: "Goods" },
+          { q: "What do we call helpful work that people do for others, like teaching?", ex: "Think about the word for helpful actions people provide", a: "A service" },
+        ]},
+        { title: "Needs vs. Wants", problems: [
+          { q: "Is water a need or a want?", ex: "Think about whether you could survive without it", a: "A need" },
+          { q: "Is a new video game a need or a want?", ex: "Think about whether you could survive without it", a: "A want" },
+          { q: "Name two things that are needs.", ex: "Think about things every person must have", a: "Many answers work, such as food, water, shelter, and clothing" },
+          { q: "Why is it important to know the difference between needs and wants?", ex: "Think about spending money wisely", a: "It helps people make good choices about spending money and resources" },
+        ]},
+        { title: "Rules and Laws and Consequences", problems: [
+          { q: "What is the difference between a rule and a law?", ex: "Think about who makes each one and where they apply", a: "Rules are made for smaller groups, like a classroom, while laws are made by the government for everyone" },
+          { q: "What might happen if someone breaks a law?", ex: "Think about consequences like fines or other punishments", a: "They could face a consequence like a fine or other punishment" },
+          { q: "Why do communities need laws?", ex: "Think about keeping everyone safe and fair", a: "To keep people safe and make sure everyone is treated fairly" },
+          { q: "Give an example of a school rule and its consequence.", ex: "Think of a rule like no running in the halls", a: "Many answers work, such as: no running in the halls, and the consequence might be a warning" },
+        ]},
+      ],
+      [
+        { title: "Map Basics (map Key and Legend)", problems: [
+          { q: "What is a map key (or legend) used for?", ex: "Think about explaining the symbols on a map", a: "It explains what the symbols and colors on a map mean" },
+          { q: "If a map key shows a blue line means a river, what does a blue line on the map represent?", ex: "Match the symbol to its meaning in the key", a: "A river" },
+          { q: "Why is a map key helpful?", ex: "Think about understanding what symbols mean", a: "It helps people understand what the different symbols and colors on the map represent" },
+          { q: "What might a green area on a map key represent?", ex: "Think about a common color used for parks or forests", a: "Often a park or forest area" },
+        ]},
+        { title: "Globes vs. Maps and Simple Directions", problems: [
+          { q: "What is the difference between a globe and a map?", ex: "Think about the shape of each one", a: "A globe is round like the Earth, while a map is flat" },
+          { q: "What are the four main directions on a map called?", ex: "Think of north, south, east, and west", a: "North, south, east, and west" },
+          { q: "On most maps, which direction is at the top?", ex: "Think about how maps are usually drawn", a: "North" },
+          { q: "Why is a globe a more accurate model of the Earth than a flat map?", ex: "Think about the actual shape of the Earth", a: "Because the Earth is round, and a globe shows its true round shape" },
+        ]},
+        { title: "American Symbols and Landmarks", problems: [
+          { q: "What large green statue in New York represents freedom?", ex: "Think of the statue holding a torch", a: "The Statue of Liberty" },
+          { q: "What bird is a symbol of the United States?", ex: "Think of the bird on the US seal", a: "The bald eagle" },
+          { q: "What building in Washington, D.C. is where the President lives and works?", ex: "Think of the famous white building", a: "The White House" },
+          { q: "What is the tall stone monument in Washington, D.C. that honors George Washington?", ex: "Think of the tall pointed monument", a: "The Washington Monument" },
+        ]},
+      ],
+      [
+        { title: "National Holidays and Their Meaning", problems: [
+          { q: "What holiday celebrates the day the United States declared independence?", ex: "Think of the holiday in July", a: "Independence Day (July 4th)" },
+          { q: "What holiday in November is about being thankful?", ex: "Think of a holiday with a big family meal", a: "Thanksgiving" },
+          { q: "What holiday honors the men and women who served in the military?", ex: "Think of Veterans Day", a: "Veterans Day" },
+          { q: "What holiday celebrates the birthday of a president?", ex: "Think of Presidents' Day", a: "Presidents' Day" },
+        ]},
+        { title: "Transportation Long Ago vs. Now", problems: [
+          { q: "How did people travel long distances before cars were invented?", ex: "Think about horses and wagons", a: "By horse, wagon, or on foot" },
+          { q: "What is a faster way to travel long distances today compared to long ago?", ex: "Think about airplanes", a: "By airplane, car, or train" },
+          { q: "How did people cross the ocean long ago compared to today?", ex: "Think about ships versus airplanes", a: "Long ago people used sailing ships; today people can fly across the ocean in airplanes" },
+          { q: "Name one type of transportation that did not exist 200 years ago.", ex: "Think about cars, airplanes, or trains", a: "Many answers work, such as cars, airplanes, or trains" },
+        ]},
+        { title: "Communication Long Ago vs. Now", problems: [
+          { q: "How did people send messages long ago before phones were invented?", ex: "Think about writing letters", a: "By writing letters or sending messengers" },
+          { q: "How can people communicate instantly today that they couldn't long ago?", ex: "Think about phones and the internet", a: "By using phones, texting, or video calls" },
+          { q: "What is one way communication has become faster over time?", ex: "Think about how quickly a message can be sent now", a: "Messages can now be sent instantly using phones and the internet instead of taking days by mail" },
+          { q: "Did people long ago have cell phones?", ex: "Think about when cell phones were invented", a: "No, cell phones are a fairly recent invention" },
+        ]},
+        { title: "School Long Ago vs. Now", problems: [
+          { q: "Did students long ago use computers in school?", ex: "Think about when computers became common", a: "No, computers are a newer invention not used in schools long ago" },
+          { q: "What did students long ago often write on instead of paper and pencils?", ex: "Think about chalkboards or slates", a: "Small chalkboards called slates" },
+          { q: "Name one way school today is different from school long ago.", ex: "Think about technology or classroom size", a: "Many answers work, such as using computers, smartboards, or having smaller class sizes" },
+          { q: "Did all children go to school long ago the way they do today?", ex: "Think about how school access has changed over time", a: "No, in the past not all children had the chance to go to school" },
+        ]},
+        { title: "Being a Good Citizen", problems: [
+          { q: "What is one way to be a good citizen in your community?", ex: "Think about following rules and helping others", a: "Many answers work, such as following laws, helping neighbors, or picking up litter" },
+          { q: "Why is voting an important part of being a citizen (for adults)?", ex: "Think about having a say in decisions", a: "It lets citizens have a say in choosing leaders and making decisions" },
+          { q: "What is one way kids can be good citizens at school?", ex: "Think about following rules and being kind", a: "Many answers work, such as following school rules and being respectful to others" },
+          { q: "Why is it important to respect other people's property?", ex: "Think about treating others' belongings the way you'd want yours treated", a: "Because it shows respect and helps everyone get along peacefully" },
+        ]},
+      ],
+    ],
+    cs: [
+      [
+        { title: "Computer Hardware Parts", problems: [
+          { q: "What part of a computer stores your files and programs?", ex: "Think about the storage part inside the computer", a: "The hard drive (storage)" },
+          { q: "What part of a computer do you use to see the screen?", ex: "Think about the display screen", a: "The monitor" },
+          { q: "What is hardware?", ex: "Think about the parts you can physically touch", a: "The physical parts of a computer that you can touch, like the keyboard and monitor" },
+          { q: "What part of a computer do you type on?", ex: "Think about the part with letter and number keys", a: "The keyboard" },
+        ]},
+        { title: "Input vs. Output Devices", problems: [
+          { q: "Is a keyboard an input or output device?", ex: "Think about whether it sends information into the computer", a: "An input device, because you use it to put information into the computer" },
+          { q: "Is a printer an input or output device?", ex: "Think about whether it produces something from the computer", a: "An output device, because it produces something (paper) from the computer" },
+          { q: "Is a mouse an input or output device?", ex: "Think about whether it sends commands into the computer", a: "An input device" },
+          { q: "Is a monitor an input or output device?", ex: "Think about whether it shows information from the computer", a: "An output device, because it shows information from the computer" },
+        ]},
+        { title: "Basic Keyboard/typing Familiarity", problems: [
+          { q: "What key do you press to make a space between words?", ex: "Think about the long key at the bottom", a: "The spacebar" },
+          { q: "What key do you press to start a new line or paragraph?", ex: "Think about the key that moves your cursor down", a: "The Enter (return) key" },
+          { q: "What key helps you erase a letter you just typed?", ex: "Think about the key that removes text", a: "The Backspace (or Delete) key" },
+          { q: "What key do you hold down to type a capital letter?", ex: "Think about the key used with letters to make them uppercase", a: "The Shift key" },
+        ]},
+        { title: "What Apps and Programs Do", problems: [
+          { q: "What is an app?", ex: "Think about a small program you use on a phone or tablet", a: "A program that lets you do a specific task, like playing a game or drawing" },
+          { q: "Name one thing a drawing app lets you do.", ex: "Think about creating pictures on a screen", a: "Create and color pictures on the screen" },
+          { q: "What might a math app help you practice?", ex: "Think about numbers and math problems", a: "Practicing math skills like addition and subtraction" },
+          { q: "Do all apps do the same thing?", ex: "Think about how different apps have different purposes", a: "No, different apps are made for different purposes, like games, drawing, or learning" },
+        ]},
+      ],
+      [
+        { title: "Following Step-by-step Directions", problems: [
+          { q: "Why is it important to follow directions in order when using a computer program?", ex: "Think about what happens if you skip a step", a: "Because skipping steps can cause mistakes or make the task not work" },
+          { q: "If instructions say 'click start, then choose a game, then press play,' what do you do first?", ex: "Look at the very first instruction", a: "Click start" },
+          { q: "What do we call a set of step-by-step instructions a computer follows?", ex: "Think of the special word for computer instructions", a: "A program (or algorithm)" },
+          { q: "Why do computers need very exact instructions?", ex: "Think about how computers can't guess what you mean", a: "Because computers can only do exactly what they are told, without guessing" },
+        ]},
+        { title: "Sequencing Events in Order", problems: [
+          { q: "What does it mean to put steps in 'sequence'?", ex: "Think about the correct order of steps", a: "To put steps in the correct order" },
+          { q: "If the steps to draw a picture are 'pick a color, then draw a line,' what happens first?", ex: "Look at the order given", a: "Pick a color" },
+          { q: "Why does the order of steps matter when giving a computer instructions?", ex: "Think about what happens if the order is switched", a: "Because doing steps in the wrong order can make the program not work correctly" },
+          { q: "What comes after 'open the app' if the next step is 'choose a game'?", ex: "Look at the sequence given", a: "Choose a game" },
+        ]},
+        { title: "Simple If/then Decision Thinking", problems: [
+          { q: "If a game says 'if you touch the star, then you get a point,' what happens when you touch the star?", ex: "Follow the 'if...then' rule", a: "You get a point" },
+          { q: "What is an 'if/then' statement?", ex: "Think about a rule that says what happens under a certain condition", a: "A rule that says if something happens, then something else will happen" },
+          { q: "If a robot's rule is 'if there is a wall, then stop,' what should the robot do when it reaches a wall?", ex: "Follow the rule given", a: "Stop" },
+          { q: "Why are if/then rules useful in games and programs?", ex: "Think about how they help decide what happens next", a: "They help the program decide what to do based on different situations" },
+        ]},
+        { title: "Internet Safety Basics", problems: [
+          { q: "Should you share your home address with someone you meet online?", ex: "Think about keeping personal information private", a: "No, you should never share personal information like your address online" },
+          { q: "What should you do if a stranger messages you online?", ex: "Think about telling a trusted adult", a: "Tell a trusted grown-up right away" },
+          { q: "Is everything you see on the internet always true?", ex: "Think about whether all information online is accurate", a: "No, not everything online is true, so it's important to check with a trusted adult" },
+          { q: "Why shouldn't you click on pop-ups or links you don't recognize?", ex: "Think about how they could be unsafe or lead to bad websites", a: "Because they could be unsafe or lead to harmful websites" },
+        ]},
+        { title: "Being a Responsible Digital Citizen", problems: [
+          { q: "What does it mean to be a responsible digital citizen?", ex: "Think about being safe, kind, and respectful when using technology", a: "Using technology safely, kindly, and respectfully" },
+          { q: "Should you say mean things to someone in a game just because it's online?", ex: "Think about treating people the same online as in person", a: "No, you should always be kind, whether online or in person" },
+          { q: "Why should you ask permission before downloading a new app?", ex: "Think about staying safe and following family rules", a: "Because a grown-up can make sure the app is safe and appropriate" },
+          { q: "What should you do if you make a mistake while using a device, like breaking a rule?", ex: "Think about being honest and telling an adult", a: "Tell a trusted grown-up and try to fix the mistake" },
+        ]},
+      ],
+    ],
+    health: [
+      [
+        { title: "Food Groups and Healthy Eating", problems: [
+          { q: "Name one food group that includes apples and bananas.", ex: "Think about the group for fruit", a: "Fruits" },
+          { q: "Name one food group that includes carrots and broccoli.", ex: "Think about the group for veggies", a: "Vegetables" },
+          { q: "Why is it important to eat foods from different food groups?", ex: "Think about getting all the nutrients your body needs", a: "Because different food groups give your body different nutrients it needs to stay healthy" },
+          { q: "Name one food group that includes milk and cheese.", ex: "Think about the group for dairy", a: "Dairy" },
+        ]},
+        { title: "Personal Hygiene Routines", problems: [
+          { q: "Why should you wash your hands before eating?", ex: "Think about removing germs", a: "To remove germs that could make you sick" },
+          { q: "How often should you take a bath or shower?", ex: "Think about staying clean regularly", a: "Regularly, usually every day or every other day" },
+          { q: "Why is it important to wash your hair?", ex: "Think about keeping it clean and healthy", a: "To keep it clean and free of dirt and oil" },
+          { q: "What hygiene habit helps prevent cavities?", ex: "Think about brushing your teeth", a: "Brushing your teeth regularly" },
+        ]},
+        { title: "Exercise and Physical Activity", problems: [
+          { q: "Why is exercise good for your body?", ex: "Think about keeping your heart and muscles strong", a: "It keeps your heart, muscles, and body strong and healthy" },
+          { q: "Name one activity that counts as exercise.", ex: "Think about running, swimming, or biking", a: "Many answers work, such as running, biking, swimming, or dancing" },
+          { q: "How does your heart rate change when you exercise?", ex: "Think about your heart beating faster", a: "Your heart beats faster during exercise" },
+          { q: "About how much physical activity should kids get each day?", ex: "Think about at least an hour of movement", a: "At least about 60 minutes (1 hour) of activity" },
+        ]},
+        { title: "Sleep Habits", problems: [
+          { q: "Why do kids need more sleep than adults?", ex: "Think about growing bodies needing extra rest", a: "Because their bodies are still growing and need extra rest" },
+          { q: "What might happen if you don't get enough sleep?", ex: "Think about feeling tired or having trouble focusing", a: "You might feel tired, cranky, or have trouble paying attention" },
+          { q: "Name one good bedtime habit, like reading before bed.", ex: "Think about calm activities before sleeping", a: "Many answers work, such as reading a book or having a consistent bedtime" },
+          { q: "Should you look at bright screens right before bed?", ex: "Think about how screens can make it harder to fall asleep", a: "No, screens before bed can make it harder to fall asleep" },
+        ]},
+        { title: "Dental Care", problems: [
+          { q: "How many times a day should you brush your teeth?", ex: "Think about morning and night", a: "At least twice a day" },
+          { q: "What tool do you use to clean between your teeth?", ex: "Think about the thin string used for teeth", a: "Floss" },
+          { q: "Why should you visit the dentist regularly?", ex: "Think about checking for cavities and keeping teeth healthy", a: "To check for cavities and make sure your teeth and gums are healthy" },
+          { q: "What foods can be bad for your teeth if eaten too often?", ex: "Think about sugary snacks and drinks", a: "Sugary foods and drinks, like candy and soda" },
+        ]},
+      ],
+      [
+        { title: "Safety Rules (streets, Bikes, Fire)", problems: [
+          { q: "What should you do before crossing a street?", ex: "Think about checking both directions", a: "Look both ways for cars before crossing" },
+          { q: "What should you wear when riding a bike?", ex: "Think about protecting your head", a: "A helmet" },
+          { q: "What should you do if you see a fire?", ex: "Think about getting away and telling an adult", a: "Get away from it and tell a grown-up immediately" },
+          { q: "Why do we practice fire drills at school?", ex: "Think about knowing what to do in a real emergency", a: "So everyone knows how to exit safely in a real emergency" },
+        ]},
+        { title: "Germs and Staying Healthy", problems: [
+          { q: "How do germs spread from person to person?", ex: "Think about touching, coughing, or sneezing", a: "Through touching, coughing, sneezing, or sharing items" },
+          { q: "What is one way to stop germs from spreading?", ex: "Think about washing hands or covering coughs", a: "Washing your hands and covering your coughs and sneezes" },
+          { q: "Why should you avoid touching your face with dirty hands?", ex: "Think about how germs can enter your body", a: "Because germs on your hands can get into your eyes, nose, or mouth and make you sick" },
+          { q: "What should you do if you feel sick, like having a fever?", ex: "Think about telling an adult and resting", a: "Tell a grown-up and rest so you can get better and not spread germs" },
+        ]},
+        { title: "Emotions and How to Express Them", problems: [
+          { q: "What is a healthy way to show you are angry?", ex: "Think about calm ways to express feelings, like talking about it", a: "Talking about your feelings calmly or taking deep breaths" },
+          { q: "Why is it okay to feel sad sometimes?", ex: "Think about how all feelings are normal", a: "Because all feelings, including sadness, are a normal part of being human" },
+          { q: "What should you do if you feel worried about something?", ex: "Think about talking to a trusted adult", a: "Talk to a trusted grown-up about what's worrying you" },
+          { q: "Name one healthy way to calm down when you're upset.", ex: "Think about deep breaths or counting to ten", a: "Many answers work, such as taking deep breaths or counting to ten" },
+        ]},
+        { title: "The Five Senses and Body Parts Review", problems: [
+          { q: "Which sense do you use to taste your food?", ex: "Think about your tongue", a: "Taste" },
+          { q: "What body part helps you balance and stand up straight?", ex: "Think about your ears (inner ear) and legs", a: "Your inner ear helps with balance, along with your legs and feet" },
+          { q: "Which sense helps you know if music is loud or soft?", ex: "Think about your ears", a: "Hearing" },
+          { q: "What body part protects your eyes when something comes toward your face?", ex: "Think about blinking", a: "Your eyelids" },
+        ]},
+        { title: "Stranger Safety", problems: [
+          { q: "Should you go anywhere with a stranger, even if they seem nice?", ex: "Think about staying safe around people you don't know", a: "No, you should never go anywhere with a stranger" },
+          { q: "What should you do if a stranger offers you candy or a toy?", ex: "Think about saying no and telling a trusted adult", a: "Say no and tell a trusted grown-up right away" },
+          { q: "Who are 'safe strangers' you could ask for help if you were lost, like a police officer?", ex: "Think about people in uniforms who are there to help", a: "People like police officers, or a parent with children" },
+          { q: "What should you do if you get separated from your family in a public place?", ex: "Think about staying calm and finding a safe adult to help", a: "Stay calm, stay where you are if possible, and find a safe adult like a store worker or police officer" },
+        ]},
+      ],
+    ],
+  },
   'k': {
     math: [
       [
