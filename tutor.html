@@ -136,10 +136,13 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
     <div class="sidebar-section">
       <div class="sidebar-label">Your Grade</div>
       <select class="side-select" id="gradeSelect">
+        <option value="k">Kindergarten</option><option value="1">Grade 1</option>
+        <option value="2">Grade 2</option><option value="3">Grade 3</option>
+        <option value="4">Grade 4</option><option value="5">Grade 5</option>
         <option value="6">Grade 6</option><option value="7">Grade 7</option>
         <option value="8">Grade 8</option><option value="9" selected>Grade 9</option>
         <option value="10">Grade 10</option><option value="11">Grade 11</option>
-        <option value="12">Grade 12</option>
+        <option value="12">Grade 12</option><option value="ap">AP</option>
       </select>
     </div>
     <div class="sidebar-section">
@@ -261,7 +264,7 @@ let lastTopicId = null;
 const variantIdx = {};
 let guided = null; // Socratic guided problem state
 
-const getGrade = () => +document.getElementById('gradeSelect').value;
+const getGrade = () => document.getElementById('gradeSelect').value;
 
 // ─── MATH ENGINE ─────────────────────────────────────────────────────────────
 
@@ -1122,10 +1125,11 @@ function handleGuided(input) {
 
 // ─── RESPONSE BUILDER ─────────────────────────────────────────────────────────
 
+function gLabel(g){ return g==='k' ? 'Kindergarten' : g==='ap' ? 'AP' : 'Grade ' + g; }
 const GREETINGS = [
-  g=>`Hey! 👋 I'm <strong>Acer</strong>, your aceAcademy smart tutor. I can explain concepts, solve math problems, and generate practice questions for Grade ${g}.<br><br>What are you working on today?`,
-  g=>`Hi there! 😊 Ready to learn? I'm Acer. Tell me what topic you're studying for Grade ${g} and I'll break it down step by step.`,
-  g=>`Hello! Great to meet you. I'm Acer — I cover Math, Science, ELA, History, CS, and Health. What shall we tackle for Grade ${g}?`,
+  g=>`Hey! 👋 I'm <strong>Acer</strong>, your aceAcademy smart tutor. I can explain concepts, solve math problems, and generate practice questions for ${gLabel(g)}.<br><br>What are you working on today?`,
+  g=>`Hi there! 😊 Ready to learn? I'm Acer. Tell me what topic you're studying for ${gLabel(g)} and I'll break it down step by step.`,
+  g=>`Hello! Great to meet you. I'm Acer — I cover Math, Science, ELA, History, CS, and Health. What shall we tackle for ${gLabel(g)}?`,
 ];
 const THANKS = [
   `You're welcome! 😊 Keep up the great work. What else can I help with?`,
@@ -1280,7 +1284,9 @@ function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(e
 
 document.getElementById('gradeSelect').addEventListener('change', () => {
   lastTopicId = null;
-  addMsg(`Switched to <strong>Grade ${getGrade()} mode</strong>! I'll tailor everything to your level. What are you working on? 😊`, 'acer');
+  const _g = getGrade();
+  const _gLabel = _g === 'k' ? 'Kindergarten' : _g === 'ap' ? 'AP' : 'Grade ' + _g;
+  addMsg(`Switched to <strong>${_gLabel} mode</strong>! I'll tailor everything to your level. What are you working on? 😊`, 'acer');
 });
 
 window.onload = () => {
