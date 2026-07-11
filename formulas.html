@@ -81,6 +81,12 @@ select:focus{border-color:var(--accent)}
 <div class="container">
   <div class="controls">
     <select id="gradeSelect" onchange="buildSheet()">
+      <option value="k">Kindergarten</option>
+      <option value="1">Grade 1</option>
+      <option value="2">Grade 2</option>
+      <option value="3">Grade 3</option>
+      <option value="4">Grade 4</option>
+      <option value="5">Grade 5</option>
       <option value="6">Grade 6</option>
       <option value="7">Grade 7</option>
       <option value="8">Grade 8</option>
@@ -112,6 +118,191 @@ select:focus{border-color:var(--accent)}
 
 <script>
 const FORMULAS = {
+  'k': {
+    math:[
+      {section:"Counting & Numbers", items:[
+        {f:"1, 2, 3, ... 20", d:"Counting numbers in order up to 20"},
+        {f:"5 = 5", d:"Numbers can be shown with objects, fingers, or dots"},
+        {f:"3 + 2 = 5", d:"Putting two small groups together (addition)"},
+        {f:"5 \u2212 2 = 3", d:"Taking away from a group (subtraction)"},
+      ]},
+      {section:"Shapes", items:[
+        {f:"Circle, square, triangle, rectangle", d:"Basic 2D shapes and their names"},
+        {f:"Cube, sphere, cone", d:"Basic 3D shapes and their names"},
+        {f:"Sides and corners", d:"Shapes can be sorted by number of sides and corners"},
+      ]},
+      {section:"Comparing Numbers", items:[
+        {f:"more, less, equal", d:"Comparing the size of two groups"},
+        {f:"1st, 2nd, 3rd...", d:"Ordinal numbers show position or order"},
+      ]},
+    ],
+    science:[
+      {section:"The Five Senses", items:[
+        {f:"See, hear, smell, taste, touch", d:"The five senses help us learn about the world"},
+        {f:"Eyes, ears, nose, tongue, skin", d:"Body parts used for each sense"},
+      ]},
+      {section:"Weather & Seasons", items:[
+        {f:"Spring, summer, fall, winter", d:"The four seasons of the year"},
+        {f:"Sunny, rainy, cloudy, snowy", d:"Types of weather"},
+        {f:"Living vs. nonliving", d:"Living things grow and need food, water, and air; nonliving things do not"},
+      ]},
+    ],
+  },
+  '1': {
+    math:[
+      {section:"Addition & Subtraction", items:[
+        {f:"a + b = b + a", d:"Order doesn't matter when adding (commutative property)"},
+        {f:"7 + 0 = 7", d:"Adding zero doesn't change a number"},
+        {f:"10 = 6 + 4", d:"Number pairs that make 10"},
+        {f:"12 \u2212 5 = 7", d:"Subtracting within 20"},
+      ]},
+      {section:"Place Value", items:[
+        {f:"Tens and ones", d:"A 2-digit number is made of groups of tens and leftover ones"},
+        {f:"23 = 2 tens + 3 ones", d:"Breaking apart a number by place value"},
+      ]},
+      {section:"Shapes & Measurement", items:[
+        {f:"2D and 3D shapes", d:"Flat shapes (2D) vs. solid shapes (3D)"},
+        {f:"Longer, shorter, taller", d:"Comparing length and height"},
+      ]},
+    ],
+    science:[
+      {section:"Living vs. Nonliving", items:[
+        {f:"Grow, eat, breathe, reproduce", d:"Signs that something is a living thing"},
+        {f:"Plants and animals", d:"The two main groups of living things"},
+      ]},
+      {section:"Weather", items:[
+        {f:"Thermometer measures temperature", d:"A tool used to measure how hot or cold it is"},
+        {f:"Weather changes daily", d:"Weather can be different from one day to the next"},
+      ]},
+    ],
+  },
+  '2': {
+    math:[
+      {section:"Addition & Subtraction", items:[
+        {f:"48 + 27 = 75", d:"Adding 2-digit numbers with regrouping"},
+        {f:"62 \u2212 35 = 27", d:"Subtracting 2-digit numbers with regrouping"},
+        {f:"Fact families", d:"Related addition and subtraction facts using the same 3 numbers"},
+      ]},
+      {section:"Place Value & Rounding", items:[
+        {f:"Hundreds, tens, ones", d:"3-digit numbers are made of hundreds, tens, and ones"},
+        {f:"Round to nearest 10", d:"Rounding a number to the closest multiple of 10"},
+      ]},
+      {section:"Money & Time", items:[
+        {f:"Penny=1\u00a2, nickel=5\u00a2, dime=10\u00a2, quarter=25\u00a2", d:"Values of common coins"},
+        {f:"60 minutes = 1 hour", d:"Telling time to the nearest 5 minutes"},
+      ]},
+      {section:"Measurement", items:[
+        {f:"Inches, feet", d:"Units used to measure length"},
+        {f:"Estimate then measure", d:"Guessing a length before measuring with a ruler"},
+      ]},
+    ],
+    science:[
+      {section:"Life Cycles", items:[
+        {f:"Egg \u2192 caterpillar \u2192 pupa \u2192 butterfly", d:"Example of a life cycle (metamorphosis)"},
+        {f:"Seed \u2192 sprout \u2192 plant \u2192 flower", d:"Life cycle of a plant"},
+      ]},
+      {section:"States of Matter", items:[
+        {f:"Solid, liquid, gas", d:"The three basic states of matter"},
+        {f:"Ice \u2192 water \u2192 steam", d:"Matter can change state when heated or cooled"},
+      ]},
+    ],
+  },
+  '3': {
+    math:[
+      {section:"Multiplication & Division", items:[
+        {f:"a \u00d7 b = b \u00d7 a", d:"Order doesn't matter when multiplying (commutative property)"},
+        {f:"6 \u00d7 7 = 42", d:"Multiplication facts up to 10\u00d710"},
+        {f:"42 \u00f7 6 = 7", d:"Division is the inverse of multiplication"},
+        {f:"a \u00d7 1 = a, a \u00d7 0 = 0", d:"Identity and zero properties of multiplication"},
+      ]},
+      {section:"Fractions Basics", items:[
+        {f:"1/2, 1/3, 1/4", d:"A fraction shows equal parts of a whole"},
+        {f:"Numerator / Denominator", d:"Top number = parts you have; bottom number = total equal parts"},
+      ]},
+      {section:"Perimeter & Area", items:[
+        {f:"P = side + side + side + side", d:"Perimeter: distance around a shape"},
+        {f:"A = length \u00d7 width", d:"Area of a rectangle (in square units)"},
+      ]},
+      {section:"Time & Measurement", items:[
+        {f:"60 seconds = 1 minute", d:"Units of time"},
+        {f:"Elapsed time", d:"The amount of time that passes between a start and end time"},
+      ]},
+    ],
+    science:[
+      {section:"Force & Motion", items:[
+        {f:"Push and pull", d:"Forces that make objects move, stop, or change direction"},
+        {f:"Friction slows objects down", d:"A force caused by two surfaces rubbing together"},
+      ]},
+      {section:"Life Cycles & Habitats", items:[
+        {f:"Habitat = where an organism lives", d:"The natural home of a plant or animal"},
+        {f:"Adaptations help survival", d:"Special traits that help living things survive in their habitat"},
+      ]},
+    ],
+  },
+  '4': {
+    math:[
+      {section:"Multi-Digit Multiplication & Division", items:[
+        {f:"24 \u00d7 13 = 312", d:"Multiplying multi-digit numbers"},
+        {f:"84 \u00f7 4 = 21", d:"Dividing multi-digit numbers"},
+        {f:"Remainder", d:"What is left over when a number doesn't divide evenly"},
+      ]},
+      {section:"Fractions & Decimals", items:[
+        {f:"1/2 = 0.5", d:"Fractions and decimals both represent parts of a whole"},
+        {f:"a/b = (a\u00d7n)/(b\u00d7n)", d:"Equivalent fractions (multiplying top and bottom by the same number)"},
+        {f:"1/4 + 2/4 = 3/4", d:"Adding fractions with the same denominator"},
+      ]},
+      {section:"Geometry Basics", items:[
+        {f:"Acute < 90\u00b0 < Obtuse", d:"Classifying angles by size compared to a right angle (90\u00b0)"},
+        {f:"Parallel and perpendicular lines", d:"Lines that never meet vs. lines that meet at a right angle"},
+      ]},
+      {section:"Measurement Conversions", items:[
+        {f:"1 foot = 12 inches", d:"Customary length conversion"},
+        {f:"1 kg = 1000 g", d:"Metric mass conversion"},
+      ]},
+    ],
+    science:[
+      {section:"Energy Basics", items:[
+        {f:"Kinetic vs. potential energy", d:"Energy of motion vs. stored energy"},
+        {f:"Energy can change form", d:"Example: electrical energy \u2192 light and heat energy in a bulb"},
+      ]},
+      {section:"Earth's Systems", items:[
+        {f:"Erosion and weathering", d:"Processes that wear down and move earth materials over time"},
+        {f:"Water cycle: evaporation, condensation, precipitation", d:"The continuous movement of water on, above, and below Earth's surface"},
+      ]},
+    ],
+  },
+  '5': {
+    math:[
+      {section:"Fraction & Decimal Operations", items:[
+        {f:"a/b + c/d = (ad+bc)/bd", d:"Adding fractions with different denominators"},
+        {f:"a/b \u00d7 c/d = ac/bd", d:"Multiplying fractions"},
+        {f:"0.3 \u00d7 0.4 = 0.12", d:"Multiplying decimals"},
+        {f:"Decimal place values: tenths, hundredths, thousandths", d:"Place values to the right of the decimal point"},
+      ]},
+      {section:"Volume & Geometry", items:[
+        {f:"V = l \u00d7 w \u00d7 h", d:"Volume of a rectangular prism"},
+        {f:"Classifying 2D shapes", d:"Sorting shapes by number of sides, angles, and symmetry"},
+      ]},
+      {section:"Order of Operations", items:[
+        {f:"PEMDAS", d:"Parentheses, Exponents, Multiplication/Division, Addition/Subtraction \u2014 order for solving expressions"},
+        {f:"3 + 4 \u00d7 2 = 11", d:"Multiply before adding, per order of operations"},
+      ]},
+      {section:"Coordinate Plane Basics", items:[
+        {f:"(x, y)", d:"An ordered pair locates a point on a coordinate grid"},
+        {f:"x-axis and y-axis", d:"The horizontal and vertical number lines of a coordinate plane"},
+      ]},
+    ],
+    science:[
+      {section:"Matter & Its Properties", items:[
+        {f:"Physical vs. chemical change", d:"A physical change alters form only; a chemical change creates a new substance"},
+        {f:"Mixtures can be separated", d:"Substances combined without a chemical reaction can often be separated again"},
+      ]},
+      {section:"Ecosystems", items:[
+        {f:"Producer \u2192 consumer \u2192 decomposer", d:"The flow of energy through a food chain"},
+        {f:"Ecosystem = living + nonliving parts", d:"A community of organisms interacting with their physical environment"},
+      ]},
+    ],
+  },
   '6': {
     math: [
       {section:'Number & Operations', items:[
@@ -531,7 +722,7 @@ function buildSheet(){
   const s = document.getElementById('subjectSelect').value;
   const data = (FORMULAS[g] || {})[s] || null;
 
-  const gradeLabel = g==='ap'?'AP Courses':'Grade '+g;
+  const gradeLabel = g==='ap'?'AP Courses':(g==='k'?'Kindergarten':'Grade '+g);
   const subjectLabel = {math:'Mathematics',science:'Science',physics:'Physics',chemistry:'Chemistry'}[s]||s;
   document.getElementById('sheetTitle').textContent = gradeLabel+' — '+subjectLabel;
   document.getElementById('sheetSub').textContent = 'aceAcademy Reference Card • Print-ready';
