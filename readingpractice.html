@@ -92,6 +92,7 @@ label{font-size:.8rem;font-weight:700;color:var(--muted);display:block;margin-bo
         <label>DIFFICULTY / GRADE</label>
         <div class="chip-group" id="lvlGroup">
           <button class="chip active" data-val="all">All</button>
+          <button class="chip" data-val="k-5">Grades K–5</button>
           <button class="chip" data-val="6-8">Grades 6–8</button>
           <button class="chip" data-val="9-10">Grades 9–10</button>
           <button class="chip" data-val="11-12">Grades 11–12</button>
@@ -157,6 +158,65 @@ label{font-size:.8rem;font-weight:700;color:var(--muted);display:block;margin-bo
 
 <script>
 const PASSAGES = [
+  // ── K-5 Literature ──
+  {
+    level:'k-5', subj:'lit',
+    title:'The Kite That Wouldn\'t Fly',
+    source:'Fiction · Grades K–5',
+    text:`Mia got a new red kite for her birthday. She ran to the park with her dad, excited to fly it for the first time. But every time she let go of the string, the kite flopped straight to the ground.
+
+"It's broken!" Mia said, feeling ready to give up.
+
+Her dad knelt down beside her. "Let's try something first," he said. "A kite needs wind to lift it, and it needs you to run so the wind catches it just right."
+
+Mia tried again. This time, she ran as fast as she could across the grass while her dad let the string out little by little. Slowly, the kite lifted off the ground — first a little wobble, then higher and higher, until it was soaring above the treetops.
+
+Mia laughed with joy as she watched her kite dance across the blue sky. She learned that day that things don't always work on the first try, but trying again in a new way can make all the difference.`,
+    qs:[
+      {q:'Why did the kite keep falling at first?',opts:['It was too heavy','Mia wasn\'t running fast enough for the wind to catch it','It was raining','The string was too short'],ans:1,exp:'Mia\'s dad explains the kite "needs wind to lift it, and it needs you to run so the wind catches it just right."'},
+      {q:'How did Mia feel when the kite kept falling?',opts:['Proud','Ready to give up','Excited','Sleepy'],ans:1,exp:'The passage says Mia felt "ready to give up" after the kite flopped to the ground.'},
+      {q:'What lesson does Mia learn by the end of the story?',opts:['Kites are too hard to fly','Trying again in a new way can make a difference','She should never fly kites again','Her dad is better at kites than she is'],ans:1,exp:'The passage ends by stating this lesson directly: trying again in a new way "can make all the difference."'},
+      {q:'What finally made the kite fly?',opts:['A stronger kite string','Mia running fast while her dad let out the string','Waiting for more wind','A bigger kite'],ans:1,exp:'"Mia tried again. This time, she ran as fast as she could... while her dad let the string out little by little."'},
+    ]
+  },
+  // ── K-5 Science ──
+  {
+    level:'k-5', subj:'sci',
+    title:'Why Leaves Change Color',
+    source:'Informational · Science · Grades K–5',
+    text:`Every fall, something amazing happens to the leaves on many trees. Their bright green color slowly fades, and beautiful reds, oranges, and yellows appear instead. But why does this happen?
+
+During spring and summer, leaves are green because they are full of a substance called chlorophyll. Chlorophyll helps leaves catch sunlight and turn it into food for the tree, in a process called photosynthesis. As long as the weather is warm and there's plenty of daylight, trees keep making chlorophyll.
+
+When fall arrives, the days grow shorter and the temperatures drop. Trees sense these changes and begin to slow down their food-making process. As the green chlorophyll breaks down and fades away, other colors that were hidden underneath — yellows and oranges — start to show through.
+
+Some trees also make a brand new red color in their leaves during the fall. Scientists think this red color might help protect the leaf for just a little longer before it falls to the ground. Eventually, all the leaves drop off, and the tree rests through the winter until spring brings warmth and sunlight again.`,
+    qs:[
+      {q:'What makes leaves look green in spring and summer?',opts:['Sunlight alone','A substance called chlorophyll','Cold weather','Rain'],ans:1,exp:'The passage says leaves "are green because they are full of a substance called chlorophyll."'},
+      {q:'What happens to chlorophyll in the fall?',opts:['It turns blue','It breaks down and fades away','It gets stronger','It disappears in summer'],ans:1,exp:'"As the green chlorophyll breaks down and fades away, other colors... start to show through."'},
+      {q:'Why do the yellow and orange colors appear in leaves during fall?',opts:['They are brand new colors made only in fall','They were hidden underneath the green all along','They come from the cold air','Trees paint their leaves'],ans:1,exp:'The passage explains that yellows and oranges "were hidden underneath" the green chlorophyll and appear once it fades.'},
+      {q:'What might the new red color in some fall leaves do?',opts:['Attract more sunlight','Help protect the leaf a little longer before it falls','Make the tree grow faster','Keep the leaf green'],ans:1,exp:'"Scientists think this red color might help protect the leaf for just a little longer before it falls to the ground."'},
+    ]
+  },
+  // ── K-5 History/Social Studies ──
+  {
+    level:'k-5', subj:'history',
+    title:'The First Thanksgiving',
+    source:'Informational · History · Grades K–5',
+    text:`Long ago, in the year 1621, a group of people called the Pilgrims held a special harvest feast in a place now called Massachusetts. The Pilgrims had sailed across the ocean from England on a ship called the Mayflower, hoping to build new lives in America.
+
+Their first winter was very hard. Many Pilgrims got sick, and food was scarce. But a Native American man named Squanto, who spoke English, helped the Pilgrims learn how to plant corn, find fish in the rivers, and gather food from the land.
+
+Thanks to Squanto's help and the skills of the local Wampanoag people, the Pilgrims grew a successful harvest that fall. To celebrate, they held a three-day feast and invited the Wampanoag to join them. About ninety Wampanoag people came, including their leader, Massasoit.
+
+Together, the two groups shared food, played games, and celebrated the harvest. This gathering is often remembered today as the "first Thanksgiving." While the real history includes both friendship and later conflict between settlers and Native peoples, this feast is remembered as a moment when two very different groups came together to share a meal.`,
+    qs:[
+      {q:'Who helped the Pilgrims learn to grow food in their new home?',opts:['King James','Squanto','Massasoit alone','No one helped them'],ans:1,exp:'"A Native American man named Squanto... helped the Pilgrims learn how to plant corn, find fish in the rivers, and gather food."'},
+      {q:'What ship did the Pilgrims sail on to reach America?',opts:['The Santa Maria','The Mayflower','The Nina','The Endeavor'],ans:1,exp:'"The Pilgrims had sailed across the ocean from England on a ship called the Mayflower."'},
+      {q:'About how many Wampanoag people joined the feast?',opts:['About ninety','About nine','About nine hundred','Just one, their leader'],ans:0,exp:'"About ninety Wampanoag people came, including their leader, Massasoit."'},
+      {q:'What is this passage mostly about?',opts:['A long ocean voyage','A harvest feast where Pilgrims and the Wampanoag came together','A battle between two groups','How to build a ship'],ans:1,exp:'The passage focuses on the harvest feast and describes it as "a moment when two very different groups came together to share a meal."'},
+    ]
+  },
   // ── 6-8 Literature ──
   {
     level:'6-8', subj:'lit',
