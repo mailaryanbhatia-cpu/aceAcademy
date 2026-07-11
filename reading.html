@@ -79,6 +79,7 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);mi
     <div class="controls">
       <div class="field"><label>Grade Level</label>
         <select id="r-grade">
+          <option value="k-5">Grades K-5</option>
           <option value="6-8">Grades 6-8</option>
           <option value="9-10">Grades 9-10</option>
           <option value="11-12" selected>Grades 11-12</option>
@@ -109,6 +110,39 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);mi
 
 <script>
 const PASSAGES = [
+  {
+    grade:'k-5', subj:'science',
+    title:'Busy Bees',
+    text:`Bees are small insects that do a big job. They fly from flower to flower, drinking a sweet liquid called nectar. As a bee moves, tiny bits of yellow powder called pollen stick to its fuzzy legs.\n\nWhen the bee flies to the next flower, some of that pollen rubs off. This helps the flower make seeds and grow fruit. Without bees moving pollen around, many plants could not make new plants at all!\n\nBack at the hive, bees use the nectar they collected to make honey. Worker bees store the honey in small wax rooms called honeycomb cells. The honey gives the bees food to eat, especially in the winter when flowers are hard to find.\n\nBees live and work together in large groups called colonies. Each bee has a job — some search for flowers, some guard the hive, and one special bee, the queen, lays all the eggs. Bees may be small, but they help grow much of the food we eat every day.`,
+    questions:[
+      {q:'What is nectar?',choices:['A type of flower','A sweet liquid bees drink from flowers','A kind of bee','A tool beekeepers use'],a:1,exp:'The passage says nectar is "a sweet liquid" that bees drink from flowers.'},
+      {q:'How does pollen help flowers?',choices:['It makes the flower smell better','It helps the flower make seeds and grow fruit','It scares away other insects','It makes honey'],a:1,exp:'The passage explains that pollen moving between flowers "helps the flower make seeds and grow fruit."'},
+      {q:'Where do bees store honey?',choices:['In the flowers','In small wax rooms called honeycomb cells','Underground','In their legs'],a:1,exp:'"Worker bees store the honey in small wax rooms called honeycomb cells."'},
+      {q:'What is a group of bees living together called?',choices:['A herd','A flock','A colony','A pack'],a:2,exp:'The passage states bees "live and work together in large groups called colonies."'},
+    ]
+  },
+  {
+    grade:'k-5', subj:'history',
+    title:'Helpers in Our Community',
+    text:`Every neighborhood has helpers who work hard to keep people safe and happy. These people are called community helpers, and each one has an important job to do.\n\nFirefighters put out fires and rescue people who are in danger. They wear special suits to protect them from heat and smoke. Police officers help keep neighborhoods safe by making sure people follow rules and by helping when someone needs assistance.\n\nDoctors and nurses take care of people who are sick or hurt. They work in hospitals and clinics, using their training to help patients feel better. Teachers help children learn to read, write, and understand the world around them.\n\nMail carriers deliver letters and packages to homes every day, rain or shine. Farmers grow the fruits, vegetables, and grains that end up on our dinner tables. Every community helper plays a part in making a neighborhood work well, and it takes many different jobs working together to keep a community running smoothly.`,
+    questions:[
+      {q:'What is a community helper?',choices:['A person who only helps their own family','A person who works to keep people safe and happy in a neighborhood','A type of building','A kind of pet'],a:1,exp:'The passage defines community helpers as people who "work hard to keep people safe and happy" in a neighborhood.'},
+      {q:'What do firefighters wear to protect themselves?',choices:['Regular clothes','Special suits to protect from heat and smoke','Nothing special','Rain boots'],a:1,exp:'"They wear special suits to protect them from heat and smoke."'},
+      {q:'According to the passage, what do mail carriers do?',choices:['They grow food','They fix cars','They deliver letters and packages','They teach children'],a:2,exp:'"Mail carriers deliver letters and packages to homes every day."'},
+      {q:'What is the main idea of this passage?',choices:['Firefighters are the most important helpers','Many different community helpers work together to help a neighborhood run well','Only adults can be community helpers','Doctors work in schools'],a:1,exp:'The passage describes several different helpers and ends by explaining that it takes many jobs working together to keep a community running smoothly.'},
+    ]
+  },
+  {
+    grade:'k-5', subj:'literature',
+    title:'The Tortoise Who Never Gave Up',
+    text:`Once there was a tortoise named Pip who loved to explore the forest. One day, a quick young rabbit named Dash laughed at how slowly Pip walked. "You're so slow, Pip! I could run circles around you all day!" Dash teased.\n\nPip smiled and said, "Maybe so, but I always get where I'm going." Dash didn't believe him, so he challenged Pip to a race across the forest to the old oak tree.\n\nWhen the race began, Dash zoomed ahead and was soon far out of sight. Feeling very confident, Dash decided to stop and take a nap under a shady tree. "I have plenty of time," he thought. "Pip could never catch up now."\n\nWhile Dash slept, Pip kept walking, slow and steady, one careful step after another. He never stopped, even when the path grew rocky. By the time Dash woke up and rushed to the finish line, Pip was already there, resting happily under the old oak tree. Dash learned that day that being fast doesn't always win — sometimes trying your best and never giving up matters more.`,
+    questions:[
+      {q:'Why did Dash challenge Pip to a race?',choices:['Dash wanted to be Pip\'s friend','Dash thought he could easily beat slow-moving Pip','Pip challenged Dash first','They were both lost in the forest'],a:1,exp:'Dash teased Pip about being slow and was confident he could win easily, so he challenged him to a race.'},
+      {q:'What mistake did Dash make during the race?',choices:['He ran the wrong direction','He stopped to take a nap because he felt too confident','He tripped over a rock','He forgot where the finish line was'],a:1,exp:'"Feeling very confident, Dash decided to stop and take a nap under a shady tree."'},
+      {q:'What lesson does this story teach?',choices:['Rabbits are always faster than tortoises','Being fast is more important than trying hard','Trying your best and never giving up matters more than being fast','Napping is a bad idea'],a:2,exp:'The story ends by stating the lesson directly: "sometimes trying your best and never giving up matters more."'},
+      {q:'How did Pip win the race?',choices:['He took a shortcut','He walked slowly and steadily without stopping','He asked a friend for help','He ran faster than Dash'],a:1,exp:'"Pip kept walking, slow and steady, one careful step after another. He never stopped."'},
+    ]
+  },
   {
     grade:'6-8', subj:'science',
     title:'The Water Cycle',
