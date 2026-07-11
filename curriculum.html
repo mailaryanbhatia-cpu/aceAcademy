@@ -399,6 +399,676 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 // ex = worked example (optional, shown in green)
 // ──────────────────────────────────────────────
 const PRACTICE = {
+  4: {
+    math: [
+      [
+        { title: "Multi-digit Multiplication", problems: [
+          { q: "What is 234 x 6?", ex: "Multiply each place value, regrouping as needed", a: "1,404" },
+          { q: "What is 45 x 23?", ex: "Multiply 45 by 20, then by 3, then add", a: "1,035" },
+          { q: "What is 128 x 4?", ex: "Multiply each digit, regrouping as needed", a: "512" },
+          { q: "What is 67 x 15?", ex: "Multiply 67 by 10, then by 5, then add", a: "1,005" },
+        ]},
+        { title: "Multi-digit Division", problems: [
+          { q: "What is 156 divided by 4?", ex: "Divide step by step, starting from the left", a: "39" },
+          { q: "What is 245 divided by 5?", ex: "Divide step by step", a: "49" },
+          { q: "What is 432 divided by 6?", ex: "Divide step by step", a: "72" },
+          { q: "What is 378 divided by 7?", ex: "Divide step by step", a: "54" },
+        ]},
+        { title: "Interpreting Remainders", problems: [
+          { q: "You have 23 cookies to put into bags of 5. How many full bags can you make, and how many cookies are left over?", ex: "Divide 23 by 5 and think about the remainder", a: "4 full bags, with 3 cookies left over" },
+          { q: "29 students need to be split into vans that hold 6 each. How many vans are needed to fit everyone?", ex: "Divide 29 by 6 and round up because of the remainder", a: "5 vans (4 full vans plus 1 more van for the leftover students)" },
+          { q: "What does a remainder mean in a division problem?", ex: "Think about what is left over that doesn't divide evenly", a: "The amount left over after dividing as evenly as possible" },
+          { q: "You have 34 apples to split evenly among 5 baskets. How many apples go in each basket, and how many are left over?", ex: "Divide 34 by 5", a: "6 apples in each basket, with 4 apples left over" },
+        ]},
+        { title: "Factors and Multiples", problems: [
+          { q: "What are the factors of 12?", ex: "Think about all the numbers that divide evenly into 12", a: "1, 2, 3, 4, 6, and 12" },
+          { q: "What are the first four multiples of 5?", ex: "Multiply 5 by 1, 2, 3, and 4", a: "5, 10, 15, and 20" },
+          { q: "Is 8 a factor of 24?", ex: "Think about whether 24 divided by 8 gives a whole number", a: "Yes, because 24 / 8 = 3 with no remainder" },
+          { q: "What is the greatest common factor of 8 and 12?", ex: "List the factors of each and find the largest one they share", a: "4" },
+        ]},
+        { title: "Prime and Composite Numbers", problems: [
+          { q: "Is 7 a prime or composite number?", ex: "Think about whether it has only two factors: 1 and itself", a: "Prime, because its only factors are 1 and 7" },
+          { q: "Is 12 a prime or composite number?", ex: "Think about whether it has more than two factors", a: "Composite, because it has factors besides 1 and itself, like 2, 3, 4, and 6" },
+          { q: "What is a prime number?", ex: "Think about a number with exactly two factors", a: "A number greater than 1 with only two factors: 1 and itself" },
+          { q: "Is 1 a prime number?", ex: "Think about the special rule for the number 1", a: "No, 1 is neither prime nor composite" },
+        ]},
+      ],
+      [
+        { title: "Equivalent Fractions", problems: [
+          { q: "What fraction is equivalent to 2/5 with a denominator of 10?", ex: "Multiply the numerator and denominator by 2", a: "4/10" },
+          { q: "Is 4/8 equivalent to 1/2?", ex: "Simplify 4/8 and compare", a: "Yes, 4/8 simplifies to 1/2" },
+          { q: "What fraction is equivalent to 3/4 with a denominator of 12?", ex: "Multiply the numerator and denominator by 3", a: "9/12" },
+          { q: "Simplify the fraction 6/9 to its simplest form.", ex: "Divide both the numerator and denominator by their greatest common factor", a: "2/3" },
+        ]},
+        { title: "Fraction Addition and Subtraction with Like Denominators", problems: [
+          { q: "What is 2/7 + 3/7?", ex: "Add the numerators, keep the denominator the same", a: "5/7" },
+          { q: "What is 5/8 - 2/8?", ex: "Subtract the numerators, keep the denominator the same", a: "3/8" },
+          { q: "What is 1/6 + 4/6?", ex: "Add the numerators, keep the denominator the same", a: "5/6" },
+          { q: "What is 7/9 - 3/9?", ex: "Subtract the numerators, keep the denominator the same", a: "4/9" },
+        ]},
+        { title: "Comparing Fractions", problems: [
+          { q: "Which is greater: 3/5 or 2/5?", ex: "Compare the numerators since the denominators are the same", a: "3/5" },
+          { q: "Which is greater: 1/3 or 1/6?", ex: "Think about how fewer parts means a bigger fraction", a: "1/3, because dividing into fewer parts makes each part larger" },
+          { q: "Use <, >, or = to compare 2/3 and 4/6.", ex: "Simplify 4/6 and compare", a: "2/3 = 4/6" },
+          { q: "Which is less: 5/9 or 7/9?", ex: "Compare the numerators since the denominators are the same", a: "5/9" },
+        ]},
+        { title: "Decimal Place Value", problems: [
+          { q: "In the decimal 3.45, what digit is in the tenths place?", ex: "Look at the first digit after the decimal point", a: "4" },
+          { q: "In the decimal 7.286, what digit is in the hundredths place?", ex: "Look at the second digit after the decimal point", a: "8" },
+          { q: "What number has 2 in the ones place, 5 in the tenths place, and 9 in the hundredths place?", ex: "Put the digits in order", a: "2.59" },
+          { q: "In the decimal 0.671, what digit is in the thousandths place?", ex: "Look at the third digit after the decimal point", a: "1" },
+        ]},
+        { title: "Comparing Decimals", problems: [
+          { q: "Which is greater: 0.45 or 0.5?", ex: "Compare the tenths place first", a: "0.5, because 5 tenths is more than 4 tenths" },
+          { q: "Use <, >, or = to compare 3.2 and 3.20.", ex: "Think about whether these represent the same value", a: "3.2 = 3.20" },
+          { q: "Which is less: 6.08 or 6.8?", ex: "Compare the tenths place first", a: "6.08" },
+          { q: "Put these decimals in order from least to greatest: 0.9, 0.09, 0.19.", ex: "Compare the tenths digits first", a: "0.09, 0.19, 0.9" },
+        ]},
+        { title: "Relating Fractions and Decimals", problems: [
+          { q: "What decimal is equivalent to 1/2?", ex: "Think about dividing 1 by 2", a: "0.5" },
+          { q: "What decimal is equivalent to 3/10?", ex: "Think about tenths as a decimal", a: "0.3" },
+          { q: "What fraction is equivalent to 0.25?", ex: "Think about hundredths as a fraction", a: "25/100 (or 1/4)" },
+          { q: "What decimal is equivalent to 3/4?", ex: "Think about dividing 3 by 4", a: "0.75" },
+        ]},
+      ],
+      [
+        { title: "Angles and Angle Measurement", problems: [
+          { q: "What tool is used to measure angles?", ex: "Think about a half-circle tool with degree markings", a: "A protractor" },
+          { q: "What is a right angle?", ex: "Think about an angle that measures exactly 90 degrees", a: "An angle that measures exactly 90 degrees" },
+          { q: "What is an obtuse angle?", ex: "Think about an angle greater than 90 degrees but less than 180", a: "An angle that measures more than 90 degrees but less than 180 degrees" },
+          { q: "What is an acute angle?", ex: "Think about an angle less than 90 degrees", a: "An angle that measures less than 90 degrees" },
+        ]},
+        { title: "Classifying Lines: Parallel and Perpendicular", problems: [
+          { q: "What are parallel lines?", ex: "Think about lines that never cross", a: "Lines that never meet or cross, always staying the same distance apart" },
+          { q: "What are perpendicular lines?", ex: "Think about lines that cross to form a right angle", a: "Lines that cross to form a 90-degree (right) angle" },
+          { q: "Do the two lines that make up a plus sign (+) look parallel or perpendicular?", ex: "Think about how they cross at a right angle", a: "Perpendicular" },
+          { q: "Are railroad tracks an example of parallel or perpendicular lines?", ex: "Think about lines that run side by side without crossing", a: "Parallel" },
+        ]},
+        { title: "Classifying Triangles and Quadrilaterals", problems: [
+          { q: "What is an equilateral triangle?", ex: "Think about a triangle with all sides the same length", a: "A triangle where all three sides are equal in length" },
+          { q: "What is a right triangle?", ex: "Think about a triangle with one 90-degree angle", a: "A triangle with one angle that measures exactly 90 degrees" },
+          { q: "What is the difference between a rectangle and a parallelogram?", ex: "Think about right angles versus slanted sides", a: "A rectangle has four right angles, while a parallelogram's angles don't have to be 90 degrees" },
+          { q: "What is a trapezoid?", ex: "Think about a quadrilateral with only one pair of parallel sides", a: "A quadrilateral with exactly one pair of parallel sides" },
+        ]},
+        { title: "Area and Perimeter Formulas", problems: [
+          { q: "What is the area of a rectangle with length 9 and width 4?", ex: "Multiply length by width", a: "36 square units" },
+          { q: "What is the perimeter of a rectangle with length 7 and width 3?", ex: "Add all four sides, or use 2x(length+width)", a: "20 units" },
+          { q: "What formula do you use to find the perimeter of a rectangle?", ex: "Think about adding twice the length and twice the width", a: "Perimeter = 2 x (length + width)" },
+          { q: "What is the area of a square with side length 8?", ex: "Multiply the side length by itself", a: "64 square units" },
+        ]},
+        { title: "Symmetry Basics", problems: [
+          { q: "What is a line of symmetry?", ex: "Think about a line that divides a shape into two matching halves", a: "A line that divides a shape into two mirror-image halves" },
+          { q: "How many lines of symmetry does a square have?", ex: "Think about all the ways you can fold it in half evenly", a: "4 lines of symmetry" },
+          { q: "Does a circle have symmetry?", ex: "Think about how many ways you can fold it in half evenly", a: "Yes, a circle has infinite lines of symmetry" },
+          { q: "How many lines of symmetry does the letter 'A' typically have?", ex: "Think about folding it in half vertically", a: "1 line of symmetry" },
+        ]},
+      ],
+      [
+        { title: "Customary Unit Conversions", problems: [
+          { q: "How many inches are in 3 feet?", ex: "Multiply feet by 12", a: "36 inches" },
+          { q: "How many feet are in 2 yards?", ex: "Multiply yards by 3", a: "6 feet" },
+          { q: "How many ounces are in 2 pounds?", ex: "Multiply pounds by 16", a: "32 ounces" },
+          { q: "How many cups are in 1 gallon?", ex: "Think about the standard conversion chain: gallon to quarts to pints to cups", a: "16 cups" },
+        ]},
+        { title: "Metric Unit Conversions", problems: [
+          { q: "How many millimeters are in 5 centimeters?", ex: "Multiply centimeters by 10", a: "50 millimeters" },
+          { q: "How many centimeters are in 3 meters?", ex: "Multiply meters by 100", a: "300 centimeters" },
+          { q: "How many grams are in 2 kilograms?", ex: "Multiply kilograms by 1,000", a: "2,000 grams" },
+          { q: "How many milliliters are in 2 liters?", ex: "Multiply liters by 1,000", a: "2,000 milliliters" },
+        ]},
+        { title: "Line Plots and Interpreting Data", problems: [
+          { q: "A line plot shows the number of pets owned by students. If 4 students have 2 pets each, how many X marks are above the number 2?", ex: "Think about each X representing one student", a: "4 X marks" },
+          { q: "What does the spread of data on a line plot tell you?", ex: "Think about how varied or similar the data values are", a: "It shows how varied or similar the data values are across the group" },
+          { q: "If most of the data in a line plot is clustered around one number, what does that suggest?", ex: "Think about a common or typical value", a: "That number is a common or typical value in the data set" },
+          { q: "What do you count to find the total number of data points on a line plot?", ex: "Think about adding up all the X marks", a: "You count all the X marks (or dots) on the plot" },
+        ]},
+        { title: "Using Data to Solve Problems", problems: [
+          { q: "A graph shows sales of 50 books in January and 75 in February. How many more books sold in February?", ex: "Subtract January's sales from February's", a: "25 more books" },
+          { q: "If a chart shows 4 classes with 22, 24, 20, and 26 students, what is the total number of students?", ex: "Add all four numbers together", a: "92 students" },
+          { q: "Why is it useful to organize data into charts or graphs before solving a problem?", ex: "Think about seeing patterns and comparing information more easily", a: "It makes patterns easier to see and helps you compare information quickly" },
+          { q: "A survey shows 15 kids prefer summer and 9 prefer winter. How many more kids chose summer?", ex: "Subtract the smaller amount from the larger amount", a: "6 more kids" },
+        ]},
+      ],
+      [
+        { title: "Rounding Multi-digit Numbers", problems: [
+          { q: "Round 4,678 to the nearest thousand.", ex: "Look at the hundreds digit to decide whether to round up or down", a: "5,000" },
+          { q: "Round 3,245 to the nearest hundred.", ex: "Look at the tens digit to decide whether to round up or down", a: "3,200" },
+          { q: "Round 8,952 to the nearest thousand.", ex: "Look at the hundreds digit to decide whether to round up or down", a: "9,000" },
+          { q: "Round 6,381 to the nearest hundred.", ex: "Look at the tens digit to decide whether to round up or down", a: "6,400" },
+        ]},
+        { title: "Multi-step Word Problems", problems: [
+          { q: "A store had 120 shirts. They sold 45, then received a shipment of 60 more. How many shirts do they have now?", ex: "Subtract, then add", a: "135 shirts (120 - 45 = 75, then 75 + 60 = 135)" },
+          { q: "Sam earns $8 an hour and works 5 hours. He then spends $15. How much money does he have left?", ex: "Multiply first, then subtract", a: "$25 ($8 x 5 = $40, then $40 - $15 = $25)" },
+          { q: "There are 6 classrooms with 24 students each. If 10 students are absent, how many students are present?", ex: "Multiply first, then subtract", a: "134 students present (6 x 24 = 144, then 144 - 10 = 134)" },
+          { q: "A bakery makes 200 muffins. They sell them in boxes of 8. If they sell all but 16 muffins, how many boxes were sold?", ex: "Subtract, then divide", a: "23 boxes (200 - 16 = 184, then 184 / 8 = 23)" },
+        ]},
+        { title: "Multiplicative Comparison", problems: [
+          { q: "If Sam has 3 times as many marbles as Tom, and Tom has 8 marbles, how many marbles does Sam have?", ex: "Multiply Tom's marbles by 3", a: "24 marbles" },
+          { q: "A tree is 5 times as tall as a bush. If the bush is 4 feet tall, how tall is the tree?", ex: "Multiply the bush's height by 5", a: "20 feet" },
+          { q: "What does it mean to say one number is '4 times as many' as another?", ex: "Think about multiplying instead of just adding", a: "It means the first number is 4 times bigger, found by multiplying the second number by 4" },
+          { q: "A rope is 6 times as long as a ribbon. If the ribbon is 3 feet long, how long is the rope?", ex: "Multiply the ribbon's length by 6", a: "18 feet" },
+        ]},
+      ],
+    ],
+    science: [
+      [
+        { title: "Ecosystems and Food Webs", problems: [
+          { q: "What is a food web?", ex: "Think about many connected food chains showing feeding relationships", a: "A network of connected food chains showing how energy flows between many organisms" },
+          { q: "How is a food web different from a food chain?", ex: "Think about a single line versus many connected paths", a: "A food chain shows one path of energy, while a food web shows many connected feeding paths" },
+          { q: "What happens to an ecosystem if one species in the food web disappears?", ex: "Think about the balance being disrupted", a: "It can disrupt the balance, affecting the populations of other species that depended on it" },
+          { q: "Name one organism that might be at the top of a food web, with no predators.", ex: "Think about an apex predator", a: "Many answers work, such as a lion, eagle, or shark" },
+        ]},
+        { title: "Energy Transfer in Food Webs", problems: [
+          { q: "Where does the energy in a food web ultimately come from?", ex: "Think about the sun", a: "The sun" },
+          { q: "How does energy move from a plant to an animal that eats it?", ex: "Think about energy being passed along the food chain", a: "The animal eats the plant, transferring some of the plant's stored energy to itself" },
+          { q: "Does all the energy from one organism transfer completely to the one that eats it?", ex: "Think about energy lost as heat along the way", a: "No, some energy is lost as heat at each step, so only part of it transfers" },
+          { q: "Why are there usually fewer top predators than plants in an ecosystem?", ex: "Think about energy decreasing at each level of the food chain", a: "Because energy decreases at each step of the food chain, so there's less energy available to support predators" },
+        ]},
+        { title: "Producers, Consumers, and Decomposers Review", problems: [
+          { q: "What is a producer?", ex: "Think about organisms that make their own food", a: "An organism, usually a plant, that makes its own food using sunlight" },
+          { q: "What is a consumer?", ex: "Think about organisms that eat other organisms", a: "An organism that eats other organisms for energy" },
+          { q: "What is a decomposer?", ex: "Think about organisms that break down dead material", a: "An organism, like fungi or bacteria, that breaks down dead organisms and returns nutrients to the soil" },
+          { q: "Is a mushroom a producer, consumer, or decomposer?", ex: "Think about how fungi break down dead matter", a: "A decomposer" },
+        ]},
+      ],
+      [
+        { title: "States of Matter and Energy", problems: [
+          { q: "What happens to the particles in a substance as it changes from solid to liquid to gas?", ex: "Think about how particles move more as energy increases", a: "The particles move faster and spread further apart as energy (heat) increases" },
+          { q: "What state of matter has particles that are tightly packed and don't move much?", ex: "Think about a solid", a: "Solid" },
+          { q: "What state of matter has particles that move freely and spread out to fill any space?", ex: "Think about a gas", a: "Gas" },
+          { q: "Does adding heat energy to ice cause it to gain or lose energy?", ex: "Think about heat being added to the ice", a: "It gains energy, which causes it to melt" },
+        ]},
+        { title: "Heat Transfer and Conduction", problems: [
+          { q: "What is conduction?", ex: "Think about heat moving through direct contact", a: "The transfer of heat through direct contact between materials" },
+          { q: "Why does a metal spoon get hot quickly when placed in hot soup?", ex: "Think about metal being a good conductor of heat", a: "Because metal is a good conductor of heat and quickly transfers heat from the hot soup" },
+          { q: "What is an insulator?", ex: "Think about a material that slows down heat transfer", a: "A material that resists or slows down the transfer of heat, like wood or plastic" },
+          { q: "Why do winter coats often have insulating materials inside?", ex: "Think about keeping body heat in and cold air out", a: "To trap body heat and keep the cold from transferring in as easily" },
+        ]},
+        { title: "Light Waves Basics", problems: [
+          { q: "What happens to light when it hits a mirror?", ex: "Think about light bouncing back", a: "It reflects (bounces back)" },
+          { q: "What happens to light when it passes through a glass of water and bends?", ex: "Think about light changing direction as it moves between materials", a: "It refracts (bends)" },
+          { q: "What is the source of most natural light on Earth?", ex: "Think about the sun", a: "The sun" },
+          { q: "Can light travel through empty space?", ex: "Think about how sunlight reaches Earth through space", a: "Yes, light can travel through empty space, unlike sound" },
+        ]},
+        { title: "Sound Waves Basics", problems: [
+          { q: "How does sound travel?", ex: "Think about vibrations moving through the air or another material", a: "Sound travels as vibrations through a material like air, water, or solids" },
+          { q: "Can sound travel through empty space (a vacuum)?", ex: "Think about needing a material for vibrations to travel through", a: "No, sound needs a material to travel through, so it cannot travel through a vacuum" },
+          { q: "What determines how high or low a sound is (its pitch)?", ex: "Think about how fast something vibrates", a: "The speed of the vibration (frequency) \u2014 faster vibrations make higher pitched sounds" },
+          { q: "What determines how loud a sound is?", ex: "Think about the size or strength of the vibration", a: "The size (amplitude) of the vibration \u2014 bigger vibrations make louder sounds" },
+        ]},
+      ],
+      [
+        { title: "The Rock Cycle", problems: [
+          { q: "What are the three types of rocks in the rock cycle?", ex: "Think about igneous, sedimentary, and metamorphic", a: "Igneous, sedimentary, and metamorphic" },
+          { q: "How can a rock change from one type to another?", ex: "Think about heat, pressure, and erosion over time", a: "Through processes like heat, pressure, melting, cooling, and erosion over long periods of time" },
+          { q: "How is metamorphic rock formed?", ex: "Think about heat and pressure changing existing rock", a: "When heat and pressure change an existing rock into a new type without melting it completely" },
+          { q: "Is the rock cycle a one-way process or a continuous cycle?", ex: "Think about rocks constantly changing form over time", a: "A continuous cycle \u2014 rocks can change from one type to another repeatedly over millions of years" },
+        ]},
+        { title: "Erosion and Weathering", problems: [
+          { q: "What is weathering?", ex: "Think about rocks breaking down over time", a: "The process of rocks and land breaking down into smaller pieces over time" },
+          { q: "What is erosion?", ex: "Think about broken-down materials being moved by wind or water", a: "The process of moving weathered rock and soil from one place to another, often by wind or water" },
+          { q: "How does a river cause erosion over time?", ex: "Think about water wearing away rock and carrying sediment", a: "The flowing water wears away rock and soil and carries the sediment downstream" },
+          { q: "Name one thing that can cause weathering, like wind, water, or ice.", ex: "Think about natural forces that break down rock", a: "Many answers work, such as wind, water, ice, or plant roots" },
+        ]},
+        { title: "The Water Cycle in Depth", problems: [
+          { q: "What are the main stages of the water cycle in order?", ex: "Think about evaporation, condensation, precipitation, collection", a: "Evaporation, condensation, precipitation, and collection" },
+          { q: "What is transpiration in the water cycle?", ex: "Think about water vapor released by plants", a: "The release of water vapor from plants into the air" },
+          { q: "How does the water cycle help distribute fresh water around the Earth?", ex: "Think about water constantly moving and falling in different places", a: "It continuously moves water through evaporation and precipitation, spreading fresh water to different areas" },
+          { q: "What causes water vapor to condense and form clouds?", ex: "Think about the water vapor cooling as it rises", a: "As water vapor rises and cools, it condenses into tiny droplets that form clouds" },
+        ]},
+        { title: "Weather Patterns and Climate Zones", problems: [
+          { q: "What is a climate zone?", ex: "Think about a region with a certain type of typical weather", a: "A large region with similar temperature and precipitation patterns" },
+          { q: "Name one type of climate zone, like tropical or polar.", ex: "Think about hot, cold, or temperate regions", a: "Many answers work, such as tropical, temperate, arid, or polar" },
+          { q: "Why is it always warm near the equator?", ex: "Think about how directly sunlight hits that area", a: "Because the equator receives the most direct sunlight year-round" },
+          { q: "How do weather patterns differ between coastal and inland areas?", ex: "Think about the ocean's effect on temperature", a: "Coastal areas are often milder due to the ocean's effect, while inland areas can have more extreme temperatures" },
+        ]},
+      ],
+      [
+        { title: "Digestive, Respiratory, and Circulatory Systems", problems: [
+          { q: "What is the main job of the digestive system?", ex: "Think about breaking down food", a: "To break down food into nutrients the body can use for energy" },
+          { q: "What is the main job of the respiratory system?", ex: "Think about breathing", a: "To bring oxygen into the body and remove carbon dioxide" },
+          { q: "What is the main job of the circulatory system?", ex: "Think about pumping blood", a: "To pump blood and deliver oxygen and nutrients throughout the body" },
+          { q: "How do the respiratory and circulatory systems work together?", ex: "Think about oxygen moving from the lungs into the blood", a: "The lungs take in oxygen, which the blood then carries throughout the body" },
+        ]},
+        { title: "Skeletal and Muscular Systems", problems: [
+          { q: "What is the job of the skeletal system?", ex: "Think about supporting and protecting the body", a: "To support the body, protect organs, and allow movement" },
+          { q: "What is the job of the muscular system?", ex: "Think about movement", a: "To allow the body to move by contracting and relaxing muscles" },
+          { q: "How many bones are in the adult human body?", ex: "Think about a common number often taught in school", a: "206 bones" },
+          { q: "How do muscles and bones work together to create movement?", ex: "Think about muscles pulling on bones", a: "Muscles contract and pull on bones, which are connected at joints, to create movement" },
+        ]},
+        { title: "Electricity Basics", problems: [
+          { q: "What is a circuit?", ex: "Think about a complete path for electricity to flow", a: "A complete path that allows electricity to flow" },
+          { q: "What happens if a circuit is broken, like a switch turned off?", ex: "Think about electricity not being able to flow", a: "Electricity cannot flow, so devices like lights won't work" },
+          { q: "What is a conductor?", ex: "Think about a material that lets electricity flow easily", a: "A material that allows electricity to pass through easily, like metal" },
+          { q: "What is an insulator in terms of electricity?", ex: "Think about a material that blocks electricity", a: "A material that does not allow electricity to pass through easily, like rubber or plastic" },
+        ]},
+        { title: "Magnetism Basics", problems: [
+          { q: "What are the two poles of a magnet called?", ex: "Think about north and south", a: "North pole and south pole" },
+          { q: "What happens when you put two magnets' like poles together, such as north to north?", ex: "Think about magnets pushing apart", a: "They repel (push apart)" },
+          { q: "What happens when you put two magnets' opposite poles together?", ex: "Think about magnets pulling together", a: "They attract (pull together)" },
+          { q: "What kind of materials are attracted to magnets?", ex: "Think about metals like iron", a: "Materials containing iron, nickel, or cobalt, such as iron and steel" },
+        ]},
+        { title: "The Solar System in Depth", problems: [
+          { q: "What is the order of the planets from the sun, starting with the closest?", ex: "Think of a memory trick like 'My Very Educated Mother...'", a: "Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune" },
+          { q: "What is an asteroid belt?", ex: "Think about a region with many rocky objects between Mars and Jupiter", a: "A region of rocky, orbiting objects located between Mars and Jupiter" },
+          { q: "What are the four planets closest to the sun called, based on their rocky surfaces?", ex: "Think about terrestrial planets", a: "The terrestrial (rocky) planets: Mercury, Venus, Earth, and Mars" },
+          { q: "What are the outer planets often called because they are mostly made of gas?", ex: "Think about gas giants", a: "Gas giants (like Jupiter and Saturn)" },
+        ]},
+        { title: "Moons and Orbits", problems: [
+          { q: "What is an orbit?", ex: "Think about the path an object takes around another object", a: "The curved path an object takes as it travels around another object, like a planet around the sun" },
+          { q: "How many moons does Earth have?", ex: "Think about our one natural satellite", a: "1 moon" },
+          { q: "Does the moon orbit the Earth or does the Earth orbit the moon?", ex: "Think about which object is bigger and has more gravity", a: "The moon orbits the Earth" },
+          { q: "Which planet is known for having many moons, more than 90?", ex: "Think about a large gas giant", a: "Saturn (or Jupiter, both have many moons)" },
+        ]},
+      ],
+    ],
+    ela: [
+      [
+        { title: "Simile and Metaphor", problems: [
+          { q: "Is 'Her voice was as smooth as silk' a simile or a metaphor?", ex: "Look for the word 'as'", a: "A simile" },
+          { q: "Is 'Time is money' a simile or a metaphor?", ex: "Look for a direct comparison without 'like' or 'as'", a: "A metaphor" },
+          { q: "Write a simile comparing a runner to something fast.", ex: "Think of using 'like' or 'as'", a: "Many answers work, such as 'He ran like the wind'" },
+          { q: "What is the purpose of using similes and metaphors in writing?", ex: "Think about making descriptions more vivid and interesting", a: "To make descriptions more vivid, interesting, and help readers picture something clearly" },
+        ]},
+        { title: "Personification", problems: [
+          { q: "What is personification?", ex: "Think about giving human traits to non-human things", a: "Giving human qualities or actions to something that is not human, like an animal or object" },
+          { q: "Is 'The wind whispered through the trees' an example of personification?", ex: "Think about whether the wind is given a human action", a: "Yes, because wind cannot actually whisper like a person" },
+          { q: "Write an example of personification about the sun.", ex: "Think about giving the sun a human action", a: "Many answers work, such as 'The sun smiled down on us'" },
+          { q: "Why do authors use personification in their writing?", ex: "Think about making writing more interesting and relatable", a: "To make descriptions more interesting, vivid, and relatable for readers" },
+        ]},
+        { title: "Idioms", problems: [
+          { q: "What does the idiom 'it's raining cats and dogs' mean?", ex: "Think about the actual meaning, not the literal words", a: "It is raining very heavily" },
+          { q: "What does the idiom 'break a leg' mean?", ex: "Think about wishing someone good luck", a: "Good luck (often said before a performance)" },
+          { q: "What is an idiom?", ex: "Think about a phrase whose meaning isn't obvious from the individual words", a: "A phrase whose meaning is different from the literal meaning of its individual words" },
+          { q: "What does the idiom 'piece of cake' mean?", ex: "Think about something being very easy", a: "Something that is very easy to do" },
+        ]},
+        { title: "Hyperbole Basics", problems: [
+          { q: "What is a hyperbole?", ex: "Think about an extreme exaggeration for effect", a: "An extreme exaggeration used for effect, not meant to be taken literally" },
+          { q: "Is 'I've told you a million times' a hyperbole?", ex: "Think about whether it's a literal or exaggerated number", a: "Yes, it's an exaggeration to emphasize a point" },
+          { q: "Write an example of a hyperbole about being hungry.", ex: "Think about an extreme exaggeration", a: "Many answers work, such as 'I'm so hungry I could eat a horse'" },
+          { q: "Why do writers use hyperbole?", ex: "Think about emphasizing a feeling or point dramatically", a: "To emphasize a point or feeling in a dramatic, often humorous way" },
+        ]},
+        { title: "Onomatopoeia Basics", problems: [
+          { q: "What is onomatopoeia?", ex: "Think about words that sound like the noise they describe", a: "A word that imitates or sounds like the sound it describes, like 'buzz' or 'crash'" },
+          { q: "Give an example of an onomatopoeia word for the sound a bee makes.", ex: "Think about a word that sounds like buzzing", a: "Buzz" },
+          { q: "Give an example of an onomatopoeia word for the sound of something breaking.", ex: "Think about a word that sounds like a crash", a: "Crash (or smash)" },
+          { q: "Why do authors use onomatopoeia in their writing?", ex: "Think about making writing more vivid and engaging with sound", a: "To make writing more vivid and help readers 'hear' the sounds being described" },
+        ]},
+      ],
+      [
+        { title: "Cause and Effect", problems: [
+          { q: "In the sentence 'Because it snowed, school was canceled,' what is the cause?", ex: "Look for the reason something happened", a: "It snowed" },
+          { q: "In the same sentence, what is the effect?", ex: "Look for what happened as a result", a: "School was canceled" },
+          { q: "What signal words often indicate cause and effect, like 'because' or 'therefore'?", ex: "Think about words that connect a reason and a result", a: "Words like 'because', 'so', 'therefore', or 'as a result'" },
+          { q: "If a plant didn't get enough water and it wilted, what is the cause and what is the effect?", ex: "Think about the reason (cause) and the result (effect)", a: "Cause: not enough water; Effect: the plant wilted" },
+        ]},
+        { title: "Compare and Contrast", problems: [
+          { q: "What does 'compare' mean in reading?", ex: "Think about looking at similarities", a: "To look at how two things are similar" },
+          { q: "What does 'contrast' mean in reading?", ex: "Think about looking at differences", a: "To look at how two things are different" },
+          { q: "What signal words might show a contrast, like 'however' or 'but'?", ex: "Think about words that highlight differences", a: "Words like 'however', 'but', 'unlike', or 'on the other hand'" },
+          { q: "If a text explains similarities and differences between two historical events, what text structure is it using?", ex: "Think about the pattern of the text", a: "Compare and contrast" },
+        ]},
+        { title: "Sequence", problems: [
+          { q: "What is sequence text structure?", ex: "Think about events organized in order, often with time or steps", a: "A text structure that presents events or steps in a specific order, often chronological" },
+          { q: "What signal words indicate sequence, like 'first' or 'finally'?", ex: "Think about words that show order", a: "Words like 'first', 'next', 'then', 'after that', or 'finally'" },
+          { q: "Why might an author use a sequence structure to explain a science experiment?", ex: "Think about the importance of doing steps in order", a: "Because the steps must be followed in a specific order for the experiment to work correctly" },
+          { q: "If a text describes historical events from earliest to most recent, what structure is it using?", ex: "Think about the chronological pattern", a: "Sequence (chronological order)" },
+        ]},
+        { title: "Problem and Solution", problems: [
+          { q: "What is the 'problem' in a problem and solution text structure?", ex: "Think about an issue or challenge that needs fixing", a: "An issue or challenge that needs to be addressed" },
+          { q: "What is the 'solution' in this text structure?", ex: "Think about how the problem gets solved", a: "The way the problem is solved or addressed" },
+          { q: "If a text explains pollution as a problem and recycling as a way to help, what is the solution presented?", ex: "Think about what fixes the problem", a: "Recycling" },
+          { q: "What signal words might indicate a problem and solution structure, like 'solve' or 'answer'?", ex: "Think about words related to fixing an issue", a: "Words like 'problem', 'solve', 'solution', or 'answer'" },
+        ]},
+      ],
+      [
+        { title: "Context Clues", problems: [
+          { q: "In the sentence 'The dilapidated house had broken windows and a crumbling roof,' what does 'dilapidated' likely mean?", ex: "Look at the clues describing the house's condition", a: "Run-down or falling apart" },
+          { q: "What are context clues?", ex: "Think about hints in the surrounding text", a: "Hints in the surrounding words or sentences that help you understand an unfamiliar word" },
+          { q: "In the sentence 'She was ecstatic when she won the award, jumping and cheering with joy,' what does 'ecstatic' likely mean?", ex: "Look at the clues: jumping and cheering with joy", a: "Extremely happy or excited" },
+          { q: "Why are context clues a helpful reading strategy?", ex: "Think about figuring out unfamiliar words without stopping to look them up", a: "They help you understand new words quickly without needing to stop and look them up" },
+        ]},
+        { title: "Greek and Latin Roots Intro", problems: [
+          { q: "What does the Greek root 'tele' mean, as in 'telephone' or 'television'?", ex: "Think about distance", a: "Far or distant" },
+          { q: "What does the Latin root 'aqua' mean, as in 'aquarium'?", ex: "Think about water", a: "Water" },
+          { q: "What does the Greek root 'bio' mean, as in 'biology'?", ex: "Think about life", a: "Life" },
+          { q: "Why is learning Greek and Latin roots helpful for understanding new words?", ex: "Think about figuring out meanings of unfamiliar words using familiar word parts", a: "It helps you figure out the meaning of many unfamiliar words that share the same root" },
+        ]},
+        { title: "Prefixes and Suffixes Review", problems: [
+          { q: "What does the prefix 'dis-' mean, as in 'disagree'?", ex: "Think about the opposite or not", a: "Not, or the opposite of" },
+          { q: "What does the suffix '-able' mean, as in 'readable'?", ex: "Think about being capable of something", a: "Able to be, or capable of" },
+          { q: "What word do you get by adding the suffix '-ness' to 'kind'?", ex: "Think about turning an adjective into a noun", a: "Kindness" },
+          { q: "What does adding the prefix 'over-' to 'cook' create, and what does it mean?", ex: "Think about cooking too much", a: "Overcook, meaning to cook too much or too long" },
+        ]},
+        { title: "Multiple-meaning Words", problems: [
+          { q: "The word 'bat' can mean an animal or a piece of sports equipment. How do you know which meaning is being used in a sentence?", ex: "Think about using context clues", a: "By looking at the context, or the other words around it in the sentence" },
+          { q: "What are two meanings of the word 'bank'?", ex: "Think about money and rivers", a: "A place where you keep money, and the side of a river" },
+          { q: "What are two meanings of the word 'light'?", ex: "Think about brightness and weight", a: "Something that shines and gives brightness, and also something that is not heavy" },
+          { q: "Why is it important to use context to understand multiple-meaning words?", ex: "Think about choosing the correct meaning for the sentence", a: "Because the same word can mean different things, and context helps you pick the right meaning" },
+        ]},
+      ],
+      [
+        { title: "Main Idea and Theme", problems: [
+          { q: "What is the difference between the main idea and the theme of a story?", ex: "Think about the topic versus the deeper life lesson", a: "The main idea is what the text is mostly about, while the theme is the deeper message or lesson" },
+          { q: "If a story is about a boy overcoming fear to help a friend, what might the theme be?", ex: "Think about the deeper lesson, like courage or friendship", a: "Courage, friendship, or facing your fears" },
+          { q: "How can the title of a book give clues about its theme?", ex: "Think about how titles often hint at the deeper message", a: "Titles often hint at the central message or idea the author wants to convey" },
+          { q: "Can two different stories share the same theme, even with different plots?", ex: "Think about themes like friendship or honesty appearing in many stories", a: "Yes, many different stories can share similar themes, like honesty or perseverance" },
+        ]},
+        { title: "Narrative vs. Informational Text", problems: [
+          { q: "What is narrative text?", ex: "Think about text that tells a story", a: "Text that tells a story, often with characters, setting, and plot" },
+          { q: "What is informational text?", ex: "Think about text that gives facts about a topic", a: "Text that gives facts and information about a real topic" },
+          { q: "Would a biography be considered narrative or informational text?", ex: "Think about whether it tells a real person's story with facts", a: "It can be both \u2014 it tells a true story (narrative) using facts (informational)" },
+          { q: "Would a recipe be considered narrative or informational text?", ex: "Think about whether it tells a story or gives instructions/facts", a: "Informational text, because it gives factual instructions" },
+        ]},
+        { title: "Point of View Basics", problems: [
+          { q: "What is first person point of view?", ex: "Think about a narrator using 'I' or 'we'", a: "When the narrator is a character in the story, telling it using 'I' or 'we'" },
+          { q: "What is third person point of view?", ex: "Think about a narrator using 'he,' 'she,' or 'they'", a: "When the narrator is outside the story, telling it using 'he', 'she', or 'they'" },
+          { q: "Why might an author choose first person point of view for a story?", ex: "Think about making the reader feel closely connected to a character", a: "To make readers feel closely connected to the narrator's thoughts and feelings" },
+          { q: "What is third person omniscient point of view?", ex: "Think about a narrator who knows the thoughts of all characters", a: "When the narrator knows the thoughts and feelings of all the characters, not just one" },
+        ]},
+        { title: "Summarizing Longer Texts", problems: [
+          { q: "What should a summary of a long chapter book include?", ex: "Think about the most important events and characters", a: "The most important characters, events, and ideas, without minor details" },
+          { q: "Why is it harder to summarize a longer text than a short paragraph?", ex: "Think about having more information to condense", a: "Because there is more information, so you must decide what is most important to include" },
+          { q: "What is one strategy for summarizing a long text, like taking notes on each section?", ex: "Think about breaking the text into smaller parts", a: "Taking notes on the main idea of each section, then combining them into a short summary" },
+          { q: "Should a summary of a book include your personal opinions about the story?", ex: "Think about the purpose of a summary versus a review", a: "No, a summary should stick to the facts and events of the text, not personal opinions" },
+        ]},
+        { title: "Comparing Texts on the Same Topic", problems: [
+          { q: "Why might two authors write differently about the same topic?", ex: "Think about different perspectives, purposes, or evidence", a: "Because they might have different perspectives, purposes, or use different evidence" },
+          { q: "What is one way to compare two texts about the same topic?", ex: "Think about looking at what facts or opinions each includes", a: "Look at what facts, opinions, or evidence each text includes and how they are similar or different" },
+          { q: "Why is it valuable to read multiple texts about the same topic?", ex: "Think about getting a fuller, more balanced understanding", a: "It gives you a fuller, more balanced understanding of the topic from different viewpoints" },
+          { q: "If one article says a topic is definitely true and another says it's still being studied, what should you do?", ex: "Think about looking at more sources or asking a trusted adult", a: "Look at more sources or ask a trusted adult to help understand the differing views" },
+        ]},
+      ],
+      [
+        { title: "Verb Tenses", problems: [
+          { q: "What tense is the sentence 'She walks to school' written in?", ex: "Think about whether the action is happening now, in the past, or in the future", a: "Present tense" },
+          { q: "What tense is the sentence 'She walked to school' written in?", ex: "Think about the action already having happened", a: "Past tense" },
+          { q: "What tense is the sentence 'She will walk to school' written in?", ex: "Think about the action happening later", a: "Future tense" },
+          { q: "Change the sentence 'I play soccer' to past tense.", ex: "Think about the correct past tense form of 'play'", a: "I played soccer" },
+        ]},
+        { title: "Subject-verb Agreement", problems: [
+          { q: "Which is correct: 'The birds flies' or 'The birds fly'?", ex: "Think about a plural subject needing a plural verb", a: "'The birds fly'" },
+          { q: "Which is correct: 'He run fast' or 'He runs fast'?", ex: "Think about a singular subject needing a matching singular verb", a: "'He runs fast'" },
+          { q: "Why must the subject and verb of a sentence agree in number?", ex: "Think about grammar rules for singular versus plural", a: "So the sentence sounds correct and is grammatically accurate" },
+          { q: "Which is correct: 'They was happy' or 'They were happy'?", ex: "Think about the correct past tense verb for a plural subject", a: "'They were happy'" },
+        ]},
+        { title: "Commas in a Series", problems: [
+          { q: "Where should commas go in this list: 'I bought apples oranges and bananas'?", ex: "Think about separating each item", a: "'I bought apples, oranges, and bananas.'" },
+          { q: "How many items need to be in a list before you use commas to separate them?", ex: "Think about three or more items", a: "Three or more items" },
+          { q: "Should there be a comma before the word 'and' in a series, like 'red, white, and blue'?", ex: "Think about the Oxford comma rule", a: "Yes, it's common (and often preferred) to use a comma before 'and' in a series" },
+          { q: "Fix this sentence: 'She likes reading writing and painting.'", ex: "Add commas between each item", a: "'She likes reading, writing, and painting.'" },
+        ]},
+        { title: "Narrative Writing", problems: [
+          { q: "What is narrative writing?", ex: "Think about telling a story with characters and events", a: "Writing that tells a story, often with characters, a setting, and a sequence of events" },
+          { q: "What should a narrative include, like characters and setting?", ex: "Think about the key story elements", a: "Characters, a setting, a plot with a beginning, middle, and end, and often a problem to solve" },
+          { q: "Why do narrative writers use descriptive details?", ex: "Think about helping readers picture the story", a: "To help readers imagine and visualize the story more vividly" },
+          { q: "What is dialogue in narrative writing?", ex: "Think about characters speaking to each other", a: "The words characters say to each other in the story" },
+        ]},
+        { title: "Opinion Writing", problems: [
+          { q: "What is opinion writing?", ex: "Think about sharing a personal viewpoint and supporting it with reasons", a: "Writing that states a personal viewpoint or belief and supports it with reasons" },
+          { q: "Why should opinion writing include reasons and evidence?", ex: "Think about convincing the reader that your opinion is valid", a: "To help convince the reader that your opinion is valid and well thought out" },
+          { q: "What is a good way to start an opinion piece?", ex: "Think about clearly stating your opinion", a: "By clearly stating your opinion or claim" },
+          { q: "Why might an opinion writer address the other side of an argument?", ex: "Think about making their argument more convincing by acknowledging other views", a: "To show they understand other viewpoints and make their own argument stronger" },
+        ]},
+        { title: "Informative Writing", problems: [
+          { q: "What is the purpose of informative writing?", ex: "Think about teaching the reader facts about a topic", a: "To inform or teach the reader about a topic using facts and information" },
+          { q: "Should informative writing include the writer's personal opinions?", ex: "Think about sticking to facts rather than feelings", a: "No, informative writing should focus on facts, not personal opinions" },
+          { q: "What is one way to organize an informative piece, like by categories or steps?", ex: "Think about grouping related facts together", a: "Many answers work, such as organizing by categories, chronological order, or steps in a process" },
+          { q: "Why might an informative writer use headings and subheadings?", ex: "Think about helping readers find and understand information easily", a: "To help readers quickly find and understand different sections of information" },
+        ]},
+      ],
+    ],
+    history: [
+      [
+        { title: "Age of Exploration", problems: [
+          { q: "What was the Age of Exploration?", ex: "Think about a time period when Europeans explored and sailed to new lands", a: "A period starting in the 1400s when European explorers traveled by sea to find new trade routes and lands" },
+          { q: "Why did many explorers sail west across the Atlantic Ocean?", ex: "Think about searching for a new route to Asia for trade", a: "They were searching for a faster trade route to Asia for goods like spices and silk" },
+          { q: "Who sailed across the Atlantic Ocean in 1492 and reached the Americas?", ex: "Think of the famous Italian explorer sailing for Spain", a: "Christopher Columbus" },
+          { q: "What new technologies helped explorers sail farther distances during this era?", ex: "Think about better ships and navigation tools like the compass", a: "Improved ships, the compass, and better maps and navigation tools" },
+        ]},
+        { title: "The 13 Colonies", problems: [
+          { q: "What were the 13 colonies?", ex: "Think about the British settlements that later became the United States", a: "The first British settlements in America that later became the original United States" },
+          { q: "Name one of the 13 original colonies.", ex: "Think of colonies like Virginia or Massachusetts", a: "Many answers work, such as Virginia, Massachusetts, or Pennsylvania" },
+          { q: "What were the three regions of the 13 colonies called?", ex: "Think about New England, Middle, and Southern colonies", a: "New England, Middle, and Southern colonies" },
+          { q: "What was one major industry in the Southern colonies?", ex: "Think about large farms growing crops like tobacco", a: "Farming (agriculture), especially large plantations growing tobacco and rice" },
+        ]},
+        { title: "Colonial Life and Jobs", problems: [
+          { q: "What jobs were common among colonists, like farming or blacksmithing?", ex: "Think about everyday trades in colonial times", a: "Many answers work, such as farming, blacksmithing, or being a merchant" },
+          { q: "What did colonial children often do to help their families?", ex: "Think about chores and farm work", a: "Many helped with chores, farm work, or learned a trade" },
+          { q: "What was a 'town crier' in colonial times?", ex: "Think about someone who shared news out loud in the streets", a: "A person who announced news and important information out loud in the town" },
+          { q: "Why was schooling often limited for colonial children?", ex: "Think about many kids needing to work instead", a: "Many children had to work to help support their families, leaving little time for school" },
+        ]},
+        { title: "The American Revolution", problems: [
+          { q: "What was the American Revolution?", ex: "Think about the war for independence from Britain", a: "The war fought by the American colonies to gain independence from Great Britain" },
+          { q: "What document declared the colonies' independence from Britain?", ex: "Think about the famous 1776 document", a: "The Declaration of Independence" },
+          { q: "Who was the commander of the Continental Army during the Revolution?", ex: "Think of the future first president", a: "George Washington" },
+          { q: "In what year did the colonies declare independence?", ex: "Think of the year celebrated on the Fourth of July", a: "1776" },
+        ]},
+        { title: "Native American Cultures Before Colonization", problems: [
+          { q: "Did Native Americans live in America before European explorers arrived?", ex: "Think about who was already living there", a: "Yes, many different Native American nations and tribes lived across the land" },
+          { q: "Name one Native American tribe or nation.", ex: "Think of tribes like the Cherokee, Iroquois, or Sioux", a: "Many answers work, such as the Cherokee, Iroquois, or Sioux" },
+          { q: "How did different Native American groups adapt to their environments?", ex: "Think about using local resources for food, shelter, and clothing", a: "They used local resources, like building homes and finding food based on their region's climate and land" },
+          { q: "Did Native American tribes all share the same culture and language?", ex: "Think about the great diversity among different tribes", a: "No, there were hundreds of different tribes with their own unique languages, customs, and cultures" },
+        ]},
+      ],
+      [
+        { title: "Legislative Branch", problems: [
+          { q: "What is the job of the legislative branch of government?", ex: "Think about making laws", a: "To make laws" },
+          { q: "What is the US legislative branch called?", ex: "Think of the two-part law-making body", a: "Congress" },
+          { q: "What are the two parts of Congress?", ex: "Think about the Senate and the House", a: "The Senate and the House of Representatives" },
+          { q: "Who represents the people in Congress?", ex: "Think about elected officials chosen by voters", a: "Senators and Representatives, who are elected by the people" },
+        ]},
+        { title: "Executive Branch", problems: [
+          { q: "What is the job of the executive branch of government?", ex: "Think about enforcing laws", a: "To carry out and enforce the laws" },
+          { q: "Who leads the executive branch of the US government?", ex: "Think of the highest elected leader of the country", a: "The President" },
+          { q: "How long is a US President's term in office?", ex: "Think about the number of years before re-election", a: "4 years" },
+          { q: "Who becomes President if the current President cannot serve?", ex: "Think about the next in line of succession", a: "The Vice President" },
+        ]},
+        { title: "Judicial Branch", problems: [
+          { q: "What is the job of the judicial branch of government?", ex: "Think about interpreting laws", a: "To interpret laws and decide if they are fair and follow the Constitution" },
+          { q: "What is the highest court in the United States?", ex: "Think of the top federal court", a: "The Supreme Court" },
+          { q: "How many justices typically serve on the Supreme Court?", ex: "Think about a common number taught in school", a: "9 justices" },
+          { q: "Why is the judicial branch important for making sure laws are fair?", ex: "Think about checking that laws follow the Constitution", a: "It reviews laws and legal cases to ensure they follow the Constitution and are applied fairly" },
+        ]},
+        { title: "US Constitution Basics", problems: [
+          { q: "What is the Constitution?", ex: "Think about the document that outlines the laws and structure of the US government", a: "The document that establishes the framework and basic laws of the United States government" },
+          { q: "What are the first ten amendments to the Constitution called?", ex: "Think about the Bill of Rights", a: "The Bill of Rights" },
+          { q: "Why did the founders create three branches of government?", ex: "Think about balancing power so no one branch has too much control", a: "To balance power and make sure no single branch becomes too powerful (checks and balances)" },
+          { q: "What famous phrase begins the Constitution?", ex: "Think of the opening three words", a: "'We the People'" },
+        ]},
+      ],
+      [
+        { title: "US Geography and Regions", problems: [
+          { q: "Name one major region of the United States.", ex: "Think about the Northeast, Southeast, Midwest, Southwest, or West", a: "Many answers work, such as the Northeast, Southeast, Midwest, Southwest, or West" },
+          { q: "What is the largest US state by land area?", ex: "Think of the cold state in the far north", a: "Alaska" },
+          { q: "What large mountain range runs through the western United States?", ex: "Think of the famous mountain range in states like Colorado", a: "The Rocky Mountains" },
+          { q: "What major river flows through the middle of the United States?", ex: "Think of the long river that flows to the Gulf of Mexico", a: "The Mississippi River" },
+        ]},
+        { title: "Regions and Their Resources", problems: [
+          { q: "Why might the Midwest region be known for farming?", ex: "Think about fertile soil and flat land", a: "Because it has fertile soil and flat land ideal for growing crops like corn and wheat" },
+          { q: "Why might coastal regions rely on fishing as a resource?", ex: "Think about access to oceans", a: "Because their location near the ocean provides access to fish and seafood" },
+          { q: "What natural resource might be important in a mountainous region, like minerals?", ex: "Think about mining", a: "Minerals and metals, often obtained through mining" },
+          { q: "Why do regions with forests often have logging as an industry?", ex: "Think about using trees as a resource", a: "Because the abundance of trees provides wood for building and other products" },
+        ]},
+        { title: "State History Basics", problems: [
+          { q: "What is a state capital?", ex: "Think about the city where a state's government is located", a: "The city where a state's government is based" },
+          { q: "Why might learning your state's history help you understand its culture today?", ex: "Think about how past events shape the present", a: "Because past events, people, and decisions have shaped the state's culture, laws, and identity today" },
+          { q: "What is a state symbol, like a state bird or flower?", ex: "Think about official items that represent a state", a: "An official symbol, like a bird, flower, or flag, that represents a specific state" },
+          { q: "Why do different states have different histories even within the same country?", ex: "Think about unique founding dates, populations, and events", a: "Because each state was founded, settled, and developed at different times with different people and events" },
+        ]},
+        { title: "Westward Expansion Intro", problems: [
+          { q: "What was westward expansion?", ex: "Think about Americans moving west to settle new land", a: "The movement of American settlers moving west across the country to find new land" },
+          { q: "What trail did many pioneers use to travel west in wagons?", ex: "Think of the famous overland trail", a: "The Oregon Trail" },
+          { q: "How did westward expansion affect Native American tribes already living on the land?", ex: "Think about tribes being displaced from their homes", a: "Many Native American tribes were forced off their land and displaced as settlers moved west" },
+          { q: "What might a family need to survive a long wagon journey west?", ex: "Think about food, water, and supplies", a: "Many answers work, such as food, water, tools, and supplies for the journey" },
+        ]},
+      ],
+      [
+        { title: "Scarcity and Trade", problems: [
+          { q: "What is scarcity?", ex: "Think about not having enough of something to meet everyone's wants", a: "When there is not enough of a resource to meet everyone's needs or wants" },
+          { q: "Why do countries or regions trade with each other?", ex: "Think about getting resources they don't have themselves", a: "To get resources or goods they don't have or can't produce themselves" },
+          { q: "If a region has plenty of wood but no fish, what might they trade for fish?", ex: "Think about trading their surplus resource", a: "They could trade some of their wood for fish from another region" },
+          { q: "How does scarcity affect the choices people and countries make?", ex: "Think about having to prioritize limited resources", a: "It forces them to make choices about how to use their limited resources wisely" },
+        ]},
+        { title: "Resources and Supply/demand", problems: [
+          { q: "What happens to the price of a resource when it becomes scarce, but demand stays high?", ex: "Think about low supply and high demand", a: "The price usually goes up" },
+          { q: "What is a natural resource?", ex: "Think about something found in nature that people use", a: "Something found in nature that people use, like water, trees, or minerals" },
+          { q: "How does high demand for a popular toy during the holidays affect its price?", ex: "Think about many people wanting a limited supply", a: "The price often goes up because demand is higher than the available supply" },
+          { q: "What is the relationship between supply, demand, and price?", ex: "Think about how these three things affect each other", a: "When demand is high and supply is low, prices rise; when supply is high and demand is low, prices fall" },
+        ]},
+        { title: "Citizenship Responsibilities", problems: [
+          { q: "Name one responsibility that adult citizens have, like voting.", ex: "Think about obligations citizens have to their country", a: "Many answers work, such as voting, obeying laws, or paying taxes" },
+          { q: "Why is voting an important responsibility for citizens?", ex: "Think about having a say in choosing leaders", a: "It allows citizens to have a voice in choosing leaders and shaping government decisions" },
+          { q: "What is one responsibility students have as young citizens?", ex: "Think about following school rules and being respectful", a: "Many answers work, such as following rules, being respectful, and helping their community" },
+          { q: "Why is it important for citizens to stay informed about current events?", ex: "Think about making good decisions and understanding what's happening in their community", a: "It helps them make informed decisions and participate responsibly in their community and government" },
+        ]},
+      ],
+    ],
+    cs: [
+      [
+        { title: "Internet Basics: Websites and Browsers", problems: [
+          { q: "What is a website?", ex: "Think about a collection of pages you can view online", a: "A collection of linked pages on the internet that you can view using a browser" },
+          { q: "What is a web browser?", ex: "Think about the program used to view websites", a: "A program used to access and view websites, like Chrome or Safari" },
+          { q: "Name one example of a web browser.", ex: "Think of a common program used to browse the internet", a: "Many answers work, such as Chrome, Safari, Firefox, or Edge" },
+          { q: "Do you need an internet connection to visit a website?", ex: "Think about needing to connect to the internet first", a: "Yes, you need an internet connection to load and view websites" },
+        ]},
+        { title: "URLs and Search Engines", problems: [
+          { q: "What is a URL?", ex: "Think about the address of a website", a: "The web address used to find a specific webpage or website" },
+          { q: "What is a search engine?", ex: "Think about a tool that helps you find information online", a: "A tool that helps you search for information on the internet using keywords" },
+          { q: "Name one example of a search engine.", ex: "Think of a common website used to search for information", a: "Many answers work, such as Google or Bing" },
+          { q: "Why should you use specific keywords when searching online?", ex: "Think about getting more accurate results", a: "To get more accurate and relevant search results" },
+        ]},
+        { title: "Online Etiquette", problems: [
+          { q: "What is online etiquette?", ex: "Think about being polite and respectful when using the internet", a: "Being polite, respectful, and appropriate when communicating or interacting online" },
+          { q: "Should you type in all capital letters when messaging someone online?", ex: "Think about how that can be seen as shouting", a: "No, typing in all caps can seem like you're shouting, which is considered rude" },
+          { q: "Why should you think before sending a message online when you're upset?", ex: "Think about saying something you might regret", a: "Because you might say something you regret, and messages can be hard to take back" },
+          { q: "Is it okay to share someone else's private information online without asking?", ex: "Think about respecting others' privacy", a: "No, you should always respect others' privacy and ask before sharing their information" },
+        ]},
+        { title: "Cyberbullying Awareness", problems: [
+          { q: "What is cyberbullying?", ex: "Think about bullying that happens using technology, like texting or social media", a: "Bullying that happens through technology, like texting, social media, or online games" },
+          { q: "What should you do if you see someone being cyberbullied?", ex: "Think about not joining in and telling a trusted adult", a: "Don't join in, and tell a trusted adult about what you saw" },
+          { q: "What should you do if you are being cyberbullied?", ex: "Think about telling a trusted adult and not responding", a: "Tell a trusted adult, avoid responding, and save evidence if possible" },
+          { q: "Why is cyberbullying sometimes considered more harmful because it can happen anytime?", ex: "Think about how it can follow someone even at home", a: "Because it can happen anytime, anywhere, making it hard for the person being bullied to escape it" },
+        ]},
+        { title: "Hardware and Software Deep Dive", problems: [
+          { q: "Give an example of hardware and an example of software.", ex: "Think about a physical part versus a program", a: "Hardware example: a keyboard; Software example: a word processing program" },
+          { q: "What is an operating system?", ex: "Think about the main software that manages a computer", a: "The main software that manages a computer's hardware and lets other programs run, like Windows or macOS" },
+          { q: "Can a computer run without any software?", ex: "Think about needing programs to actually do anything useful", a: "No, a computer needs software, like an operating system, to function and be useful" },
+          { q: "What is the difference between an app and an operating system?", ex: "Think about specific tasks versus managing the whole device", a: "An app performs a specific task, while an operating system manages the whole device and runs the apps" },
+        ]},
+      ],
+      [
+        { title: "Variables Intro", problems: [
+          { q: "What is a variable in coding?", ex: "Think about a container that stores information that can change", a: "A container that stores a piece of information, like a number or word, that can change" },
+          { q: "If a variable named 'score' starts at 0 and you add 5 points, what would the new value be?", ex: "Add 5 to the starting value", a: "5" },
+          { q: "Why are variables useful in a program, like a game that tracks a player's score?", ex: "Think about storing and updating information that changes", a: "They let a program store and update information that can change, like a score or a player's name" },
+          { q: "Can a variable hold different types of information, like numbers or words?", ex: "Think about flexibility in what a variable can store", a: "Yes, variables can hold different types of information depending on how they are set up" },
+        ]},
+        { title: "Loops Intro", problems: [
+          { q: "What is a loop in coding?", ex: "Think about repeating instructions multiple times", a: "A set of instructions that repeats a certain number of times or until a condition is met" },
+          { q: "If a loop repeats an action 10 times, how many times will the action happen?", ex: "Think about the loop count", a: "10 times" },
+          { q: "Why would a programmer use a loop instead of writing the same instruction many times?", ex: "Think about saving time and making code shorter", a: "To save time and make the code shorter and easier to read" },
+          { q: "What might a loop be used for in a game, like moving a character?", ex: "Think about repeating an action, like moving forward multiple times", a: "To repeat an action, like having a character move forward multiple steps in a row" },
+        ]},
+        { title: "Conditionals Intro", problems: [
+          { q: "What is a conditional statement in coding?", ex: "Think about an 'if/then' rule", a: "A rule that says if something is true, then a certain action happens" },
+          { q: "If a game's rule is 'if the player touches a coin, then add 1 point,' what happens when the player touches a coin?", ex: "Follow the rule given", a: "1 point is added" },
+          { q: "Why are conditionals useful in programs?", ex: "Think about making decisions based on different situations", a: "They let a program make decisions and respond differently depending on the situation" },
+          { q: "What is an 'else' statement often used for in coding, alongside 'if'?", ex: "Think about what happens when the condition is not true", a: "It tells the program what to do if the 'if' condition is not true" },
+        ]},
+        { title: "Debugging Strategies", problems: [
+          { q: "What is one good strategy for finding a bug in your code?", ex: "Think about testing each part step by step", a: "Testing the program step by step to find exactly where it goes wrong" },
+          { q: "Why is it helpful to read through your code carefully after writing it?", ex: "Think about catching mistakes before running the program", a: "It helps you catch mistakes or typos before running the program" },
+          { q: "If a program crashes, what is a good first step to figure out what went wrong?", ex: "Think about checking the most recent changes you made", a: "Check the most recent changes you made, since the bug is often there" },
+          { q: "Why is debugging considered an important skill for programmers?", ex: "Think about making sure programs work correctly", a: "Because it helps ensure programs work correctly and do what they're supposed to do" },
+        ]},
+        { title: "Block-based Programming: Events and Actions", problems: [
+          { q: "What is an event in block-based programming, like clicking a flag?", ex: "Think about something that triggers a program to start", a: "Something that triggers the program to run, like clicking a green flag or pressing a key" },
+          { q: "What is an action in block-based programming, like moving a sprite?", ex: "Think about what the program does after the event happens", a: "What the program does in response to an event, like moving a character or playing a sound" },
+          { q: "If the event is 'when key pressed' and the action is 'move forward,' what happens when you press the key?", ex: "Follow the rule given", a: "The sprite (character) moves forward" },
+          { q: "Why do block-based programs use events to start actions?", ex: "Think about making programs interactive and responsive", a: "To make programs interactive, responding to what the user does" },
+        ]},
+        { title: "Data and Databases Basics", problems: [
+          { q: "What is data?", ex: "Think about information that can be stored and used by a computer", a: "Information that can be stored, organized, and used by a computer" },
+          { q: "What is a database?", ex: "Think about an organized collection of data", a: "An organized collection of data that can be easily searched and updated" },
+          { q: "Name one example of data you might store, like a list of names.", ex: "Think about information you could organize in a table", a: "Many answers work, such as a list of names, scores, or contacts" },
+          { q: "Why is organizing data into a database helpful?", ex: "Think about finding and using information quickly", a: "It makes it easier to find, sort, and use the information quickly" },
+        ]},
+      ],
+    ],
+    health: [
+      [
+        { title: "Reading Food Labels Basics", problems: [
+          { q: "What information can you find on a food label, like calories or ingredients?", ex: "Think about nutrition facts and ingredient lists", a: "Calories, serving size, ingredients, and nutrients like sugar, fat, and protein" },
+          { q: "Why is it important to check the serving size on a food label?", ex: "Think about the nutrition information being based on that amount", a: "Because the listed nutrition facts are based on that specific serving size, not the whole package" },
+          { q: "What might a food label tell you about how much sugar is in a snack?", ex: "Think about the 'sugars' line on the nutrition facts", a: "The grams of sugar per serving, listed in the nutrition facts" },
+          { q: "Why is it helpful to compare food labels when shopping?", ex: "Think about choosing healthier options", a: "It helps you choose healthier options by comparing nutrients like sugar, fat, and calories" },
+        ]},
+        { title: "Nervous System Basics", problems: [
+          { q: "What is the job of the nervous system?", ex: "Think about sending messages throughout the body", a: "To send messages between your brain and the rest of your body, controlling actions and senses" },
+          { q: "What organ is the control center of the nervous system?", ex: "Think about the organ in your head", a: "The brain" },
+          { q: "What is the spinal cord's job in the nervous system?", ex: "Think about carrying messages between the brain and the body", a: "It carries messages between the brain and the rest of the body" },
+          { q: "How quickly can your nervous system send signals, like when you touch something hot?", ex: "Think about the fast reaction time to danger", a: "Very quickly, allowing for fast reactions like pulling your hand away from something hot" },
+        ]},
+        { title: "Endocrine System Basics", problems: [
+          { q: "What is the job of the endocrine system?", ex: "Think about producing hormones that control body functions", a: "To produce hormones that control body functions like growth, metabolism, and mood" },
+          { q: "What are hormones?", ex: "Think about chemical messengers in the body", a: "Chemical messengers that travel through the blood to control body functions" },
+          { q: "What organ in the endocrine system helps control blood sugar?", ex: "Think about the organ that produces insulin", a: "The pancreas" },
+          { q: "How does the endocrine system communicate with the body, compared to the nervous system?", ex: "Think about hormones traveling through blood versus nerve signals", a: "It uses hormones traveling through the bloodstream, which is usually slower than nerve signals" },
+        ]},
+        { title: "Immune System Basics", problems: [
+          { q: "What is the job of the immune system?", ex: "Think about protecting your body from germs and illness", a: "To protect your body from germs, infections, and illness" },
+          { q: "What are white blood cells?", ex: "Think about cells that fight infection", a: "Cells in your blood that help fight off infections and germs" },
+          { q: "How does a vaccine help your immune system?", ex: "Think about training your body to recognize a disease", a: "It trains your immune system to recognize and fight a specific disease before you actually get sick" },
+          { q: "Why might you get a fever when you're sick?", ex: "Think about your body fighting off an infection", a: "A fever is often your body's way of fighting off an infection by raising its temperature" },
+        ]},
+      ],
+      [
+        { title: "First Aid: Burns and Cuts", problems: [
+          { q: "What should you do first for a minor burn?", ex: "Think about cooling the area with water", a: "Run cool water over the burn for several minutes" },
+          { q: "What should you do for a small cut?", ex: "Think about cleaning and covering the wound", a: "Clean the cut with water, apply pressure to stop bleeding, and cover it with a bandage" },
+          { q: "Should you pop a blister from a burn yourself?", ex: "Think about the risk of infection", a: "No, popping a blister can increase the risk of infection; leave it to heal naturally or ask an adult" },
+          { q: "When should you tell an adult about a cut or burn?", ex: "Think about always getting help for injuries", a: "Always, especially if it's deep, won't stop bleeding, or looks serious" },
+        ]},
+        { title: "First Aid: Choking Basics", problems: [
+          { q: "What should you do if someone is choking and cannot talk or breathe?", ex: "Think about getting help immediately", a: "Get help from an adult immediately, who may perform the Heimlich maneuver or call 911" },
+          { q: "What is a sign that someone might be choking?", ex: "Think about clutching their throat or being unable to speak", a: "They might clutch their throat, be unable to speak or cough, or turn blue" },
+          { q: "Should you try to give a choking person water?", ex: "Think about how that could make things worse", a: "No, giving water can make choking worse; you should get help immediately instead" },
+          { q: "Why is it important to chew food carefully and not talk with food in your mouth?", ex: "Think about reducing the risk of choking", a: "To help prevent choking" },
+        ]},
+        { title: "Physical Fitness and Goal Setting", problems: [
+          { q: "What is a SMART goal?", ex: "Think about specific, measurable, achievable, relevant, and time-bound goals", a: "A goal that is Specific, Measurable, Achievable, Relevant, and Time-bound" },
+          { q: "Why is it helpful to set a fitness goal, like running a certain distance?", ex: "Think about staying motivated and tracking progress", a: "It helps you stay motivated and track your progress over time" },
+          { q: "Name one example of a fitness goal you could set for yourself.", ex: "Think about a specific, achievable activity goal", a: "Many answers work, such as 'exercise for 30 minutes, 3 times a week'" },
+          { q: "Why is it good to start with small, achievable fitness goals?", ex: "Think about building confidence and success over time", a: "It helps you build confidence and success, making it easier to reach bigger goals later" },
+        ]},
+        { title: "Stress Management", problems: [
+          { q: "What is one healthy way to manage stress, like deep breathing?", ex: "Think about calming activities", a: "Many answers work, such as deep breathing, exercise, or talking to someone you trust" },
+          { q: "Why is exercise a good way to reduce stress?", ex: "Think about how physical activity can improve mood", a: "It can help release tension and improve your mood" },
+          { q: "What should you do if you feel overwhelmed with schoolwork?", ex: "Think about breaking tasks into smaller steps or asking for help", a: "Break the work into smaller steps, take breaks, or ask a trusted adult for help" },
+          { q: "Why is it unhealthy to keep stress bottled up without talking about it?", ex: "Think about how it can affect your mental and physical health", a: "Because it can build up and negatively affect both your mental and physical health" },
+        ]},
+        { title: "Self-esteem", problems: [
+          { q: "What is self-esteem?", ex: "Think about how you feel about yourself and your worth", a: "How you feel about yourself and your own value or worth" },
+          { q: "Name one way to build healthy self-esteem, like celebrating your strengths.", ex: "Think about positive self-talk or achieving goals", a: "Many answers work, such as celebrating your strengths, setting achievable goals, or practicing positive self-talk" },
+          { q: "Why is comparing yourself constantly to others often unhealthy for self-esteem?", ex: "Think about how it can make you feel inadequate", a: "Because it can make you feel inadequate and take away from appreciating your own unique strengths" },
+          { q: "How can accomplishing a goal help improve your self-esteem?", ex: "Think about feeling proud and confident after succeeding", a: "It can make you feel proud, confident, and capable" },
+        ]},
+        { title: "Tobacco and Alcohol Awareness", problems: [
+          { q: "Why is smoking tobacco harmful to your health?", ex: "Think about damage to lungs and increased disease risk", a: "It can damage your lungs, heart, and increase the risk of serious diseases like cancer" },
+          { q: "Why is it illegal for kids and teens to buy tobacco or alcohol?", ex: "Think about protecting young people's health and development", a: "Because these substances can seriously harm a young person's developing body and brain" },
+          { q: "What is one way to say no if someone offers you tobacco or alcohol?", ex: "Think about being firm and confident", a: "Many answers work, such as simply saying 'No, thanks' and walking away" },
+          { q: "Who can you talk to if you feel pressured to try tobacco or alcohol?", ex: "Think about trusted adults", a: "A trusted adult, like a parent, teacher, or school counselor" },
+        ]},
+        { title: "Personal Hygiene and Puberty Intro", problems: [
+          { q: "Why does personal hygiene become even more important during puberty?", ex: "Think about body changes like increased sweat and oil production", a: "Because the body starts producing more sweat and oil, making regular washing and deodorant more important" },
+          { q: "What is puberty?", ex: "Think about the body changes that happen as kids grow into teenagers", a: "The stage of development when a child's body begins changing and maturing into an adult body" },
+          { q: "Name one hygiene habit that becomes especially important during puberty, like using deodorant.", ex: "Think about managing body odor", a: "Using deodorant regularly" },
+          { q: "Why is it normal to have questions about the changes happening during puberty?", ex: "Think about how everyone goes through similar changes and it's okay to ask trusted adults", a: "Because puberty is a normal part of growing up, and it's healthy to ask trusted adults or read reliable resources" },
+        ]},
+      ],
+    ],
+  },
   3: {
     math: [
       [
