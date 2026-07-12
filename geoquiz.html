@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<script src="/timer.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Geography Quiz — Flags &amp; Capitals — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:820px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.tab-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:120px;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.chip{padding:6px 15px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:all .15s}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-size:.8rem;color:var(--muted)}
+.score-row strong{color:var(--accent2)}
+.q-prompt{font-size:1.05rem;font-weight:700;color:var(--muted);text-align:center;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+.q-flag{font-size:5rem;line-height:1;text-align:center;padding:22px 10px;background:#0d1628;border-radius:12px;margin-bottom:16px}
+.q-text{font-size:1.6rem;font-weight:800;color:#fff;text-align:center;padding:26px 10px;background:#0d1628;border-radius:12px;margin-bottom:16px}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:520px){.opt-grid{grid-template-columns:1fr}}
+.opt-btn{padding:14px 16px;border-radius:10px;border:1.5px solid var(--border);background:#111827;color:#fff;font-size:.92rem;font-weight:600;cursor:pointer;text-align:left;transition:all .12s}
+.opt-btn:hover{border-color:var(--accent)}
+.opt-btn.correct{background:rgba(52,211,153,.18);border-color:var(--green);color:var(--green)}
+.opt-btn.wrong{background:rgba(248,113,113,.18);border-color:var(--red);color:var(--red)}
+.opt-btn.dim{opacity:.45;cursor:default}
+.opt-btn:disabled{cursor:default}
+.feedback{padding:14px 16px;border-radius:10px;font-size:.85rem;margin-bottom:14px;line-height:1.6;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:#a7f3d0}
+.feedback.bad{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#fecaca}
+.region-label{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="geoquiz.html">Geography Quiz</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🌍 Geography Quiz</h1>
+  <p>Flag identification and capital-city drills, filterable by region — 100 countries across all six inhabited continents.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="setMode('flags')" id="tabFlags">🚩 Flags</button>
+      <button class="tab-btn" onclick="setMode('capitals')" id="tabCapitals">🏛️ Capitals</button>
+    </div>
+    <div class="region-label">Region</div>
+    <div class="chip-group" id="regionGroup">
+      <button class="chip active" data-val="all">All Regions</button>
+      <button class="chip" data-val="North America">North America</button>
+      <button class="chip" data-val="South America">South America</button>
+      <button class="chip" data-val="Europe">Europe</button>
+      <button class="chip" data-val="Asia">Asia</button>
+      <button class="chip" data-val="Africa">Africa</button>
+      <button class="chip" data-val="Oceania">Oceania</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="score-row"><span id="modeLabel">🚩 Flags</span><span>Score: <strong id="score">0</strong> / <strong id="total">0</strong></span></div>
+    <div class="q-prompt" id="qPrompt">Identify the country</div>
+    <div id="qDisplay"></div>
+    <div class="opt-grid" id="opts"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn btn-primary btn-big" onclick="nextQuestion()">🎲 New Question</button>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const COUNTRIES = [
+  // North America
+  {n:'United States',c:'Washington, D.C.',f:'🇺🇸',r:'North America'},
+  {n:'Canada',c:'Ottawa',f:'🇨🇦',r:'North America'},
+  {n:'Mexico',c:'Mexico City',f:'🇲🇽',r:'North America'},
+  {n:'Cuba',c:'Havana',f:'🇨🇺',r:'North America'},
+  {n:'Jamaica',c:'Kingston',f:'🇯🇲',r:'North America'},
+  {n:'Guatemala',c:'Guatemala City',f:'🇬🇹',r:'North America'},
+  {n:'Panama',c:'Panama City',f:'🇵🇦',r:'North America'},
+  {n:'Costa Rica',c:'San José',f:'🇨🇷',r:'North America'},
+  {n:'Honduras',c:'Tegucigalpa',f:'🇭🇳',r:'North America'},
+  {n:'Haiti',c:'Port-au-Prince',f:'🇭🇹',r:'North America'},
+  {n:'Dominican Republic',c:'Santo Domingo',f:'🇩🇴',r:'North America'},
+  {n:'Belize',c:'Belmopan',f:'🇧🇿',r:'North America'},
+  {n:'Nicaragua',c:'Managua',f:'🇳🇮',r:'North America'},
+  {n:'El Salvador',c:'San Salvador',f:'🇸🇻',r:'North America'},
+  // South America
+  {n:'Brazil',c:'Brasília',f:'🇧🇷',r:'South America'},
+  {n:'Argentina',c:'Buenos Aires',f:'🇦🇷',r:'South America'},
+  {n:'Chile',c:'Santiago',f:'🇨🇱',r:'South America'},
+  {n:'Peru',c:'Lima',f:'🇵🇪',r:'South America'},
+  {n:'Colombia',c:'Bogotá',f:'🇨🇴',r:'South America'},
+  {n:'Venezuela',c:'Caracas',f:'🇻🇪',r:'South America'},
+  {n:'Ecuador',c:'Quito',f:'🇪🇨',r:'South America'},
+  {n:'Bolivia',c:'Sucre',f:'🇧🇴',r:'South America'},
+  {n:'Paraguay',c:'Asunción',f:'🇵🇾',r:'South America'},
+  {n:'Uruguay',c:'Montevideo',f:'🇺🇾',r:'South America'},
+  {n:'Guyana',c:'Georgetown',f:'🇬🇾',r:'South America'},
+  {n:'Suriname',c:'Paramaribo',f:'🇸🇷',r:'South America'},
+  // Europe
+  {n:'United Kingdom',c:'London',f:'🇬🇧',r:'Europe'},
+  {n:'France',c:'Paris',f:'🇫🇷',r:'Europe'},
+  {n:'Germany',c:'Berlin',f:'🇩🇪',r:'Europe'},
+  {n:'Italy',c:'Rome',f:'🇮🇹',r:'Europe'},
+  {n:'Spain',c:'Madrid',f:'🇪🇸',r:'Europe'},
+  {n:'Portugal',c:'Lisbon',f:'🇵🇹',r:'Europe'},
+  {n:'Netherlands',c:'Amsterdam',f:'🇳🇱',r:'Europe'},
+  {n:'Belgium',c:'Brussels',f:'🇧🇪',r:'Europe'},
+  {n:'Switzerland',c:'Bern',f:'🇨🇭',r:'Europe'},
+  {n:'Austria',c:'Vienna',f:'🇦🇹',r:'Europe'},
+  {n:'Greece',c:'Athens',f:'🇬🇷',r:'Europe'},
+  {n:'Sweden',c:'Stockholm',f:'🇸🇪',r:'Europe'},
+  {n:'Norway',c:'Oslo',f:'🇳🇴',r:'Europe'},
+  {n:'Denmark',c:'Copenhagen',f:'🇩🇰',r:'Europe'},
+  {n:'Finland',c:'Helsinki',f:'🇫🇮',r:'Europe'},
+  {n:'Poland',c:'Warsaw',f:'🇵🇱',r:'Europe'},
+  {n:'Ireland',c:'Dublin',f:'🇮🇪',r:'Europe'},
+  {n:'Russia',c:'Moscow',f:'🇷🇺',r:'Europe'},
+  {n:'Ukraine',c:'Kyiv',f:'🇺🇦',r:'Europe'},
+  {n:'Czech Republic',c:'Prague',f:'🇨🇿',r:'Europe'},
+  {n:'Hungary',c:'Budapest',f:'🇭🇺',r:'Europe'},
+  {n:'Romania',c:'Bucharest',f:'🇷🇴',r:'Europe'},
+  {n:'Iceland',c:'Reykjavik',f:'🇮🇸',r:'Europe'},
+  {n:'Croatia',c:'Zagreb',f:'🇭🇷',r:'Europe'},
+  {n:'Serbia',c:'Belgrade',f:'🇷🇸',r:'Europe'},
+  // Asia
+  {n:'China',c:'Beijing',f:'🇨🇳',r:'Asia'},
+  {n:'Japan',c:'Tokyo',f:'🇯🇵',r:'Asia'},
+  {n:'India',c:'New Delhi',f:'🇮🇳',r:'Asia'},
+  {n:'South Korea',c:'Seoul',f:'🇰🇷',r:'Asia'},
+  {n:'North Korea',c:'Pyongyang',f:'🇰🇵',r:'Asia'},
+  {n:'Indonesia',c:'Jakarta',f:'🇮🇩',r:'Asia'},
+  {n:'Thailand',c:'Bangkok',f:'🇹🇭',r:'Asia'},
+  {n:'Vietnam',c:'Hanoi',f:'🇻🇳',r:'Asia'},
+  {n:'Philippines',c:'Manila',f:'🇵🇭',r:'Asia'},
+  {n:'Malaysia',c:'Kuala Lumpur',f:'🇲🇾',r:'Asia'},
+  {n:'Singapore',c:'Singapore',f:'🇸🇬',r:'Asia'},
+  {n:'Pakistan',c:'Islamabad',f:'🇵🇰',r:'Asia'},
+  {n:'Bangladesh',c:'Dhaka',f:'🇧🇩',r:'Asia'},
+  {n:'Nepal',c:'Kathmandu',f:'🇳🇵',r:'Asia'},
+  {n:'Saudi Arabia',c:'Riyadh',f:'🇸🇦',r:'Asia'},
+  {n:'Iran',c:'Tehran',f:'🇮🇷',r:'Asia'},
+  {n:'Iraq',c:'Baghdad',f:'🇮🇶',r:'Asia'},
+  {n:'United Arab Emirates',c:'Abu Dhabi',f:'🇦🇪',r:'Asia'},
+  {n:'Turkey',c:'Ankara',f:'🇹🇷',r:'Asia'},
+  {n:'Mongolia',c:'Ulaanbaatar',f:'🇲🇳',r:'Asia'},
+  {n:'Kazakhstan',c:'Astana',f:'🇰🇿',r:'Asia'},
+  {n:'Afghanistan',c:'Kabul',f:'🇦🇫',r:'Asia'},
+  {n:'Myanmar',c:'Naypyidaw',f:'🇲🇲',r:'Asia'},
+  {n:'Cambodia',c:'Phnom Penh',f:'🇰🇭',r:'Asia'},
+  {n:'Laos',c:'Vientiane',f:'🇱🇦',r:'Asia'},
+  {n:'Jordan',c:'Amman',f:'🇯🇴',r:'Asia'},
+  {n:'Lebanon',c:'Beirut',f:'🇱🇧',r:'Asia'},
+  {n:'Qatar',c:'Doha',f:'🇶🇦',r:'Asia'},
+  {n:'Kuwait',c:'Kuwait City',f:'🇰🇼',r:'Asia'},
+  {n:'Syria',c:'Damascus',f:'🇸🇾',r:'Asia'},
+  // Africa
+  {n:'Egypt',c:'Cairo',f:'🇪🇬',r:'Africa'},
+  {n:'Nigeria',c:'Abuja',f:'🇳🇬',r:'Africa'},
+  {n:'South Africa',c:'Pretoria',f:'🇿🇦',r:'Africa'},
+  {n:'Kenya',c:'Nairobi',f:'🇰🇪',r:'Africa'},
+  {n:'Ethiopia',c:'Addis Ababa',f:'🇪🇹',r:'Africa'},
+  {n:'Morocco',c:'Rabat',f:'🇲🇦',r:'Africa'},
+  {n:'Algeria',c:'Algiers',f:'🇩🇿',r:'Africa'},
+  {n:'Tunisia',c:'Tunis',f:'🇹🇳',r:'Africa'},
+  {n:'Libya',c:'Tripoli',f:'🇱🇾',r:'Africa'},
+  {n:'Ghana',c:'Accra',f:'🇬🇭',r:'Africa'},
+  {n:'Tanzania',c:'Dodoma',f:'🇹🇿',r:'Africa'},
+  {n:'Uganda',c:'Kampala',f:'🇺🇬',r:'Africa'},
+  {n:'Senegal',c:'Dakar',f:'🇸🇳',r:'Africa'},
+  {n:'Zimbabwe',c:'Harare',f:'🇿🇼',r:'Africa'},
+  {n:'Zambia',c:'Lusaka',f:'🇿🇲',r:'Africa'},
+  {n:'Angola',c:'Luanda',f:'🇦🇴',r:'Africa'},
+  {n:'Mozambique',c:'Maputo',f:'🇲🇿',r:'Africa'},
+  {n:'Namibia',c:'Windhoek',f:'🇳🇦',r:'Africa'},
+  {n:'Botswana',c:'Gaborone',f:'🇧🇼',r:'Africa'},
+  {n:'Rwanda',c:'Kigali',f:'🇷🇼',r:'Africa'},
+  {n:'Sudan',c:'Khartoum',f:'🇸🇩',r:'Africa'},
+  {n:'Cameroon',c:'Yaoundé',f:'🇨🇲',r:'Africa'},
+  {n:'Ivory Coast',c:'Yamoussoukro',f:'🇨🇮',r:'Africa'},
+  {n:'Madagascar',c:'Antananarivo',f:'🇲🇬',r:'Africa'},
+  // Oceania
+  {n:'Australia',c:'Canberra',f:'🇦🇺',r:'Oceania'},
+  {n:'New Zealand',c:'Wellington',f:'🇳🇿',r:'Oceania'},
+  {n:'Fiji',c:'Suva',f:'🇫🇯',r:'Oceania'},
+  {n:'Papua New Guinea',c:'Port Moresby',f:'🇵🇬',r:'Oceania'},
+];
+
+// ═══════════════ STATE ═══════════════
+let mode = 'flags';
+let region = 'all';
+let score = 0, total = 0;
+let currentQ = null;
+
+function setMode(m){
+  mode = m;
+  document.getElementById('tabFlags').classList.toggle('active', m==='flags');
+  document.getElementById('tabCapitals').classList.toggle('active', m==='capitals');
+  document.getElementById('modeLabel').textContent = m==='flags' ? '🚩 Flags' : '🏛️ Capitals';
+  nextQuestion();
+}
+
+document.getElementById('regionGroup').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  document.querySelectorAll('#regionGroup .chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  region = e.target.dataset.val;
+  nextQuestion();
+});
+
+function pool(){
+  return region === 'all' ? COUNTRIES : COUNTRIES.filter(c => c.r === region);
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function renderOptions(options, correctIdx, onAnswer){
+  const container = document.getElementById('opts');
+  container.innerHTML = '';
+  options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => onAnswer(i, btn, container);
+    container.appendChild(btn);
+  });
+}
+
+function lockOptions(container, chosenBtn, correctIdx){
+  const btns = container.querySelectorAll('.opt-btn');
+  btns.forEach((b,i) => {
+    b.disabled = true;
+    if (i === correctIdx) b.classList.add('correct');
+    else if (b === chosenBtn) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+}
+
+function nextQuestion(){
+  const p = pool();
+  if (p.length < 4) { document.getElementById('feedback').className='feedback show bad'; document.getElementById('feedback').innerHTML='Not enough countries in this region for a 4-option quiz.'; return; }
+  document.getElementById('feedback').classList.remove('show');
+  const q = pick(p);
+  currentQ = q;
+
+  if (mode === 'flags') {
+    document.getElementById('qPrompt').textContent = 'Which country does this flag belong to?';
+    document.getElementById('qDisplay').innerHTML = `<div class="q-flag">${q.f}</div>`;
+    const distractorPool = p.filter(c => c.n !== q.n);
+    const distractors = shuffle(distractorPool).slice(0, Math.min(3, distractorPool.length));
+    const opts = shuffle([q.n, ...distractors.map(d => d.n)]);
+    const correctIdx = opts.indexOf(q.n);
+    renderOptions(opts, correctIdx, (i, btn, container) => {
+      const isCorrect = i === correctIdx;
+      total++; if (isCorrect) score++;
+      document.getElementById('score').textContent = score;
+      document.getElementById('total').textContent = total;
+      lockOptions(container, btn, correctIdx);
+      const fb = document.getElementById('feedback');
+      fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+      fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') + `${q.f} is the flag of <strong>${q.n}</strong> (${q.r}).`;
+    });
+  } else {
+    const dir = Math.random() < 0.5 ? 'toCapital' : 'toCountry';
+    document.getElementById('qPrompt').textContent = dir==='toCapital' ? 'What is the capital of this country?' : 'Which country has this capital?';
+    document.getElementById('qDisplay').innerHTML = `<div class="q-text">${dir==='toCapital' ? q.n : q.c}</div>`;
+    const distractorPool = p.filter(c => c.n !== q.n);
+    const distractors = shuffle(distractorPool).slice(0, Math.min(3, distractorPool.length));
+    const correctVal = dir==='toCapital' ? q.c : q.n;
+    const opts = shuffle([correctVal, ...distractors.map(d => dir==='toCapital' ? d.c : d.n)]);
+    const correctIdx = opts.indexOf(correctVal);
+    renderOptions(opts, correctIdx, (i, btn, container) => {
+      const isCorrect = i === correctIdx;
+      total++; if (isCorrect) score++;
+      document.getElementById('score').textContent = score;
+      document.getElementById('total').textContent = total;
+      lockOptions(container, btn, correctIdx);
+      const fb = document.getElementById('feedback');
+      fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+      fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') + `The capital of <strong>${q.n}</strong> is <strong>${q.c}</strong> (${q.r}).`;
+    });
+  }
+}
+
+nextQuestion();
+</script>
+</body>
+</html>

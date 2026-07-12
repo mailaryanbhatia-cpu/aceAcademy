@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<script src="/timer.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chemistry Nomenclature Trainer — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:860px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.tab-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:140px;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-size:.8rem;color:var(--muted)}
+.score-row strong{color:var(--accent2)}
+.q-prompt{font-size:1.5rem;font-weight:800;color:#fff;text-align:center;padding:22px 10px;background:#0d1628;border-radius:12px;margin-bottom:16px;letter-spacing:.02em}
+.q-hint{text-align:center;font-size:.72rem;color:var(--muted);margin-top:-10px;margin-bottom:16px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:520px){.opt-grid{grid-template-columns:1fr}}
+.opt-btn{padding:14px 16px;border-radius:10px;border:1.5px solid var(--border);background:#111827;color:#fff;font-size:.92rem;font-weight:600;cursor:pointer;text-align:left;transition:all .12s}
+.opt-btn:hover{border-color:var(--accent)}
+.opt-btn.correct{background:rgba(52,211,153,.18);border-color:var(--green);color:var(--green)}
+.opt-btn.wrong{background:rgba(248,113,113,.18);border-color:var(--red);color:var(--red)}
+.opt-btn.dim{opacity:.45;cursor:default}
+.opt-btn:disabled{cursor:default}
+.feedback{padding:14px 16px;border-radius:10px;font-size:.85rem;margin-bottom:14px;line-height:1.6;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:#a7f3d0}
+.feedback.bad{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#fecaca}
+table.ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:6px}
+table.ref-table th{text-align:left;color:var(--accent2);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--border);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+table.ref-table td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--muted)}
+table.ref-table td:first-child{color:#fff;font-weight:700}
+.ref-sub{font-size:.72rem;color:var(--muted);margin:2px 0 12px;line-height:1.6}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.ref-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="nomenclature.html">Chemistry Nomenclature</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>⚗️ Chemistry Nomenclature Trainer</h1>
+  <p>Name ionic and covalent compounds, write formulas from names, and practice acid naming — with a full reference chart.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="setTab('ref')" id="tabRef">📖 Reference</button>
+      <button class="tab-btn" onclick="setTab('ionic')" id="tabIonic">🧪 Ionic Compounds</button>
+      <button class="tab-btn" onclick="setTab('covalent')" id="tabCovalent">💨 Covalent Compounds</button>
+      <button class="tab-btn" onclick="setTab('acids')" id="tabAcids">🧫 Acids</button>
+    </div>
+  </div>
+
+  <!-- REFERENCE -->
+  <div class="card" id="refPanel">
+    <h2>Naming Rules Cheat Sheet</h2>
+    <div class="ref-grid">
+      <div>
+        <h2 style="font-size:.8rem;color:var(--accent2)">Common Cations</h2>
+        <div class="ref-sub">Fixed-charge metals never need a Roman numeral. Variable-charge (transition) metals always do.</div>
+        <table class="ref-table" id="cationTable"></table>
+      </div>
+      <div>
+        <h2 style="font-size:.8rem;color:var(--accent2)">Common Anions</h2>
+        <div class="ref-sub">Monatomic anions end in <strong>-ide</strong>.</div>
+        <table class="ref-table" id="anionTable"></table>
+      </div>
+    </div>
+    <div class="ref-grid" style="margin-top:18px">
+      <div>
+        <h2 style="font-size:.8rem;color:var(--accent2)">Common Polyatomic Ions</h2>
+        <div class="ref-sub">-ate has one more oxygen than -ite. Memorize NO₃⁻ and SO₄²⁻ as anchors.</div>
+        <table class="ref-table" id="polyTable"></table>
+      </div>
+      <div>
+        <h2 style="font-size:.8rem;color:var(--accent2)">Covalent Prefixes</h2>
+        <div class="ref-sub">Used for nonmetal + nonmetal compounds. Drop the final "a"/"o" before another vowel (e.g. monoxide). Never use "mono-" on the first element.</div>
+        <table class="ref-table" id="prefixTable"></table>
+        <h2 style="font-size:.8rem;color:var(--accent2);margin-top:16px">Acid Naming Rules</h2>
+        <table class="ref-table">
+          <tr><th>Anion type</th><th>Acid name</th></tr>
+          <tr><td>-ide (binary)</td><td>hydro- + stem + -ic acid</td></tr>
+          <tr><td>-ate</td><td>stem + -ic acid</td></tr>
+          <tr><td>-ite</td><td>stem + -ous acid</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- IONIC PRACTICE -->
+  <div class="card" id="ionicPanel" style="display:none">
+    <div class="score-row"><span>🧪 Ionic Compounds</span><span>Score: <strong id="ionicScore">0</strong> / <strong id="ionicTotal">0</strong></span></div>
+    <div class="q-hint" id="ionicDir">Formula → Name</div>
+    <div class="q-prompt" id="ionicPrompt">—</div>
+    <div class="opt-grid" id="ionicOpts"></div>
+    <div class="feedback" id="ionicFeedback"></div>
+    <button class="btn btn-primary btn-big" id="ionicNextBtn" onclick="nextIonic()">🎲 New Question</button>
+  </div>
+
+  <!-- COVALENT PRACTICE -->
+  <div class="card" id="covalentPanel" style="display:none">
+    <div class="score-row"><span>💨 Covalent Compounds</span><span>Score: <strong id="covalentScore">0</strong> / <strong id="covalentTotal">0</strong></span></div>
+    <div class="q-hint" id="covalentDir">Formula → Name</div>
+    <div class="q-prompt" id="covalentPrompt">—</div>
+    <div class="opt-grid" id="covalentOpts"></div>
+    <div class="feedback" id="covalentFeedback"></div>
+    <button class="btn btn-primary btn-big" id="covalentNextBtn" onclick="nextCovalent()">🎲 New Question</button>
+  </div>
+
+  <!-- ACIDS PRACTICE -->
+  <div class="card" id="acidsPanel" style="display:none">
+    <div class="score-row"><span>🧫 Acids</span><span>Score: <strong id="acidsScore">0</strong> / <strong id="acidsTotal">0</strong></span></div>
+    <div class="q-hint" id="acidsDir">Formula → Name</div>
+    <div class="q-prompt" id="acidsPrompt">—</div>
+    <div class="opt-grid" id="acidsOpts"></div>
+    <div class="feedback" id="acidsFeedback"></div>
+    <button class="btn btn-primary btn-big" id="acidsNextBtn" onclick="nextAcid()">🎲 New Question</button>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const SUB = {0:'₀',1:'₁',2:'₂',3:'₃',4:'₄',5:'₅',6:'₆',7:'₇',8:'₈',9:'₉'};
+function subscript(n){ return n<=1 ? '' : String(n).split('').map(d=>SUB[d]).join(''); }
+const ROMAN = {1:'I',2:'II',3:'III',4:'IV',5:'V',6:'VI',7:'VII'};
+function gcd(a,b){ return b ? gcd(b,a%b) : a; }
+
+const FIXED_CATIONS = [
+  {sym:'Li',name:'lithium',charge:1},
+  {sym:'Na',name:'sodium',charge:1},
+  {sym:'K',name:'potassium',charge:1},
+  {sym:'Rb',name:'rubidium',charge:1},
+  {sym:'Cs',name:'cesium',charge:1},
+  {sym:'Ag',name:'silver',charge:1},
+  {sym:'NH4',name:'ammonium',charge:1,poly:true},
+  {sym:'Mg',name:'magnesium',charge:2},
+  {sym:'Ca',name:'calcium',charge:2},
+  {sym:'Sr',name:'strontium',charge:2},
+  {sym:'Ba',name:'barium',charge:2},
+  {sym:'Zn',name:'zinc',charge:2},
+  {sym:'Cd',name:'cadmium',charge:2},
+  {sym:'Al',name:'aluminum',charge:3},
+];
+const VARIABLE_CATIONS = [
+  {sym:'Fe',name:'iron',charges:[2,3]},
+  {sym:'Cu',name:'copper',charges:[1,2]},
+  {sym:'Pb',name:'lead',charges:[2,4]},
+  {sym:'Sn',name:'tin',charges:[2,4]},
+  {sym:'Co',name:'cobalt',charges:[2,3]},
+  {sym:'Mn',name:'manganese',charges:[2,3]},
+  {sym:'Cr',name:'chromium',charges:[2,3]},
+  {sym:'Ni',name:'nickel',charges:[2,3]},
+  {sym:'Hg',name:'mercury',charges:[1,2]},
+];
+const ANIONS = [
+  {sym:'F',name:'fluoride',charge:1},
+  {sym:'Cl',name:'chloride',charge:1},
+  {sym:'Br',name:'bromide',charge:1},
+  {sym:'I',name:'iodide',charge:1},
+  {sym:'O',name:'oxide',charge:2},
+  {sym:'S',name:'sulfide',charge:2},
+  {sym:'Se',name:'selenide',charge:2},
+  {sym:'N',name:'nitride',charge:3},
+  {sym:'P',name:'phosphide',charge:3},
+];
+const POLY_ANIONS = [
+  {sym:'OH',name:'hydroxide',charge:1,poly:true},
+  {sym:'NO3',name:'nitrate',charge:1,poly:true},
+  {sym:'NO2',name:'nitrite',charge:1,poly:true},
+  {sym:'ClO',name:'hypochlorite',charge:1,poly:true},
+  {sym:'ClO2',name:'chlorite',charge:1,poly:true},
+  {sym:'ClO3',name:'chlorate',charge:1,poly:true},
+  {sym:'ClO4',name:'perchlorate',charge:1,poly:true},
+  {sym:'CN',name:'cyanide',charge:1,poly:true},
+  {sym:'MnO4',name:'permanganate',charge:1,poly:true},
+  {sym:'C2H3O2',name:'acetate',charge:1,poly:true},
+  {sym:'HCO3',name:'bicarbonate',charge:1,poly:true},
+  {sym:'SO4',name:'sulfate',charge:2,poly:true},
+  {sym:'SO3',name:'sulfite',charge:2,poly:true},
+  {sym:'CO3',name:'carbonate',charge:2,poly:true},
+  {sym:'CrO4',name:'chromate',charge:2,poly:true},
+  {sym:'Cr2O7',name:'dichromate',charge:2,poly:true},
+  {sym:'PO4',name:'phosphate',charge:3,poly:true},
+];
+const PREFIXES = ['mono','di','tri','tetra','penta','hexa','hepta','octa','nona','deca'];
+
+const COVALENT = [
+  {f:'CO',n:'carbon monoxide'}, {f:'CO2',n:'carbon dioxide'},
+  {f:'NO',n:'nitrogen monoxide'}, {f:'NO2',n:'nitrogen dioxide'},
+  {f:'N2O',n:'dinitrogen monoxide'}, {f:'N2O3',n:'dinitrogen trioxide'},
+  {f:'N2O4',n:'dinitrogen tetroxide'}, {f:'N2O5',n:'dinitrogen pentoxide'},
+  {f:'SO2',n:'sulfur dioxide'}, {f:'SO3',n:'sulfur trioxide'},
+  {f:'PCl3',n:'phosphorus trichloride'}, {f:'PCl5',n:'phosphorus pentachloride'},
+  {f:'SiO2',n:'silicon dioxide'}, {f:'SiCl4',n:'silicon tetrachloride'},
+  {f:'CCl4',n:'carbon tetrachloride'}, {f:'CS2',n:'carbon disulfide'},
+  {f:'SF6',n:'sulfur hexafluoride'}, {f:'OF2',n:'oxygen difluoride'},
+  {f:'ICl',n:'iodine monochloride'}, {f:'ICl3',n:'iodine trichloride'},
+  {f:'NF3',n:'nitrogen trifluoride'}, {f:'PF5',n:'phosphorus pentafluoride'},
+  {f:'ClF3',n:'chlorine trifluoride'}, {f:'BrF3',n:'bromine trifluoride'},
+  {f:'P2O5',n:'diphosphorus pentoxide'}, {f:'P4O10',n:'tetraphosphorus decoxide'},
+  {f:'XeF4',n:'xenon tetrafluoride'}, {f:'N2F4',n:'dinitrogen tetrafluoride'},
+];
+
+const ACIDS = [
+  {f:'HF',n:'hydrofluoric acid'}, {f:'HCl',n:'hydrochloric acid'},
+  {f:'HBr',n:'hydrobromic acid'}, {f:'HI',n:'hydroiodic acid'},
+  {f:'H2S',n:'hydrosulfuric acid'},
+  {f:'HNO3',n:'nitric acid'}, {f:'HNO2',n:'nitrous acid'},
+  {f:'H2SO4',n:'sulfuric acid'}, {f:'H2SO3',n:'sulfurous acid'},
+  {f:'H2CO3',n:'carbonic acid'}, {f:'H3PO4',n:'phosphoric acid'},
+  {f:'HC2H3O2',n:'acetic acid'},
+  {f:'HClO',n:'hypochlorous acid'}, {f:'HClO2',n:'chlorous acid'},
+  {f:'HClO3',n:'chloric acid'}, {f:'HClO4',n:'perchloric acid'},
+  {f:'HCN',n:'hydrocyanic acid'},
+];
+
+// ═══════════════ REFERENCE TABLES ═══════════════
+function buildRefTables(){
+  let h = '<tr><th>Symbol</th><th>Name</th><th>Charge</th></tr>';
+  FIXED_CATIONS.forEach(c => h += `<tr><td>${c.sym}${c.poly?'⁺':'<sup>'+c.charge+'+</sup>'}</td><td>${c.name}</td><td>+${c.charge}</td></tr>`);
+  VARIABLE_CATIONS.forEach(c => h += `<tr><td>${c.sym}</td><td>${c.name}(${c.charges.map(ch=>ROMAN[ch]).join('/')})</td><td>${c.charges.map(ch=>'+'+ch).join(', ')}</td></tr>`);
+  document.getElementById('cationTable').innerHTML = h;
+
+  h = '<tr><th>Symbol</th><th>Name</th><th>Charge</th></tr>';
+  ANIONS.forEach(a => h += `<tr><td>${a.sym}</td><td>${a.name}</td><td>−${a.charge}</td></tr>`);
+  document.getElementById('anionTable').innerHTML = h;
+
+  h = '<tr><th>Formula</th><th>Name</th><th>Charge</th></tr>';
+  POLY_ANIONS.forEach(p => h += `<tr><td>${p.sym}</td><td>${p.name}</td><td>−${p.charge}</td></tr>`);
+  document.getElementById('polyTable').innerHTML = h;
+
+  h = '<tr><th># Atoms</th><th>Prefix</th></tr>';
+  PREFIXES.forEach((p,i) => h += `<tr><td>${i+1}</td><td>${p}-</td></tr>`);
+  document.getElementById('prefixTable').innerHTML = h;
+}
+buildRefTables();
+
+// ═══════════════ TABS ═══════════════
+function setTab(t){
+  ['ref','ionic','covalent','acids'].forEach(id => {
+    document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)).classList.toggle('active', id===t);
+    document.getElementById(id+'Panel').style.display = id===t ? 'block' : 'none';
+  });
+  if (t==='ionic' && !ionicState.q) nextIonic();
+  if (t==='covalent' && !covalentState.q) nextCovalent();
+  if (t==='acids' && !acidsState.q) nextAcid();
+}
+
+// ═══════════════ SHARED HELPERS ═══════════════
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function renderOptions(containerId, options, correctIdx, onAnswer){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => onAnswer(i, btn, container);
+    container.appendChild(btn);
+  });
+}
+
+function lockOptions(container, chosenBtn, correctIdx, isCorrect){
+  const btns = container.querySelectorAll('.opt-btn');
+  btns.forEach((b,i) => {
+    b.disabled = true;
+    if (i === correctIdx) b.classList.add('correct');
+    else if (b === chosenBtn) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+}
+
+// ═══════════════ IONIC PRACTICE ═══════════════
+let ionicState = {score:0, total:0, q:null, dir:'toName'};
+
+function genIonicCompound(){
+  const useVariable = Math.random() < 0.4;
+  let cation, cationCharge, roman;
+  if (useVariable) {
+    const vc = pick(VARIABLE_CATIONS);
+    cationCharge = pick(vc.charges);
+    cation = {sym: vc.sym, name: vc.name};
+    roman = true;
+  } else {
+    const fc = pick(FIXED_CATIONS);
+    cation = fc; cationCharge = fc.charge; roman = false;
+  }
+  const usePoly = Math.random() < 0.45;
+  const anion = usePoly ? pick(POLY_ANIONS) : pick(ANIONS);
+  const anionCharge = anion.charge;
+
+  const g = gcd(cationCharge, anionCharge);
+  const catSub = anionCharge / g;
+  const anSub = cationCharge / g;
+
+  let catPart = (cation.poly && catSub>1) ? '(' + cation.sym + ')' + subscript(catSub) : cation.sym + subscript(catSub);
+  let anPart = (anion.poly && anSub>1) ? '(' + anion.sym + ')' + subscript(anSub) : anion.sym + subscript(anSub);
+  const formula = catPart + anPart;
+
+  let name = cation.name + (roman ? ' (' + ROMAN[cationCharge] + ')' : '') + ' ' + anion.name;
+
+  return { formula, name, cation, cationCharge, roman, anion };
+}
+
+function nextIonic(){
+  const dir = Math.random() < 0.5 ? 'toName' : 'toFormula';
+  const q = genIonicCompound();
+  ionicState.q = q; ionicState.dir = dir;
+  document.getElementById('ionicFeedback').classList.remove('show');
+  document.getElementById('ionicDir').textContent = dir==='toName' ? 'Formula → Name' : 'Name → Formula';
+  document.getElementById('ionicPrompt').textContent = dir==='toName' ? q.formula : capitalize(q.name);
+
+  // Build distractors: start with the "used" set seeded by the correct answer so
+  // nothing generated below can accidentally collide with it or with each other.
+  const correctValRaw = dir==='toName' ? q.name : q.formula;
+  const used = new Set([correctValRaw]);
+  const distractors = [];
+
+  // Priority distractor: charge-confusion (swap Roman numeral) for variable-charge cations
+  if (dir==='toName' && q.roman) {
+    const vc = VARIABLE_CATIONS.find(c => c.sym === q.cation.sym);
+    const otherCharge = vc.charges.find(c => c !== q.cationCharge);
+    if (otherCharge) {
+      const wrongName = q.cation.name + ' (' + ROMAN[otherCharge] + ') ' + q.anion.name;
+      if (!used.has(wrongName)) { distractors.push(wrongName); used.add(wrongName); }
+    }
+  }
+
+  let guard = 0;
+  while (distractors.length < 3 && guard < 500) {
+    guard++;
+    const alt = genIonicCompound();
+    const val = dir==='toName' ? alt.name : alt.formula;
+    if (!used.has(val)) { distractors.push(val); used.add(val); }
+  }
+
+  const correctVal = dir==='toName' ? capitalize(q.name) : q.formula;
+  const optsRaw = shuffle([correctVal, ...Array.from(distractors).map(d => dir==='toName'?capitalize(d):d)]);
+  const correctIdx = optsRaw.indexOf(correctVal);
+  renderOptions('ionicOpts', optsRaw, correctIdx, (i, btn, container) => {
+    const isCorrect = i === correctIdx;
+    ionicState.total++; if (isCorrect) ionicState.score++;
+    document.getElementById('ionicScore').textContent = ionicState.score;
+    document.getElementById('ionicTotal').textContent = ionicState.total;
+    lockOptions(container, btn, correctIdx, isCorrect);
+    const fb = document.getElementById('ionicFeedback');
+    fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+    fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') +
+      `<strong>${q.formula}</strong> = <strong>${capitalize(q.name)}</strong>. ` +
+      (q.roman ? `${q.cation.name} is a variable-charge metal here with charge +${q.cationCharge}, shown as (${ROMAN[q.cationCharge]}). ` : '') +
+      `Formula built from ${q.cation.name} (+${q.cationCharge}) and ${q.anion.name} (−${q.anion.charge}), cross-charges reduced to the smallest whole-number ratio.`;
+  });
+}
+
+function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ═══════════════ COVALENT PRACTICE ═══════════════
+let covalentState = {score:0, total:0, q:null};
+
+function nextCovalent(){
+  const dir = Math.random() < 0.5 ? 'toName' : 'toFormula';
+  const q = pick(COVALENT);
+  covalentState.q = q;
+  document.getElementById('covalentFeedback').classList.remove('show');
+  document.getElementById('covalentDir').textContent = dir==='toName' ? 'Formula → Name' : 'Name → Formula';
+  document.getElementById('covalentPrompt').textContent = dir==='toName' ? q.f : capitalize(q.n);
+
+  const pool = COVALENT.filter(c => c.f !== q.f);
+  const distractors = shuffle(pool).slice(0,3);
+  const correctVal = dir==='toName' ? capitalize(q.n) : q.f;
+  const opts = shuffle([correctVal, ...distractors.map(d => dir==='toName'?capitalize(d.n):d.f)]);
+  const correctIdx = opts.indexOf(correctVal);
+  renderOptions('covalentOpts', opts, correctIdx, (i, btn, container) => {
+    const isCorrect = i === correctIdx;
+    covalentState.total++; if (isCorrect) covalentState.score++;
+    document.getElementById('covalentScore').textContent = covalentState.score;
+    document.getElementById('covalentTotal').textContent = covalentState.total;
+    lockOptions(container, btn, correctIdx, isCorrect);
+    const fb = document.getElementById('covalentFeedback');
+    fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+    fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') +
+      `<strong>${q.f}</strong> = <strong>${capitalize(q.n)}</strong>. Count the atoms of each element and apply the Greek prefix (remember: no "mono-" on the first element).`;
+  });
+}
+
+// ═══════════════ ACIDS PRACTICE ═══════════════
+let acidsState = {score:0, total:0, q:null};
+
+function nextAcid(){
+  const dir = Math.random() < 0.5 ? 'toName' : 'toFormula';
+  const q = pick(ACIDS);
+  acidsState.q = q;
+  document.getElementById('acidsFeedback').classList.remove('show');
+  document.getElementById('acidsDir').textContent = dir==='toName' ? 'Formula → Name' : 'Name → Formula';
+  document.getElementById('acidsPrompt').textContent = dir==='toName' ? q.f : capitalize(q.n);
+
+  const pool = ACIDS.filter(a => a.f !== q.f);
+  const distractors = shuffle(pool).slice(0,3);
+  const correctVal = dir==='toName' ? capitalize(q.n) : q.f;
+  const opts = shuffle([correctVal, ...distractors.map(d => dir==='toName'?capitalize(d.n):d.f)]);
+  const correctIdx = opts.indexOf(correctVal);
+  const isBinary = /^H[A-Z][a-z]?[0-9]?$/.test(q.f) && !q.f.includes('O');
+  renderOptions('acidsOpts', opts, correctIdx, (i, btn, container) => {
+    const isCorrect = i === correctIdx;
+    acidsState.total++; if (isCorrect) acidsState.score++;
+    document.getElementById('acidsScore').textContent = acidsState.score;
+    document.getElementById('acidsTotal').textContent = acidsState.total;
+    lockOptions(container, btn, correctIdx, isCorrect);
+    const fb = document.getElementById('acidsFeedback');
+    fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+    fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') +
+      `<strong>${q.f}</strong> = <strong>${capitalize(q.n)}</strong>. ` +
+      (isBinary ? 'Binary acid (no oxygen) → hydro- + stem + -ic acid.' : q.n.includes('ous') ? '-ite anion → stem + -ous acid.' : '-ate anion → stem + -ic acid.');
+  });
+}
+
+// Init first practice sets lazily when tab opened
+</script>
+</body>
+</html>

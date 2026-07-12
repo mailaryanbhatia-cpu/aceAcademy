@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<script src="/timer.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Number Sense — Place Value, Number Line &amp; Fact Fluency — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:820px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.tab-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:130px;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:6px 15px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:all .15s}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-size:.8rem;color:var(--muted)}
+.score-row strong{color:var(--accent2)}
+.q-prompt{font-size:.95rem;font-weight:700;color:var(--muted);text-align:center;margin-bottom:14px;text-transform:uppercase;letter-spacing:.03em}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:520px){.opt-grid{grid-template-columns:1fr}}
+.opt-btn{padding:14px 16px;border-radius:10px;border:1.5px solid var(--border);background:#111827;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;text-align:center;transition:all .12s}
+.opt-btn:hover{border-color:var(--accent)}
+.opt-btn.correct{background:rgba(52,211,153,.18);border-color:var(--green);color:var(--green)}
+.opt-btn.wrong{background:rgba(248,113,113,.18);border-color:var(--red);color:var(--red)}
+.opt-btn.dim{opacity:.45;cursor:default}
+.opt-btn:disabled{cursor:default}
+.feedback{padding:14px 16px;border-radius:10px;font-size:.85rem;margin-bottom:14px;line-height:1.6;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:#a7f3d0}
+.feedback.bad{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#fecaca}
+
+/* Place value blocks */
+.blocks-box{background:#0d1628;border-radius:12px;padding:20px;margin-bottom:16px;display:flex;align-items:flex-end;justify-content:center;gap:14px;flex-wrap:wrap;min-height:110px}
+.block-group{display:flex;align-items:flex-end;gap:4px;flex-wrap:wrap;max-width:220px}
+.block-hundred{width:64px;height:64px;background-color:#6366f1;background-image:linear-gradient(#3730a3 1px,transparent 1px),linear-gradient(90deg,#3730a3 1px,transparent 1px);background-size:6.4px 6.4px;border:2px solid #3730a3;border-radius:5px}
+.block-ten{width:12px;height:64px;background-color:#34d399;background-image:linear-gradient(#059669 1px,transparent 1px);background-size:100% 6.4px;border:2px solid #059669;border-radius:3px}
+.block-one{width:13px;height:13px;background-color:#fbbf24;border:2px solid #b45309;border-radius:3px}
+.block-lbl{font-size:.66rem;color:var(--muted);text-align:center;margin-top:4px;font-weight:700;text-transform:uppercase}
+
+/* Number line */
+.numline-wrap{background:#0d1628;border-radius:12px;padding:36px 24px 20px;margin-bottom:16px;position:relative}
+.numline-track{position:relative;height:2px;background:var(--border);margin:0 6px}
+.numline-tick{position:absolute;top:-5px;width:2px;height:12px;background:var(--muted)}
+.numline-ticklbl{position:absolute;top:14px;font-size:.66rem;color:var(--muted);transform:translateX(-50%)}
+.numline-marker{position:absolute;top:-26px;transform:translateX(-50%);font-size:1.3rem}
+.numline-seq{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.numline-seq-item{width:52px;height:52px;border-radius:10px;background:#111827;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff}
+.numline-seq-item.blank{border-color:var(--accent);color:var(--accent2);background:rgba(99,102,241,.15)}
+
+/* Fact fluency */
+.fact-q{font-size:2.4rem;font-weight:800;color:#fff;text-align:center;margin-bottom:18px}
+.fact-input{width:140px;padding:12px;border-radius:10px;border:2px solid var(--border);background:#111827;color:#fff;font-size:1.4rem;font-weight:800;text-align:center;outline:none;display:block;margin:0 auto}
+.fact-input:focus{border-color:var(--accent)}
+.fact-input.correct{border-color:var(--green);background:rgba(52,211,153,.12)}
+.fact-input.wrong{border-color:var(--red);background:rgba(248,113,113,.12)}
+.fact-feedback{text-align:center;margin-top:12px;font-size:.95rem;font-weight:700;min-height:22px}
+.fact-feedback.ok{color:var(--green)}
+.fact-feedback.err{color:var(--red)}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="numbersense.html">Number Sense</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🔢 Number Sense</h1>
+  <p>Place value blocks, number line practice, and addition &amp; subtraction fact fluency for K-2.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="setTab('place')" id="tabPlace">🔟 Place Value</button>
+      <button class="tab-btn" onclick="setTab('line')" id="tabLine">📏 Number Line</button>
+      <button class="tab-btn" onclick="setTab('fact')" id="tabFact">➕➖ Fact Fluency</button>
+    </div>
+  </div>
+
+  <!-- PLACE VALUE -->
+  <div class="card" id="placePanel">
+    <div class="score-row"><span>🔟 Place Value</span><span>Score: <strong id="placeScore">0</strong> / <strong id="placeTotal">0</strong></span></div>
+    <div style="margin-bottom:14px">
+      <div class="chip-group" id="placeRangeGroup">
+        <button class="chip active" data-val="2">Tens &amp; Ones (up to 99)</button>
+        <button class="chip" data-val="3">Hundreds, Tens &amp; Ones (up to 999)</button>
+      </div>
+    </div>
+    <div class="q-prompt" id="placePrompt">What number is shown?</div>
+    <div class="blocks-box" id="placeBlocks"></div>
+    <div class="opt-grid" id="placeOpts"></div>
+    <div class="feedback" id="placeFeedback"></div>
+    <button class="btn btn-primary btn-big" onclick="nextPlace()">🎲 New Question</button>
+  </div>
+
+  <!-- NUMBER LINE -->
+  <div class="card" id="linePanel" style="display:none">
+    <div class="score-row"><span>📏 Number Line</span><span>Score: <strong id="lineScore">0</strong> / <strong id="lineTotal">0</strong></span></div>
+    <div style="margin-bottom:14px">
+      <div class="chip-group" id="lineRangeGroup">
+        <button class="chip active" data-val="10">0 to 10</button>
+        <button class="chip" data-val="20">0 to 20</button>
+        <button class="chip" data-val="100">0 to 100 (by 10s)</button>
+      </div>
+    </div>
+    <div class="q-prompt" id="linePrompt">What number is marked?</div>
+    <div id="lineDisplay"></div>
+    <div class="opt-grid" id="lineOpts"></div>
+    <div class="feedback" id="lineFeedback"></div>
+    <button class="btn btn-primary btn-big" onclick="nextLine()">🎲 New Question</button>
+  </div>
+
+  <!-- FACT FLUENCY -->
+  <div class="card" id="factPanel" style="display:none">
+    <div class="score-row"><span>➕➖ Fact Fluency</span><span>🔥 Streak: <strong id="factStreak">0</strong> &nbsp;|&nbsp; <strong id="factScore">0</strong> / <strong id="factTotal">0</strong></span></div>
+    <div style="margin-bottom:14px">
+      <div class="chip-group" id="factRangeGroup">
+        <button class="chip active" data-val="add10">Addition to 10</button>
+        <button class="chip" data-val="add20">Addition to 20</button>
+        <button class="chip" data-val="sub10">Subtraction within 10</button>
+        <button class="chip" data-val="sub20">Subtraction within 20</button>
+      </div>
+    </div>
+    <div class="fact-q" id="factQ">? + ? = ?</div>
+    <input type="number" class="fact-input" id="factInput" autocomplete="off" onkeydown="if(event.key==='Enter')checkFact()">
+    <div class="fact-feedback" id="factFeedback"></div>
+    <div style="text-align:center;margin-top:14px"><button class="btn btn-primary btn-big" onclick="checkFact()">Check</button></div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════ SHARED HELPERS ═══════════════
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function renderOptions(containerId, options, correctIdx, onAnswer){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => onAnswer(i, btn, container);
+    container.appendChild(btn);
+  });
+}
+function lockOptions(container, chosenBtn, correctIdx){
+  const btns = container.querySelectorAll('.opt-btn');
+  btns.forEach((b,i) => {
+    b.disabled = true;
+    if (i === correctIdx) b.classList.add('correct');
+    else if (b === chosenBtn) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+}
+
+// ═══════════════ TABS ═══════════════
+function setTab(t){
+  ['place','line','fact'].forEach(id => {
+    document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)).classList.toggle('active', id===t);
+    document.getElementById(id+'Panel').style.display = id===t ? 'block' : 'none';
+  });
+  if (t==='fact') document.getElementById('factInput').focus();
+}
+
+// ═══════════════ PLACE VALUE ═══════════════
+let placeScore=0, placeTotal=0, placeRange=2, placeCurrent=null;
+
+document.getElementById('placeRangeGroup').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  document.querySelectorAll('#placeRangeGroup .chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  placeRange = parseInt(e.target.dataset.val);
+  nextPlace();
+});
+
+function genPlaceNumber(){
+  if (placeRange === 2) return rnd(10, 99);
+  return rnd(100, 999);
+}
+
+function renderBlocks(num){
+  const hundreds = Math.floor(num/100);
+  const tens = Math.floor((num%100)/10);
+  const ones = num%10;
+  const box = document.getElementById('placeBlocks');
+  box.innerHTML = '';
+  if (hundreds > 0) {
+    const g = document.createElement('div'); g.className = 'block-group';
+    for (let i=0;i<hundreds;i++){ const b=document.createElement('div'); b.className='block-hundred'; g.appendChild(b); }
+    box.appendChild(g);
+  }
+  if (tens > 0) {
+    const g = document.createElement('div'); g.className = 'block-group';
+    for (let i=0;i<tens;i++){ const b=document.createElement('div'); b.className='block-ten'; g.appendChild(b); }
+    box.appendChild(g);
+  }
+  if (ones > 0) {
+    const g = document.createElement('div'); g.className = 'block-group';
+    for (let i=0;i<ones;i++){ const b=document.createElement('div'); b.className='block-one'; g.appendChild(b); }
+    box.appendChild(g);
+  }
+  if (hundreds===0 && tens===0 && ones===0) box.innerHTML = '<span style="color:var(--muted);font-size:.8rem">—</span>';
+}
+
+function nextPlace(){
+  const num = genPlaceNumber();
+  placeCurrent = num;
+  document.getElementById('placeFeedback').classList.remove('show');
+  document.getElementById('placePrompt').textContent = 'What number is shown?';
+  renderBlocks(num);
+
+  const used = new Set([num]);
+  const distractors = [];
+  const max = placeRange===2 ? 99 : 999;
+  const min = placeRange===2 ? 10 : 100;
+  let guard = 0;
+  while (distractors.length < 3 && guard < 300) {
+    guard++;
+    // plausible distractors: off by a ten, off by a one, digit-swap style
+    const variants = [
+      num + (placeRange===2 ? 10 : 100),
+      num - (placeRange===2 ? 10 : 100),
+      num + 1, num - 1,
+      rnd(min, max)
+    ].filter(v => v >= min && v <= max && v !== num && !used.has(v));
+    if (variants.length) {
+      const v = variants[rnd(0, variants.length-1)];
+      distractors.push(v); used.add(v);
+    } else {
+      const v = rnd(min, max);
+      if (!used.has(v)) { distractors.push(v); used.add(v); }
+    }
+  }
+  const opts = shuffle([num, ...distractors].map(String));
+  const correctIdx = opts.indexOf(String(num));
+  renderOptions('placeOpts', opts, correctIdx, (i, btn, container) => {
+    const isCorrect = i === correctIdx;
+    placeTotal++; if (isCorrect) placeScore++;
+    document.getElementById('placeScore').textContent = placeScore;
+    document.getElementById('placeTotal').textContent = placeTotal;
+    lockOptions(container, btn, correctIdx);
+    const h = Math.floor(num/100), t = Math.floor((num%100)/10), o = num%10;
+    const parts = [];
+    if (h>0) parts.push(h+' hundred'+(h>1?'s':''));
+    if (t>0) parts.push(t+' ten'+(t>1?'s':''));
+    if (o>0 || parts.length===0) parts.push(o+' one'+(o!==1?'s':''));
+    const fb = document.getElementById('placeFeedback');
+    fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+    fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') + `The number is <strong>${num}</strong> — that's ${parts.join(', ')}.`;
+  });
+}
+
+// ═══════════════ NUMBER LINE ═══════════════
+let lineScore=0, lineTotal=0, lineRange=10;
+
+document.getElementById('lineRangeGroup').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  document.querySelectorAll('#lineRangeGroup .chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  lineRange = parseInt(e.target.dataset.val);
+  nextLine();
+});
+
+function renderNumberLineMark(max, step, val){
+  const wrap = document.createElement('div');
+  wrap.className = 'numline-wrap';
+  const track = document.createElement('div');
+  track.className = 'numline-track';
+  for (let v=0; v<=max; v+=step) {
+    const pct = (v/max)*100;
+    const tick = document.createElement('div');
+    tick.className = 'numline-tick';
+    tick.style.left = pct+'%';
+    track.appendChild(tick);
+    const lbl = document.createElement('div');
+    lbl.className = 'numline-ticklbl';
+    lbl.style.left = pct+'%';
+    lbl.textContent = v;
+    track.appendChild(lbl);
+  }
+  const marker = document.createElement('div');
+  marker.className = 'numline-marker';
+  marker.style.left = ((val/max)*100)+'%';
+  marker.textContent = '▼';
+  marker.style.color = '#fbbf24';
+  track.appendChild(marker);
+  wrap.appendChild(track);
+  return wrap;
+}
+
+function nextLine(){
+  document.getElementById('lineFeedback').classList.remove('show');
+  const display = document.getElementById('lineDisplay');
+  display.innerHTML = '';
+  const useSequence = Math.random() < 0.4;
+
+  if (!useSequence) {
+    const max = lineRange;
+    const step = lineRange===100 ? 10 : 1;
+    const steps = max/step;
+    const val = rnd(0, steps)*step;
+    document.getElementById('linePrompt').textContent = 'What number is marked?';
+    display.appendChild(renderNumberLineMark(max, step, val));
+
+    const used = new Set([val]);
+    const distractors = [];
+    let guard=0;
+    while (distractors.length < 3 && guard < 200) {
+      guard++;
+      const cand = rnd(0, steps)*step;
+      if (!used.has(cand)) { distractors.push(cand); used.add(cand); }
+    }
+    const opts = shuffle([val, ...distractors].map(String));
+    const correctIdx = opts.indexOf(String(val));
+    renderOptions('lineOpts', opts, correctIdx, (i, btn, container) => {
+      const isCorrect = i === correctIdx;
+      lineTotal++; if (isCorrect) lineScore++;
+      document.getElementById('lineScore').textContent = lineScore;
+      document.getElementById('lineTotal').textContent = lineTotal;
+      lockOptions(container, btn, correctIdx);
+      const fb = document.getElementById('lineFeedback');
+      fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+      fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') + `The marker points to <strong>${val}</strong>.`;
+    });
+  } else {
+    const step = lineRange===100 ? 10 : 1;
+    const maxStart = lineRange - step*3;
+    const start = rnd(0, Math.max(0,maxStart));
+    const seq = [start, start+step, start+step*2, start+step*3];
+    const blankIdx = rnd(0,3);
+    const answer = seq[blankIdx];
+    document.getElementById('linePrompt').textContent = 'What number goes in the blank?';
+    const row = document.createElement('div');
+    row.className = 'numline-seq';
+    seq.forEach((n,i) => {
+      const item = document.createElement('div');
+      item.className = 'numline-seq-item' + (i===blankIdx ? ' blank' : '');
+      item.textContent = i===blankIdx ? '?' : n;
+      row.appendChild(item);
+    });
+    display.appendChild(row);
+
+    const used = new Set([answer]);
+    const distractors = [];
+    let guard=0;
+    while (distractors.length < 3 && guard < 200) {
+      guard++;
+      let delta = rnd(-2,2);
+      if (delta === 0) delta = 1;
+      let cand = answer + delta*step;
+      if (cand < 0) cand = answer + step*(distractors.length+1);
+      if (cand >= 0 && !used.has(cand)) { distractors.push(cand); used.add(cand); }
+    }
+    const opts = shuffle([answer, ...distractors].map(String));
+    const correctIdx = opts.indexOf(String(answer));
+    renderOptions('lineOpts', opts, correctIdx, (i, btn, container) => {
+      const isCorrect = i === correctIdx;
+      lineTotal++; if (isCorrect) lineScore++;
+      document.getElementById('lineScore').textContent = lineScore;
+      document.getElementById('lineTotal').textContent = lineTotal;
+      lockOptions(container, btn, correctIdx);
+      const fb = document.getElementById('lineFeedback');
+      fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+      fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') + `The sequence is <strong>${seq.join(', ')}</strong>.`;
+    });
+  }
+}
+
+// ═══════════════ FACT FLUENCY ═══════════════
+let factMode = 'add10', factScore=0, factTotal=0, factStreak=0, factCurrent=null;
+
+document.getElementById('factRangeGroup').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  document.querySelectorAll('#factRangeGroup .chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  factMode = e.target.dataset.val;
+  nextFact();
+});
+
+function genFact(){
+  if (factMode === 'add10') {
+    const a = rnd(0,10);
+    const b = rnd(0, 10-a);
+    return { q: `${a} + ${b} = ?`, ans: a+b };
+  }
+  if (factMode === 'add20') {
+    const a = rnd(0,20);
+    const b = rnd(0, 20-a);
+    return { q: `${a} + ${b} = ?`, ans: a+b };
+  }
+  if (factMode === 'sub10') {
+    const a = rnd(0,10);
+    const b = rnd(0,a);
+    return { q: `${a} − ${b} = ?`, ans: a-b };
+  }
+  // sub20
+  const a = rnd(0,20);
+  const b = rnd(0,a);
+  return { q: `${a} − ${b} = ?`, ans: a-b };
+}
+
+function nextFact(){
+  factCurrent = genFact();
+  document.getElementById('factQ').textContent = factCurrent.q;
+  const input = document.getElementById('factInput');
+  input.value = '';
+  input.className = 'fact-input';
+  document.getElementById('factFeedback').textContent = '';
+  document.getElementById('factFeedback').className = 'fact-feedback';
+  input.focus();
+}
+
+function checkFact(){
+  const input = document.getElementById('factInput');
+  const val = parseInt(input.value);
+  const fb = document.getElementById('factFeedback');
+  if (isNaN(val)) { fb.textContent = 'Type a number first!'; fb.className = 'fact-feedback err'; return; }
+  factTotal++;
+  const isCorrect = val === factCurrent.ans;
+  document.getElementById('factTotal').textContent = factTotal;
+  if (isCorrect) {
+    factScore++; factStreak++;
+    document.getElementById('factScore').textContent = factScore;
+    document.getElementById('factStreak').textContent = factStreak;
+    input.className = 'fact-input correct';
+    fb.textContent = '✅ Correct!';
+    fb.className = 'fact-feedback ok';
+  } else {
+    factStreak = 0;
+    document.getElementById('factStreak').textContent = factStreak;
+    input.className = 'fact-input wrong';
+    fb.textContent = `❌ Not quite — the answer is ${factCurrent.ans}.`;
+    fb.className = 'fact-feedback err';
+  }
+  setTimeout(nextFact, 1200);
+}
+
+// ═══════════════ INIT ═══════════════
+nextPlace();
+nextLine();
+nextFact();
+</script>
+</body>
+</html>
