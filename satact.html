@@ -19,6 +19,11 @@ nav.topnav .logo span{color:#a5b4fc}
 main{max-width:900px;margin:0 auto;padding:28px 20px 60px}
 h1{font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:4px}
 .subtitle{color:var(--muted);font-size:.9rem;margin-bottom:28px}
+.tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:160px;padding:11px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+#readingPanel{display:none}
+#readingPanel iframe{width:100%;height:82vh;border:none;border-radius:12px;background:var(--surface)}
 
 /* ── Home screen ── */
 .attempts-grid{display:flex;justify-content:center;gap:16px;margin-bottom:28px;flex-wrap:wrap}.attempt-card{width:220px;flex-shrink:0}
@@ -154,6 +159,12 @@ h1{font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:4px}
 </header>
 
 <main>
+  <div class="tab-row">
+    <button class="tab-btn active" id="tabPractice" onclick="setActTab('practice')">📝 Practice Tests</button>
+    <button class="tab-btn" id="tabReading" onclick="setActTab('reading')">📖 Reading Trainer</button>
+  </div>
+
+  <div id="practicePanel">
   <!-- HOME -->
   <div id="homeScreen">
     <h1>📝 SAT/ACT Practice Tests</h1>
@@ -236,6 +247,11 @@ h1{font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:4px}
       <button class="btn btn-primary" onclick="backHome()">← Back to Tests</button>
       <button class="btn btn-outline" onclick="window.print()">🖨 Print Results</button>
     </div>
+  </div>
+  </div>
+
+  <div id="readingPanel">
+    <iframe id="readingFrame" src="about:blank"></iframe>
   </div>
 </main>
 
@@ -575,6 +591,18 @@ function renderTarget(){
 
 // Auto-render charts on load
 try{ renderSATCharts(); }catch(e){}
+
+let readingLoaded = false;
+function setActTab(id){
+  document.getElementById('tabPractice').classList.toggle('active', id==='practice');
+  document.getElementById('tabReading').classList.toggle('active', id==='reading');
+  document.getElementById('practicePanel').style.display = id==='practice' ? '' : 'none';
+  document.getElementById('readingPanel').style.display = id==='reading' ? 'block' : 'none';
+  if(id==='reading' && !readingLoaded){
+    document.getElementById('readingFrame').src = 'satreading.html';
+    readingLoaded = true;
+  }
+}
 </script>
 <script src="/analytics.js"></script>
 </body>
