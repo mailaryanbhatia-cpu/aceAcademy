@@ -38,18 +38,21 @@ iframe.tool-frame.active{display:block}
 <div class="tab-row" id="tabRow">
   <div class="tab active" onclick="showTool('assign',this)">📋 Assignment Builder</div>
   <div class="tab" onclick="showTool('assignchecklist',this)">✅ Assignment Checklist Builder</div>
+  <div class="tab" onclick="showTool('frq',this)">📝 AP Free Response Practice</div>
 </div>
 
 <div class="frame-area" id="frameArea">
   <div class="frame-loading" id="loader"><div class="spin"></div><div>Loading tool...</div></div>
   <iframe class="tool-frame active" id="frame-assign" src="assign.html" onload="hideLoader()"></iframe>
   <iframe class="tool-frame" id="frame-assignchecklist" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-frq" src="about:blank"></iframe>
 </div>
 
 <script>
 const SRCS={
   assign:'assign.html',
-  assignchecklist:'assignchecklist.html'
+  assignchecklist:'assignchecklist.html',
+  frq:'frq.html'
 };
 const loaded=new Set(['assign']);
 
