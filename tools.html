@@ -52,6 +52,15 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('genetics',this)">🧬 Punnett Square / Genetics</div>
   <div class="tab" onclick="showTool('gpacalc',this)">🎓 GPA Calculator</div>
   <div class="tab" onclick="showTool('nomenclature',this)">⚗️ Chemistry Nomenclature</div>
+  <div class="tab" onclick="showTool('seqseries',this)">🔢 Sequence &amp; Series</div>
+  <div class="tab" onclick="showTool('logpractice',this)">㏒ Logarithm Practice</div>
+  <div class="tab" onclick="showTool('graphing',this)">📈 Graphing Tool</div>
+  <div class="tab" onclick="showTool('sciencelab',this)">🔬 Science Lab Simulator</div>
+  <div class="tab" onclick="showTool('mathgen',this)">🔢 Math Problem Generator</div>
+  <div class="tab" onclick="showTool('timestables',this)">✖️ Times Tables Trainer</div>
+  <div class="tab" onclick="showTool('fractionviz',this)">🍰 Fraction Visualizer</div>
+  <div class="tab" onclick="showTool('wordproblems',this)">🧮 Word Problem Generator</div>
+  <div class="tab" onclick="showTool('numbersense',this)">🔢 Number Sense</div>
 </div>
 
 <div class="frame-area" id="frameArea">
@@ -72,6 +81,15 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-genetics" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-gpacalc" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-nomenclature" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-seqseries" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-logpractice" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-graphing" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-sciencelab" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-mathgen" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-timestables" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-fractionviz" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-wordproblems" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-numbersense" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -91,7 +109,16 @@ const SRCS={
   circuit:'circuit.html',
   genetics:'genetics.html',
   gpacalc:'gpacalc.html',
-  nomenclature:'nomenclature.html'
+  nomenclature:'nomenclature.html',
+  seqseries:'seqseries.html',
+  logpractice:'logpractice.html',
+  graphing:'graphing.html',
+  sciencelab:'sciencelab.html',
+  mathgen:'mathgen.html',
+  timestables:'timestables.html',
+  fractionviz:'fractionviz.html',
+  wordproblems:'wordproblems.html',
+  numbersense:'numbersense.html'
 };
 const loaded=new Set(['graphcalc']);
 
