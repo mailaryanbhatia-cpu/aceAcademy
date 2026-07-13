@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<script src="/timer.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Personal Finance Basics — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:860px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.tab-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:140px;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+label{font-size:.72rem;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+input[type=number],input[type=text],select{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:.92rem;font-family:inherit;color:#fff;outline:none;transition:border .15s}
+input[type=number]:focus,input[type=text]:focus,select:focus{border-color:var(--accent)}
+.var-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:16px}
+.var-unit{font-size:.68rem;color:var(--muted);margin-top:4px}
+.result-grid{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+.result-box{flex:1;min-width:130px;background:#111827;border:1.5px solid var(--accent);border-radius:10px;padding:14px;text-align:center}
+.result-val{font-size:1.3rem;font-weight:900;color:var(--accent2)}
+.result-lbl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+.steps-box{margin-top:16px;background:#0d1628;border-radius:10px;padding:14px 18px}
+.step{font-size:.83rem;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);line-height:1.6}
+.step:last-child{border-bottom:none}
+.step strong{color:#fff}
+.error-box{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:12px 14px;color:#fca5a5;font-size:.85rem;margin-top:16px}
+.warn-box{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:12px 14px;color:#fcd34d;font-size:.82rem;margin-top:12px}
+.ok-box{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:10px;padding:12px 14px;color:#a7f3d0;font-size:.82rem;margin-top:12px}
+.disclaimer{font-size:.72rem;color:var(--muted);text-align:center;padding:14px 20px;line-height:1.6;max-width:700px;margin:0 auto}
+.cat-row{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center;margin-bottom:10px}
+.cat-tag{font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.04em;display:inline-block;margin-left:6px}
+.cat-tag.needs{background:rgba(99,102,241,.18);color:var(--accent2)}
+.cat-tag.wants{background:rgba(251,191,36,.15);color:var(--amber)}
+.cat-tag.savings{background:rgba(52,211,153,.15);color:var(--green)}
+.bar-row{margin-bottom:10px}
+.bar-lbl{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:4px}
+.bar-track{height:14px;border-radius:8px;background:#111827;overflow:hidden;display:flex}
+.bar-seg{height:100%}
+.bar-seg.needs{background:var(--accent)}
+.bar-seg.wants{background:var(--amber)}
+.bar-seg.savings{background:var(--green)}
+.ref-sub{font-size:.72rem;color:var(--muted);margin:2px 0 12px;line-height:1.6}
+.glossary-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.glossary-item:last-child{border-bottom:none}
+.glossary-term{font-weight:800;color:var(--accent2);font-size:.9rem;margin-bottom:4px}
+.glossary-def{font-size:.85rem;color:var(--muted);line-height:1.6}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="financeliteracy.html">Personal Finance Basics</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>💵 Personal Finance Basics</h1>
+  <p>Budgeting, compound interest, and loan math — the core money skills every adult needs.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="setTab('ref')" id="tabRef">📖 Glossary</button>
+      <button class="tab-btn" onclick="setTab('budget')" id="tabBudget">💰 Budget Simulator</button>
+      <button class="tab-btn" onclick="setTab('savings')" id="tabSavings">📈 Savings &amp; Compound Interest</button>
+      <button class="tab-btn" onclick="setTab('loan')" id="tabLoan">🏦 Loan Calculator</button>
+    </div>
+  </div>
+
+  <!-- GLOSSARY -->
+  <div class="card" id="refPanel">
+    <h2>Key Terms</h2>
+    <div id="glossaryList"></div>
+  </div>
+
+  <!-- BUDGET SIMULATOR -->
+  <div class="card" id="budgetPanel" style="display:none">
+    <h2>Budget Simulator — the 50/30/20 rule</h2>
+    <div class="ref-sub">A common guideline: 50% of take-home income to <strong>needs</strong>, 30% to <strong>wants</strong>, 20% to <strong>savings &amp; extra debt payoff</strong>. Enter your numbers below to see how you compare — there's no single "correct" split, this is just a widely-used starting point.</div>
+    <label>Monthly Take-Home Income</label>
+    <input type="number" id="bIncome" step="any" value="3000" style="max-width:220px;margin-bottom:18px">
+
+    <div class="cat-row"><label style="margin:0">Housing / Rent <span class="cat-tag needs">Needs</span></label><input type="number" id="b-housing" value="1000"></div>
+    <div class="cat-row"><label style="margin:0">Utilities <span class="cat-tag needs">Needs</span></label><input type="number" id="b-utilities" value="150"></div>
+    <div class="cat-row"><label style="margin:0">Groceries <span class="cat-tag needs">Needs</span></label><input type="number" id="b-groceries" value="300"></div>
+    <div class="cat-row"><label style="margin:0">Transportation <span class="cat-tag needs">Needs</span></label><input type="number" id="b-transport" value="200"></div>
+    <div class="cat-row"><label style="margin:0">Entertainment <span class="cat-tag wants">Wants</span></label><input type="number" id="b-entertainment" value="150"></div>
+    <div class="cat-row"><label style="margin:0">Dining Out <span class="cat-tag wants">Wants</span></label><input type="number" id="b-dining" value="200"></div>
+    <div class="cat-row"><label style="margin:0">Shopping <span class="cat-tag wants">Wants</span></label><input type="number" id="b-shopping" value="150"></div>
+    <div class="cat-row"><label style="margin:0">Savings / Debt Payoff <span class="cat-tag savings">Savings</span></label><input type="number" id="b-savings" value="500"></div>
+
+    <div style="margin-top:16px"><button class="btn btn-primary btn-big" onclick="solveBudget()">⚡ Analyze My Budget</button></div>
+    <div id="budgetOutput"></div>
+  </div>
+
+  <!-- SAVINGS / COMPOUND INTEREST -->
+  <div class="card" id="savingsPanel" style="display:none">
+    <h2>Savings &amp; Compound Interest Calculator</h2>
+    <div class="var-grid">
+      <div><label>Starting Balance</label><input type="number" id="sPrincipal" step="any" value="1000"><div class="var-unit">$</div></div>
+      <div><label>Monthly Contribution</label><input type="number" id="sMonthly" step="any" value="100"><div class="var-unit">$ / month</div></div>
+      <div><label>Annual Interest Rate</label><input type="number" id="sRate" step="any" value="7"><div class="var-unit">% per year</div></div>
+      <div><label>Time Horizon</label><input type="number" id="sYears" step="1" value="10"><div class="var-unit">years</div></div>
+    </div>
+    <button class="btn btn-primary btn-big" onclick="solveSavings()">⚡ Calculate Growth</button>
+    <div id="savingsOutput"></div>
+  </div>
+
+  <!-- LOAN CALCULATOR -->
+  <div class="card" id="loanPanel" style="display:none">
+    <h2>Loan Payment Calculator</h2>
+    <div class="var-grid">
+      <div><label>Loan Amount</label><input type="number" id="lPrincipal" step="any" value="20000"><div class="var-unit">$</div></div>
+      <div><label>Annual Interest Rate (APR)</label><input type="number" id="lRate" step="any" value="6"><div class="var-unit">%</div></div>
+      <div><label>Loan Term</label><input type="number" id="lYears" step="1" value="5"><div class="var-unit">years</div></div>
+    </div>
+    <button class="btn btn-primary btn-big" onclick="solveLoan()">⚡ Calculate Payment</button>
+    <div id="loanOutput"></div>
+  </div>
+
+</div>
+
+<div class="disclaimer">📘 For learning purposes only — these calculators use standard financial formulas to show how the math works, but they aren't personalized financial advice. Real budgets, savings accounts, and loans involve fees, taxes, and terms that vary by provider — always read the fine print or talk to a trusted adult / financial professional before making real financial decisions.</div>
+
+<script>
+// ═══════════════ TABS ═══════════════
+function setTab(t){
+  ['ref','budget','savings','loan'].forEach(id => {
+    document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)).classList.toggle('active', id===t);
+    document.getElementById(id+'Panel').style.display = id===t ? 'block' : 'none';
+  });
+}
+
+function fmtMoney(n){
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function fmtPct(n){ return n.toFixed(1) + '%'; }
+
+// ═══════════════ GLOSSARY ═══════════════
+const GLOSSARY = [
+  {t:'Principal', d:'The original amount of money put into savings, invested, or borrowed — before any interest is added.'},
+  {t:'Interest Rate', d:'The percentage a lender charges to borrow money, or a bank/investment pays you for keeping money with them, usually stated per year (annually).'},
+  {t:'APR (Annual Percentage Rate)', d:'The yearly cost of borrowing money, including interest and most fees, expressed as a percentage. Used to compare loan or credit card offers.'},
+  {t:'APY (Annual Percentage Yield)', d:'The real rate of return on savings after accounting for compounding — how often interest is added and starts earning its own interest.'},
+  {t:'Compound Interest', d:'Interest calculated on both the original principal AND the interest already earned. Over time this makes money grow faster than simple interest (interest on principal only).'},
+  {t:'Amortization', d:'The process of paying off a loan through regular fixed payments over time — each payment covers some interest and some principal, with the principal portion growing over the life of the loan.'},
+  {t:'Credit Score', d:'A number (typically 300–850 in the U.S.) that summarizes how reliably someone repays borrowed money. Higher scores generally mean better loan terms and lower interest rates.'},
+  {t:'Credit Utilization', d:"The percentage of your available credit you're currently using. Keeping this low (often recommended under 30%) is generally good for your credit score."},
+  {t:'Emergency Fund', d:'Money set aside specifically for unexpected expenses (car repairs, medical bills, job loss) — commonly recommended to be 3–6 months of essential expenses.'},
+  {t:'Diversification', d:"Spreading money across different types of investments so that one investment's poor performance doesn't sink your entire savings."},
+  {t:'Net Worth', d:'What you own (assets) minus what you owe (debts/liabilities). A common way to track overall financial progress over time.'},
+  {t:'Liquidity', d:'How quickly and easily an asset can be turned into cash without losing value. Cash is fully liquid; a house is not.'},
+  {t:'50/30/20 Rule', d:'A popular budgeting guideline: roughly 50% of take-home pay toward needs, 30% toward wants, and 20% toward savings and extra debt payments.'},
+];
+
+function buildGlossary(){
+  document.getElementById('glossaryList').innerHTML = GLOSSARY.map(g =>
+    `<div class="glossary-item"><div class="glossary-term">${g.t}</div><div class="glossary-def">${g.d}</div></div>`
+  ).join('');
+}
+buildGlossary();
+
+// ═══════════════ BUDGET SIMULATOR ═══════════════
+function solveBudget(){
+  const income = parseFloat(document.getElementById('bIncome').value);
+  const out = document.getElementById('budgetOutput');
+  if (isNaN(income) || income <= 0) { out.innerHTML = '<div class="error-box">Enter a valid monthly income greater than $0.</div>'; return; }
+
+  const needsIds = ['b-housing','b-utilities','b-groceries','b-transport'];
+  const wantsIds = ['b-entertainment','b-dining','b-shopping'];
+  const savingsIds = ['b-savings'];
+
+  const sum = ids => ids.reduce((s,id) => s + (parseFloat(document.getElementById(id).value) || 0), 0);
+  const needs = sum(needsIds), wants = sum(wantsIds), savings = sum(savingsIds);
+  const total = needs + wants + savings;
+  const leftover = income - total;
+
+  const needsPct = (needs/income)*100, wantsPct = (wants/income)*100, savingsPct = (savings/income)*100;
+
+  let diagnosis = '';
+  if (needsPct > 55) diagnosis += `<div class="warn-box">⚠️ Needs are ${fmtPct(needsPct)} of income — above the ~50% guideline. Essential costs (especially housing) are eating a big share of your budget.</div>`;
+  else diagnosis += `<div class="ok-box">✅ Needs at ${fmtPct(needsPct)} — at or under the ~50% guideline.</div>`;
+  if (wantsPct > 35) diagnosis += `<div class="warn-box">⚠️ Wants are ${fmtPct(wantsPct)} of income — above the ~30% guideline.</div>`;
+  else diagnosis += `<div class="ok-box">✅ Wants at ${fmtPct(wantsPct)} — at or under the ~30% guideline.</div>`;
+  if (savingsPct < 15) diagnosis += `<div class="warn-box">⚠️ Savings are only ${fmtPct(savingsPct)} of income — below the ~20% guideline. Even a small automatic transfer each month adds up over time.</div>`;
+  else diagnosis += `<div class="ok-box">✅ Savings at ${fmtPct(savingsPct)} — at or above the ~20% guideline!</div>`;
+
+  let leftoverNote = '';
+  if (Math.abs(leftover) > 0.01) {
+    leftoverNote = leftover > 0
+      ? `<div class="step">You have <strong>${fmtMoney(leftover)}</strong> of income not yet assigned to a category — consider adding it to savings.</div>`
+      : `<div class="warn-box">⚠️ Your categories add up to ${fmtMoney(-leftover)} more than your income — this budget is running a deficit.</div>`;
+  }
+
+  out.innerHTML = `
+    <div class="steps-box">
+      <div class="bar-row">
+        <div class="bar-lbl"><span>Needs — ${fmtMoney(needs)} (${fmtPct(needsPct)})</span></div>
+        <div class="bar-track"><div class="bar-seg needs" style="width:${Math.min(100,needsPct)}%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl"><span>Wants — ${fmtMoney(wants)} (${fmtPct(wantsPct)})</span></div>
+        <div class="bar-track"><div class="bar-seg wants" style="width:${Math.min(100,wantsPct)}%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl"><span>Savings — ${fmtMoney(savings)} (${fmtPct(savingsPct)})</span></div>
+        <div class="bar-track"><div class="bar-seg savings" style="width:${Math.min(100,savingsPct)}%"></div></div>
+      </div>
+    </div>
+    <div class="result-grid">
+      <div class="result-box"><div class="result-val">${fmtMoney(income)}</div><div class="result-lbl">Monthly Income</div></div>
+      <div class="result-box"><div class="result-val">${fmtMoney(total)}</div><div class="result-lbl">Total Allocated</div></div>
+    </div>
+    ${diagnosis}
+    ${leftoverNote ? `<div class="steps-box">${leftoverNote}</div>` : ''}
+  `;
+}
+
+// ═══════════════ SAVINGS / COMPOUND INTEREST ═══════════════
+function solveSavings(){
+  const P = parseFloat(document.getElementById('sPrincipal').value);
+  const PMT = parseFloat(document.getElementById('sMonthly').value);
+  const annualRate = parseFloat(document.getElementById('sRate').value);
+  const years = parseFloat(document.getElementById('sYears').value);
+  const out = document.getElementById('savingsOutput');
+
+  if ([P,PMT,annualRate,years].some(v => isNaN(v)) || P < 0 || PMT < 0 || years <= 0) {
+    out.innerHTML = '<div class="error-box">Enter valid, non-negative numbers (years must be greater than 0).</div>';
+    return;
+  }
+
+  const r = (annualRate/100)/12; // monthly rate
+  const n = years*12; // number of months
+
+  let futureValue;
+  if (r === 0) {
+    futureValue = P + PMT*n;
+  } else {
+    futureValue = P*Math.pow(1+r, n) + PMT * ((Math.pow(1+r, n) - 1) / r);
+  }
+  const totalContributed = P + PMT*n;
+  const totalInterest = futureValue - totalContributed;
+
+  out.innerHTML = `
+    <div class="result-grid">
+      <div class="result-box"><div class="result-val">${fmtMoney(futureValue)}</div><div class="result-lbl">Future Value</div></div>
+      <div class="result-box"><div class="result-val">${fmtMoney(totalContributed)}</div><div class="result-lbl">Total Contributed</div></div>
+      <div class="result-box"><div class="result-val">${fmtMoney(totalInterest)}</div><div class="result-lbl">Interest Earned</div></div>
+    </div>
+    <div class="steps-box">
+      <div class="step">Formula: FV = P(1+r)ⁿ + PMT × [((1+r)ⁿ − 1) / r], where r = monthly rate, n = number of months</div>
+      <div class="step">Monthly rate r = ${annualRate}% ÷ 12 = ${(r*100).toFixed(4)}% &nbsp;·&nbsp; n = ${years} years × 12 = ${n} months</div>
+      <div class="step">Of your <strong>${fmtMoney(futureValue)}</strong> final balance, <strong>${fmtMoney(totalInterest)}</strong> (${((totalInterest/futureValue)*100).toFixed(1)}%) came from interest, not money you put in yourself — that's compounding at work.</div>
+    </div>
+  `;
+}
+
+// ═══════════════ LOAN CALCULATOR ═══════════════
+function solveLoan(){
+  const P = parseFloat(document.getElementById('lPrincipal').value);
+  const annualRate = parseFloat(document.getElementById('lRate').value);
+  const years = parseFloat(document.getElementById('lYears').value);
+  const out = document.getElementById('loanOutput');
+
+  if ([P,annualRate,years].some(v => isNaN(v)) || P <= 0 || annualRate < 0 || years <= 0) {
+    out.innerHTML = '<div class="error-box">Enter a valid loan amount, non-negative rate, and term greater than 0 years.</div>';
+    return;
+  }
+
+  const r = (annualRate/100)/12;
+  const n = years*12;
+
+  let monthlyPayment;
+  if (r === 0) {
+    monthlyPayment = P/n;
+  } else {
+    monthlyPayment = P * (r*Math.pow(1+r,n)) / (Math.pow(1+r,n) - 1);
+  }
+  const totalPaid = monthlyPayment*n;
+  const totalInterest = totalPaid - P;
+
+  out.innerHTML = `
+    <div class="result-grid">
+      <div class="result-box"><div class="result-val">${fmtMoney(monthlyPayment)}</div><div class="result-lbl">Monthly Payment</div></div>
+      <div class="result-box"><div class="result-val">${fmtMoney(totalPaid)}</div><div class="result-lbl">Total Paid</div></div>
+      <div class="result-box"><div class="result-val">${fmtMoney(totalInterest)}</div><div class="result-lbl">Total Interest</div></div>
+    </div>
+    <div class="steps-box">
+      <div class="step">Formula: M = P × [r(1+r)ⁿ] / [(1+r)ⁿ − 1], where r = monthly rate, n = number of monthly payments</div>
+      <div class="step">Monthly rate r = ${annualRate}% ÷ 12 = ${(r*100).toFixed(4)}% &nbsp;·&nbsp; n = ${years} years × 12 = ${n} payments</div>
+      <div class="step">You'll pay <strong>${fmtMoney(totalInterest)}</strong> in interest on top of the <strong>${fmtMoney(P)}</strong> you borrowed — that's ${((totalInterest/P)*100).toFixed(1)}% extra over the life of the loan.</div>
+    </div>
+  `;
+}
+
+// Init
+solveBudget();
+solveSavings();
+solveLoan();
+</script>
+</body>
+</html>

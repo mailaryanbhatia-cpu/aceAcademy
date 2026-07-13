@@ -69,6 +69,32 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;m
 .pt-search{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;color:#fff;font-size:.88rem;font-family:inherit;outline:none;transition:border .15s;margin-bottom:10px}
 .pt-search:focus{border-color:var(--accent)}
 .row-label{display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:var(--muted);opacity:.6}
+
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.tab-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:120px;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.ptq-modes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.ptq-mode-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s}
+.ptq-mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.ptq-score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-size:.8rem;color:var(--muted)}
+.ptq-score-row strong{color:var(--accent2)}
+.ptq-prompt{font-size:.85rem;font-weight:700;color:var(--muted);text-align:center;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+.ptq-q{font-size:2rem;font-weight:800;color:#fff;text-align:center;padding:26px 10px;background:#0d1628;border-radius:12px;margin-bottom:16px}
+.ptq-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:520px){.ptq-opts{grid-template-columns:1fr}}
+.ptq-opt-btn{padding:14px 16px;border-radius:10px;border:1.5px solid var(--border);background:#111827;color:#fff;font-size:.95rem;font-weight:600;cursor:pointer;text-align:center;transition:all .12s}
+.ptq-opt-btn:hover{border-color:var(--accent)}
+.ptq-opt-btn.correct{background:rgba(52,211,153,.18);border-color:#34d399;color:#34d399}
+.ptq-opt-btn.wrong{background:rgba(248,113,113,.18);border-color:#f87171;color:#f87171}
+.ptq-opt-btn.dim{opacity:.45;cursor:default}
+.ptq-opt-btn:disabled{cursor:default}
+.ptq-feedback{padding:14px 16px;border-radius:10px;font-size:.85rem;margin-bottom:14px;line-height:1.6;display:none}
+.ptq-feedback.show{display:block}
+.ptq-feedback.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:#a7f3d0}
+.ptq-feedback.bad{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#fecaca}
 </style>
 </head>
 <body>
@@ -85,6 +111,12 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;m
   <p>All 118 elements — click any for atomic number, mass, electron config, uses, and more.</p>
 </div>
 <div class="container">
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="setPtTab('explorer')" id="tabExplorer">🔍 Explorer</button>
+    <button class="tab-btn" onclick="setPtTab('quiz')" id="tabQuiz">🎯 Quiz</button>
+  </div>
+
+  <div id="explorerPanel">
   <input class="pt-search" id="ptSearch" placeholder="Search by name, symbol, or atomic number…" oninput="searchEls()">
   <div class="legend" id="legend"></div>
   <div class="detail-panel" id="detailPanel">
@@ -104,6 +136,23 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;m
     <div class="dp-sec"><div class="dp-sec-title">Discovery</div><div class="dp-sec-body" id="dp-disc"></div></div>
   </div>
   <div class="pt-wrap"><div class="pt-grid" id="ptGrid"></div></div>
+  </div>
+
+  <div id="quizPanel" style="display:none">
+    <div class="ptq-modes">
+      <button class="ptq-mode-btn active" data-val="all">All Question Types</button>
+      <button class="ptq-mode-btn" data-val="sym2name">Symbol → Name</button>
+      <button class="ptq-mode-btn" data-val="name2sym">Name → Symbol</button>
+      <button class="ptq-mode-btn" data-val="num2sym">Atomic # → Symbol</button>
+      <button class="ptq-mode-btn" data-val="sym2cat">Symbol → Category</button>
+    </div>
+    <div class="ptq-score-row"><span>🎯 Quiz</span><span>Score: <strong id="ptqScore">0</strong> / <strong id="ptqTotal">0</strong></span></div>
+    <div class="ptq-prompt" id="ptqDir">Symbol → Name</div>
+    <div class="ptq-q" id="ptqQ">—</div>
+    <div class="ptq-opts" id="ptqOpts"></div>
+    <div class="ptq-feedback" id="ptqFeedback"></div>
+    <button class="btn btn-primary btn-big" onclick="nextPtQuiz()">🎲 New Question</button>
+  </div>
 </div>
 <script>
 const CATS={
@@ -594,5 +643,112 @@ function searchEls(){
 
 buildLegend();
 buildTable();
+
+// ═══════════════ QUIZ MODE ═══════════════
+let ptqMode = 'all';
+let ptqScore = 0, ptqTotal = 0;
+const PTQ_TYPES = ['sym2name','name2sym','num2sym','sym2cat'];
+
+document.querySelectorAll('.ptq-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ptq-mode-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    ptqMode = btn.dataset.val;
+    nextPtQuiz();
+  });
+});
+
+function ptqShuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function ptqPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function ptqRenderOptions(options, correctIdx, onAnswer){
+  const container = document.getElementById('ptqOpts');
+  container.innerHTML = '';
+  options.forEach((opt,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ptq-opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => onAnswer(i, btn, container);
+    container.appendChild(btn);
+  });
+}
+function ptqLockOptions(container, chosenBtn, correctIdx){
+  const btns = container.querySelectorAll('.ptq-opt-btn');
+  btns.forEach((b,i) => {
+    b.disabled = true;
+    if (i === correctIdx) b.classList.add('correct');
+    else if (b === chosenBtn) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+}
+
+function nextPtQuiz(){
+  const fbEl = document.getElementById('ptqFeedback');
+  if (fbEl) fbEl.classList.remove('show');
+  const type = ptqMode === 'all' ? ptqPick(PTQ_TYPES) : ptqMode;
+  const el = ptqPick(E);
+  const num = el[0], sym = el[1], name = el[2], cat = el[4];
+  const catLabel = (CATS[cat]||{label:'Unknown'}).label;
+
+  let promptLabel, qText, correctVal, distractorFn;
+  if (type === 'sym2name') {
+    promptLabel = 'Symbol → Name';
+    qText = sym;
+    correctVal = name;
+    distractorFn = () => ptqPick(E)[2];
+  } else if (type === 'name2sym') {
+    promptLabel = 'Name → Symbol';
+    qText = name;
+    correctVal = sym;
+    distractorFn = () => ptqPick(E)[1];
+  } else if (type === 'num2sym') {
+    promptLabel = 'Atomic Number → Symbol';
+    qText = String(num);
+    correctVal = sym;
+    distractorFn = () => ptqPick(E)[1];
+  } else {
+    promptLabel = 'Symbol → Category';
+    qText = sym;
+    correctVal = catLabel;
+    distractorFn = () => (CATS[ptqPick(E)[4]]||{label:'Unknown'}).label;
+  }
+
+  document.getElementById('ptqDir').textContent = promptLabel;
+  document.getElementById('ptqQ').textContent = qText;
+
+  const used = new Set([correctVal]);
+  const distractors = [];
+  let guard = 0;
+  while (distractors.length < 3 && guard < 300) {
+    guard++;
+    const d = distractorFn();
+    if (!used.has(d)) { distractors.push(d); used.add(d); }
+  }
+  const opts = ptqShuffle([correctVal, ...distractors]);
+  const correctIdx = opts.indexOf(correctVal);
+
+  ptqRenderOptions(opts, correctIdx, (i, btn, container) => {
+    const isCorrect = i === correctIdx;
+    ptqTotal++; if (isCorrect) ptqScore++;
+    document.getElementById('ptqScore').textContent = ptqScore;
+    document.getElementById('ptqTotal').textContent = ptqTotal;
+    ptqLockOptions(container, btn, correctIdx);
+    const fb = document.getElementById('ptqFeedback');
+    fb.className = 'ptq-feedback show ' + (isCorrect ? 'ok' : 'bad');
+    fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') + `<strong>${sym}</strong> is <strong>${name}</strong> (atomic number ${num}, ${catLabel}).`;
+  });
+}
+
+function setPtTab(t){
+  document.getElementById('tabExplorer').classList.toggle('active', t==='explorer');
+  document.getElementById('tabQuiz').classList.toggle('active', t==='quiz');
+  document.getElementById('explorerPanel').style.display = t==='explorer' ? 'block' : 'none';
+  document.getElementById('quizPanel').style.display = t==='quiz' ? 'block' : 'none';
+  if (t==='quiz' && !document.getElementById('ptqOpts').children.length) nextPtQuiz();
+}
 </script>
 </body></html>
