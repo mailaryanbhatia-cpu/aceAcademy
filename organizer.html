@@ -18,6 +18,8 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
 .tab{padding:10px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:.12s;flex-shrink:0}
 .tab:hover{color:var(--text)}
 .tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.note-bar{background:#132039;border-bottom:1px solid var(--border);padding:8px 16px;font-size:.75rem;color:var(--muted);flex-shrink:0;display:none}
+.note-bar.show{display:block}
 .frame-area{flex:1;position:relative;overflow:hidden}
 iframe.tool-frame{position:absolute;inset:0;width:100%;height:100%;border:none;display:none}
 iframe.tool-frame.active{display:block}
@@ -42,7 +44,10 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('progress',this)">📊 Progress &amp; Streaks</div>
   <div class="tab" onclick="showTool('notebook',this)">📁 Notebook</div>
   <div class="tab" onclick="showTool('calendar',this)">🗓 Planner / Calendar</div>
+  <div class="tab" onclick="showTool('dailygoal',this)">🎯 Daily Goal Tracker</div>
 </div>
+
+<div class="note-bar" id="noteBar">🎯 Daily Goal Tracker is built into the main curriculum tool (index.html) — set a daily topic mastery target there and watch your progress bar fill as you mark topics learned.</div>
 
 <div class="frame-area" id="frameArea">
   <div class="frame-loading" id="loader"><div class="spin"></div><div>Loading tool...</div></div>
@@ -52,6 +57,7 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-progress" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-notebook" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-calendar" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-dailygoal" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -61,8 +67,10 @@ const SRCS={
   errorlog:'errorlog.html',
   progress:'progress.html',
   notebook:'notebook.html',
-  calendar:'calendar.html'
+  calendar:'calendar.html',
+  dailygoal:'index.html'
 };
+const notes={dailygoal:true};
 const loaded=new Set(['schedule-gen']);
 
 function showTool(id,tabEl){
@@ -71,6 +79,7 @@ function showTool(id,tabEl){
   document.querySelectorAll('.tool-frame').forEach(f=>f.classList.remove('active'));
   const frame=document.getElementById('frame-'+id);
   frame.classList.add('active');
+  document.getElementById('noteBar').classList.toggle('show', !!notes[id]);
   if(!loaded.has(id)){
     document.getElementById('loader').style.display='flex';
     frame.src=SRCS[id];
