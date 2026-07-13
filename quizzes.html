@@ -40,6 +40,7 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('geoquiz',this)">🌍 Geography Quiz</div>
   <div class="tab" onclick="showTool('mapquiz',this)">🗺️ Map Quiz</div>
   <div class="tab" onclick="showTool('spellingquiz',this)">🔤 Spelling &amp; Vocab Quiz</div>
+  <div class="tab" onclick="showTool('simulator',this)">🎯 Exam Simulator</div>
 </div>
 
 <div class="frame-area" id="frameArea">
@@ -48,6 +49,7 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-geoquiz" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-mapquiz" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-spellingquiz" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-simulator" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -55,7 +57,8 @@ const SRCS={
   quizgen:'quizgen.html',
   geoquiz:'geoquiz.html',
   mapquiz:'mapquiz.html',
-  spellingquiz:'spellingquiz.html'
+  spellingquiz:'spellingquiz.html',
+  simulator:'simulator.html'
 };
 const loaded=new Set(['quizgen']);
 
