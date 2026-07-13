@@ -45,6 +45,7 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('periodictable',this)">⚗️ Periodic Table</div>
   <div class="tab" onclick="showTool('stoich',this)">⚖️ Equation Balancer</div>
   <div class="tab" onclick="showTool('kinematics',this)">🚀 Kinematics Solver</div>
+  <div class="tab" onclick="showTool('projectile',this)">🎯 Projectile Motion</div>
   <div class="tab" onclick="showTool('acidbase',this)">🧪 Molarity &amp; pH</div>
   <div class="tab" onclick="showTool('unitconvert',this)">📐 Unit Converter</div>
   <div class="tab" onclick="showTool('circuit',this)">🔌 Circuit Calculator</div>
@@ -64,6 +65,7 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-periodictable" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-stoich" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-kinematics" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-projectile" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-acidbase" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-unitconvert" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-circuit" src="about:blank"></iframe>
@@ -83,6 +85,7 @@ const SRCS={
   periodictable:'periodictable.html',
   stoich:'stoich.html',
   kinematics:'kinematics.html',
+  projectile:'projectile.html',
   acidbase:'acidbase.html',
   unitconvert:'unitconvert.html',
   circuit:'circuit.html',
