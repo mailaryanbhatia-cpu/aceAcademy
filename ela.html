@@ -67,6 +67,7 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('phonics',this)">🔤 Phonics &amp; Sight Words</div>
   <div class="tab" onclick="showTool('readingk8',this)">📗 K-8 Reading Comprehension</div>
   <div class="tab" onclick="showTool('handwriting',this)">✏️ Handwriting &amp; Cursive</div>
+  <div class="tab" onclick="showTool('conjugation',this)">🔤 Verb Conjugation Trainer</div>
 </div>
 
 <div class="frame-area" id="frameArea">
@@ -102,6 +103,7 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-phonics" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-readingk8" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-handwriting" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-conjugation" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -136,7 +138,8 @@ const SRCS={
   debate:'debate.html',
   phonics:'phonics.html',
   readingk8:'readingk8.html',
-  handwriting:'handwriting.html'
+  handwriting:'handwriting.html',
+  conjugation:'conjugation.html'
 };
 const loaded=new Set(['essay']);
 
