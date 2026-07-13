@@ -12576,6 +12576,33 @@ function printCurriculum() {
   w.document.close();
   setTimeout(() => w.print(), 500);
 }
+
+// ── Sidebar deep-link routing (e.g. index.html#weakspot) ──────────
+(function(){
+  function routeSidebarHash(){
+    var h = (location.hash || '').replace('#','');
+    var map = {
+      weakspot: {toggle:'toggleWsSection', body:'wsBody', section:'.ws-section'},
+      spacedrep: {toggle:'toggleSrSection', body:'srBody', section:'.sr-section'},
+      mistakejournal: {toggle:'toggleMjSection', body:'mjBody', section:'.mj-section'}
+    };
+    var cfg = map[h];
+    if(!cfg) return;
+    try{
+      var body = document.getElementById(cfg.body);
+      if(body && !body.classList.contains('open') && typeof window[cfg.toggle] === 'function'){
+        window[cfg.toggle]();
+      }
+      var sec = document.querySelector(cfg.section);
+      if(sec) sec.scrollIntoView({behavior:'smooth', block:'center'});
+    }catch(e){}
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(routeSidebarHash, 300); });
+  } else {
+    setTimeout(routeSidebarHash, 300);
+  }
+})();
 </script>
 
 </body>
