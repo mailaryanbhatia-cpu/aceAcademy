@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/timer.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ELA Tools — Ace Academy</title>
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;display:flex;flex-direction:column}
+.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap}
+.top-bar a{color:var(--accent2);text-decoration:none;font-size:.85rem}
+.top-bar h1{font-size:1rem;font-weight:700}
+.tab-row{display:flex;gap:0;overflow-x:auto;flex-shrink:0;background:var(--card);border-bottom:1px solid var(--border);padding:0 12px;scrollbar-width:none}
+.tab-row::-webkit-scrollbar{display:none}
+.tab{padding:10px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:.12s;flex-shrink:0}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.frame-area{flex:1;position:relative;overflow:hidden}
+iframe.tool-frame{position:absolute;inset:0;width:100%;height:100%;border:none;display:none}
+iframe.tool-frame.active{display:block}
+/* Loading state */
+.frame-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--muted);font-size:.88rem;pointer-events:none}
+.spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="alltools.html">← Tools</a>
+  <span style="color:var(--border)">|</span>
+  <h1>📚 ELA Tools</h1>
+  <span style="margin-left:auto;font-size:.72rem;color:var(--muted)">Click a tab to switch tools</span>
+</div>
+
+<div class="tab-row" id="tabRow">
+  <div class="tab active" onclick="showTool('essay',this)">📝 Essay Grader</div>
+  <div class="tab" onclick="showTool('outline',this)">🗂 Outline Builder</div>
+  <div class="tab" onclick="showTool('thesis',this)">✍️ Thesis Generator</div>
+  <div class="tab" onclick="showTool('hookgen',this)">🪝 Hook Generator</div>
+  <div class="tab" onclick="showTool('peelbuilder',this)">📄 PEEL Paragraph Builder</div>
+  <div class="tab" onclick="showTool('conclusionwriter',this)">✍️ Conclusion Writer</div>
+  <div class="tab" onclick="showTool('sentencevariety',this)">✍️ Sentence Variety Coach</div>
+  <div class="tab" onclick="showTool('passivevoice',this)">🔍 Passive Voice Detector</div>
+  <div class="tab" onclick="showTool('paraphrase',this)">✏️ Paraphrase &amp; Style Rewriter</div>
+  <div class="tab" onclick="showTool('transitions',this)">🔗 Transition Word Bank</div>
+  <div class="tab" onclick="showTool('grammar',this)">📖 Grammar Reference</div>
+  <div class="tab" onclick="showTool('rhetoric',this)">🗣️ Rhetorical Appeals Analyzer</div>
+  <div class="tab" onclick="showTool('writingprompts',this)">✍️ Writing Prompt Generator</div>
+  <div class="tab" onclick="showTool('reading',this)">📄 Reading Passages</div>
+  <div class="tab" onclick="showTool('readingpractice',this)">📖 Reading Comprehension Practice</div>
+  <div class="tab" onclick="showTool('readinglog',this)">📗 Reading Log</div>
+  <div class="tab" onclick="showTool('plotdiagram',this)">📖 Story Plot Diagram</div>
+  <div class="tab" onclick="showTool('figlang',this)">🎨 Figurative Language Finder</div>
+  <div class="tab" onclick="showTool('vocabupgrade',this)">📝 Vocabulary Upgrade</div>
+  <div class="tab" onclick="showTool('wordincontext',this)">🔤 Word in Context</div>
+  <div class="tab" onclick="showTool('etymtool',this)">🔤 Vocabulary Etymology</div>
+  <div class="tab" onclick="showTool('spellingquiz',this)">🔤 Spelling &amp; Vocab Quiz</div>
+  <div class="tab" onclick="showTool('wordwall',this)">📖 Vocabulary Word Wall</div>
+  <div class="tab" onclick="showTool('citation',this)">📖 Citation Generator</div>
+  <div class="tab" onclick="showTool('research',this)">🔬 Research Organizer</div>
+  <div class="tab" onclick="showTool('annotatedbib',this)">📚 Annotated Bibliography</div>
+  <div class="tab" onclick="showTool('notesummarizer',this)">📝 Note Summarizer</div>
+</div>
+
+<div class="frame-area" id="frameArea">
+  <div class="frame-loading" id="loader"><div class="spin"></div><div>Loading tool...</div></div>
+  <iframe class="tool-frame active" id="frame-essay" src="essay.html" onload="hideLoader()"></iframe>
+  <iframe class="tool-frame" id="frame-outline" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-thesis" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-hookgen" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-peelbuilder" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-conclusionwriter" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-sentencevariety" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-passivevoice" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-paraphrase" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-transitions" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-grammar" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-rhetoric" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-writingprompts" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-reading" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-readingpractice" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-readinglog" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-plotdiagram" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-figlang" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-vocabupgrade" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-wordincontext" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-etymtool" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-spellingquiz" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-wordwall" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-citation" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-research" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-annotatedbib" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-notesummarizer" src="about:blank"></iframe>
+</div>
+
+<script>
+const SRCS={
+  essay:'essay.html',
+  outline:'outline.html',
+  thesis:'thesis.html',
+  hookgen:'hookgen.html',
+  peelbuilder:'peelbuilder.html',
+  conclusionwriter:'conclusionwriter.html',
+  sentencevariety:'sentencevariety.html',
+  passivevoice:'passivevoice.html',
+  paraphrase:'paraphrase.html',
+  transitions:'transitions.html',
+  grammar:'grammar.html',
+  rhetoric:'rhetoric.html',
+  writingprompts:'writingprompts.html',
+  reading:'reading.html',
+  readingpractice:'readingpractice.html',
+  readinglog:'readinglog.html',
+  plotdiagram:'plotdiagram.html',
+  figlang:'figlang.html',
+  vocabupgrade:'vocabupgrade.html',
+  wordincontext:'wordincontext.html',
+  etymtool:'etymtool.html',
+  spellingquiz:'spellingquiz.html',
+  wordwall:'wordwall.html',
+  citation:'citation.html',
+  research:'research.html',
+  annotatedbib:'annotatedbib.html',
+  notesummarizer:'notesummarizer.html'
+};
+const loaded=new Set(['essay']);
+
+function showTool(id,tabEl){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  tabEl.classList.add('active');
+  document.querySelectorAll('.tool-frame').forEach(f=>f.classList.remove('active'));
+  const frame=document.getElementById('frame-'+id);
+  frame.classList.add('active');
+  if(!loaded.has(id)){
+    document.getElementById('loader').style.display='flex';
+    frame.src=SRCS[id];
+    frame.onload=hideLoader;
+    loaded.add(id);
+  }
+}
+
+function hideLoader(){
+  document.getElementById('loader').style.display='none';
+}
+</script>
+</body>
+</html>
