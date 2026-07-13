@@ -62,6 +62,7 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('wordproblems',this)">🧮 Word Problem Generator</div>
   <div class="tab" onclick="showTool('numbersense',this)">🔢 Number Sense</div>
   <div class="tab" onclick="showTool('formulas',this)">📋 Formula Sheet Builder</div>
+  <div class="tab" onclick="showTool('labreport',this)">🧪 Lab Report Builder</div>
 </div>
 
 <div class="frame-area" id="frameArea">
@@ -92,6 +93,7 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-wordproblems" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-numbersense" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-formulas" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-labreport" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -121,7 +123,8 @@ const SRCS={
   fractionviz:'fractionviz.html',
   wordproblems:'wordproblems.html',
   numbersense:'numbersense.html',
-  formulas:'formulas.html'
+  formulas:'formulas.html',
+  labreport:'labreport.html'
 };
 const loaded=new Set(['graphcalc']);
 
