@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<script src="/timer.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Health Concept Drill — aceAcademy</title>
+<link rel="stylesheet" href="ace-theme.css">
+<style>
+:root{--bg:#0b1120;--card:#1a2540;--accent:#6366f1;--accent2:#a5b4fc;--text:#ffffff;--muted:#b0bece;--border:#2a3a55;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.topnav{display:flex;align-items:center;gap:6px;padding:0 20px;height:54px;background:#080e1c;border-bottom:1px solid var(--border);flex-wrap:nowrap;overflow-x:auto}.topnav::-webkit-scrollbar{display:none}
+.logo{font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;margin-right:10px}.logo span{color:var(--accent2)}
+.nav-link{text-decoration:none;color:var(--muted);font-size:.85rem;padding:6px 10px;border-radius:7px;white-space:nowrap;font-weight:600}.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}.nav-link.active{color:var(--accent2)}
+.spacer{flex:1}
+.hero{text-align:center;padding:32px 20px 18px;background:linear-gradient(135deg,#06091a,#1a2080,#2d0d5c);border-bottom:1px solid var(--border)}
+.hero h1{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:6px}
+.hero p{color:var(--accent2);font-size:.95rem}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:22px;margin-bottom:20px}
+.card h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:14px}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#fff}.btn-outline:hover{border-color:var(--accent)}
+.btn-big{padding:12px 28px;font-size:.95rem;border-radius:12px}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.unit-card{background:#111827;border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.unit-icon{font-size:1.6rem;margin-bottom:6px}
+.unit-name{font-size:.88rem;font-weight:700;color:#fff}
+.unit-count{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+.mode-row{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.flash-wrap{margin-bottom:16px}
+.flash-card{min-height:220px;border-radius:16px;border:1.5px solid var(--border);background:#111827;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;font-size:1.1rem;font-weight:700;color:#fff;transition:.2s}
+.flash-card:hover{border-color:var(--accent)}
+.flash-card .def{font-size:.95rem;font-weight:500;color:var(--accent2);line-height:1.6}
+.flash-progress{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+
+.q-block{background:#111827;border-radius:10px;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px}
+.q-text{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:12px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:#0d1628;color:#fff;margin-bottom:8px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--green);background:rgba(52,211,153,.15)}
+.opt.wrong{border-color:var(--red);background:rgba(248,113,113,.15)}
+.opt:disabled{cursor:default}
+.score-display{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px}
+.result-big{font-size:3rem;font-weight:900;text-align:center;color:var(--accent2);margin:6px 0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="logo" href="index.html">ace<span>Academy</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="alltools.html">All Tools</a>
+  <a class="nav-link active" href="health.html">Health</a>
+  <div class="spacer"></div>
+</nav>
+<script src="auth-guard.js"></script>
+
+<div class="hero">
+  <h1>🩺 Health Concept Drill</h1>
+  <p>Core K-12 health topics — nutrition, hygiene, mental &amp; emotional wellness, safety, fitness, and more. Flip flashcards or quiz yourself with multiple choice.</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Choose a Unit</h2>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <div class="card" id="studyCard" style="display:none">
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeFlash" onclick="setMode('flash')">🗂️ Flashcards</button>
+      <button class="mode-btn" id="modeQuiz" onclick="setMode('quiz')">✅ Quiz Me</button>
+    </div>
+
+    <div id="flashArea">
+      <div class="flash-progress" id="flashProgress"></div>
+      <div class="flash-wrap">
+        <div class="flash-card" id="flashCard" onclick="flipCard()"></div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="score-display" id="quizProgress"></div>
+      <div id="quizQCard"></div>
+      <div id="quizResult" style="display:none">
+        <div class="result-big" id="quizFinalScore"></div>
+        <div style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:14px" id="quizMsg"></div>
+        <div style="text-align:center"><button class="btn btn-primary btn-big" onclick="startQuiz()">Retake Quiz</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const UNITS = {
+  "nutrition": {
+    "label": "Nutrition & Food Groups",
+    "icon": "🍎",
+    "terms": [
+      ["Nutrient","A substance in food that the body uses for energy, growth, and repair, such as protein, carbohydrates, fats, vitamins, and minerals."],
+      ["Food Groups","The main categories of food — fruits, vegetables, grains, protein, and dairy — that together provide a balanced diet."],
+      ["MyPlate","A visual guide showing recommended proportions of food groups on a plate for a balanced meal."],
+      ["Protein","A nutrient that helps build and repair muscles, found in foods like meat, beans, eggs, and dairy."],
+      ["Carbohydrate","A nutrient that is the body's main source of quick energy, found in foods like bread, rice, and fruit."],
+      ["Fat (Dietary)","A nutrient that provides long-lasting energy and helps absorb certain vitamins, found in foods like oils, nuts, and avocado."],
+      ["Vitamin","An organic compound the body needs in small amounts to function properly, such as Vitamin C or Vitamin D."],
+      ["Mineral (Nutrition)","An inorganic element the body needs for processes like bone growth, such as calcium or iron."],
+      ["Hydration","Maintaining adequate water levels in the body, essential for nearly every bodily function."],
+      ["Portion Size","The amount of a food served or eaten at one time, important for balancing calorie intake."],
+      ["Added Sugar","Sugar added to foods during processing or preparation, as opposed to sugar naturally found in fruit."],
+      ["Food Label","The information panel on packaged food listing nutrients, ingredients, and serving size."],
+      ["Balanced Diet","An eating pattern that includes appropriate proportions of all major nutrient groups."]
+    ]
+  },
+  "hygiene": {
+    "label": "Personal Hygiene & Body Care",
+    "icon": "🧼",
+    "terms": [
+      ["Personal Hygiene","Practices that keep the body clean and healthy, such as washing hands, bathing, and brushing teeth."],
+      ["Handwashing","Washing hands with soap and water to remove germs and prevent the spread of illness."],
+      ["Germ","A microorganism, such as a bacterium or virus, that can cause disease."],
+      ["Dental Hygiene","Practices like brushing and flossing that keep teeth and gums healthy and prevent cavities."],
+      ["Plaque (Dental)","A sticky film of bacteria that forms on teeth and can cause cavities and gum disease if not removed."],
+      ["Puberty","The stage of development when a child's body matures into an adult body, capable of reproduction."],
+      ["Deodorant/Antiperspirant","A product used to control body odor and/or sweating, especially important starting in puberty."],
+      ["Skin Care","Habits that protect and maintain healthy skin, such as sun protection and regular washing."],
+      ["Sun Protection (SPF)","Measures like sunscreen and protective clothing that shield skin from harmful UV rays."],
+      ["Sleep Hygiene","Habits that promote consistent, restful sleep, such as a regular bedtime and limiting screens before bed."]
+    ]
+  },
+  "mentalhealth": {
+    "label": "Mental & Emotional Health",
+    "icon": "🧠",
+    "terms": [
+      ["Mental Health","A person's emotional, psychological, and social well-being, affecting how they think, feel, and act."],
+      ["Emotional Regulation","The ability to manage and respond to emotional experiences in a healthy, controlled way."],
+      ["Stress","The body's physical and emotional response to a challenge or demand."],
+      ["Coping Strategy","A healthy technique used to manage stress or difficult emotions, such as deep breathing or talking to someone."],
+      ["Anxiety","A feeling of worry, nervousness, or unease, which becomes a concern when persistent or overwhelming."],
+      ["Resilience","The ability to recover from setbacks, adapt to change, and keep going in the face of adversity."],
+      ["Self-Esteem","A person's overall sense of their own worth or value."],
+      ["Mindfulness","The practice of paying full attention to the present moment without judgment."],
+      ["Trusted Adult","A parent, teacher, counselor, or other adult a young person can turn to for help or support."],
+      ["Peer Pressure","The influence exerted by a peer group encouraging a person to change behavior to fit in."],
+      ["Empathy","The ability to understand and share the feelings of another person."],
+      ["Growth Mindset","The belief that abilities and intelligence can be developed through effort and learning."]
+    ]
+  },
+  "safety": {
+    "label": "Safety & First Aid",
+    "icon": "🚑",
+    "terms": [
+      ["First Aid","Immediate care given to an injured or ill person before professional medical help arrives."],
+      ["Emergency Contact","A trusted person to call in the event of an emergency, kept on hand for quick access."],
+      ["CPR","Cardiopulmonary resuscitation, an emergency procedure combining chest compressions and rescue breaths to help someone whose heart has stopped."],
+      ["911 (Emergency Number)","The emergency telephone number used in the U.S. to reach police, fire, or medical assistance."],
+      ["Fire Safety","Practices and knowledge, like stop-drop-and-roll and fire drills, that prevent fire injuries and prepare for emergencies."],
+      ["Choking Response","First-aid steps, such as the Heimlich maneuver, used to help someone whose airway is blocked."],
+      ["Poison Control","A resource that provides guidance if someone is exposed to a poisonous substance."],
+      ["Bicycle/Helmet Safety","Practices like wearing a helmet and following traffic rules that reduce injury risk while biking."],
+      ["Water Safety","Practices such as swimming with a buddy and knowing your limits that prevent drowning and water-related injuries."],
+      ["Wound Care","Basic first-aid steps for cleaning and covering a cut or scrape to prevent infection."],
+      ["Concussion","A mild traumatic brain injury caused by a blow to the head, requiring rest and medical evaluation."],
+      ["Stranger Safety","Guidelines that help children recognize and respond safely to situations involving unfamiliar adults."]
+    ]
+  },
+  "fitness": {
+    "label": "Physical Fitness & Exercise",
+    "icon": "🏃",
+    "terms": [
+      ["Physical Fitness","A state of health and well-being achieved through regular physical activity, proper nutrition, and rest."],
+      ["Aerobic Exercise","Sustained physical activity, like running or swimming, that raises heart rate and improves cardiovascular health."],
+      ["Anaerobic Exercise","Short, intense bursts of activity, like sprinting or weightlifting, that build strength and power."],
+      ["Cardiovascular Endurance","The ability of the heart and lungs to supply oxygen to muscles during sustained physical activity."],
+      ["Muscular Strength","The amount of force a muscle can produce in a single effort."],
+      ["Muscular Endurance","The ability of a muscle to perform repeated contractions over time without tiring."],
+      ["Flexibility","The range of motion available at a joint, often improved through stretching."],
+      ["Warm-Up","Light activity performed before exercise to prepare the body and reduce injury risk."],
+      ["Cool-Down","Light activity performed after exercise to help the body gradually return to a resting state."],
+      ["FITT Principle","A framework for exercise planning based on Frequency, Intensity, Time, and Type."],
+      ["Body Mass Index (BMI)","A screening measure using height and weight to estimate body fat, used as a general health indicator."],
+      ["Sedentary Behavior","Time spent sitting or with very low energy expenditure, linked to negative health outcomes when excessive."]
+    ]
+  },
+  "bodysystems": {
+    "label": "Human Body Systems",
+    "icon": "🫀",
+    "terms": [
+      ["Circulatory System","The body system, including the heart and blood vessels, that transports blood, oxygen, and nutrients."],
+      ["Respiratory System","The body system, including the lungs, responsible for breathing and gas exchange."],
+      ["Digestive System","The body system that breaks down food into nutrients the body can absorb and use."],
+      ["Skeletal System","The body system made of bones that provides structure, protection, and support."],
+      ["Muscular System","The body system of muscles that enables movement and posture."],
+      ["Nervous System","The body system, including the brain and nerves, that controls actions and processes sensory information."],
+      ["Immune System","The body system that defends against pathogens like bacteria and viruses."],
+      ["Endocrine System","The body system of glands that produce hormones regulating growth, metabolism, and other functions."],
+      ["Heart Rate","The number of times the heart beats per minute, an indicator of cardiovascular effort and fitness."],
+      ["Pathogen","A microorganism, such as a virus or bacterium, that can cause disease."],
+      ["Vaccine","A substance that trains the immune system to recognize and fight a specific pathogen."]
+    ]
+  },
+  "relationships": {
+    "label": "Healthy Relationships & Communication",
+    "icon": "🤝",
+    "terms": [
+      ["Healthy Relationship","A relationship built on mutual trust, respect, honesty, and support between people."],
+      ["Consent","Clear, voluntary agreement to participate in an activity, which can be withdrawn at any time."],
+      ["Active Listening","Fully concentrating on, understanding, and responding thoughtfully to what another person is saying."],
+      ["Assertive Communication","Expressing one's needs and opinions clearly and respectfully, without being passive or aggressive."],
+      ["Conflict Resolution","Strategies used to resolve disagreements in a respectful, constructive way."],
+      ["Boundaries (Personal)","Limits a person sets to protect their physical, emotional, or mental well-being."],
+      ["Bullying","Repeated aggressive behavior intended to hurt, intimidate, or dominate another person."],
+      ["Cyberbullying","Bullying that takes place using digital devices such as phones, social media, or messaging apps."],
+      ["Peer Relationships","Connections and friendships formed with others of similar age or status."],
+      ["Digital Citizenship","Responsible and safe use of technology and the internet, including respectful online communication."]
+    ]
+  },
+  "substanceabuse": {
+    "label": "Substance Abuse Prevention & Decision-Making",
+    "icon": "🚫",
+    "terms": [
+      ["Substance Abuse","The harmful or excessive use of drugs, alcohol, or other substances."],
+      ["Addiction","A chronic condition involving compulsive substance use or behavior despite harmful consequences."],
+      ["Nicotine","The addictive chemical found in tobacco products, including cigarettes and vapes."],
+      ["Vaping","Inhaling vapor produced by an e-cigarette, which often contains nicotine and other harmful chemicals."],
+      ["Alcohol (Effects)","A substance that impairs judgment, coordination, and reaction time, and can be especially harmful to a developing brain."],
+      ["Peer Pressure (Refusal Skills)","Strategies for confidently saying no to unwanted or risky behavior suggested by peers."],
+      ["Decision-Making Model","A structured process for making choices by considering options, consequences, and values."],
+      ["Prescription Drug Misuse","Using a prescription medication in a way not intended by a doctor, such as without a prescription or in excess."],
+      ["Risk Factor (Health)","A characteristic or behavior that increases the likelihood of a health problem."],
+      ["Protective Factor (Health)","A characteristic or resource that reduces the likelihood of a negative health outcome."]
+    ]
+  }
+};
+
+const unitKeys = Object.keys(UNITS);
+let currentUnit = null;
+let mode = 'flash';
+let cardOrder = [];
+let cardIdx = 0;
+let flipped = false;
+let quizQ = [];
+let quizIdx = 0;
+let quizScore = 0;
+
+function renderUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = unitKeys.map(k => {
+    const u = UNITS[k];
+    return `<div class="unit-card${k===currentUnit?' active':''}" onclick="selectUnit('${k}')">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${escHtml(u.label)}</div>
+      <div class="unit-count">${u.terms.length} terms</div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(k) {
+  currentUnit = k;
+  renderUnitGrid();
+  document.getElementById('studyCard').style.display = 'block';
+  cardOrder = UNITS[k].terms.map((_, i) => i);
+  cardIdx = 0;
+  flipped = false;
+  setMode(mode);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeFlash').classList.toggle('active', m === 'flash');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  document.getElementById('flashArea').style.display = m === 'flash' ? 'block' : 'none';
+  document.getElementById('quizArea').style.display = m === 'quiz' ? 'block' : 'none';
+  if (m === 'flash') renderFlash();
+  else startQuiz();
+}
+
+function renderFlash() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const [term, def] = terms[cardOrder[cardIdx]];
+  document.getElementById('flashProgress').textContent = `Card ${cardIdx+1} of ${terms.length}`;
+  const card = document.getElementById('flashCard');
+  card.innerHTML = flipped ? `<div class="def">${escHtml(def)}</div>` : `<div>${escHtml(term)}</div>`;
+}
+
+function flipCard() { flipped = !flipped; renderFlash(); }
+function nextCard() { cardIdx = (cardIdx + 1) % cardOrder.length; flipped = false; renderFlash(); }
+function prevCard() { cardIdx = (cardIdx - 1 + cardOrder.length) % cardOrder.length; flipped = false; renderFlash(); }
+function shuffleCards() {
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIdx = 0; flipped = false; renderFlash();
+}
+
+function startQuiz() {
+  if (!currentUnit) return;
+  const terms = UNITS[currentUnit].terms;
+  const idxs = terms.map((_, i) => i);
+  for (let i = idxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+  }
+  quizQ = idxs.slice(0, Math.min(10, idxs.length)).map(i => {
+    const [term, def] = terms[i];
+    const distractors = terms.filter((_, di) => di !== i).map(t => t[1]);
+    for (let k = distractors.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [distractors[k], distractors[j]] = [distractors[j], distractors[k]];
+    }
+    const opts = [def, ...distractors.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+    return { term, def, opts };
+  });
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizQ[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${quizQ.length} · Score: ${quizScore}`;
+  document.getElementById('quizQCard').innerHTML = `
+    <div class="q-block">
+      <div class="q-text">What is the best definition of: <strong>${escHtml(q.term)}</strong>?</div>
+      ${q.opts.map((o,oi) => `<button class="opt" data-idx="${oi}" onclick="answerQuiz(this,${oi})">${escHtml(o)}</button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(btn, optIdx) {
+  const q = quizQ[quizIdx];
+  const opt = q.opts[optIdx];
+  const correct = opt === q.def;
+  if (correct) quizScore++;
+  document.querySelectorAll('#quizQCard .opt').forEach(b => {
+    b.disabled = true;
+    if (q.opts[parseInt(b.getAttribute('data-idx'),10)] === q.def) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+  setTimeout(() => {
+    quizIdx++;
+    if (quizIdx >= quizQ.length) endQuiz();
+    else renderQuiz();
+  }, 900);
+}
+
+function endQuiz() {
+  document.getElementById('quizQCard').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round(quizScore / quizQ.length * 100);
+  document.getElementById('quizFinalScore').textContent = `${quizScore}/${quizQ.length}`;
+  document.getElementById('quizMsg').textContent = pct >= 90 ? "Excellent! You know this unit cold." :
+    pct >= 70 ? "Great work — review the ones you missed." :
+    pct >= 50 ? "Good effort. A bit more review will help." :
+    "Keep studying this unit — you'll get there.";
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderUnitGrid();
+</script>
+</body>
+</html>

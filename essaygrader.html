@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/ace-shared.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Essay Grader — aceAcademy</title>
+<title>Essay Feedback & History — aceAcademy</title>
 <link rel="stylesheet" href="ace-theme.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -70,8 +70,8 @@ textarea.essay-ta:focus{border-color:var(--accent)}
   <a href="alltools.html" class="ace-nav-link">All Tools</a>
 </header>
 <div class="hero">
-  <h1>📝 Essay Grader</h1>
-  <p>Paste your essay for instant rubric-based feedback on thesis, evidence, structure, and style.</p>
+  <h1>📊 Essay Feedback &amp; History</h1>
+  <p>Type-aware rubric feedback (argumentative, expository, narrative, analytical) with word-count stats and saved essay history.</p>
 </div>
 <div class="ace-wrap">
   <div class="stats-row">
@@ -141,7 +141,17 @@ textarea.essay-ta:focus{border-color:var(--accent)}
 const LS_HIST='ace_essay_history', LS_DRAFT='ace_essay_draft', LS_SET='ace_essay_settings';
 let essayType='argumentative';
 window.addEventListener('DOMContentLoaded',()=>{
-  const draft=localStorage.getItem(LS_DRAFT); if(draft){document.getElementById('essayText').value=draft;updateWordCount();}
+  const prefillRaw=localStorage.getItem('essay-prefill');
+  if(prefillRaw){
+    try{
+      const pf=JSON.parse(prefillRaw);
+      if(pf && pf.essay){document.getElementById('essayText').value=pf.essay;}
+    }catch(e){}
+    localStorage.removeItem('essay-prefill');
+    updateWordCount();
+  } else {
+    const draft=localStorage.getItem(LS_DRAFT); if(draft){document.getElementById('essayText').value=draft;updateWordCount();}
+  }
   const s=JSON.parse(localStorage.getItem(LS_SET)||'{}');
   if(s.grade) document.getElementById('grade').value=s.grade;
   if(s.subject) document.getElementById('subject').value=s.subject;
@@ -265,4 +275,6 @@ function gradeEssay(){
   saveToHistory(total,letter,essayType,words);
 }
 
-// ── Claude AI Essay Grading ─────────────────────────────────────────────────
+</script>
+</body>
+</html>

@@ -52,6 +52,7 @@ iframe.tool-frame.active{display:block}
   <div class="tab" onclick="showTool('apgov',this)">🏛️ AP Government &amp; Politics</div>
   <div class="tab" onclick="showTool('apcalc',this)">📐 AP Calculus</div>
   <div class="tab" onclick="showTool('apstats',this)">📊 AP Statistics</div>
+  <div class="tab" onclick="showTool('apphysics',this)">🧲 AP Physics</div>
 </div>
 
 <div class="frame-area" id="frameArea">
@@ -72,6 +73,7 @@ iframe.tool-frame.active{display:block}
   <iframe class="tool-frame" id="frame-apgov" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-apcalc" src="about:blank"></iframe>
   <iframe class="tool-frame" id="frame-apstats" src="about:blank"></iframe>
+  <iframe class="tool-frame" id="frame-apphysics" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -91,7 +93,8 @@ const SRCS={
   apwh:'apwh.html',
   apgov:'apgov.html',
   apcalc:'apcalc.html',
-  apstats:'apstats.html'
+  apstats:'apstats.html',
+  apphysics:'apphysics.html'
 };
 const loaded=new Set(['apcountdown']);
 
