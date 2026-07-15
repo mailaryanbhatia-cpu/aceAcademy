@@ -384,9 +384,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" defer></script>
 <script src="firestore.js" defer></script>
 <script>
-// Redirect if already signed in
+// Redirect if already signed in -- unless we just arrived here via an
+// explicit logout click. In that case a Firebase session can still
+// briefly look 'signed in' on this fresh page load (the page the
+// logout button was clicked from often doesn't have the Firebase SDK
+// loaded at all, so it never actually called signOut()) -- bouncing
+// back to the dashboard in that moment would silently undo the logout.
 (function(){
   try{
+    if (sessionStorage.getItem('ace_logout_requested') === '1') return;
     const s = JSON.parse(localStorage.getItem('aceSession')||'null');
     if(s && (s.uid || s.username)) window.location.replace('index.html');
   }catch(e){}
@@ -394,6 +400,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
 
 // Also listen for Firebase auth state
 document.addEventListener('ace-auth-ready', function(){
+  if (sessionStorage.getItem('ace_logout_requested') === '1') {
+    // Finish the logout here, where the Firebase SDK is actually
+    // loaded, instead of redirecting back.
+    sessionStorage.removeItem('ace_logout_requested');
+    localStorage.removeItem('aceSession');
+    if (window._aceAuth) { window._aceAuth.signOut().catch(function(){}); }
+    return;
+  }
   window.location.replace('index.html');
 });
 

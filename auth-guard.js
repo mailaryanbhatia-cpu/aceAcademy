@@ -103,6 +103,12 @@
   // ── 3. Firebase sign-out ──────────────────────────────
   window.aceLogout = function () {
     localStorage.removeItem('aceSession');
+    // Flag this as a deliberate logout so login.html -- which is the
+    // page that actually has the Firebase SDK loaded, unlike most
+    // pages auth-guard.js runs on -- knows to finish signing out of
+    // Firebase itself instead of bouncing back here if it briefly
+    // still sees a signed-in Firebase session on load.
+    try { sessionStorage.setItem('ace_logout_requested', '1'); } catch (e) {}
     if (window._aceAuth) {
       window._aceAuth.signOut().catch(function(){});
     }
