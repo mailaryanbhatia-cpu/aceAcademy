@@ -195,6 +195,7 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
   <script src="/streak.js"></script>
   <script src="/sounds.js"></script>
   <script src="/coins.js"></script>
+  <script src="/xp-system.js"></script>
   <script src="/nav-profile.js"></script>
   <script src="/splash.js"></script>
 <script src="/timer.js"></script>
@@ -672,6 +673,10 @@ function gradeTest(){
   // Score card
   const pct = Math.round(correct/total*100);
   const wrongCount = total - correct;
+
+  // Award XP for completing this test -- base amount plus a bonus per
+  // correct answer, so a stronger score earns more.
+  if (window.AceXP) { try { AceXP.recordActivity(10 + correct*5, 'Test: ' + pct + '%'); } catch(e) {} }
   let grade_letter = pct>=90?'a':pct>=80?'b':pct>=70?'c':'d';
   let emoji = pct>=90?'🏆':pct>=80?'⭐':pct>=70?'👍':'📖';
   let msg = pct>=90?'Excellent work!':pct>=80?'Great job!':pct>=70?'Good effort — review the mistakes below.':'Keep studying — use the review below!';

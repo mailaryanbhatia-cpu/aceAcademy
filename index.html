@@ -372,6 +372,25 @@
   .ms-legend span { font-size:0.62rem; color:var(--muted); display:flex; align-items:center; gap:3px; }
   .ms-dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
 
+  /* ── LEVEL & XP ── */
+  .xp-section { margin:10px 0; }
+  .xp-toggle { width:100%; text-align:left; background:none; border:none; padding:8px 16px; font-size:.78rem; font-weight:600; color:var(--text); cursor:pointer; display:flex; justify-content:space-between; }
+  .xp-toggle:hover { background:var(--surface); }
+  .xp-body { display:none; padding:4px 16px 14px; }
+  .xp-body.open { display:block; }
+  .xp-level-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .xp-level-badge { flex-shrink:0; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; font-weight:800; font-size:.78rem; padding:6px 11px; border-radius:10px; white-space:nowrap; }
+  .xp-level-info { flex:1; min-width:0; }
+  .xp-bar-track { background:var(--border); border-radius:99px; height:7px; overflow:hidden; }
+  .xp-bar-fill { height:100%; background:linear-gradient(90deg,#6366f1,#8b5cf6); border-radius:99px; width:0%; transition:width .5s cubic-bezier(.4,0,.2,1); }
+  .xp-bar-label { font-size:.68rem; color:var(--muted); margin-top:4px; }
+  .xp-streak-row { display:flex; gap:8px; }
+  .xp-stat { flex:1; text-align:center; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:8px 4px; transition:transform .15s; }
+  .xp-stat-num { font-size:1.05rem; font-weight:800; color:var(--text); line-height:1.15; }
+  .xp-stat-label { font-size:.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+  @keyframes xp-stat-pulse { 0%,100%{transform:scale(1)} 30%{transform:scale(1.08)} }
+  .xp-stat.pulse { animation:xp-stat-pulse .5s ease; }
+
   /* ── STREAK CALENDAR ── */
   .cal-section { margin-top:16px; }
   .cal-toggle { width:100%; background:none; border:none; color:var(--muted); font-size:0.75rem;
@@ -772,6 +791,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   .gsr-none{padding:32px;text-align:center;color:var(--muted);font-size:.88rem}
 </style>
 <script src="auth-guard.js"></script>
+<script src="xp-system.js"></script>
 </head>
 <body>
 
@@ -871,12 +891,31 @@ main#mainContent{flex:1;padding:0 36px 36px;}
         </div>
       </div>
 
+      <!-- LEVEL & XP -->
+      <div class="xp-section">
+        <button class="xp-toggle" onclick="toggleXpSection()">⚡ Level &amp; XP <span id="xpChev">▶</span></button>
+        <div class="xp-body open" id="xpBody">
+          <div class="xp-level-row">
+            <div class="xp-level-badge" id="xpLevelBadge">Lv 1</div>
+            <div class="xp-level-info">
+              <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBarFill"></div></div>
+              <div class="xp-bar-label" id="xpBarLabel">0 / 100 XP</div>
+            </div>
+          </div>
+          <div class="xp-streak-row">
+            <div class="xp-stat" id="xpCurrentStat"><div class="xp-stat-num" id="xpCurrentStreak">0</div><div class="xp-stat-label">🔥 Streak</div></div>
+            <div class="xp-stat"><div class="xp-stat-num" id="xpLongestStreak">0</div><div class="xp-stat-label">Best streak</div></div>
+            <div class="xp-stat"><div class="xp-stat-num" id="xpTotalXp">0</div><div class="xp-stat-label">Total XP</div></div>
+          </div>
+        </div>
+      </div>
+
       <!-- STREAK CALENDAR -->
       <div class="cal-section">
         <button class="cal-toggle" onclick="toggleCalSection()">📅 Streak Calendar <span id="calChev">▶</span></button>
         <div class="cal-body" id="calBody">
           <div id="streakCal"></div>
-          <p style="font-size:.65rem;color:var(--muted);margin-top:4px">Last 12 weeks · green = challenge done</p>
+          <p style="font-size:.65rem;color:var(--muted);margin-top:4px">Last 12 weeks · green = studied</p>
         </div>
       </div>
     </div>
@@ -11235,11 +11274,49 @@ function updateMasterySummary() {
 }
 
 // -- STREAK CALENDAR ---------------------------------------------
+function updateXpWidget() {
+  if (!window.AceXP) return;
+  const lv = AceXP.getLevel();
+  const st = AceXP.getStreak();
+  const lvBadge = document.getElementById('xpLevelBadge');
+  const barFill = document.getElementById('xpBarFill');
+  const barLabel = document.getElementById('xpBarLabel');
+  const curEl = document.getElementById('xpCurrentStreak');
+  const longEl = document.getElementById('xpLongestStreak');
+  const totEl = document.getElementById('xpTotalXp');
+  if (lvBadge) lvBadge.textContent = 'Lv ' + lv.level;
+  if (barFill) barFill.style.width = Math.round(100 * lv.xpIntoLevel / lv.xpForNextLevel) + '%';
+  if (barLabel) barLabel.textContent = lv.xpIntoLevel + ' / ' + lv.xpForNextLevel + ' XP to Level ' + (lv.level + 1);
+  if (curEl) {
+    const prev = curEl.textContent;
+    curEl.textContent = st.current;
+    if (prev !== '' && parseInt(prev) < st.current) {
+      const statEl = document.getElementById('xpCurrentStat');
+      if (statEl) { statEl.classList.remove('pulse'); void statEl.offsetWidth; statEl.classList.add('pulse'); }
+    }
+  }
+  if (longEl) longEl.textContent = st.longest;
+  if (totEl) totEl.textContent = AceXP.getTotalXP().toLocaleString();
+}
+
+function toggleXpSection() {
+  const body = document.getElementById('xpBody');
+  const chev = document.getElementById('xpChev');
+  if (!body) return;
+  const open = body.classList.toggle('open');
+  if (chev) chev.textContent = open ? '▼' : '▶';
+  if (open) updateXpWidget();
+}
+
 function updateStreakCalendar() {
   const container = document.getElementById('streakCal');
   if (!container) return;
   let history = [];
-  try { history = JSON.parse(localStorage.getItem('dc-history') || '[]'); } catch(e) {}
+  if (window.AceXP) {
+    try { history = AceXP.getHistory(); } catch(e) {}
+  } else {
+    try { history = JSON.parse(localStorage.getItem('dc-history') || '[]'); } catch(e) {}
+  }
   const histSet = new Set(history);
   const today = new Date();
   let html = '<div class="cal-grid-wrap" style="display:grid;grid-template-columns:repeat(12,1fr);gap:2px">';
@@ -11452,7 +11529,12 @@ function cycleMastery(e) {
   s = (s + 1) % 4;
   try { localStorage.setItem(key, s); } catch(err) {}
   try { localStorage.setItem('md-' + key, new Date().toDateString()); } catch(err) {}
-  if (s >= 2 && prevS < 2) { try { incrementGoal(); } catch(err) {} }
+  if (s >= 2 && prevS < 2) {
+    try { incrementGoal(); } catch(err) {}
+    // Award XP the first time a topic reaches Practiced/Mastered --
+    // same crossing point the Daily Goal counter already uses.
+    if (window.AceXP) { try { AceXP.recordActivity(15, 'Topic practiced'); } catch(err) {} }
+  }
   dot.dataset.s = s;
   dot.textContent = ['·','L','P','★'][s];
   dot.title = ['Mark progress','Learning','Practiced','Mastered'][s];
@@ -11565,7 +11647,7 @@ function dcSidebarInit() {
 
     const today    = new Date().toDateString();
     const lastDone = localStorage.getItem('dc-last');
-    const streak   = parseInt(localStorage.getItem('dc-streak') || '0');
+    const streak   = window.AceXP ? AceXP.getStreak().current : parseInt(localStorage.getItem('dc-streak') || '0');
     const done     = lastDone === today;
     if (streakEl) streakEl.textContent = streak > 0 ? '🔥 ' + streak : '';
     if (doneBtn) {
@@ -11630,24 +11712,24 @@ function dcToggle(id) {
 
 function dcMarkDone() {
   const today = new Date().toDateString();
-  const last = localStorage.getItem('dc-last');
-  const yesterday = new Date(Date.now() - 86400000).toDateString();
-  let streak = parseInt(localStorage.getItem('dc-streak') || '0');
-  if (last === yesterday) streak++;
-  else if (last !== today) streak = 1;
   localStorage.setItem('dc-last', today);
-  localStorage.setItem('dc-streak', streak);
   try {
     let hist = JSON.parse(localStorage.getItem('dc-history') || '[]');
     if (!hist.includes(today)) { hist.push(today); if (hist.length > 365) hist.shift(); }
     localStorage.setItem('dc-history', JSON.stringify(hist));
   } catch(e) {}
+  // Award XP and advance the unified activity streak (replaces the old
+  // dc-streak-only counter -- AceXP.recordActivity also feeds the
+  // Streak Calendar's data source, see updateStreakCalendar()).
+  let streak = parseInt(localStorage.getItem('dc-streak') || '0');
+  if (window.AceXP) { try { streak = AceXP.recordActivity(20, 'Daily Challenge').streak.current; } catch(e) {} }
   const calBody = document.getElementById('calBody');
   if (calBody && calBody.classList.contains('open')) updateStreakCalendar();
   const doneBtn = document.getElementById('dcDoneBtn');
   if (doneBtn) { doneBtn.textContent = '✓ Done'; doneBtn.classList.add('done'); doneBtn.disabled = true; }
   const streakEl = document.getElementById('dcSidebarStreak');
   if (streakEl) streakEl.textContent = '🔥 ' + streak;
+  try { updateXpWidget(); } catch(e) {}
 }
 
 // Initial render
@@ -11746,6 +11828,7 @@ function updateContinueWidget() {
 
 render();
 updateContinueWidget();
+try { updateXpWidget(); } catch(e) {}
 dcSidebarInit();
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', dcSidebarInit);
