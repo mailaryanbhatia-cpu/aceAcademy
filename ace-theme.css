@@ -204,10 +204,14 @@ aside h3, .sidebar h3 {
 main { background: transparent !important; color: #ffffff !important; }
 
 /* ── Grade / Subject headers ───────────────────────────────── */
-.grade-header h1 { font-size: 1.7rem !important; font-weight: 800 !important; letter-spacing: -0.5px !important; color: #ffffff !important; }
+.grade-header h1 { font-size: 1.85rem !important; font-weight: 800 !important; letter-spacing: -0.02em !important; color: #ffffff !important; }
 .grade-header span { color: var(--muted) !important; }
-.subject-title h2 { font-size: 1rem !important; font-weight: 700 !important; color: #ffffff !important; }
-.unit-count { color: var(--muted) !important; font-size: 0.78rem !important; }
+.subject-title h2 { font-size: 1.05rem !important; font-weight: 700 !important; color: #ffffff !important; letter-spacing: -0.01em !important; }
+.unit-count {
+  color: var(--accent-2) !important; font-size: 0.72rem !important; font-weight: 700 !important;
+  background: var(--accent-light) !important; border-radius: var(--radius-full) !important;
+  padding: 3px 11px !important; border: 1px solid rgba(99,102,241,.22) !important;
+}
 
 /* ── Cards ─────────────────────────────────────────────────── */
 .unit-card, .problem-card, .stat-card, .goal-item, .card,
@@ -217,11 +221,18 @@ main { background: transparent !important; color: #ffffff !important; }
   border-radius: var(--radius) !important;
   box-shadow: var(--shadow-sm) !important;
   color: #ffffff !important;
+  transition: box-shadow var(--duration-base) var(--ease-standard),
+              border-color var(--duration-base) var(--ease-standard),
+              transform var(--duration-base) var(--ease-standard) !important;
 }
-.unit-card:hover, .problem-card:hover { box-shadow: var(--shadow) !important; border-color: var(--border-light) !important; }
-.unit-header { padding: 14px 18px !important; }
+.unit-card:hover, .problem-card:hover {
+  box-shadow: var(--shadow) !important;
+  border-color: var(--border-light) !important;
+  transform: translateY(-1px) !important;
+}
+.unit-header { padding: 14px 18px !important; transition: background var(--duration-fast) var(--ease-standard) !important; }
 .unit-header:hover { background: var(--surface-2) !important; }
-.unit-num { background: var(--accent-light) !important; color: var(--accent-2) !important; border: none !important; font-weight: 700 !important; border-radius: 6px !important; font-size: 0.7rem !important; padding: 3px 8px !important; }
+.unit-num { background: var(--accent-light) !important; color: var(--accent-2) !important; border: none !important; font-weight: 700 !important; border-radius: var(--radius-full) !important; font-size: 0.7rem !important; padding: 3px 9px !important; }
 .unit-name { font-weight: 600 !important; color: #ffffff !important; }
 .unit-body { background: var(--surface-2) !important; }
 .unit-body ul li { color: #f0f4ff !important; font-size: 0.85rem !important; }
