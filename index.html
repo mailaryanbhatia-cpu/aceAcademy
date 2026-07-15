@@ -11308,6 +11308,80 @@ function toggleXpSection() {
   if (open) updateXpWidget();
 }
 
+// -- WELCOME BACK SCREEN -------------------------------------------
+function showWelcomeBackScreen() {
+  if (sessionStorage.getItem('ace_welcome_pending') !== '1') return;
+  sessionStorage.removeItem('ace_welcome_pending');
+
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('aceSession') || 'null'); } catch (e) {}
+  const name = (session && (session.name || session.username)) || 'there';
+
+  const totalXp = window.AceXP ? AceXP.getTotalXP() : 0;
+  const streak  = window.AceXP ? AceXP.getStreak() : { current: 0, longest: 0 };
+  const level   = window.AceXP ? AceXP.getLevel().level : 1;
+  const isNew   = totalXp === 0 && streak.longest === 0;
+
+  let headline, subtext, emoji;
+  if (isNew) {
+    emoji = '🎓';
+    headline = 'Welcome to AcerAcademy, ' + name + '!';
+    subtext = "Let's start your first streak today — pick a subject and dive in.";
+  } else if (streak.current > 1) {
+    emoji = '🔥';
+    headline = 'Welcome back, ' + name + '!';
+    subtext = "You're on a " + streak.current + '-day streak — keep it going!';
+  } else if (streak.longest > 1) {
+    emoji = '👋';
+    headline = 'Welcome back, ' + name + '!';
+    subtext = 'Ready to start a new streak? Your best was ' + streak.longest + ' days.';
+  } else {
+    emoji = '👋';
+    headline = 'Welcome back, ' + name + '!';
+    subtext = "Good to see you again — let's keep learning.";
+  }
+
+  const style = document.createElement('style');
+  style.textContent = [
+    '@keyframes ace-wb-in{from{opacity:0;transform:translate(-50%,-50%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}',
+    '@keyframes ace-wb-fade{to{opacity:0}}'
+  ].join('');
+  document.head.appendChild(style);
+
+  const overlay = document.createElement('div');
+  overlay.id = 'ace-wb-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(6,9,26,.78);z-index:99998;backdrop-filter:blur(6px)';
+
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#0d1a40,#1a2080);border:1px solid rgba(99,102,241,.35);border-radius:22px;padding:38px 40px;text-align:center;z-index:99999;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:ace-wb-in .45s cubic-bezier(.34,1.56,.64,1) forwards';
+
+  let statsHtml = '';
+  if (!isNew) {
+    statsHtml = '<div style="display:flex;gap:10px;justify-content:center;margin:22px 0 6px">'
+      + '<div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 16px;min-width:74px"><div style="font-size:1.2rem;font-weight:900;color:#fff">🔥 ' + streak.current + '</div><div style="font-size:.62rem;color:#9aa7c7;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Streak</div></div>'
+      + '<div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 16px;min-width:74px"><div style="font-size:1.2rem;font-weight:900;color:#fff">Lv ' + level + '</div><div style="font-size:.62rem;color:#9aa7c7;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Level</div></div>'
+      + '<div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 16px;min-width:74px"><div style="font-size:1.2rem;font-weight:900;color:#fff">' + totalXp.toLocaleString() + '</div><div style="font-size:.62rem;color:#9aa7c7;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Total XP</div></div>'
+      + '</div>';
+  }
+
+  modal.innerHTML = '<div style="font-size:52px;line-height:1;margin-bottom:14px">' + emoji + '</div>'
+    + '<div style="font-size:1.35rem;font-weight:900;color:#fff;letter-spacing:-.01em;margin-bottom:8px">' + headline + '</div>'
+    + '<div style="font-size:.92rem;color:#a5b4fc;line-height:1.5">' + subtext + '</div>'
+    + statsHtml
+    + '<button id="ace-wb-dismiss" style="margin-top:22px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:11px 30px;border-radius:99px;font-size:.95rem;font-weight:700;cursor:pointer">Let\'s go →</button>';
+
+  function dismiss() {
+    overlay.style.animation = 'ace-wb-fade .3s ease forwards';
+    modal.style.animation = 'ace-wb-fade .3s ease forwards';
+    setTimeout(function () { overlay.remove(); modal.remove(); }, 300);
+  }
+
+  overlay.onclick = dismiss;
+  document.body.appendChild(overlay);
+  document.body.appendChild(modal);
+  document.getElementById('ace-wb-dismiss').onclick = dismiss;
+}
+
 function updateStreakCalendar() {
   const container = document.getElementById('streakCal');
   if (!container) return;
@@ -11829,6 +11903,7 @@ function updateContinueWidget() {
 render();
 updateContinueWidget();
 try { updateXpWidget(); } catch(e) {}
+try { showWelcomeBackScreen(); } catch(e) {}
 dcSidebarInit();
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', dcSidebarInit);

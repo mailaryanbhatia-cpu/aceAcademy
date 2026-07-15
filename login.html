@@ -408,6 +408,7 @@ function handleGoogleSignIn(){
 
   aceGoogleSignIn()
     .then(function(){
+      sessionStorage.setItem('ace_welcome_pending','1');
       showMsg('google-msg','✓ Signed in! Redirecting…','success');
       setTimeout(function(){ window.location.replace('index.html'); }, 600);
     })
@@ -474,6 +475,7 @@ async function doSignIn(){
   const hash=await sha256('aceAcademy:'+user+':'+pass);
   if(hash!==accounts[user].hash) return showMsg('signin-msg','Incorrect password.','error');
   localStorage.setItem('aceSession',JSON.stringify({username:user,name:accounts[user].name||user,loginTime:Date.now()}));
+  sessionStorage.setItem('ace_welcome_pending','1');
   showMsg('signin-msg','Welcome back, '+user+'! ✓','success');
   setTimeout(()=>window.location.replace('index.html'),700);
 }
@@ -492,6 +494,7 @@ async function doSignUp(){
   accounts[user]={hash,name:user,created:Date.now()};
   saveAccounts(accounts);
   localStorage.setItem('aceSession',JSON.stringify({username:user,name:user,loginTime:Date.now()}));
+  sessionStorage.setItem('ace_welcome_pending','1');
   showMsg('signup-msg','Account created! Signing you in… ✓','success');
   setTimeout(()=>window.location.replace('index.html'),900);
 }
