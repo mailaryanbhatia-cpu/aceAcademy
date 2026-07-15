@@ -82,6 +82,12 @@
     overflow-y: auto;
   }
   aside h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 0 20px 8px; }
+  .sb-group { padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .sb-group-last { border-bottom: none; margin-bottom: 0; padding-bottom: 4px; }
+  .sb-group-label { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .09em; color: var(--accent-2); padding: 0 20px 10px; opacity: .85; }
+  .sb-group .focus-btn, .sb-group .export-btn, .sb-group .print-curriculum-btn { margin-left: 20px; margin-right: 20px; width: calc(100% - 40px); }
+  .sb-group .export-btn { margin-top: 0; }
+
   .grade-list { list-style: none; margin-bottom: 28px; }
   .grade-list li a {
     display: block;
@@ -803,104 +809,121 @@ main#mainContent{flex:1;padding:0 36px 36px;}
         <div class="dc-reveal" id="dcSidebarAns">6 cups of sugar. Scale factor: 9 ÷ 3 = 3, so 2 × 3 = 6.</div>
       </div>
     </div>
-    <h3>Grade</h3>
-    <ul class="grade-list" id="gradeList">
-      <li><a href="#" data-grade="k">Kindergarten</a></li>
-      <li><a href="#" data-grade="1">Grade 1</a></li>
-      <li><a href="#" data-grade="2">Grade 2</a></li>
-      <li><a href="#" data-grade="3">Grade 3</a></li>
-      <li><a href="#" data-grade="4">Grade 4</a></li>
-      <li><a href="#" data-grade="5">Grade 5</a></li>
-      <li><a href="#" data-grade="6" class="active">Grade 6</a></li>
-      <li><a href="#" data-grade="7">Grade 7</a></li>
-      <li><a href="#" data-grade="8">Grade 8</a></li>
-      <li><a href="#" data-grade="9">Grade 9</a></li>
-      <li><a href="#" data-grade="10">Grade 10</a></li>
-      <li><a href="#" data-grade="11">Grade 11</a></li>
-      <li><a href="#" data-grade="12">Grade 12</a></li>
-      <li style="margin-top:10px;padding:0 16px 4px"><span style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7a8fa8">Advanced</span></li>
-      <li><a href="#" data-grade="ap">🎓 AP Courses</a></li>
-    </ul>
-    <div class="subject-filter">
-      <h3>Subject</h3>
-      <div id="subjectBtns"></div>
-    </div>
 
-    <!-- FOCUS MODE -->
-    <button class="focus-btn" id="focusModeBtn" onclick="toggleFocusMode()">🎯 Focus Mode</button>
-
-    <!-- MASTERY SUMMARY -->
-    <div class="ms-section">
-      <h3>Progress</h3>
-      <div id="masterySummary"><p style="font-size:.72rem;color:var(--muted)">Click topic dots to track mastery.</p></div>
-      <div class="ms-legend">
-        <span><span class="ms-dot" style="background:#22c55e"></span>Mastered</span>
-        <span><span class="ms-dot" style="background:#3b82f6"></span>Practiced</span>
-        <span><span class="ms-dot" style="background:#f59e0b"></span>Learning</span>
+    <!-- ══ GROUP: NAVIGATE ══ -->
+    <div class="sb-group">
+      <div class="sb-group-label">Navigate</div>
+      <h3>Grade</h3>
+      <ul class="grade-list" id="gradeList">
+        <li><a href="#" data-grade="k">Kindergarten</a></li>
+        <li><a href="#" data-grade="1">Grade 1</a></li>
+        <li><a href="#" data-grade="2">Grade 2</a></li>
+        <li><a href="#" data-grade="3">Grade 3</a></li>
+        <li><a href="#" data-grade="4">Grade 4</a></li>
+        <li><a href="#" data-grade="5">Grade 5</a></li>
+        <li><a href="#" data-grade="6" class="active">Grade 6</a></li>
+        <li><a href="#" data-grade="7">Grade 7</a></li>
+        <li><a href="#" data-grade="8">Grade 8</a></li>
+        <li><a href="#" data-grade="9">Grade 9</a></li>
+        <li><a href="#" data-grade="10">Grade 10</a></li>
+        <li><a href="#" data-grade="11">Grade 11</a></li>
+        <li><a href="#" data-grade="12">Grade 12</a></li>
+        <li style="margin-top:10px;padding:0 16px 4px"><span style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7a8fa8">Advanced</span></li>
+        <li><a href="#" data-grade="ap">🎓 AP Courses</a></li>
+      </ul>
+      <div class="subject-filter">
+        <h3>Subject</h3>
+        <div id="subjectBtns"></div>
       </div>
     </div>
 
-    <!-- STREAK CALENDAR -->
-    <div class="cal-section">
-      <button class="cal-toggle" onclick="toggleCalSection()">📅 Streak Calendar <span id="calChev">▶</span></button>
-      <div class="cal-body" id="calBody">
-        <div id="streakCal"></div>
-        <p style="font-size:.65rem;color:var(--muted);margin-top:4px">Last 12 weeks · green = challenge done</p>
+    <!-- ══ GROUP: TODAY ══ -->
+    <div class="sb-group">
+      <div class="sb-group-label">Today</div>
+      <!-- FOCUS MODE -->
+      <button class="focus-btn" id="focusModeBtn" onclick="toggleFocusMode()">🎯 Focus Mode</button>
+
+      <!-- DAILY GOAL -->
+      <div class="goal-section">
+        <button class="goal-toggle" onclick="toggleGoalSection()">🎯 Daily Goal <span id="goalChev">▶</span></button>
+        <div class="goal-body" id="goalBody">
+          <div class="goal-bar-wrap"><div class="goal-bar-fill" id="goalBarFill"></div></div>
+          <div class="goal-status" id="goalStatus">0 of 5 topics today</div>
+          <select class="goal-select" id="goalTargetSel" onchange="setGoalTarget(this.value)">
+            <option value="3">Goal: 3 topics</option>
+            <option value="5" selected>Goal: 5 topics</option>
+            <option value="10">Goal: 10 topics</option>
+            <option value="15">Goal: 15 topics</option>
+            <option value="20">Goal: 20 topics</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STREAK CALENDAR -->
+      <div class="cal-section">
+        <button class="cal-toggle" onclick="toggleCalSection()">📅 Streak Calendar <span id="calChev">▶</span></button>
+        <div class="cal-body" id="calBody">
+          <div id="streakCal"></div>
+          <p style="font-size:.65rem;color:var(--muted);margin-top:4px">Last 12 weeks · green = challenge done</p>
+        </div>
       </div>
     </div>
 
-    <!-- BOOKMARKS -->
-    <div class="bm-section">
-      <button class="bm-toggle" onclick="toggleBmSection()">⭐ Saved Topics <span id="bmChev">▶</span></button>
-      <div class="bm-body" id="bmBody">
-        <div id="bmList"><p class="bm-empty">Star topics to save them here.</p></div>
+    <!-- ══ GROUP: YOUR PROGRESS ══ -->
+    <div class="sb-group">
+      <div class="sb-group-label">Your Progress</div>
+      <!-- MASTERY SUMMARY -->
+      <div class="ms-section">
+        <h3>Mastery</h3>
+        <div id="masterySummary"><p style="font-size:.72rem;color:var(--muted)">Click topic dots to track mastery.</p></div>
+        <div class="ms-legend">
+          <span><span class="ms-dot" style="background:#22c55e"></span>Mastered</span>
+          <span><span class="ms-dot" style="background:#3b82f6"></span>Practiced</span>
+          <span><span class="ms-dot" style="background:#f59e0b"></span>Learning</span>
+        </div>
+      </div>
+
+      <!-- SPACED REPETITION -->
+      <div class="sr-section">
+        <button class="sr-toggle" onclick="toggleSrSection()">🔁 Due for Review <span id="srChev">▶</span></button>
+        <div class="sr-body" id="srBody">
+          <div id="srList"><p class="sr-empty">Practice topics to see review dates.</p></div>
+        </div>
+      </div>
+
+      <!-- WEAK SPOT DETECTOR -->
+      <div class="ws-section">
+        <button class="ws-toggle" onclick="toggleWsSection()">🔍 Weak Spot Detector <span id="wsChev">▶</span></button>
+        <div class="ws-body" id="wsBody">
+          <div id="wsList"><p class="ws-empty">Mark topics to see your weak spots.</p></div>
+        </div>
+      </div>
+
+      <!-- MISTAKE JOURNAL -->
+      <div class="mj-section">
+        <button class="mj-toggle" onclick="toggleMjSection()">❌ Mistake Journal <span id="mjChev">▶</span></button>
+        <div class="mj-body" id="mjBody">
+          <div id="mjList"><p class="mj-empty">Click ❌ on a problem to log it here.</p></div>
+          <button class="mj-clear" onclick="clearMistakes()">Clear all</button>
+        </div>
+      </div>
+
+      <!-- BOOKMARKS -->
+      <div class="bm-section">
+        <button class="bm-toggle" onclick="toggleBmSection()">⭐ Saved Topics <span id="bmChev">▶</span></button>
+        <div class="bm-body" id="bmBody">
+          <div id="bmList"><p class="bm-empty">Star topics to save them here.</p></div>
+        </div>
       </div>
     </div>
 
-    <!-- DAILY GOAL -->
-    <div class="goal-section">
-      <button class="goal-toggle" onclick="toggleGoalSection()">🎯 Daily Goal <span id="goalChev">▶</span></button>
-      <div class="goal-body" id="goalBody">
-        <div class="goal-bar-wrap"><div class="goal-bar-fill" id="goalBarFill"></div></div>
-        <div class="goal-status" id="goalStatus">0 of 5 topics today</div>
-        <select class="goal-select" id="goalTargetSel" onchange="setGoalTarget(this.value)">
-          <option value="3">Goal: 3 topics</option>
-          <option value="5" selected>Goal: 5 topics</option>
-          <option value="10">Goal: 10 topics</option>
-          <option value="15">Goal: 15 topics</option>
-          <option value="20">Goal: 20 topics</option>
-        </select>
-      </div>
+    <!-- ══ GROUP: ACTIONS ══ -->
+    <div class="sb-group sb-group-last">
+      <div class="sb-group-label">Actions</div>
+      <!-- EXPORT -->
+      <button class="export-btn" onclick="exportSnapshot()">📊 Export Progress Snapshot</button>
+      <button class="print-curriculum-btn" onclick="printCurriculum()">🖨 Print Curriculum View</button>
     </div>
-
-    <!-- SPACED REPETITION -->
-    <div class="sr-section">
-      <button class="sr-toggle" onclick="toggleSrSection()">🔁 Due for Review <span id="srChev">▶</span></button>
-      <div class="sr-body" id="srBody">
-        <div id="srList"><p class="sr-empty">Practice topics to see review dates.</p></div>
-      </div>
-    </div>
-
-    <!-- MISTAKE JOURNAL -->
-    <div class="mj-section">
-      <button class="mj-toggle" onclick="toggleMjSection()">❌ Mistake Journal <span id="mjChev">▶</span></button>
-      <div class="mj-body" id="mjBody">
-        <div id="mjList"><p class="mj-empty">Click ❌ on a problem to log it here.</p></div>
-        <button class="mj-clear" onclick="clearMistakes()">Clear all</button>
-      </div>
-    </div>
-
-    <!-- WEAK SPOT DETECTOR -->
-    <div class="ws-section">
-      <button class="ws-toggle" onclick="toggleWsSection()">🔍 Weak Spot Detector <span id="wsChev">▶</span></button>
-      <div class="ws-body" id="wsBody">
-        <div id="wsList"><p class="ws-empty">Mark topics to see your weak spots.</p></div>
-      </div>
-    </div>
-
-    <!-- EXPORT -->
-    <button class="export-btn" onclick="exportSnapshot()">📊 Export Progress Snapshot</button>
-        <button class="print-curriculum-btn" onclick="printCurriculum()">🖨 Print Curriculum View</button>
   </aside>
 
   <div class="content-col">
