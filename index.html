@@ -731,6 +731,8 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 .hero-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 16px;display:flex;flex-direction:column;gap:1px;}
 .hero-stat b{font-size:1.15rem;font-weight:900;color:#fff;line-height:1.1;}
 .hero-stat span{font-size:.68rem;font-weight:600;color:#9aa7c7;text-transform:uppercase;letter-spacing:.05em;}
+.hero-greeting{display:none;align-items:center;gap:6px;font-size:.85rem;font-weight:700;color:#a5b4fc;margin-bottom:10px;letter-spacing:.01em;position:relative;z-index:1;}
+.hero-greeting.show{display:flex;}
 .hero-title{font-size:2.15rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:10px;line-height:1.18;color:#fff;}
 .hero-title span{color:#a5b4fc;}
 .hero-sub{font-size:.96rem;color:#a5b4fc;margin-bottom:26px;max-width:520px;line-height:1.65;}
@@ -992,6 +994,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   <div class="hero-outer">
     <div class="hero-top">
     <div class="hero-banner">
+      <div class="hero-greeting" id="heroGreeting"></div>
       <div class="hero-title">Learn Smarter.<br><span>Grades K–12 Curriculum.</span></div>
       <div class="hero-sub">Everything you need — lessons, worksheets, practice tests, flashcards, and an AI tutor. All free, all in one place.</div>
       <div class="hero-chips">
@@ -11308,6 +11311,18 @@ function toggleXpSection() {
   if (open) updateXpWidget();
 }
 
+// -- HERO GREETING ---------------------------------------------------
+function updateHeroGreeting() {
+  const el = document.getElementById('heroGreeting');
+  if (!el) return;
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('aceSession') || 'null'); } catch (e) {}
+  const name = session && (session.name || session.username);
+  if (!name) { el.classList.remove('show'); return; }
+  el.textContent = '👋 Welcome back, ' + name.split(' ')[0] + '!';
+  el.classList.add('show');
+}
+
 // -- WELCOME BACK SCREEN -------------------------------------------
 function showWelcomeBackScreen() {
   if (sessionStorage.getItem('ace_welcome_pending') !== '1') return;
@@ -11903,6 +11918,7 @@ function updateContinueWidget() {
 render();
 updateContinueWidget();
 try { updateXpWidget(); } catch(e) {}
+try { updateHeroGreeting(); } catch(e) {}
 try { showWelcomeBackScreen(); } catch(e) {}
 dcSidebarInit();
 if (document.readyState === 'loading') {
