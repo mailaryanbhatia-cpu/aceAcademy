@@ -1014,8 +1014,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   <div class="hero-outer">
     <div class="home-header">
       <div>
-        <div class="hero-greeting" id="heroGreeting"></div>
-        <h1 class="home-title">Welcome to <span class="brand-accent">AcerAcademy</span> <span class="wave-emoji">👋</span></h1>
+        <h1 class="home-title" id="homeTitle">Welcome to <span class="brand-accent">AcerAcademy</span> <span class="wave-emoji">👋</span></h1>
         <p class="home-sub">Your free Grades K–12 &amp; AP learning platform</p>
       </div>
       <div class="home-date" id="homeDate"></div>
@@ -11380,14 +11379,16 @@ function toggleXpSection() {
 
 // -- HERO GREETING ---------------------------------------------------
 function updateHeroGreeting() {
-  const el = document.getElementById('heroGreeting');
+  const el = document.getElementById('homeTitle');
   if (!el) return;
   let session = null;
   try { session = JSON.parse(localStorage.getItem('aceSession') || 'null'); } catch (e) {}
   const name = session && (session.name || session.username);
-  if (!name) { el.classList.remove('show'); return; }
-  el.textContent = '👋 Welcome back, ' + name.split(' ')[0] + '!';
-  el.classList.add('show');
+  if (!name) {
+    el.innerHTML = 'Welcome to <span class="brand-accent">AcerAcademy</span> <span class="wave-emoji">👋</span>';
+    return;
+  }
+  el.innerHTML = 'Welcome back, <span class="brand-accent">' + escHtml(name.split(' ')[0]) + '</span> <span class="wave-emoji">👋</span>';
 }
 
 // -- HOMEPAGE STAT CARDS ----------------------------------------------
