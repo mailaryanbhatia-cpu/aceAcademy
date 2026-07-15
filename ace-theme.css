@@ -278,3 +278,43 @@ footer { background: #080e1c !important; color: var(--muted) !important; border-
 /* ── Util ──────────────────────────────────────────────────── */
 hr { border-color: var(--border) !important; }
 ::selection { background: var(--accent-light); color: var(--accent-2); }
+
+/* ── Responsive image safety net ──────────────────────────────── */
+img, svg { max-width: 100%; height: auto; }
+
+/* ── Firefox scrollbar parity ──────────────────────────────────── */
+* { scrollbar-width: thin; scrollbar-color: var(--border-light) transparent; }
+
+/* ── Accessibility: visible keyboard focus ───────────────────────
+   Mouse/touch clicks stay clean; keyboard nav gets a clear,
+   on-brand ring. Applies site-wide since this file loads on 100+
+   pages and previously had no focus-visible styling at all. */
+a, button, input, select, textarea, [tabindex] { outline: none; }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-2) !important;
+  outline-offset: 2px !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* Screen-reader-only utility, for icon-only controls that need an
+   accessible name without changing the visual layout. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ── Reduced motion ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

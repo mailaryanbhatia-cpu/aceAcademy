@@ -4,9 +4,19 @@
 <script src="/timer.js"></script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AcerAcademy — Grades K–12</title>
+<title>AcerAcademy — Free K–12 &amp; AP Curriculum, AI Tutor &amp; Study Tools</title>
+<meta name="description" content="AcerAcademy is a free K-12 and AP learning platform with standards-aligned curriculum, a Socratic AI tutor, mastery tracking, and 40+ study tools for students, parents, and teachers." />
+<meta property="og:title" content="AcerAcademy — Grades K–12 Learning Platform" />
+<meta property="og:description" content="Free K-12 and AP curriculum, an AI study tutor, and 40+ practice tools — all in one place." />
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#0b1120" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .skip-link{position:absolute;left:12px;top:-52px;z-index:2000;background:#6366f1;color:#fff;padding:10px 18px;border-radius:8px;font-weight:700;font-size:.85rem;text-decoration:none;transition:top .18s cubic-bezier(.4,0,.2,1)}
+  .skip-link:focus{top:12px}
 
   :root {
     --bg: #f9f9f9;
@@ -736,14 +746,17 @@ main#mainContent{flex:1;padding:0 36px 36px;}
 </head>
 <body>
 
-<header>
+<a class="skip-link" href="#mainContent">Skip to main content</a>
+
+<header aria-label="Primary">
   <a href="index.html" class="brand">
-    <span class="brand-icon">🎓</span>
+    <span class="brand-icon" aria-hidden="true">🎓</span>
     <span class="brand-name">Acer<span class="brand-accent">Academy</span></span>
   </a>
   <a href="alltools.html" class="nav-link">🛠 All Tools</a>
   <div class="search-wrap" style="flex-shrink:0;">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <label for="headerSearch" class="sr-only">Search grades, units, and topics</label>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     <input type="text" id="headerSearch" placeholder="Search grades, units, topics…" style="background:var(--surface);color:var(--text);width:220px;"
       oninput="globalSearch(this.value)" onkeydown="if(event.key==='Escape'){this.value='';globalSearch('');this.blur()}">
   </div>
@@ -754,7 +767,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
 <div id="globalSearchResults"></div>
 
 <div class="page">
-  <aside>
+  <aside aria-label="Grade and subject navigation">
     <!-- ⚡ DAILY CHALLENGE SIDEBAR WIDGET -->
     <div class="dc-sidebar-card" id="dcSidebarCard">
       <div class="dc-sidebar-header" onclick="dcSidebarToggle()">
