@@ -188,16 +188,39 @@ aside h3, .sidebar h3 {
   letter-spacing: 1px !important; text-transform: uppercase !important;
 }
 
+.grade-list li { display: contents; }
 .grade-list li a {
-  font-size: 0.88rem !important; font-weight: 500 !important;
-  color: #f0f4ff !important; padding: 9px 20px !important;
-  border-left: 3px solid transparent !important; transition: all .15s !important; display: block;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  height: 36px !important; font-size: 0.86rem !important; font-weight: 700 !important;
+  color: #f0f4ff !important; text-decoration: none !important;
+  background: var(--surface-2) !important; border: 1px solid var(--border) !important;
+  border-left: 1px solid var(--border) !important; border-radius: 9px !important;
+  padding: 0 !important; transition: all var(--duration-fast) var(--ease-standard) !important;
 }
-.grade-list li a:hover { background: var(--accent-light) !important; color: var(--accent-2) !important; }
+.grade-list li a:hover {
+  background: var(--accent-light) !important; color: var(--accent-2) !important;
+  border-color: rgba(99,102,241,.4) !important; transform: translateY(-1px) !important;
+}
 .grade-list li a.active {
-  border-left-color: var(--accent) !important; background: var(--accent-light) !important;
-  color: var(--accent-2) !important; font-weight: 700 !important;
+  background: var(--accent) !important; border-color: var(--accent) !important;
+  color: #fff !important; font-weight: 800 !important;
+  box-shadow: 0 3px 14px rgba(99,102,241,.4) !important;
 }
+.grade-list-divider {
+  grid-column: 1 / -1 !important; margin-top: 8px !important; padding-top: 12px !important;
+  border-top: 1px solid var(--border) !important;
+  font-size: 0.64rem !important; font-weight: 800 !important; text-transform: uppercase !important;
+  letter-spacing: .09em !important; color: var(--muted) !important;
+}
+.grade-list li a[data-grade="ap"] {
+  grid-column: 1 / -1 !important; height: auto !important; width: 100% !important;
+  justify-content: flex-start !important; gap: 8px !important; padding: 10px 14px !important;
+  font-size: 0.85rem !important;
+  background: linear-gradient(135deg, rgba(99,102,241,.20), rgba(124,58,237,.14)) !important;
+  border-color: rgba(99,102,241,.35) !important; color: var(--accent-2) !important;
+}
+.grade-list li a[data-grade="ap"]:hover { background: linear-gradient(135deg, rgba(99,102,241,.3), rgba(124,58,237,.22)) !important; }
+.grade-list li a[data-grade="ap"].active { color: #fff !important; }
 .subj-btn { color: #f0f4ff !important; }
 .subj-btn.active { color: var(--accent-2) !important; font-weight: 700 !important; }
 
@@ -258,12 +281,20 @@ main { background: transparent !important; color: #ffffff !important; }
 .hero-sub { color: #a5b4fc !important; }
 .feature-card {
   background: var(--surface) !important; border-color: var(--border) !important; color: #ffffff !important;
+  position: relative !important; overflow: hidden !important;
   transition: border-color var(--duration-base) var(--ease-standard), box-shadow var(--duration-base) var(--ease-standard), transform var(--duration-base) var(--ease-standard) !important;
 }
+.feature-card::before {
+  content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important;
+  height: 3px !important; background: linear-gradient(90deg, var(--accent), #a78bfa) !important;
+  transform: scaleX(0) !important; transform-origin: left !important;
+  transition: transform var(--duration-base) var(--ease-emphasized) !important;
+}
+.feature-card:hover::before { transform: scaleX(1) !important; }
 .feature-card:hover {
   border-color: var(--accent) !important;
   box-shadow: 0 0 0 1px var(--accent), var(--shadow) !important;
-  transform: translateY(-2px) !important;
+  transform: translateY(-3px) !important;
 }
 .feature-card:focus-visible { outline: 2px solid var(--accent-2) !important; outline-offset: 2px !important; }
 .feature-icon {

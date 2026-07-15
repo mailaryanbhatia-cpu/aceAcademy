@@ -72,7 +72,7 @@
     overflow-y: auto;
   }
   aside h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 0 20px 8px; }
-  .grade-list { list-style: none; margin-bottom: 28px; }
+  .grade-list { list-style: none; margin-bottom: 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 0 20px; }
   .grade-list li a {
     display: block;
     padding: 9px 20px;
@@ -364,20 +364,20 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
   <aside>
     <h3>Grade</h3>
     <ul class="grade-list" id="gradeList">
-      <li><a href="#" data-grade="k">Kindergarten</a></li>
-      <li><a href="#" data-grade="1">Grade 1</a></li>
-      <li><a href="#" data-grade="2">Grade 2</a></li>
-      <li><a href="#" data-grade="3">Grade 3</a></li>
-      <li><a href="#" data-grade="4">Grade 4</a></li>
-      <li><a href="#" data-grade="5">Grade 5</a></li>
-      <li><a href="#" data-grade="6" class="active">Grade 6</a></li>
-      <li><a href="#" data-grade="7">Grade 7</a></li>
-      <li><a href="#" data-grade="8">Grade 8</a></li>
-      <li><a href="#" data-grade="9">Grade 9</a></li>
-      <li><a href="#" data-grade="10">Grade 10</a></li>
-      <li><a href="#" data-grade="11">Grade 11</a></li>
-      <li><a href="#" data-grade="12">Grade 12</a></li>
-      <li style="margin-top:10px;padding:0 16px 4px"><span style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted2)">Advanced</span></li>
+      <li><a href="#" data-grade="k" title="Kindergarten" aria-label="Kindergarten">K</a></li>
+      <li><a href="#" data-grade="1" title="Grade 1" aria-label="Grade 1">1</a></li>
+      <li><a href="#" data-grade="2" title="Grade 2" aria-label="Grade 2">2</a></li>
+      <li><a href="#" data-grade="3" title="Grade 3" aria-label="Grade 3">3</a></li>
+      <li><a href="#" data-grade="4" title="Grade 4" aria-label="Grade 4">4</a></li>
+      <li><a href="#" data-grade="5" title="Grade 5" aria-label="Grade 5">5</a></li>
+      <li><a href="#" data-grade="6" class="active" title="Grade 6" aria-label="Grade 6">6</a></li>
+      <li><a href="#" data-grade="7" title="Grade 7" aria-label="Grade 7">7</a></li>
+      <li><a href="#" data-grade="8" title="Grade 8" aria-label="Grade 8">8</a></li>
+      <li><a href="#" data-grade="9" title="Grade 9" aria-label="Grade 9">9</a></li>
+      <li><a href="#" data-grade="10" title="Grade 10" aria-label="Grade 10">10</a></li>
+      <li><a href="#" data-grade="11" title="Grade 11" aria-label="Grade 11">11</a></li>
+      <li><a href="#" data-grade="12" title="Grade 12" aria-label="Grade 12">12</a></li>
+      <li><span class="grade-list-divider">Advanced</span></li>
       <li><a href="#" data-grade="ap">🎓 AP Courses</a></li>
     </ul>
     <div class="subject-filter">

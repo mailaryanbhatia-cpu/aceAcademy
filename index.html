@@ -88,7 +88,7 @@
   .sb-group .focus-btn, .sb-group .export-btn, .sb-group .print-curriculum-btn { margin-left: 20px; margin-right: 20px; width: calc(100% - 40px); }
   .sb-group .export-btn { margin-top: 0; }
 
-  .grade-list { list-style: none; margin-bottom: 28px; }
+  .grade-list { list-style: none; margin-bottom: 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 0 20px; }
   .grade-list li a {
     display: block;
     padding: 9px 20px;
@@ -703,9 +703,15 @@ footer{background:#080e1c!important;color:#7a8fa8!important;border-top:1px solid
 .cl-meta{font-size:.8rem;color:var(--muted)}
 .cl-btn{flex-shrink:0}
 @media(max-width:600px){.cl-main{flex-direction:column;align-items:flex-start}.cl-btn{width:100%}}
-.hero-banner{background:linear-gradient(135deg,#06091a 0%,#0d1a40 45%,#1a2080 100%)!important;border-radius:16px;padding:36px 40px;margin-bottom:32px;color:#e8edf5;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.25);}
-.hero-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;background:rgba(99,102,241,.05);border-radius:50%;}
-.hero-banner::after{content:'';position:absolute;bottom:-60px;right:60px;width:300px;height:300px;background:rgba(99,102,241,.03);border-radius:50%;}
+.hero-banner{background:linear-gradient(135deg,#06091a 0%,#0d1a40 45%,#1a2080 100%)!important;border-radius:18px;padding:40px 44px;margin-bottom:32px;color:#e8edf5;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.25);
+  background-image:linear-gradient(135deg,#06091a 0%,#0d1a40 45%,#1a2080 100%),radial-gradient(circle,rgba(255,255,255,.05) 1px,transparent 1px)!important;
+  background-size:cover,18px 18px!important;background-position:center,center!important;}
+.hero-banner::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(99,102,241,.16) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
+.hero-banner::after{content:'';position:absolute;bottom:-80px;right:80px;width:340px;height:340px;background:radial-gradient(circle,rgba(167,139,250,.10) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
+.hero-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;position:relative;z-index:1;}
+.hero-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 16px;display:flex;flex-direction:column;gap:1px;}
+.hero-stat b{font-size:1.15rem;font-weight:900;color:#fff;line-height:1.1;}
+.hero-stat span{font-size:.68rem;font-weight:600;color:#9aa7c7;text-transform:uppercase;letter-spacing:.05em;}
 .hero-title{font-size:2.15rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:10px;line-height:1.18;color:#fff;}
 .hero-title span{color:#a5b4fc;}
 .hero-sub{font-size:.96rem;color:#a5b4fc;margin-bottom:26px;max-width:520px;line-height:1.65;}
@@ -815,20 +821,20 @@ main#mainContent{flex:1;padding:0 36px 36px;}
       <div class="sb-group-label">Navigate</div>
       <h3>Grade</h3>
       <ul class="grade-list" id="gradeList">
-        <li><a href="#" data-grade="k">Kindergarten</a></li>
-        <li><a href="#" data-grade="1">Grade 1</a></li>
-        <li><a href="#" data-grade="2">Grade 2</a></li>
-        <li><a href="#" data-grade="3">Grade 3</a></li>
-        <li><a href="#" data-grade="4">Grade 4</a></li>
-        <li><a href="#" data-grade="5">Grade 5</a></li>
-        <li><a href="#" data-grade="6" class="active">Grade 6</a></li>
-        <li><a href="#" data-grade="7">Grade 7</a></li>
-        <li><a href="#" data-grade="8">Grade 8</a></li>
-        <li><a href="#" data-grade="9">Grade 9</a></li>
-        <li><a href="#" data-grade="10">Grade 10</a></li>
-        <li><a href="#" data-grade="11">Grade 11</a></li>
-        <li><a href="#" data-grade="12">Grade 12</a></li>
-        <li style="margin-top:10px;padding:0 16px 4px"><span style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7a8fa8">Advanced</span></li>
+        <li><a href="#" data-grade="k" title="Kindergarten" aria-label="Kindergarten">K</a></li>
+        <li><a href="#" data-grade="1" title="Grade 1" aria-label="Grade 1">1</a></li>
+        <li><a href="#" data-grade="2" title="Grade 2" aria-label="Grade 2">2</a></li>
+        <li><a href="#" data-grade="3" title="Grade 3" aria-label="Grade 3">3</a></li>
+        <li><a href="#" data-grade="4" title="Grade 4" aria-label="Grade 4">4</a></li>
+        <li><a href="#" data-grade="5" title="Grade 5" aria-label="Grade 5">5</a></li>
+        <li><a href="#" data-grade="6" class="active" title="Grade 6" aria-label="Grade 6">6</a></li>
+        <li><a href="#" data-grade="7" title="Grade 7" aria-label="Grade 7">7</a></li>
+        <li><a href="#" data-grade="8" title="Grade 8" aria-label="Grade 8">8</a></li>
+        <li><a href="#" data-grade="9" title="Grade 9" aria-label="Grade 9">9</a></li>
+        <li><a href="#" data-grade="10" title="Grade 10" aria-label="Grade 10">10</a></li>
+        <li><a href="#" data-grade="11" title="Grade 11" aria-label="Grade 11">11</a></li>
+        <li><a href="#" data-grade="12" title="Grade 12" aria-label="Grade 12">12</a></li>
+        <li><span class="grade-list-divider">Advanced</span></li>
         <li><a href="#" data-grade="ap">🎓 AP Courses</a></li>
       </ul>
       <div class="subject-filter">
@@ -949,6 +955,12 @@ main#mainContent{flex:1;padding:0 36px 36px;}
         <span class="hero-chip">🏛 History</span>
         <span class="hero-chip">💻 CS</span>
         <span class="hero-chip">❤️ Health</span>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>13</b><span>Grade Levels</span></div>
+        <div class="hero-stat"><b>32</b><span>Study Tools</span></div>
+        <div class="hero-stat"><b>6</b><span>Subjects</span></div>
+        <div class="hero-stat"><b>100%</b><span>Free</span></div>
       </div>
     </div>
     <div class="feature-row">
