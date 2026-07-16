@@ -279,18 +279,7 @@ function printNote() {
     .summary{border:1px solid #ccc;border-top:none;padding:12px;background:#fafafa}
     .sum-hdr{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#666;margin-bottom:6px}
     @media print{body{padding:12px}}
-  </style>  <link rel="manifest" href="/manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AcerAcademy">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <script src="/streak.js"></script>
-  <script src="/sounds.js"></script>
-  <script src="/coins.js"></script>
-  <script src="/nav-profile.js"></script>
-  <script src="/splash.js"></script>
-<script src="/timer.js"></script>
+  </style>
 </head><body>
   <h1>${d.title}</h1>
   <div class="header">
@@ -303,7 +292,6 @@ function printNote() {
     <div class="notes"><div class="col-hdr">Notes</div><div class="content">${d.notes||''}</div></div>
   </div>
   <div class="summary"><div class="sum-hdr">Summary</div><div class="content">${d.summary||''}</div></div>
-  <script src="/analytics.js"></script>
 </body></html>`;
   const w = window.open('', '_blank');
   w.document.write(html);

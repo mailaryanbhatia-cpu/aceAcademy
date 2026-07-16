@@ -442,22 +442,9 @@ function printBib() {
   h1{font-size:1.1rem;text-align:center;margin-bottom:4px}h2{font-size:.8rem;text-align:center;color:#666;margin-bottom:24px}
   .entry{margin-bottom:20px}.cit{text-indent:-2em;padding-left:2em;margin-bottom:8px}.ann{padding-left:2em;color:#b0bece;font-size:.85rem}
   em{font-style:italic}@media print{body{margin:20px}}</style>
-    <link rel="manifest" href="/manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AcerAcademy">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <script src="/streak.js"></script>
-  <script src="/sounds.js"></script>
-  <script src="/coins.js"></script>
-  <script src="/nav-profile.js"></script>
-  <script src="/splash.js"></script>
-<script src="/timer.js"></script>
 </head><body>
   <h1>${title}</h1><h2>${style} Format · ${sorted.length} sources</h2>
   ${sorted.map(e=>`<div class="entry"><div class="cit">${buildCitation(e)}</div><div class="ann">${e.annotation}</div></div>`).join('')}
-  <script src="/analytics.js"></script>
 </body></html>`;
   const w = window.open('', '_blank');
   w.document.write(html);
