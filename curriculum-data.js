@@ -1,4 +1,5 @@
-/* AcerAcademy -- curriculum.html's data (PRACTICE sheets, SUBJECTS, AP_SUBJECTS, CURRICULUM) extracted on 2026-07-15 to shrink the monolith and make this cacheable separately. Note: this PRACTICE/CURRICULUM is curriculum.html's own copy, kept separate from index.html's/flashcards.html's own copies pending a later dedup pass. */
+/* AcerAcademy -- curriculum.html's PRACTICE sheet data, extracted on 2026-07-15 to shrink the monolith. SUBJECTS/AP_SUBJECTS/CURRICULUM used to live in this same file too, but were split out to curriculum-browser-data.js on 2026-07-16 so index.html and curriculum.html could share one canonical copy instead of each maintaining their own (they had drifted apart in 10 places by then). This file now holds ONLY the practice-sheet data. */
+
 // ──────────────────────────────────────────────
 // PRACTICE SHEET DATA
 // Each entry: [sheet1, sheet2]
@@ -5879,25 +5880,107 @@ const PRACTICE = {
         ]},
       ],
       [
-        { title: `Government and civics`, problems: [
-          { q: `What is federalism and how does it work in the United States?`, ex: `Think: power shared between national and state governments`, a: `Federalism: a system dividing governmental authority between a central government and constituent units (states). US federalism: federal government has enumerated powers (declared war, coin money, regulate interstate commerce). States have reserved powers (education, police, licensing). Shared powers: taxes, courts. Necessary and proper clause expands federal power.` },
-          { q: `What is the difference between civil liberties and civil rights?`, ex: `Think: freedom from government vs. protection from discrimination`, a: `Civil liberties: protections from government overreach (First Amendment freedoms, Fourth Amendment against unreasonable search). Civil rights: protection from discrimination by government and private actors — right to equal treatment regardless of race, sex, religion. Both protected by Constitution and federal law.` },
-          { q: `What are the major political ideologies in the United States?`, ex: `Think: liberal/progressive, conservative, libertarian, socialist`, a: `Liberal/progressive: active government role in social welfare and equality; regulate markets. Conservative: limited government, traditional values, free markets, strong national defense. Libertarian: maximum individual liberty, minimal government in both economic and social spheres. Democratic socialist: government ownership or strong regulation of key industries with strong social safety net. Most Americans hold complex, mixed positions.` },
-          { q: `What is the role of political parties in American democracy?`, ex: `Think: coordinate political activity, connect voters to government`, a: `Political parties: recruit and support candidates, organize government (majority/minority caucuses), mobilize voters, develop platforms (policy positions). Two-party system reinforced by winner-take-all elections. Critics: parties prioritize winning over governing; partisan polarization gridlocks government.` },
-        ]},
-        { title: `Contemporary issues`, problems: [
-          { q: `What is income inequality and how is it measured?`, ex: `Think: Gini coefficient; wealth concentrated at the top`, a: `Income inequality: the unequal distribution of income across a population. Measured by: Gini coefficient (0 = perfect equality, 1 = one person has everything), income shares (top 1% or 10% of income), or wealth distribution. US income inequality is among the highest of wealthy nations and has increased significantly since the 1970s.` },
-          { q: `What are the arguments for and against immigration?`, ex: `Think: economic benefits vs. labor competition; cultural arguments`, a: `For: economic growth (immigrants start businesses, fill labor shortages, pay taxes, drive innovation), humanitarian obligations, cultural enrichment, demographic replacement of aging population. Against: competition for low-wage jobs, cultural change, strain on public services, national security concerns. Evidence generally supports net economic benefits from immigration.` },
-          { q: `What is climate justice?`, ex: `Think: unequal distribution of climate change burdens`, a: `Climate justice: the recognition that climate change disproportionately affects those who contributed least to it — low-income countries, indigenous communities, coastal populations, and future generations. The wealthiest nations (who emitted most historically) face less immediate threat than poorer, more vulnerable nations.` },
-          { q: `What is the debate around free speech vs. harmful speech?`, ex: `Think: First Amendment limits vs. real-world harms`, a: `Free speech principle: governments should not restrict speech based on content (even offensive speech). Limits: the First Amendment only restricts government, not private actors. Some argue harmful speech (hate speech, incitement) causes real harm. Others argue restricting speech is more dangerous than the speech itself. The debate involves competing values: liberty vs. equality vs. safety.` },
-        ]},
-        { title: `Historical thinking skills`, problems: [
-          { q: `What is chronological reasoning?`, ex: `Think: understanding change and continuity over time`, a: `Chronological reasoning: understanding when events happened, how long processes took, and how causation operates over time. Includes: periodization (how we divide history into eras and why), continuity and change (what persists vs. what transforms), and historical causation (immediate, proximate, and underlying causes).` },
-          { q: `What is the difference between causation and correlation in historical analysis?`, ex: `Think: one event causing another vs. two events occurring together`, a: `Historians must distinguish: correlation (two events occurring together — rising CO2 and rising temperatures) from causation (one causing the other). Historical causation requires: temporal priority (cause precedes effect), correlation, and elimination of alternative causes. Multiple causes are almost always present.` },
-          { q: `What is historical empathy and why is it important?`, ex: `Think: understanding past people in their own context`, a: `Historical empathy: understanding why historical actors made the decisions they did within their own context — not the same as sympathy or approval. Avoids presentism (judging the past by today's standards). Helps explain rather than simply condemn. Essential for understanding why reasonable people in the past believed and did things we now recognize as wrong.` },
-          { q: `What are the 5 Cs of historical thinking?`, ex: `Think: Change, Causality, Context, Contingency, Complexity`, a: `Change and Continuity: what transforms vs. persists. Causality: why events occurred. Context: understanding the broader setting. Contingency: things could have gone differently (history is not inevitable). Complexity: avoiding simple explanations for complex events. Together these form the foundation of rigorous historical analysis.` },
-        ]},
-      ]
+ {
+  "title": "Supply and Demand",
+  "problems": [
+   {
+    "q": "What is the law of demand?",
+    "ex": "Price and quantity demanded relationship",
+    "a": "The law of demand states that, all else equal, as the price of a good rises, the quantity demanded falls, and as price falls, quantity demanded rises."
+   },
+   {
+    "q": "What is the law of supply?",
+    "ex": "Price and quantity supplied relationship",
+    "a": "The law of supply states that, all else equal, as the price of a good rises, producers are willing to supply more of it, since higher prices make production more profitable."
+   },
+   {
+    "q": "What happens at the 'equilibrium price' in a market?",
+    "ex": "Where supply meets demand",
+    "a": "At the equilibrium price, the quantity consumers want to buy exactly equals the quantity producers want to sell -- there is no shortage or surplus."
+   },
+   {
+    "q": "What causes a shortage, and what causes a surplus?",
+    "ex": "Price set below or above equilibrium",
+    "a": "A shortage occurs when price is set below equilibrium (demand exceeds supply). A surplus occurs when price is set above equilibrium (supply exceeds demand)."
+   }
+  ]
+ },
+ {
+  "title": "Market Structures & Economic Systems",
+  "problems": [
+   {
+    "q": "What is perfect competition, and what characterizes it?",
+    "ex": "Many sellers, identical products",
+    "a": "Perfect competition is a market with many buyers and sellers, identical products, easy entry/exit, and no single seller able to influence price."
+   },
+   {
+    "q": "What is a monopoly, and why can it lead to higher prices for consumers?",
+    "ex": "One seller controls the market",
+    "a": "A monopoly exists when a single seller controls an entire market with no close substitutes, giving that seller power to set prices higher than in a competitive market."
+   },
+   {
+    "q": "What is the difference between a market economy and a command economy?",
+    "ex": "Individual choice vs. government control",
+    "a": "In a market economy, prices and production are driven by supply and demand through individual buyers and sellers. In a command economy, the government makes central decisions about production."
+   },
+   {
+    "q": "What is a mixed economy, and why do most modern countries use one?",
+    "ex": "Combines market and government elements",
+    "a": "A mixed economy combines free-market elements with government intervention. Most modern countries use one to balance economic efficiency with social welfare and stability."
+   }
+  ]
+ },
+ {
+  "title": "Trade and Globalization",
+  "problems": [
+   {
+    "q": "What is comparative advantage, and why does it make trade beneficial?",
+    "ex": "Producing what you're relatively best at",
+    "a": "Comparative advantage means a country can produce a good at a lower opportunity cost than another. Even if one country is better at producing everything, both benefit by specializing and trading."
+   },
+   {
+    "q": "What is a tariff, and what is one effect it has on trade?",
+    "ex": "A tax on imported goods",
+    "a": "A tariff is a tax on imported goods. It raises import prices, which can protect domestic industries but also raises costs for consumers and can trigger retaliation."
+   },
+   {
+    "q": "What is globalization?",
+    "ex": "Increasing interconnectedness of economies",
+    "a": "Globalization is the increasing economic, cultural, and technological interconnectedness of countries worldwide, driven by trade, investment, communication, and transportation."
+   },
+   {
+    "q": "What is one benefit and one criticism commonly associated with globalization?",
+    "ex": "Lower prices/more choice vs. job losses/inequality",
+    "a": "Benefit: lower consumer prices and greater variety through specialization. Criticism: job losses in industries that can't compete with cheaper foreign labor, and rising inequality."
+   }
+  ]
+ },
+ {
+  "title": "Personal Finance Basics",
+  "problems": [
+   {
+    "q": "What is the difference between a budget's fixed and variable expenses?",
+    "ex": "Rent vs. groceries",
+    "a": "Fixed expenses stay the same each period (rent, car payment), while variable expenses change month to month (groceries, entertainment)."
+   },
+   {
+    "q": "What is compound interest, and why does it matter for saving early?",
+    "ex": "Interest earning interest over time",
+    "a": "Compound interest is interest calculated on both the original amount and interest already earned, so savings grow faster over time -- starting early lets compounding work over more years."
+   },
+   {
+    "q": "What is the difference between a credit score and a credit report?",
+    "ex": "A number vs. the underlying detailed history",
+    "a": "A credit report is a detailed record of your borrowing and repayment history. A credit score is a single number summarizing your creditworthiness for lenders."
+   },
+   {
+    "q": "Why is having an emergency fund considered an important part of personal finance?",
+    "ex": "Covers unexpected costs without debt",
+    "a": "An emergency fund covers unexpected expenses without relying on high-interest debt like credit cards, providing financial stability during unforeseen events."
+   }
+  ]
+ }
+]
     ],
     cs: [
       [
@@ -6261,31 +6344,107 @@ const PRACTICE = {
     ],
     ela: [
       [
-        { title: `Theme and Central Idea`, problems: [
-          { q: `What is the difference between a theme and a topic?`, ex: `Topic = subject; theme = message about that subject`, a: `A topic is what a text is about (e.g., war). A theme is the author's insight or message about that topic (e.g., 'War destroys innocence').` },
-          { q: `How do you identify theme in a story?`, ex: `Look for recurring ideas, character changes, and resolutions`, a: `Identify what the main character learns or how they change. Look for repeated symbols or ideas. Ask: what is the author trying to say about human nature or life?` },
-          { q: `What is a universal theme? Give an example.`, ex: `A theme that applies across cultures and time periods`, a: `A universal theme is a message relevant to all humans across time and culture. Example: 'Love requires sacrifice' or 'Power corrupts.'` },
-          { q: `How can two texts have the same topic but different themes?`, ex: `Authors convey different messages about the same subject`, a: `Example: Two novels about war — one might argue war is honorable, another that it is pointless. Same topic (war), different themes (honor vs. futility).` },
-        ]},
-        { title: `Character Analysis`, problems: [
-          { q: `What is the difference between a dynamic and a static character?`, ex: `Dynamic = changes; static = stays the same`, a: `A dynamic character undergoes significant change during the story. A static character remains essentially the same throughout.` },
-          { q: `How do authors reveal character? List at least three methods.`, ex: `STEAL: Speech, Thoughts, Effect on others, Actions, Looks`, a: `Authors reveal character through: (1) dialogue and speech, (2) actions and decisions, (3) thoughts and feelings, (4) how other characters react to them, (5) physical description.` },
-          { q: `What is a foil character and why do authors use them?`, ex: `A character who contrasts with another`, a: `A foil is a character whose traits contrast with the protagonist's, highlighting the protagonist's qualities. Example: Draco Malfoy as a foil to Harry Potter.` },
-          { q: `Analyze how a character's flaw might drive the plot.`, ex: `Tragic heroes often have a fatal flaw (hamartia)`, a: `A character's weakness or flaw (hamartia) creates conflict. Example: Macbeth's ambition leads him to murder, which causes his downfall. The flaw is both the cause and consequence.` },
-        ]},
-        { title: `Literary Devices`, problems: [
-          { q: `What is the difference between a simile and a metaphor? Give examples.`, ex: `Both compare; simile uses 'like' or 'as'`, a: `Simile: 'Her smile is LIKE sunshine.' Metaphor: 'Her smile IS sunshine.' Similes use like/as; metaphors state equivalence directly.` },
-          { q: `What is dramatic irony? Give an example.`, ex: `Audience knows something the character doesn't`, a: `Dramatic irony: the audience has knowledge that a character lacks. Example: In Romeo and Juliet, we know Juliet is alive when Romeo finds her, but he believes she is dead.` },
-          { q: `Explain how symbolism works in literature. Give an example.`, ex: `An object or element represents something beyond itself`, a: `Symbolism is when an author uses something concrete to represent an abstract idea. Example: The green light in The Great Gatsby symbolizes Gatsby's dreams and the American Dream.` },
-          { q: `What is the effect of using imagery in a text?`, ex: `Imagery appeals to the senses`, a: `Imagery creates vivid mental pictures by appealing to sight, sound, smell, taste, or touch. It helps readers experience what characters experience, creating emotional connection.` },
-        ]},
-        { title: `Analyzing Narrative Structure`, problems: [
-          { q: `What are the five parts of Freytag's Pyramid?`, ex: `Rising action leads to climax leads to resolution`, a: `1. Exposition (introduction). 2. Rising Action (conflict builds). 3. Climax (turning point). 4. Falling Action (consequences). 5. Resolution/Denouement (outcome).` },
-          { q: `What is a frame narrative? Give an example.`, ex: `A story within a story`, a: `A frame narrative is an outer story that contains one or more inner stories. Example: In The Princess Bride, the grandfather reading to his grandson is the frame; the story of Westley is the inner narrative.` },
-          { q: `How does point of view affect how a story is told?`, ex: `Who is telling the story changes what we know`, a: `First person (I/me) gives intimacy but limited perspective. Third person limited focuses on one character's thoughts. Third person omniscient knows all characters' inner thoughts.` },
-          { q: `What is in medias res and why do authors use it?`, ex: `Latin: 'in the middle of things'`, a: `In medias res means starting the story in the middle of the action, then using flashbacks to fill in background. It creates immediate intrigue and engages readers faster.` },
-        ]},
-      ],
+ {
+  "title": "Puritan & Colonial Literature",
+  "problems": [
+   {
+    "q": "What were the main purposes of Puritan writing in colonial America?",
+    "ex": "Think: religion, morality, community",
+    "a": "Puritan writing aimed to guide moral and spiritual life, record providential history (signs of God's will), and reinforce communal religious values, through sermons, journals, and captivity narratives."
+   },
+   {
+    "q": "What is a 'plain style' in Puritan literature, and why did Puritans favor it?",
+    "ex": "Simplicity over ornamentation",
+    "a": "Plain style uses direct, unadorned language rather than elaborate metaphors. Puritans favored it because they believed religious truth should be communicated clearly, without ornamentation that might glorify the writer instead of God."
+   },
+   {
+    "q": "What is a captivity narrative? Name a well-known example.",
+    "ex": "A colonist's account of being captured",
+    "a": "A captivity narrative is a first-person account of a colonist captured by Native Americans, often framing the ordeal as a test of faith. Mary Rowlandson's account is a famous example."
+   },
+   {
+    "q": "How did Puritan literature reflect the concept of 'divine providence'?",
+    "ex": "Everything happens for a religious reason",
+    "a": "Puritans believed all events were part of God's plan. Writers interpreted personal and historical events as signs of divine judgment, warning, or favor, reinforcing that life was a spiritual test."
+   }
+  ]
+ },
+ {
+  "title": "Romanticism & Transcendentalism",
+  "problems": [
+   {
+    "q": "What core beliefs define American Romanticism?",
+    "ex": "Emotion, nature, the individual",
+    "a": "American Romanticism emphasized emotion over reason, the beauty and spiritual power of nature, imagination, and the value of the individual over society's institutions."
+   },
+   {
+    "q": "What is Transcendentalism, and how does it relate to Romanticism?",
+    "ex": "A philosophical offshoot of Romantic ideas",
+    "a": "Transcendentalism (led by Emerson and Thoreau) holds that people can transcend the physical world through intuition and a personal connection to nature and the divine, building on Romantic ideals with a specific philosophy of self-reliance."
+   },
+   {
+    "q": "What does Emerson mean by 'self-reliance'?",
+    "ex": "Trusting your own judgment over social conformity",
+    "a": "Self-reliance is Emerson's idea that individuals should trust their own intuition and judgment rather than conforming to society's expectations -- nonconformity as a path to authentic living."
+   },
+   {
+    "q": "Why did Thoreau go to Walden Pond, and what did he hope to learn?",
+    "ex": "'I went to the woods because I wished to live deliberately'",
+    "a": "Thoreau moved to Walden Pond to live simply and deliberately, away from society's distractions, to test whether he could strip life down to its essentials and discover what was truly necessary."
+   }
+  ]
+ },
+ {
+  "title": "Realism & Naturalism",
+  "problems": [
+   {
+    "q": "How does Realism differ from Romanticism in its portrayal of life?",
+    "ex": "Ordinary life vs. idealized emotion",
+    "a": "Realism portrays everyday life and characters truthfully and objectively, focusing on believable experiences, in contrast to Romanticism's idealized emotion and connection to nature."
+   },
+   {
+    "q": "What is Naturalism, and how does it push Realism further?",
+    "ex": "Characters as products of forces beyond their control",
+    "a": "Naturalism extends Realism by portraying characters as shaped and often trapped by heredity, environment, and social forces beyond their control, often with a bleak or deterministic tone."
+   },
+   {
+    "q": "What role does setting typically play in a Naturalist story?",
+    "ex": "An indifferent or hostile force",
+    "a": "Setting in Naturalism often acts as an indifferent or hostile force shaping characters' fates -- nature or society doesn't care about the individual's struggles."
+   },
+   {
+    "q": "Give an example of a theme common to both Realist and Naturalist literature.",
+    "ex": "Social class, survival, human limitation",
+    "a": "Common themes include the struggle for survival, the limits of free will, social class and economic hardship, and the gap between appearance and reality."
+   }
+  ]
+ },
+ {
+  "title": "The Harlem Renaissance",
+  "problems": [
+   {
+    "q": "What was the Harlem Renaissance, and roughly when did it occur?",
+    "ex": "1920s-30s, New York City",
+    "a": "The Harlem Renaissance was a flourishing of African American art, literature, music, and intellectual life centered in Harlem, New York, roughly during the 1920s into the 1930s."
+   },
+   {
+    "q": "What themes did Harlem Renaissance writers commonly explore?",
+    "ex": "Identity, pride, racial injustice",
+    "a": "Common themes included Black identity and pride, the African American experience and heritage, racial injustice, and the search for self-expression free from stereotypes."
+   },
+   {
+    "q": "Name one major writer of the Harlem Renaissance and one work associated with them.",
+    "ex": "Langston Hughes, Zora Neale Hurston...",
+    "a": "Examples include Langston Hughes ('The Negro Speaks of Rivers'), Zora Neale Hurston ('Their Eyes Were Watching God'), and Claude McKay ('If We Must Die')."
+   },
+   {
+    "q": "How did the Harlem Renaissance influence American literature and culture more broadly?",
+    "ex": "Jazz, dialect, new voices",
+    "a": "It introduced new literary voices and forms, challenged racist stereotypes, and helped establish African American literature as a vital, influential part of the broader American literary tradition."
+   }
+  ]
+ }
+],
       [
         { title: `Elements of an Argument`, problems: [
           { q: `What are the three main parts of a classical argument (Aristotle)?`, ex: `Ethos, pathos, logos`, a: `Ethos (credibility/ethics), Pathos (emotion/audience connection), Logos (logic/evidence). Effective arguments use all three.` },
@@ -6729,31 +6888,107 @@ const PRACTICE = {
     ],
     ela: [
       [
-        { title: `Foundations of American Literature`, problems: [
-          { q: `What themes are common in early American literature (Puritan and Revolutionary period)?`, ex: `Think: religion, nature, liberty, and identity`, a: `Common themes: religious faith and divine providence (Puritan), the struggle for political freedom and rights (Revolutionary), and the relationship between humans and nature. These foundational concerns shaped American literary identity.` },
-          { q: `What is the Transcendentalist movement and who were its key figures?`, ex: `19th-century philosophical/literary movement emphasizing nature and individual spirit`, a: `Transcendentalism (1830s-1850s) celebrated nature, individualism, and spiritual intuition over organized religion and rationalism. Key figures: Ralph Waldo Emerson ('Self-Reliance'), Henry David Thoreau ('Walden'), and Walt Whitman.` },
-          { q: `What is the American Dream and how do American authors challenge or celebrate it?`, ex: `The idea that anyone can succeed through hard work`, a: `The American Dream is the belief that hard work leads to success and prosperity. Authors like F. Scott Fitzgerald (The Great Gatsby) critique it as illusory; others like Horatio Alger celebrate it. It remains a central, contested theme.` },
-          { q: `What is naturalism in American literature? How does it differ from realism?`, ex: `Both depict reality, but naturalism emphasizes forces beyond individual control`, a: `Realism depicts life as it is, focusing on ordinary people. Naturalism (influenced by Darwin) depicts humans as shaped by forces — biology, environment, fate — largely beyond their control. Example: Jack London, Stephen Crane.` },
-        ]},
-        { title: `The Harlem Renaissance`, problems: [
-          { q: `What was the Harlem Renaissance and when did it occur?`, ex: `African American cultural flowering in New York in the 1920s`, a: `The Harlem Renaissance was a cultural, artistic, and intellectual movement of African Americans centered in Harlem, New York in the 1920s. It celebrated Black identity and produced major works in literature, music, and art.` },
-          { q: `What were the major themes of Harlem Renaissance literature?`, ex: `Think: identity, racism, pride, migration`, a: `Themes include: Black identity and pride, the experience of racial discrimination, the Great Migration (from South to North), urban life, jazz and blues culture, and the desire for social and political equality.` },
-          { q: `Who was Langston Hughes and what was his literary significance?`, ex: `Major poet of the Harlem Renaissance`, a: `Langston Hughes (1902-1967) was a central figure of the Harlem Renaissance whose poetry celebrated Black life, incorporated jazz rhythms, and addressed racial inequality with both pride and protest. Key works: 'The Negro Speaks of Rivers,' 'Harlem.'` },
-          { q: `What is the significance of the poem 'Harlem' (A Dream Deferred) by Hughes?`, ex: `Explores what happens to unfulfilled dreams`, a: `The poem asks 'What happens to a dream deferred?' through a series of similes (raisin, sore, rotten meat, crust, heavy load). It suggests unrealized dreams of Black Americans may eventually 'explode' — pointing to social unrest if inequality persists.` },
-        ]},
-        { title: `The Modern American Novel`, problems: [
-          { q: `What are the major characteristics of modernist literature?`, ex: `Fragmented form, stream of consciousness, disillusionment`, a: `Modernist literature features: stream of consciousness narration, fragmented structure, alienation and disillusionment, experimentation with form, and a break from traditional values following WWI.` },
-          { q: `What is the central theme of The Great Gatsby (Fitzgerald)?`, ex: `The hollow nature of the American Dream`, a: `The Great Gatsby critiques the American Dream by showing Gatsby's wealth cannot overcome class barriers or win Daisy's love. The novel exposes the moral corruption, materialism, and illusion at the heart of 1920s prosperity.` },
-          { q: `What is To Kill a Mockingbird about and what themes does it explore?`, ex: `Harper Lee's novel about racial injustice in the American South`, a: `Set in 1930s Alabama, it follows Scout Finch whose father Atticus defends a Black man falsely accused of assaulting a white woman. Themes: racial injustice, moral courage, empathy, loss of innocence, and social inequality.` },
-          { q: `What does Atticus Finch mean when he says 'You never really understand a person until you consider things from his point of view'?`, ex: `Lesson about empathy as moral foundation`, a: `Atticus is teaching Scout to practice empathy — to suspend judgment and try to see the world through another person's experiences. This is the moral foundation of the novel and a counterforce to prejudice and injustice.` },
-        ]},
-        { title: `Rhetorical Analysis of American Speeches`, problems: [
-          { q: `Identify ethos, pathos, and logos in Martin Luther King Jr.'s 'I Have a Dream' speech.`, ex: `Three rhetorical appeals`, a: `Ethos: MLK's moral authority as a civil rights leader and minister. Pathos: vivid imagery of injustice and dreams that evoke emotion. Logos: references to the Declaration of Independence and Constitution as logical foundation for civil rights claims.` },
-          { q: `What makes Abraham Lincoln's Gettysburg Address rhetorically powerful?`, ex: `Concision, elevated diction, and unifying purpose`, a: `Its power comes from its brevity (272 words), elevated and biblical language, parallel structure ('of the people, by the people, for the people'), and its reframing of the Civil War as a test of democratic ideals, not just a battle over slavery.` },
-          { q: `What is antithesis as a rhetorical device? Find it in a famous speech.`, ex: `Contrasting ideas in parallel structure`, a: `Antithesis places contrasting ideas side by side in similar grammatical structure. Example: JFK's 'Ask not what your country can do for you — ask what you can do for your country.' The contrast emphasizes the shift from receiving to giving.` },
-          { q: `What is anaphora and what effect does it create?`, ex: `Repetition of words/phrases at the beginning of successive clauses`, a: `Anaphora is the repetition of a word or phrase at the start of successive clauses. Example: MLK's repeated 'I have a dream...' creates rhythm, emphasis, and emotional momentum, making the message memorable and powerful.` },
-        ]},
-      ],
+ {
+  "title": "Anglo-Saxon Literature & Beowulf",
+  "problems": [
+   {
+    "q": "What values does the Anglo-Saxon epic hero embody?",
+    "ex": "Think: courage, loyalty, reputation",
+    "a": "The Anglo-Saxon hero embodies courage in battle, loyalty to one's lord and comrades (the comitatus bond), and the pursuit of lasting fame and reputation, since heroic deeds were how a warrior achieved a kind of immortality."
+   },
+   {
+    "q": "What is an epic, and why is Beowulf considered one?",
+    "ex": "Long narrative poem, heroic deeds",
+    "a": "An epic is a long narrative poem celebrating the deeds of a legendary hero, often involving supernatural elements and reflecting a culture's values. Beowulf qualifies because it follows a larger-than-life hero battling monsters across a lifetime."
+   },
+   {
+    "q": "What is the comitatus code, and how does it appear in Beowulf?",
+    "ex": "The bond between warriors and their lord",
+    "a": "Comitatus was the Anglo-Saxon warrior code binding a lord and his thanes (warriors) in mutual loyalty -- the lord provided protection and treasure, and the warriors fought and, if necessary, died for him."
+   },
+   {
+    "q": "How do Christian and pagan elements coexist in Beowulf?",
+    "ex": "A poem written down by Christian scribes about pagan warriors",
+    "a": "Beowulf blends pagan Germanic warrior culture (fate, monsters, treasure-giving) with Christian references (God's will, biblical allusions), likely because Christian monks transcribed an older oral pagan tradition."
+   }
+  ]
+ },
+ {
+  "title": "Chaucer & the Middle Ages",
+  "problems": [
+   {
+    "q": "What is the frame narrative structure of The Canterbury Tales?",
+    "ex": "Pilgrims telling stories on a journey",
+    "a": "The Canterbury Tales is framed as a storytelling contest among a diverse group of pilgrims traveling to Canterbury Cathedral, with each pilgrim telling one or more tales."
+   },
+   {
+    "q": "Why is The Canterbury Tales considered an important social portrait of medieval England?",
+    "ex": "A cross-section of society",
+    "a": "Chaucer's pilgrims represent a wide cross-section of medieval society -- knight, clergy, merchant, peasant, and more -- giving readers a satirical, realistic view of medieval social classes and attitudes."
+   },
+   {
+    "q": "What is significant about Chaucer writing in Middle English rather than Latin or French?",
+    "ex": "Made literature accessible, elevated English",
+    "a": "Writing in Middle English rather than Latin (used by the Church) or French (used by the nobility) helped legitimize English as a literary language and made his work accessible to a broader audience."
+   },
+   {
+    "q": "What literary technique does Chaucer use to critique or satirize his characters?",
+    "ex": "Irony -- saying one thing, meaning another",
+    "a": "Chaucer frequently uses irony, especially the gap between how a character describes themselves and their actual behavior, subtly exposing their flaws while appearing to praise them."
+   }
+  ]
+ },
+ {
+  "title": "Shakespeare",
+  "problems": [
+   {
+    "q": "What distinguishes a Shakespearean tragedy from a Shakespearean comedy?",
+    "ex": "Downfall vs. resolution/marriage",
+    "a": "A tragedy ends in the downfall or death of the protagonist, often due to a fatal flaw or fate, while a comedy ends in resolution, reconciliation, and typically marriage."
+   },
+   {
+    "q": "What is iambic pentameter, and why did Shakespeare use it?",
+    "ex": "A rhythm pattern of 10 syllables per line",
+    "a": "Iambic pentameter is a line of verse with five unstressed/stressed syllable pairs, close to the natural rhythm of English speech -- Shakespeare used it for a poetic yet natural-sounding dialogue."
+   },
+   {
+    "q": "What is a soliloquy, and what purpose does it serve in Shakespeare's plays?",
+    "ex": "A character speaking alone, revealing inner thoughts",
+    "a": "A soliloquy is a speech a character delivers alone on stage, revealing their private thoughts or motives directly to the audience -- a key tool for exploring a character's psychology, as in Hamlet's 'To be or not to be.'"
+   },
+   {
+    "q": "How do Shakespeare's plays often use dramatic irony?",
+    "ex": "Audience knows more than the characters",
+    "a": "Shakespeare often gives the audience information characters don't have -- for example, in Othello the audience knows Iago is manipulating everyone, creating tension as we watch characters act on false information."
+   }
+  ]
+ },
+ {
+  "title": "Romantic Poets & Victorian/Modern Literature",
+  "problems": [
+   {
+    "q": "What did the British Romantic poets value in their poetry?",
+    "ex": "Nature, emotion, imagination",
+    "a": "British Romantic poets valued intense emotion, the beauty and spiritual power of nature, and imagination over strict reason, reacting against the ordered rationalism of the earlier Neoclassical period."
+   },
+   {
+    "q": "What social concerns did Victorian literature often address?",
+    "ex": "Industrialization, class, morality",
+    "a": "Victorian literature frequently grappled with the effects of industrialization, rigid class structures, gender roles, and questions of morality during a period of rapid social change."
+   },
+   {
+    "q": "How did Modernist British literature break from earlier traditions?",
+    "ex": "Stream of consciousness, fragmented structure",
+    "a": "Modernist writers experimented with stream of consciousness, fragmented or nonlinear narrative structure, and shifting perspectives, reflecting disillusionment after World War I."
+   },
+   {
+    "q": "Why is World War I often cited as a turning point for British literature?",
+    "ex": "Loss of faith in old certainties",
+    "a": "The war's massive casualties shattered earlier confidence in progress and traditional values, pushing writers toward more skeptical, fragmented, and introspective storytelling -- helping give rise to Modernism."
+   }
+  ]
+ }
+],
       [
         { title: `Research and Synthesis Writing`, problems: [
           { q: `What is synthesis in writing and how does it differ from summary?`, ex: `Combining multiple sources around your own idea`, a: `Summary restates what one source says. Synthesis brings together ideas from multiple sources to support or develop YOUR own argument or analysis. Synthesis shows how sources relate to each other and to your thesis.` },
@@ -7286,25 +7521,107 @@ The 'with' statement automatically closes the file when done.` },
         ]},
       ],
       [
-        { title: `International Relations`, problems: [
-          { q: `What are the main theories of international relations?`, ex: `Realism, liberalism, constructivism`, a: `Realism: states pursue self-interest and power in an anarchic system; conflict is inevitable. Liberalism: cooperation is possible through international institutions, trade, and democracy. Constructivism: ideas, norms, and identities shape international behavior, not just material power.` },
-          { q: `What is deterrence theory in nuclear strategy?`, ex: `Preventing attack by threatening unbearable retaliation`, a: `Nuclear deterrence (MAD — Mutually Assured Destruction): the threat that any nuclear attack will trigger devastating retaliation prevents first strikes. As long as both sides have second-strike capability, rational actors won't initiate nuclear war.` },
-          { q: `What is soft power vs. hard power?`, ex: `Attraction and persuasion vs. coercion and force`, a: `Hard power: using military force or economic coercion to influence others. Soft power (Joseph Nye): using attraction — culture, values, institutions, diplomacy — to win influence without force. The US exercises both; China increasingly invests in soft power.` },
-          { q: `What are the main responsibilities of the United Nations?`, ex: `International organization promoting peace, human rights, development`, a: `The UN's main bodies: Security Council (peace and security — 5 permanent veto members), General Assembly (forum for all nations), Secretariat (administrative), ICJ (international law). Functions: peacekeeping, humanitarian aid, human rights monitoring, sustainable development goals.` },
-        ]},
-        { title: `21st Century Global Challenges`, problems: [
-          { q: `What is terrorism and what distinguishes it from conventional warfare?`, ex: `Political violence targeting civilians to create fear`, a: `Terrorism is the deliberate use of violence against civilians to advance political, ideological, or religious goals. Unlike conventional warfare (military vs. military), terrorism deliberately targets civilians. State and non-state actors can both engage in terrorism.` },
-          { q: `What drives international migration and refugee crises?`, ex: `Push and pull factors`, a: `Push factors (leaving home): conflict, persecution, extreme poverty, climate change impacts, natural disasters. Pull factors (toward destination): economic opportunity, political stability, family connections, rule of law. Distinguishing economic migrants from refugees matters under international law.` },
-          { q: `What are the Sustainable Development Goals (SDGs)?`, ex: `17 global goals adopted by UN in 2015`, a: `The 17 SDGs (2030 Agenda) address: poverty, hunger, health, education, gender equality, clean water, clean energy, economic growth, reduced inequalities, sustainable cities, climate action, and partnerships. They set targets for global development by 2030.` },
-          { q: `How does technology affect national security and international relations?`, ex: `Cyberwarfare, surveillance, and information warfare`, a: `Technology has transformed security: cyberattacks can disrupt infrastructure without conventional warfare, surveillance technology enables authoritarianism, social media enables information warfare (disinformation campaigns), and autonomous weapons raise new ethical and legal questions.` },
-        ]},
-        { title: `Social Justice and Human Rights`, problems: [
-          { q: `What is systemic racism and how does it differ from individual racism?`, ex: `Racist policies and practices embedded in institutions vs. individual prejudice`, a: `Individual racism: personal prejudice and discrimination. Systemic/institutional racism: policies, practices, and social structures that produce racial inequities regardless of individual intentions. Examples: disparities in lending, criminal justice, housing, and healthcare outcomes.` },
-          { q: `What is intersectionality?`, ex: `Multiple identities create overlapping experiences of privilege or oppression`, a: `Intersectionality (Kimberle Crenshaw) recognizes that people have multiple identities (race, gender, class, sexuality) that intersect and create unique experiences. Someone who is both Black and a woman faces specific compounded forms of discrimination not captured by looking at race or gender alone.` },
-          { q: `What progress has been made on global poverty reduction, and what challenges remain?`, ex: `Dramatic gains and persistent inequalities`, a: `Progress: extreme poverty (under $1.90/day) fell from 36% in 1990 to under 10% in 2019, largely due to growth in China and India. Challenges: COVID-19 reversed gains, climate change threatens progress, inequality WITHIN countries has often grown, and Sub-Saharan Africa lags.` },
-          { q: `What is environmental justice?`, ex: `The equitable distribution of environmental benefits and burdens`, a: `Environmental justice addresses the disproportionate burden of environmental hazards (pollution, flooding, toxic waste) on low-income communities and communities of color. Environmental benefits (parks, clean air) are also unequally distributed. Both reflect structural inequality.` },
-        ]},
-      ]
+ {
+  "title": "Branches of Philosophy",
+  "problems": [
+   {
+    "q": "What are the main branches of philosophy, and what does each study?",
+    "ex": "Think: knowledge, reality, values...",
+    "a": "Major branches include metaphysics (the nature of reality), epistemology (the nature and limits of knowledge), ethics (right and wrong conduct), logic (valid reasoning), and political philosophy (justice, power, governance)."
+   },
+   {
+    "q": "What is the difference between metaphysics and epistemology?",
+    "ex": "What exists vs. what we can know",
+    "a": "Metaphysics asks what fundamentally exists, while epistemology asks how we can know anything at all and what counts as justified belief or knowledge."
+   },
+   {
+    "q": "What kinds of questions does political philosophy address?",
+    "ex": "Justice, authority, rights",
+    "a": "Political philosophy examines what makes a government legitimate, what justice requires, what rights individuals have, and how power should be distributed and limited."
+   },
+   {
+    "q": "Why is logic considered foundational to all other branches of philosophy?",
+    "ex": "Tool for evaluating arguments",
+    "a": "Logic provides the tools for constructing and evaluating valid arguments -- since philosophy relies heavily on reasoned argument, sound logic is necessary to properly do metaphysics, ethics, or any other branch."
+   }
+  ]
+ },
+ {
+  "title": "Ethical Theories",
+  "problems": [
+   {
+    "q": "What is utilitarianism, and how does it determine right action?",
+    "ex": "Greatest good for the greatest number",
+    "a": "Utilitarianism holds that the morally right action is the one that produces the greatest overall good for the greatest number of people, judging actions by their consequences."
+   },
+   {
+    "q": "What is deontological ethics, and how does it differ from utilitarianism?",
+    "ex": "Duty-based, not outcome-based",
+    "a": "Deontological ethics (associated with Kant) judges actions based on whether they follow moral duties or rules, regardless of consequences -- unlike utilitarianism's focus on outcomes."
+   },
+   {
+    "q": "What is a criticism commonly raised against utilitarianism?",
+    "ex": "Could justify harming a minority for majority benefit",
+    "a": "Critics argue it could justify harming or sacrificing a minority if it produces greater overall happiness for the majority, potentially conflicting with individual rights or justice."
+   },
+   {
+    "q": "What is virtue ethics, and how does it differ from both utilitarianism and deontology?",
+    "ex": "Focus on character, not rules or outcomes",
+    "a": "Virtue ethics (rooted in Aristotle) focuses on developing good character traits rather than following rules or calculating outcomes -- the question is 'what would a virtuous person do?'"
+   }
+  ]
+ },
+ {
+  "title": "Social Contract Theory",
+  "problems": [
+   {
+    "q": "What is the basic idea behind social contract theory?",
+    "ex": "People agree to form government for mutual benefit",
+    "a": "Social contract theory holds that legitimate government arises from an implicit agreement among individuals to give up some freedoms and submit to authority in exchange for protection of their remaining rights."
+   },
+   {
+    "q": "How did Hobbes describe life without government (the 'state of nature')?",
+    "ex": "'Solitary, poor, nasty, brutish, and short'",
+    "a": "Hobbes described it as a war of all against all, where without a strong central authority, life would be 'solitary, poor, nasty, brutish, and short' -- justifying a powerful sovereign."
+   },
+   {
+    "q": "How did Locke's view of the social contract differ from Hobbes's?",
+    "ex": "Natural rights, limited government, right to revolt",
+    "a": "Locke believed people have natural rights even before government exists, and government's job is to protect those rights. Unlike Hobbes, Locke argued people retain the right to overthrow a government that fails them."
+   },
+   {
+    "q": "How did Rousseau's version of the social contract differ from Hobbes and Locke?",
+    "ex": "'General will,' collective sovereignty",
+    "a": "Rousseau argued legitimate authority comes from the 'general will' of the people acting collectively for the common good, with sovereignty resting with the people themselves."
+   }
+  ]
+ },
+ {
+  "title": "Applied Ethics & Critical Thinking",
+  "problems": [
+   {
+    "q": "What is applied ethics, and how does it differ from theoretical ethics?",
+    "ex": "Real-world dilemmas vs. abstract theory",
+    "a": "Applied ethics uses ethical theories to analyze specific real-world moral issues -- such as medical or environmental ethics -- rather than debating ethical theory in the abstract."
+   },
+   {
+    "q": "What is a logical fallacy? Give an example.",
+    "ex": "A flaw in reasoning that weakens an argument",
+    "a": "A logical fallacy is an error in reasoning that undermines an argument's logic. Example: ad hominem -- attacking the person making an argument instead of addressing the argument itself."
+   },
+   {
+    "q": "What does it mean to evaluate an argument's 'validity' versus its 'soundness'?",
+    "ex": "Structure vs. structure + true premises",
+    "a": "An argument is valid if its conclusion logically follows from its premises. It is sound if it is valid AND all its premises are actually true."
+   },
+   {
+    "q": "Why is critical thinking important when evaluating ethical dilemmas?",
+    "ex": "Avoids bias, considers multiple perspectives",
+    "a": "Critical thinking helps identify hidden assumptions, weigh competing values fairly, spot fallacious reasoning, and reach a well-justified conclusion rather than relying on gut reaction alone."
+   }
+  ]
+ }
+]
     ],
     cs: [
       [
@@ -7393,543 +7710,3 @@ The 'with' statement automatically closes the file when done.` },
   }
 };;
 
-// ──────────────────────────────────────────────
-// CURRICULUM DATA
-// ──────────────────────────────────────────────
-const SUBJECTS = [
-  { id: 'math',     label: 'Mathematics',       color: '#2563eb' },
-  { id: 'science',  label: 'Science',            color: '#16a34a' },
-  { id: 'ela',      label: 'English Language Arts', color: '#9333ea' },
-  { id: 'history',  label: 'History & Social Studies', color: '#ea580c' },
-  { id: 'cs',       label: 'Computer Science',   color: '#0891b2' },
-  { id: 'health',   label: 'Health & PE',         color: '#dc2626' },
-];
-
-const AP_SUBJECTS = [
-  { id: 'math',      label: 'Mathematics',          color: '#60a5fa' },
-  { id: 'science',   label: 'Science',              color: '#34d399' },
-  { id: 'ela',       label: 'English',              color: '#a78bfa' },
-  { id: 'history',   label: 'History & Social Studies', color: '#fbbf24' },
-  { id: 'cs',        label: 'Computer Science',     color: '#22d3ee' },
-  { id: 'arts',      label: 'Arts',                 color: '#f472b6' },
-  { id: 'languages', label: 'World Languages',      color: '#fb923c' },
-  { id: 'capstone',  label: 'AP Capstone',          color: '#818cf8' },
-];
-
-const CURRICULUM = {
-  'k': {
-    math: [
-      { unit: "Counting & Number Sense", topics: ["Counting objects to 20","Number recognition 0-20","One-to-one correspondence","Counting on and counting back","Ordering numbers"] },
-      { unit: "Comparing Numbers", topics: ["More, less, and equal","Comparing groups of objects","Comparing lengths and heights","Comparing weights"] },
-      { unit: "Shapes & Spatial Sense", topics: ["2D shapes","3D shapes","Positional words","Sorting and classifying shapes"] },
-      { unit: "Addition & Subtraction Within 10", topics: ["Combining sets (addition)","Taking away (subtraction)","Making 10","Addition and subtraction word problems"] },
-      { unit: "Patterns, Data & Time", topics: ["Simple patterns (AB, ABC)","Picture graphs and counting data","Telling time basics (day parts)","Recognizing coins (penny, nickel, dime)"] },
-    ],
-    science: [
-      { unit: "My Senses & My Body", topics: ["The five senses","Body parts basics"] },
-      { unit: "Living Things: Animals", topics: ["Living vs. nonliving things","Animal needs","Animal babies, parents, and sounds","Animal habitats basics"] },
-      { unit: "Living Things: Plants", topics: ["Plant parts","What plants need to grow","Plant life cycle basics"] },
-      { unit: "Weather & Earth", topics: ["Weather types","Seasons and their signs","Day and night","The sun's light and heat","Push and pull forces","Materials and their properties","Caring for the Earth"] },
-    ],
-    ela: [
-      { unit: "Letters & Sounds", topics: ["Uppercase letter names","Lowercase letter names","Letter sounds","Beginning sounds","Rhyming words"] },
-      { unit: "Sight Words & Vocabulary", topics: ["Sight words: the, and, is, see","Sight words: a, I, my, like","Opposites"] },
-      { unit: "Sentences & Print", topics: ["What a sentence is","Print concepts (left to right, top to bottom)","Letter formation"] },
-      { unit: "Stories", topics: ["Story characters","Story setting","Beginning, middle, and end"] },
-      { unit: "Sounds & Syllables", topics: ["Syllables (clapping words)","Blending sounds","Segmenting sounds","Ending sounds"] },
-    ],
-    history: [
-      { unit: "Family & Community", topics: ["Family members and roles","Community helpers and their jobs","Rules at home and school"] },
-      { unit: "Citizenship & Symbols", topics: ["The American flag","National holidays and their meaning","Being a good citizen/helper","Feelings and getting along with others","Sharing and taking turns"] },
-      { unit: "Maps & Time", topics: ["What a map is","Comparing long ago and now","Needs vs. wants basics","Where we live"] },
-    ],
-    cs: [
-      { unit: "Using a Computer", topics: ["Parts of a computer","What a computer can do","Turning a device on and off safely","Being kind when using a device"] },
-      { unit: "Thinking Like a Computer", topics: ["Step-by-step directions (algorithms)","What a robot is","Patterns and sequences","Asking a grown-up before going online","Following instructions in order"] },
-    ],
-    health: [
-      { unit: "Staying Healthy", topics: ["Handwashing","Brushing teeth","Healthy foods vs. treats","Staying active and exercise","Getting enough sleep"] },
-      { unit: "Staying Safe", topics: ["Body parts","Safety rules","Naming feelings and emotions","Calling 911 for help"] },
-    ],
-  },
-  1: {
-    math: [
-      { unit: "Addition & Subtraction Within 20", topics: ["Addition fact families","Doubles and near-doubles","Subtraction within 20","Addition and subtraction word problems","Counting to 120"] },
-      { unit: "Place Value", topics: ["Tens and ones","Comparing two-digit numbers","Skip counting by 2s, 5s, and 10s","Comparing three numbers"] },
-      { unit: "Measurement & Time", topics: ["Measuring length with nonstandard units","Measuring length with standard units","Telling time to the hour","Telling time to the half hour"] },
-      { unit: "Geometry", topics: ["2D shapes and attributes","3D shapes","Simple fractions (halves and fourths)","Equal shares"] },
-      { unit: "Money & Data", topics: ["Identifying coins","Coin values","Tally charts","Simple graphs"] },
-    ],
-    science: [
-      { unit: "Plants", topics: ["Plant needs and parts","Plant life cycle","Parts of a seed"] },
-      { unit: "Animals", topics: ["Animal life cycles","Animal habitats and adaptations","Animal coverings and body parts"] },
-      { unit: "Matter & Energy", topics: ["States of matter","Sound: how it's made","Light and shadows","Push and pull forces","Magnets"] },
-      { unit: "Weather & Sky", topics: ["Weather patterns and tools","How seasons affect living things","Day and night and the sun's path","The moon and stars"] },
-    ],
-    ela: [
-      { unit: "Phonics", topics: ["Short vowel sounds","Long vowel sounds","Consonant blends","Consonant digraphs","R-controlled vowels basics"] },
-      { unit: "Sight Words & Vocabulary", topics: ["Grade 1 sight words","Compound words","Contractions basics"] },
-      { unit: "Grammar & Mechanics", topics: ["Nouns","Verbs","Complete sentences vs. fragments","Capitalization and punctuation basics"] },
-      { unit: "Reading Comprehension", topics: ["Story elements: setting and character","Problem and solution","Main idea","Sequencing events"] },
-      { unit: "Word Study", topics: ["Syllables","Rhyming word families","Prefixes basics"] },
-    ],
-    history: [
-      { unit: "Communities", topics: ["Community helpers and their tools","Goods and services","Needs vs. wants","Rules and laws and consequences"] },
-      { unit: "Maps & Symbols", topics: ["Map basics (map key and legend)","Globes vs. maps and simple directions","American symbols and landmarks"] },
-      { unit: "Past & Present", topics: ["National holidays and their meaning","Transportation long ago vs. now","Communication long ago vs. now","School long ago vs. now","Being a good citizen"] },
-    ],
-    cs: [
-      { unit: "Computers & Devices", topics: ["Computer hardware parts","Input vs. output devices","Basic keyboard/typing familiarity","What apps and programs do"] },
-      { unit: "Thinking Like a Computer", topics: ["Following step-by-step directions","Sequencing events in order","Simple if/then decision thinking","Internet safety basics","Being a responsible digital citizen"] },
-    ],
-    health: [
-      { unit: "Healthy Habits", topics: ["Food groups and healthy eating","Personal hygiene routines","Exercise and physical activity","Sleep habits","Dental care"] },
-      { unit: "Safety & Feelings", topics: ["Safety rules (streets, bikes, fire)","Germs and staying healthy","Emotions and how to express them","The five senses and body parts review","Stranger safety"] },
-    ],
-  },
-  2: {
-    math: [
-      { unit: "Addition & Subtraction Within 100", topics: ["Addition with regrouping","Subtraction with regrouping","Two-step word problems","3-digit addition/subtraction basics","Estimating sums and differences"] },
-      { unit: "Place Value", topics: ["Place value to hundreds","Comparing three-digit numbers","Skip counting","Odd and even numbers"] },
-      { unit: "Measurement, Money & Time", topics: ["Measuring length in inches and feet","Measuring length in centimeters and meters","Telling time to 5-minute intervals","Counting money and making change","Comparing amounts of money"] },
-      { unit: "Geometry & Fractions", topics: ["2D and 3D shape attributes","Partitioning shapes into equal parts","Fractions of a whole and a set"] },
-      { unit: "Multiplication Foundations & Data", topics: ["Arrays and repeated addition","Bar graphs","Picture graphs"] },
-    ],
-    science: [
-      { unit: "Life Cycles & Habitats", topics: ["Life cycles of animals","Habitats around the world","Plant and animal adaptations for survival","Food chains basics"] },
-      { unit: "Matter", topics: ["States of matter","Changes in matter (melting, freezing, evaporation)","Mixtures and solutions basics"] },
-      { unit: "Earth Science", topics: ["Earth's materials (rocks, soil, water)","The water cycle basics","Weather instruments and patterns"] },
-      { unit: "Forces, Energy & Machines", topics: ["Force and motion basics","Energy sources (sun, wind, water)","Simple machines: lever and pulley","Simple machines: inclined plane, wedge, and screw","Simple machines: wheel and axle"] },
-    ],
-    ela: [
-      { unit: "Grammar", topics: ["Nouns, adjectives, and verbs","Plural nouns","Compound words","Contractions","Pronouns basics"] },
-      { unit: "Vocabulary", topics: ["Synonyms and antonyms","Context clues basics","Prefixes and suffixes basics"] },
-      { unit: "Spelling & Mechanics", topics: ["Long vowel teams","Silent e patterns","Capitalization and punctuation rules"] },
-      { unit: "Reading Comprehension", topics: ["Story elements: plot and theme basics","Main idea and supporting details","Sequencing events","Fact vs. opinion","Comparing and contrasting characters"] },
-      { unit: "Reading Strategies", topics: ["Predicting","Questioning while reading","Summarizing basics"] },
-    ],
-    history: [
-      { unit: "Communities & Government", topics: ["Local government basics","Communities: urban, suburban, rural","Rules, laws, and citizenship","Immigration and diverse cultures basics","Being a responsible citizen"] },
-      { unit: "Economics", topics: ["Goods and services","Producers and consumers","Needs vs. wants review"] },
-      { unit: "Geography & Symbols", topics: ["Map skills: cardinal directions","Map key and compass rose","US symbols and monuments","National holidays and historical figures","Comparing communities around the world"] },
-    ],
-    cs: [
-      { unit: "Computers & the Internet", topics: ["Input and output devices","Typing and keyboard basics","What the internet is","Software vs. hardware basics"] },
-      { unit: "Coding & Safety", topics: ["Sequencing and algorithms","Loops as repeated steps","Debugging as fixing mistakes","Internet safety and digital citizenship","Saving and organizing files basics"] },
-    ],
-    health: [
-      { unit: "Nutrition & Fitness", topics: ["Nutrition and food groups","Physical activity and exercise benefits","Body systems intro: skeleton and muscles","Personal hygiene"] },
-      { unit: "Safety & Wellness", topics: ["Safety rules: bike and pedestrian","Fire and poison safety","Germs and disease prevention","Emotions and friendship skills","Sleep and rest importance"] },
-    ],
-  },
-  3: {
-    math: [
-      { unit: "Multiplication & Division", topics: ["Multiplication facts 0-10","Multiplying by multiples of 10","Division facts and the relationship to multiplication","Multiplication word problems","Division word problems"] },
-      { unit: "Fractions", topics: ["Understanding fractions as parts of a whole","Fractions on a number line","Equivalent fractions","Comparing fractions","Mixed numbers basics"] },
-      { unit: "Place Value & Rounding", topics: ["Place value to thousands","Comparing multi-digit numbers","Rounding to the nearest 10","Rounding to the nearest 100"] },
-      { unit: "Measurement & Geometry", topics: ["Area","Perimeter","Elapsed time","Liquid volume and mass","Classifying quadrilaterals"] },
-      { unit: "Data & Patterns", topics: ["Bar graphs and pictographs","Patterns in numbers and tables","Line plots"] },
-    ],
-    science: [
-      { unit: "Life Cycles & Ecosystems", topics: ["Life cycles and metamorphosis","Ecosystems and food chains","Plant and animal adaptations","Habitats and biomes"] },
-      { unit: "Matter & Forces", topics: ["States of matter and physical changes","Forces and motion: gravity","Forces and motion: friction","Balanced and unbalanced forces"] },
-      { unit: "Earth Science", topics: ["Weather vs. climate","The water cycle in detail","Earth's structure: layers","Rocks and minerals basics"] },
-      { unit: "Space & Machines", topics: ["The solar system intro","Simple machines and mechanical advantage","Phases of the moon basics","Day and night causes"] },
-    ],
-    ela: [
-      { unit: "Grammar", topics: ["Nouns, verbs, adjectives, adverbs","Pronouns","Subject-verb agreement basics","Types of sentences"] },
-      { unit: "Vocabulary", topics: ["Context clues","Prefixes","Suffixes","Dictionary and glossary use"] },
-      { unit: "Reading Comprehension", topics: ["Main idea and key details","Text structure: compare and contrast","Text structure: cause and effect","Summarizing","Point of view basics"] },
-      { unit: "Figurative Language & Writing", topics: ["Simile and metaphor basics","Research skills basics","Writing a paragraph","Persuasive writing basics"] },
-      { unit: "Mechanics", topics: ["Commas","Quotation marks basics","Capitalization review"] },
-    ],
-    history: [
-      { unit: "Government & Citizenship", topics: ["Local government basics","State government basics","Citizenship rights and responsibilities"] },
-      { unit: "Economics", topics: ["Goods and services review","Supply and demand intro","Scarcity","Opportunity cost intro"] },
-      { unit: "Geography & Culture", topics: ["Map skills: latitude and longitude intro","Map scale","Regions of the United States","Colonial life basics","Cultures and traditions around the world","Natural resources and conservation"] },
-    ],
-    cs: [
-      { unit: "Computer Basics", topics: ["Hardware vs. software","Basic typing skills","How the internet connects devices","Using search engines responsibly"] },
-      { unit: "Coding Concepts", topics: ["Coding vocabulary: sequence, loop, algorithm","Debugging as a concept","Intro to block-based coding: sprites and blocks","Digital citizenship and online safety","Event-based programming basics"] },
-    ],
-    health: [
-      { unit: "Body & Nutrition", topics: ["Nutrition and balanced meals","Digestive system basics","Respiratory system basics","Circulatory system basics"] },
-      { unit: "Safety & Wellness", topics: ["Disease prevention: bacteria vs. viruses","Basic first aid","Physical fitness components","Personal hygiene","Emotional health and stress basics"] },
-    ],
-  },
-  4: {
-    math: [
-      { unit: "Multiplication & Division", topics: ["Multi-digit multiplication","Multi-digit division","Interpreting remainders","Factors and multiples","Prime and composite numbers"] },
-      { unit: "Fractions & Decimals", topics: ["Equivalent fractions","Fraction addition and subtraction with like denominators","Comparing fractions","Decimal place value","Comparing decimals","Relating fractions and decimals"] },
-      { unit: "Geometry", topics: ["Angles and angle measurement","Classifying lines: parallel and perpendicular","Classifying triangles and quadrilaterals","Area and perimeter formulas","Symmetry basics"] },
-      { unit: "Measurement & Data", topics: ["Customary unit conversions","Metric unit conversions","Line plots and interpreting data","Using data to solve problems"] },
-      { unit: "Number Sense", topics: ["Rounding multi-digit numbers","Multi-step word problems","Multiplicative comparison"] },
-    ],
-    science: [
-      { unit: "Ecosystems & Energy", topics: ["Ecosystems and food webs","Energy transfer in food webs","Producers, consumers, and decomposers review"] },
-      { unit: "Matter & Energy", topics: ["States of matter and energy","Heat transfer and conduction","Light waves basics","Sound waves basics"] },
-      { unit: "Earth Science", topics: ["The rock cycle","Erosion and weathering","The water cycle in depth","Weather patterns and climate zones"] },
-      { unit: "Body Systems & Space", topics: ["Digestive, respiratory, and circulatory systems","Skeletal and muscular systems","Electricity basics","Magnetism basics","The solar system in depth","Moons and orbits"] },
-    ],
-    ela: [
-      { unit: "Figurative Language", topics: ["Simile and metaphor","Personification","Idioms","Hyperbole basics","Onomatopoeia basics"] },
-      { unit: "Text Structures", topics: ["Cause and effect","Compare and contrast","Sequence","Problem and solution"] },
-      { unit: "Vocabulary", topics: ["Context clues","Greek and Latin roots intro","Prefixes and suffixes review","Multiple-meaning words"] },
-      { unit: "Comprehension & Genre", topics: ["Main idea and theme","Narrative vs. informational text","Point of view basics","Summarizing longer texts","Comparing texts on the same topic"] },
-      { unit: "Grammar & Writing", topics: ["Verb tenses","Subject-verb agreement","Commas in a series","Narrative writing","Opinion writing","Informative writing"] },
-    ],
-    history: [
-      { unit: "Early America", topics: ["Age of Exploration","The 13 colonies","Colonial life and jobs","The American Revolution","Native American cultures before colonization"] },
-      { unit: "Government", topics: ["Legislative branch","Executive branch","Judicial branch","US Constitution basics"] },
-      { unit: "Geography", topics: ["US geography and regions","Regions and their resources","State history basics","Westward expansion intro"] },
-      { unit: "Economics & Citizenship", topics: ["Scarcity and trade","Resources and supply/demand","Citizenship responsibilities"] },
-    ],
-    cs: [
-      { unit: "Internet & Digital Citizenship", topics: ["Internet basics: websites and browsers","URLs and search engines","Online etiquette","Cyberbullying awareness","Hardware and software deep dive"] },
-      { unit: "Coding Concepts", topics: ["Variables intro","Loops intro","Conditionals intro","Debugging strategies","Block-based programming: events and actions","Data and databases basics"] },
-    ],
-    health: [
-      { unit: "Nutrition & Body Systems", topics: ["Reading food labels basics","Nervous system basics","Endocrine system basics","Immune system basics"] },
-      { unit: "Safety & Wellness", topics: ["First aid: burns and cuts","First aid: choking basics","Physical fitness and goal setting","Stress management","Self-esteem","Tobacco and alcohol awareness","Personal hygiene and puberty intro"] },
-    ],
-  },
-  5: {
-    math: [
-      { unit: "Fraction Operations", topics: ["Adding and subtracting fractions with unlike denominators","Multiplying fractions","Dividing fractions","Mixed number operations","Comparing and ordering fractions"] },
-      { unit: "Decimal Operations", topics: ["Adding and subtracting decimals","Multiplying decimals","Dividing decimals","Estimating decimal computations"] },
-      { unit: "Number Sense", topics: ["Order of operations (PEMDAS)","Prime and composite numbers","Factors, multiples, GCF, and LCM","Powers of 10 and exponents basics","Rounding decimals","Comparing large numbers"] },
-      { unit: "Geometry & Measurement", topics: ["Volume of rectangular prisms","Coordinate plane: ordered pairs","Classifying 2D shapes by properties","Classifying triangles by angles"] },
-      { unit: "Ratios & Percents", topics: ["Ratios intro","Rates and unit rates intro","Converting fractions, decimals, and percents intro"] },
-      { unit: "Data", topics: ["Line plots with fractions","Interpreting data","Mean, median, mode, and range intro"] },
-    ],
-    science: [
-      { unit: "Ecosystems", topics: ["Producers, consumers, and decomposers","Food webs and energy flow","Biomes and habitats review","Human impact on ecosystems"] },
-      { unit: "Matter", topics: ["Physical vs. chemical changes","Chemical reactions basics","Mixtures and solutions","Properties of matter"] },
-      { unit: "Earth & Space", topics: ["The solar system in depth","Phases of the moon","Causes of day and night","Causes of seasons","The water cycle and weather systems"] },
-      { unit: "Body Systems & Method", topics: ["Nervous system","Endocrine system","Digestive, respiratory, and circulatory systems in depth","Forces and simple machines review","Scientific method: hypothesis and variables"] },
-    ],
-    ela: [
-      { unit: "Figurative Language", topics: ["Simile and metaphor review","Personification","Hyperbole and idioms","Symbolism basics"] },
-      { unit: "Text Structures & Nonfiction", topics: ["Nonfiction text features","Text structures review","Comparing informational texts","Author's purpose and perspective"] },
-      { unit: "Comprehension", topics: ["Theme and central idea","Character analysis","Point of view","Drawing conclusions and inferences","Summarizing longer texts"] },
-      { unit: "Vocabulary", topics: ["Greek and Latin roots","Affixes","Multiple-meaning words review","Context clues in complex texts","Denotation and connotation"] },
-      { unit: "Grammar & Writing Process", topics: ["Clauses","Conjunctions","Pronoun and verb agreement","The writing process: drafting","The writing process: revising and editing","Writing types review"] },
-    ],
-    history: [
-      { unit: "Founding of the Nation", topics: ["Causes of the American Revolution","Key events of the Revolution","Declaration of Independence basics","Founding documents","Key founding figures"] },
-      { unit: "Government & Civics", topics: ["The US Constitution and Bill of Rights","Federal government branches","State and local government","Citizen responsibilities"] },
-      { unit: "Colonial & Native History", topics: ["Colonial life and economy","Native American history and culture","Interactions between colonists and Native Americans","The 13 colonies review"] },
-      { unit: "Geography & Economics", topics: ["Geography of North America","Supply and demand","Trade and entrepreneurship intro","Scarcity and resources"] },
-    ],
-    cs: [
-      { unit: "Computational Thinking", topics: ["Decomposition","Pattern recognition","Abstraction","How the internet works: client and server basics","Data representation basics: binary intro"] },
-      { unit: "Coding Concepts", topics: ["Variables","Loops","Conditionals","Functions intro","Debugging strategies","Block-based programming: sprites, events, sequences","Robotics and algorithms basics"] },
-    ],
-    health: [
-      { unit: "Body & Nutrition", topics: ["Reading nutrition labels","Body systems review","Communicable vs. noncommunicable disease","Puberty and body changes basics"] },
-      { unit: "Safety & Wellness", topics: ["Managing stress","Self-esteem and empathy","Safety and first aid review","Substance abuse prevention","Healthy relationships","Communication skills","Mental and emotional health","Setting personal health goals"] },
-    ],
-  },
-  6: {
-    math: [
-      { unit: 'Ratios & Proportional Relationships', topics: ['Understanding ratios','Unit rates','Ratio tables','Proportional relationships','Percent problems'] },
-      { unit: 'The Number System', topics: ['Division of fractions','Multi-digit arithmetic','Rational numbers on a number line','Absolute value','Ordering integers'] },
-      { unit: 'Expressions & Equations', topics: ['Writing and evaluating expressions','Properties of operations','Solving one-step equations','Inequalities'] },
-      { unit: 'Geometry', topics: ['Area of polygons','Surface area','Volume of rectangular prisms','Coordinate plane'] },
-      { unit: 'Statistics & Probability', topics: ['Statistical questions','Dot plots & histograms','Box plots','Mean, median, mode, range','Data distributions'] },
-    ],
-    science: [
-      { unit: 'Matter & Its Interactions', topics: ['Atoms and molecules','States of matter','Physical vs. chemical changes','Conservation of mass','Properties of materials'] },
-      { unit: 'Earth & Space Systems', topics: ['Weathering and erosion','Rock cycle','Plate tectonics introduction','Earth\'s layers','Geologic time'] },
-      { unit: 'Ecosystems', topics: ['Food webs and food chains','Energy flow','Biodiversity','Ecosystem services','Human impact on ecosystems'] },
-      { unit: 'Life Science', topics: ['Characteristics of living things','Cell structure and function (intro)','Classification of organisms','Ecosystems and organism interactions','Adaptations and survival'] },
-    ],
-    ela: [
-      { unit: 'Reading Literature', topics: ['Story elements: plot, setting, character','Theme and central message','Point of view','Comparing texts','Figurative language'] },
-      { unit: 'Reading Informational Text', topics: ['Main idea and supporting details','Author\'s purpose','Text structure','Evidence and reasoning','Summarization'] },
-      { unit: 'Writing', topics: ['Narrative writing','Informational/explanatory writing','Argument writing','Research process','Revision and editing'] },
-      { unit: 'Language Conventions', topics: ['Parts of speech review','Sentence structure','Punctuation','Vocabulary development','Context clues'] },
-      { unit: 'Speaking & Listening', topics: ['Collaborative discussion','Presentations','Evaluating speaker\'s arguments','Multimedia integration'] },
-    ],
-    history: [
-      { unit: 'Early Civilizations', topics: ['Mesopotamia','Ancient Egypt','Ancient India and China','Ancient Greece','Ancient Rome'] },
-      { unit: 'World Geography', topics: ['Reading maps and globes','Physical geography','Human geography','Regions of the world','Geographic tools'] },
-      { unit: 'Government & Civics Intro', topics: ['Types of government','Laws and rules','Rights and responsibilities','Democratic principles','Local government'] },
-    ],
-    cs: [
-      { unit: 'Digital Literacy', topics: ['Internet safety','Evaluating online sources','Digital citizenship','Privacy and security','Screen time awareness'] },
-      { unit: 'Introduction to Coding', topics: ['Algorithms and flowcharts','Sequence, selection, iteration','Block-based coding (Scratch)','Debugging','Creating simple projects'] },
-    ],
-    health: [
-      { unit: 'Personal Health', topics: ['Hygiene and self-care','Sleep and nutrition','Growth and development','Puberty education','Stress management'] },
-      { unit: 'Physical Fitness', topics: ['Components of fitness','Aerobic exercise','Strength and flexibility','Team sports rules','Setting fitness goals'] },
-    ],
-  },
-
-  7: {
-    math: [
-      { unit: 'Ratios & Proportional Relationships', topics: ['Proportional vs. non-proportional','Solving proportions','Percent increase and decrease','Simple interest','Scale drawings'] },
-      { unit: 'The Number System', topics: ['Adding and subtracting rational numbers','Multiplying and dividing rational numbers','Rational number word problems','Converting fractions/decimals/percents'] },
-      { unit: 'Expressions & Equations', topics: ['Linear expressions','Solving multi-step equations','Inequalities on a number line','Rewriting expressions'] },
-      { unit: 'Geometry', topics: ['Angle relationships','Area and circumference of circles','Area of composite figures','Surface area and volume of 3D figures','Scale problems'] },
-      { unit: 'Statistics & Probability', topics: ['Random sampling','Comparing populations','Probability of simple events','Probability of compound events','Simulations'] },
-    ],
-    science: [
-      { unit: 'Structure & Properties of Matter', topics: ['Elements and compounds','Chemical vs. physical properties','Density','Mixtures and solutions','Particle model of matter (atoms and molecules)'] },
-      { unit: 'Chemical Reactions', topics: ['Signs of a chemical reaction','Conservation of mass','Endothermic vs. exothermic','Everyday chemical reactions'] },
-      { unit: 'Life Science: Body Systems', topics: ['Digestive system','Circulatory system','Respiratory system','Nervous system','Muscular and skeletal systems'] },
-      { unit: 'Earth Science', topics: ['Atmosphere layers','Weather patterns','Climate vs. weather','Natural disasters','Human impact on atmosphere'] },
-    ],
-    ela: [
-      { unit: 'Reading Literature', topics: ['Complex character analysis','Theme development','Narrative techniques','Poetry analysis','Comparing genres'] },
-      { unit: 'Reading Informational Text', topics: ['Central idea development','Analyzing arguments','Text structure analysis','Primary vs. secondary sources','Evaluating evidence'] },
-      { unit: 'Writing', topics: ['Argumentative writing','Research-based writing','Narrative techniques','Citation and plagiarism','Peer review process'] },
-      { unit: 'Language & Grammar', topics: ['Phrases and clauses','Misplaced/dangling modifiers','Active vs. passive voice','Word choice and tone','Formal vs. informal register'] },
-    ],
-    history: [
-      { unit: 'Medieval World', topics: ['Fall of Rome','Byzantine Empire','Islamic civilization','Medieval Europe','Feudal system'] },
-      { unit: 'Renaissance & Reformation', topics: ['Italian Renaissance','Scientific Revolution','Protestant Reformation','Age of Exploration','Columbian Exchange'] },
-      { unit: 'Early Americas', topics: ['Pre-Columbian civilizations','European colonization','Native American cultures','Colonial life','African slave trade'] },
-    ],
-    cs: [
-      { unit: 'Programming Fundamentals', topics: ['Variables and data types','Conditionals','Loops','Functions and procedures','Input/output'] },
-      { unit: 'Problem Solving', topics: ['Computational thinking','Decomposition','Pattern recognition','Algorithm design','Pseudocode'] },
-    ],
-    health: [
-      { unit: 'Mental & Emotional Health', topics: ['Emotional intelligence','Coping with stress','Building resilience','Recognizing depression/anxiety','Getting help'] },
-      { unit: 'Nutrition & Wellness', topics: ['Macronutrients','Reading nutrition labels','Healthy vs. unhealthy habits','Eating disorders awareness','Hydration'] },
-    ],
-  },
-
-  8: {
-    math: [
-      { unit: 'The Number System', topics: ['Irrational numbers','Square and cube roots','Approximating irrational numbers','Scientific notation operations'] },
-      { unit: 'Expressions & Equations', topics: ['Integer exponents','Linear equations with one solution','Systems of linear equations','Solving systems by substitution and elimination'] },
-      { unit: 'Functions', topics: ['Defining functions','Linear vs. nonlinear functions','Slope and rate of change','Representing functions (tables, graphs, equations)','Comparing functions'] },
-      { unit: 'Geometry', topics: ['Transformations (translations, rotations, reflections)','Congruence and similarity','Pythagorean theorem','Pythagorean theorem applications','Volume of cylinders, cones, spheres'] },
-      { unit: 'Statistics & Probability', topics: ['Scatter plots','Line of best fit','Linear associations','Two-way frequency tables'] },
-    ],
-    science: [
-      { unit: 'Force & Motion', topics: ['Newton\'s laws of motion','Gravity and friction','Speed, velocity, acceleration','Free body diagrams','Momentum'] },
-      { unit: 'Energy', topics: ['Kinetic and potential energy','Conservation of energy','Forms of energy','Energy transfer and transformation','Renewable vs. nonrenewable energy'] },
-      { unit: 'Waves & Electromagnetic Spectrum', topics: ['Wave properties','Sound waves','Light waves','Electromagnetic spectrum','Communication technology'] },
-      { unit: 'Earth History & Space', topics: ['Evidence for plate tectonics','Fossil record and geologic time','Earth\'s history and deep time','Solar system','Stars and galaxies'] },
-    ],
-    ela: [
-      { unit: 'Reading Literature', topics: ['Analyzing dialogue and incidents','Universal themes','Allusion','Modern vs. classic texts','Drama and screenplay reading'] },
-      { unit: 'Reading Informational Text', topics: ['Delineating and evaluating arguments','Conflicting information','Integrating multiple sources','Media literacy'] },
-      { unit: 'Writing', topics: ['Argumentative essay structure','Counterarguments and rebuttals','Research paper writing','MLA/APA citation intro','Narrative craft'] },
-      { unit: 'Language', topics: ['Verbals: gerunds, participles, infinitives','Comma use','Semicolons and colons','Nuances in word meanings','Etymology'] },
-    ],
-    history: [
-      { unit: 'American Revolution & Founding', topics: ['Causes of the Revolution','Declaration of Independence','Revolutionary War','Articles of Confederation','Constitutional Convention'] },
-      { unit: 'The Constitution & New Nation', topics: ['Structure of the Constitution','Bill of Rights','Federalism','Early political parties','Washington and Adams presidencies'] },
-      { unit: 'Expansion & Reform', topics: ['Manifest Destiny','Westward expansion','Reform movements','Industrial Revolution in America','Immigration patterns'] },
-      { unit: 'Civil War & Reconstruction', topics: ['Causes of the Civil War','Major battles and turning points','Emancipation Proclamation','Reconstruction plans','Impact of Reconstruction'] },
-    ],
-    cs: [
-      { unit: 'Data & Analysis', topics: ['Data types and structures','Collecting and cleaning data','Spreadsheet skills','Data visualization','Drawing conclusions from data'] },
-      { unit: 'Web Design Basics', topics: ['HTML structure','CSS styling','Accessibility principles','Publishing a webpage','Internet architecture'] },
-    ],
-    health: [
-      { unit: 'Substance Use & Abuse', topics: ['Alcohol and tobacco effects','Drug classifications','Addiction science','Refusal skills','Community resources'] },
-      { unit: 'Relationships & Communication', topics: ['Healthy vs. unhealthy relationships','Conflict resolution','Digital communication etiquette','Bullying and bystander effect','Consent basics'] },
-    ],
-  },
-
-  9: {
-    math: [
-      { unit: 'Algebra I: Foundations', topics: ['Number properties review','Order of operations','Writing expressions and equations','Evaluating algebraic expressions','Translating word problems'] },
-      { unit: 'Linear Relationships', topics: ['Slope-intercept form','Standard form','Point-slope form','Parallel and perpendicular lines','Graphing linear equations'] },
-      { unit: 'Systems of Equations', topics: ['Graphing systems','Substitution method','Elimination method','Systems of inequalities','Real-world applications'] },
-      { unit: 'Polynomials', topics: ['Adding and subtracting polynomials','Multiplying polynomials','Factoring GCF','Factoring trinomials','Special products'] },
-      { unit: 'Quadratic Functions', topics: ['Graphing parabolas','Vertex form','Standard form','Factoring to solve quadratics','Quadratic formula'] },
-      { unit: 'Exponential & Radical Functions', topics: ['Exponential growth and decay','Radical expressions','Simplifying radicals','Solving radical equations'] },
-    ],
-    science: [
-      { unit: 'Biology: Cell Biology', topics: ['Cell theory','Prokaryotic vs. eukaryotic cells','Cell organelles','Cell membrane and transport','Cell cycle and mitosis'] },
-      { unit: 'Genetics', topics: ['DNA structure and function','Protein synthesis','Mendelian genetics','Punnett squares','Mutations and genetic disorders'] },
-      { unit: 'Evolution', topics: ['Evidence for evolution','Natural selection','Adaptation','Speciation','Human evolution overview'] },
-      { unit: 'Ecology', topics: ['Population dynamics','Community interactions','Biomes','Nutrient cycles','Climate change and biodiversity'] },
-    ],
-    ela: [
-      { unit: 'Reading Literature', topics: ['Literary analysis essays','Complex character development','Symbolism and allegory','Satire and irony','World literature introduction'] },
-      { unit: 'Research & Informational Writing', topics: ['Evaluating source credibility','Synthesizing multiple sources','Research paper structure','In-text citations','Works cited page'] },
-      { unit: 'Argumentative Writing', topics: ['Claim and evidence','Logical fallacies','Rhetorical devices','Audience and purpose','Formal essay conventions'] },
-      { unit: 'Vocabulary & Language', topics: ['Academic vocabulary','Greek and Latin roots','Connotation vs. denotation','Figurative language mastery','Writing style development'] },
-    ],
-    history: [
-      { unit: 'World History: Modern Era', topics: ['Age of Revolutions (French, Haitian)','Nationalism and imperialism','Industrial Revolution globally','World War I causes and effects','Treaty of Versailles'] },
-      { unit: 'World Geography & Global Systems', topics: ['Physical and human geography review','Economic systems and trade','Globalization and its effects','Demographic trends','Environmental geography'] },
-      { unit: 'Government & Civics', topics: ['Federalism and separation of powers','Branches of US government','Electoral system','Civil liberties and civil rights','Comparative government systems'] },
-    ],
-    cs: [
-      { unit: 'Python Programming', topics: ['Variables and data types','Control flow','Functions','Lists and dictionaries','File I/O basics'] },
-      { unit: 'Cybersecurity Awareness', topics: ['Types of cyber threats','Password security','Encryption basics','Social engineering','Privacy laws and ethics'] },
-    ],
-    health: [
-      { unit: 'Human Development & Sexuality', topics: ['Reproductive anatomy','STI prevention','Contraception methods','Consent and healthy relationships','Teen pregnancy statistics'] },
-      { unit: 'First Aid & Safety', topics: ['CPR basics','AED use','Treating wounds','Emergency response','Sports injury prevention'] },
-    ],
-  },
-
-  10: {
-    math: [
-      { unit: 'Geometry: Foundations', topics: ['Points, lines, planes','Angle pairs','Parallel lines and transversals','Triangle congruence (SSS, SAS, ASA)','Proofs introduction'] },
-      { unit: 'Triangles & Trigonometry', topics: ['Pythagorean theorem applications','Special right triangles','Trigonometric ratios (sin, cos, tan)','Solving right triangles','Angles of elevation and depression'] },
-      { unit: 'Circles', topics: ['Circle theorems','Arc length and sector area','Equations of circles','Chords, tangents, secants','Inscribed angles'] },
-      { unit: 'Area, Surface Area & Volume', topics: ['Area of polygons and composite figures','Surface area of 3D figures','Volume of prisms, cylinders, pyramids, cones','Cavalieri\'s principle'] },
-      { unit: 'Probability & Statistics', topics: ['Conditional probability','Permutations and combinations','Normal distributions','z-scores','Data analysis and interpretation'] },
-    ],
-    science: [
-      { unit: 'Chemistry: Atomic Structure', topics: ['Bohr model','Electron configuration','Periodic trends','Ionic vs. covalent bonding','Lewis dot structures'] },
-      { unit: 'Chemical Reactions', topics: ['Balancing equations','Types of reactions','Stoichiometry','Limiting reagents','Reaction rates and equilibrium intro'] },
-      { unit: 'Solutions & Thermochemistry', topics: ['Molarity and concentration','Acids and bases (pH)','Solubility rules','Enthalpy and calorimetry','Hess\'s Law intro'] },
-
-    ],
-    ela: [
-      { unit: 'World & British Literature', topics: ['Ancient and classical texts (Homer, Sophocles)','Medieval literature (Chaucer, Dante)','Shakespeare and the Renaissance','Global literature survey','Comparing literary traditions across cultures'] },
-      { unit: 'Literary Analysis', topics: ['Critical lenses (feminist, historical, etc.)','Comparing authorial choices','Analyzing complex texts','Writing analytical essays','Oral presentation of analysis'] },
-      { unit: 'Composition', topics: ['Advanced argument structure','Synthesis essays','Technical and professional writing','Timed writing strategies','Grammar and mechanics mastery'] },
-    ],
-    history: [
-      { unit: 'World War II & Holocaust', topics: ['Rise of fascism','Major theaters of war','Holocaust history and causes','Home front','Post-war world order'] },
-      { unit: 'Cold War Era', topics: ['Origins of the Cold War','Korean War','McCarthyism','Space Race','Vietnam War'] },
-      { unit: 'Modern US History', topics: ['Civil Rights Movement','Women\'s liberation movement','1970s–1990s America','End of Cold War','September 11 and aftermath'] },
-    ],
-    cs: [
-      { unit: 'Object-Oriented Programming', topics: ['Classes and objects','Inheritance','Encapsulation','Polymorphism','Building small applications'] },
-      { unit: 'Databases', topics: ['Relational databases','SQL basics','Data modeling','CRUD operations','Database design principles'] },
-    ],
-    health: [
-      { unit: 'Mental Health & Wellness', topics: ['Mental health disorders overview','Therapy approaches','Reducing stigma','Mindfulness practices','When and how to seek help'] },
-      { unit: 'Community Health', topics: ['Public health systems','Epidemiology basics','Healthcare access','Advocacy and policy','Global health challenges'] },
-    ],
-  },
-
-  11: {
-    math: [
-      { unit: 'Algebra II: Functions', topics: ['Function notation and operations','Inverse functions','Graphing transformations','Piecewise functions','Absolute value functions'] },
-      { unit: 'Polynomial & Rational Functions', topics: ['Polynomial long division','Fundamental theorem of algebra','Rational functions and asymptotes','Partial fractions','Solving rational equations'] },
-      { unit: 'Exponential & Logarithmic Functions', topics: ['Laws of logarithms','Natural log and e','Exponential growth/decay models','Solving logarithmic equations','Applications: compound interest'] },
-      { unit: 'Sequences & Series', topics: ['Arithmetic sequences','Geometric sequences','Infinite geometric series','Sigma notation','Binomial theorem'] },
-      { unit: 'Trigonometry', topics: ['Unit circle','Radian measure','Graphing sin, cos, tan','Trigonometric identities','Law of sines and cosines'] },
-      { unit: 'Statistics (Pre-AP)', topics: ['Experimental design','Sampling methods','Regression analysis','Chi-squared tests intro','Interpreting statistical claims'] },
-    ],
-    science: [
-      { unit: 'Physics: Motion & Forces', topics: ['Kinematics equations','Projectile motion','Newton\'s Laws in depth','Friction and normal force','Circular motion'] },
-      { unit: 'Work, Energy & Momentum', topics: ['Work-energy theorem','Conservation of mechanical energy','Impulse-momentum theorem','Elastic and inelastic collisions','Power'] },
-      { unit: 'Electricity & Magnetism', topics: ['Electric charge and fields','Circuits (series and parallel)','Ohm\'s Law','Magnetism','Electromagnetic induction'] },
-      { unit: 'Waves, Light & Optics', topics: ['Wave superposition','Doppler effect','Reflection and refraction','Lenses and mirrors','Quantum basics'] },
-    ],
-    ela: [
-      { unit: 'American Literature', topics: ['Colonial and early republic literature','Romanticism and Transcendentalism (Thoreau, Emerson, Whitman)','Realism and Naturalism (Twain, Crane)','Modernism and Harlem Renaissance','Post-WWII and contemporary American literature'] },
-      { unit: 'Research & Rhetoric', topics: ['Rhetorical analysis essays','Evaluating and synthesizing sources','Annotated bibliography','AP-style essays','Timed analytical writing'] },
-      { unit: 'Language & Style', topics: ['Diction and syntax analysis','Sentence variety and rhythm','Tone and voice','Style imitation exercises','Advanced grammar review'] },
-    ],
-    history: [
-      { unit: 'US History: Late 19th Century to WWII', topics: ['Industrialization and labor movement','Progressive Era reforms','WWI: U.S. involvement and home front','1920s: Roaring Twenties and cultural shifts','Great Depression and the New Deal'] },
-      { unit: 'Contemporary Global Issues', topics: ['Globalization','Climate change policy','Immigration and migration','Human rights','International organizations (UN, NATO)'] },
-      { unit: 'Economics', topics: ['Macroeconomics fundamentals','Fiscal and monetary policy','GDP and economic indicators','Unemployment and inflation','Global financial systems'] },
-    ],
-    cs: [
-      { unit: 'Data Structures & Algorithms', topics: ['Arrays and linked lists','Stacks and queues','Sorting algorithms','Searching algorithms','Big-O notation'] },
-      { unit: 'Intro to AI & Machine Learning', topics: ['What is AI?','Supervised vs. unsupervised learning','Training data and bias','AI ethics','Real-world AI applications'] },
-    ],
-    health: [
-      { unit: 'Lifetime Fitness Planning', topics: ['Setting long-term fitness goals','Creating workout programs','Nutrition for performance','Injury prevention','Fitness tracking tools'] },
-      { unit: 'Health Decision Making', topics: ['Risk assessment','Peer pressure and social norms','Media influence on health','Healthcare navigation','Insurance basics'] },
-    ],
-  },
-
-  12: {
-    math: [
-      { unit: 'Pre-Calculus / Calculus Intro', topics: ['Limits and continuity','Derivative definition','Basic differentiation rules','Product, quotient, chain rules','Applications of derivatives'] },
-      { unit: 'Integration', topics: ['Antiderivatives','Definite integrals','Fundamental theorem of calculus','Area under a curve','Basic integration techniques'] },
-      { unit: 'Statistics (AP-level)', topics: ['Probability distributions','Confidence intervals','Hypothesis testing','Regression and correlation','Statistical inference'] },
-      { unit: 'Discrete Mathematics', topics: ['Logic and proofs','Set theory','Combinatorics','Graph theory','Cryptography basics'] },
-    ],
-    science: [
-      { unit: 'Advanced Biology / AP Bio', topics: ['Biochemistry review','Cell signaling','Gene expression regulation','Evolutionary mechanisms','Ecology and population biology'] },
-      { unit: 'Advanced Chemistry / AP Chem', topics: ['Equilibrium constants','Acids, bases, and buffers','Electrochemistry','Thermodynamics','Kinetics','Nuclear chemistry (radioactive decay, half-life, fission vs. fusion)'] },
-      { unit: 'Environmental Science', topics: ['Earth\'s systems','Biodiversity threats','Resource management','Pollution types','Sustainability and policy'] },
-    ],
-    ela: [
-      { unit: 'AP English Language', topics: ['Rhetorical analysis','Synthesis writing','Argumentative essay','AP exam strategies','Citing non-fiction sources'] },
-      { unit: 'AP English Literature', topics: ['Poetry explication','Prose fiction analysis','Drama analysis','Open-ended essay','Thematic essays on major works'] },
-      { unit: 'College Writing Preparation', topics: ['College essay writing','Personal statement strategies','Academic writing conventions','Research and citation mastery','Writing portfolios'] },
-    ],
-    history: [
-      { unit: 'AP US History / Capstone', topics: ['Thematic analysis across eras','Primary source analysis','Long Essay Question (LEQ)','Document-Based Question (DBQ)','Historical causation and continuity'] },
-      { unit: 'AP Government & Politics', topics: ['Constitutional underpinnings','Civil liberties and rights','Institutions of government','Political beliefs and behaviors','Public policy'] },
-      { unit: 'Economics & Personal Finance', topics: ['Macroeconomics fundamentals','Supply, demand, and markets','Fiscal and monetary policy','GDP, unemployment, and inflation','Personal finance: budgeting, credit, investing'] },
-      { unit: 'Philosophy & Ethics Intro', topics: ['Branches of philosophy','Ethical theories (utilitarian, deontological)','Social contract theory','Applied ethics','Critical thinking and argumentation'] },
-    ],
-    cs: [
-      { unit: 'Capstone Project', topics: ['Project planning and design','Software development lifecycle','User interface design','Testing and debugging','Presenting and deploying a project'] },
-      { unit: 'Career & College Readiness in CS', topics: ['Tech career pathways','College CS programs','Portfolio building','Interview preparation','Open source contributions'] },
-    ],
-    health: [
-      { unit: 'Adult Health & Wellness', topics: ['Preventive care habits','Understanding health insurance','Reproductive health and family planning','Managing chronic conditions','Mental health maintenance'] },
-      { unit: 'Senior Capstone: Personal Wellness Plan', topics: ['Holistic health assessment','Creating a personal wellness plan','Community health advocacy','Reflecting on lifelong health goals'] },
-    ],
-  },
-
-  ap: {
-    math: [
-      { unit: 'AP Precalculus', topics: ['Polynomial and rational functions','Exponential and logarithmic functions','Trigonometric functions and unit circle','Trigonometric equations and identities','Conic sections','Parametric equations and polar coordinates','Limits and continuity (intro)'] },
-      { unit: 'AP Calculus AB', topics: ['Limits and continuity','Derivatives: definition and basic rules','Derivatives: composite, implicit, and inverse','Contextual applications of differentiation','Applying derivatives to analyze functions','Integration and accumulation of change','Differential equations','Applications of integration'] },
-      { unit: 'AP Calculus BC', topics: ['All AB topics (extended depth)','Advanced integration techniques','Series: Taylor and Maclaurin series','Parametric equations and polar curves','Vector-valued functions','Euler\'s method','Logistic differential equations','Infinite sequences and series convergence'] },
-      { unit: 'AP Statistics', topics: ['Exploring one-variable data','Exploring two-variable data','Collecting data: sampling and experiments','Probability and random variables','Sampling distributions','Inference for proportions','Inference for means','Chi-square tests','Inference for regression'] },
-    ],
-    science: [
-      { unit: 'AP Biology', topics: ['Chemistry of life','Cell structure and function','Cellular energetics (photosynthesis & respiration)','Cell communication and cell cycle','Heredity and genetics','Gene expression and regulation','Natural selection and evolution','Ecology and population dynamics'] },
-      { unit: 'AP Chemistry', topics: ['Atomic structure and properties','Molecular and ionic compound structure','Intermolecular forces and properties','Chemical reactions','Kinetics','Thermodynamics','Equilibrium','Acids and bases','Electrochemistry','Nuclear chemistry'] },
-      { unit: 'AP Environmental Science', topics: ['Earth systems and resources','The living world: ecosystems','Populations','Earth\'s atmosphere','Land and water use','Energy resources and consumption','Atmospheric pollution','Aquatic and terrestrial pollution','Global change'] },
-      { unit: 'AP Physics 1: Algebra-Based', topics: ['Kinematics','Forces and Newton\'s laws','Circular motion and gravitation','Energy and work','Momentum','Simple harmonic motion','Waves and sound','Electric charge and fields','DC circuits'] },
-      { unit: 'AP Physics 2: Algebra-Based', topics: ['Fluids','Thermodynamics','Electric force, field, and potential','Circuits','Magnetism and electromagnetic induction','Geometric and physical optics','Quantum, atomic, and nuclear physics'] },
-      { unit: 'AP Physics C: Mechanics', topics: ['Kinematics (calculus-based)','Newton\'s laws (calculus-based)','Work, energy, and power','Systems of particles and linear momentum','Rotation','Oscillations','Gravitation'] },
-      { unit: 'AP Physics C: Electricity & Magnetism', topics: ['Electrostatics','Conductors, capacitors, dielectrics','Electric circuits','Magnetic fields','Electromagnetism and induction','Maxwell\'s equations (intro)'] },
-    ],
-    ela: [
-      { unit: 'AP English Language and Composition', topics: ['Rhetorical situation and claims','Reasoning and organization','Style and evidence','Synthesis essay','Rhetorical analysis essay','Argument essay','Close reading non-fiction','Tone, diction, syntax analysis'] },
-      { unit: 'AP English Literature and Composition', topics: ['Short fiction and prose','Poetry analysis','Longer fiction and drama','Character, setting, structure','Figurative language and literary devices','Literary argument essay','Free-response poetry essay','Open question essay'] },
-    ],
-    history: [
-      { unit: 'AP United States History', topics: ['Period 1: 1491–1607','Period 2: 1607–1754','Period 3: 1754–1800','Period 4: 1800–1848','Period 5: 1844–1877','Period 6: 1865–1898','Period 7: 1890–1945','Period 8: 1945–1980','Period 9: 1980–Present','DBQ and LEQ essay skills'] },
-      { unit: 'AP World History: Modern', topics: ['Period 1: 1200–1450 (Networks of exchange)','Period 2: 1450–1750 (Exploration and encounters)','Period 3: 1750–1900 (Industrialization)','Period 4: 1900–Present (Conflict and independence)','Comparison and causation','Continuity and change over time','Document-based questions (DBQ)'] },
-      { unit: 'AP European History', topics: ['Renaissance and Reformation','Exploration and colonialism','Scientific Revolution and Enlightenment','French Revolution and Napoleon','Industrialization and 19th-century ideologies','WWI and interwar period','WWII and Holocaust','Cold War and European integration','Contemporary Europe'] },
-      { unit: 'AP United States Government and Politics', topics: ['Foundations of democracy','Interactions among branches','Civil liberties and civil rights','American political ideologies','Political participation','Required Supreme Court cases','Foundational documents analysis'] },
-      { unit: 'AP Comparative Government and Politics', topics: ['Political systems and regimes','Sovereignty and legitimacy','Political institutions (legislatures, executives)','Citizens, society, and the state','Political and economic change','Country case studies: UK, Mexico, Russia, China, Iran, Nigeria'] },
-      { unit: 'AP Human Geography', topics: ['Thinking geographically','Population and migration','Cultural patterns and processes','Political patterns and processes','Agriculture and rural land use','Cities and urban land use','Industrial and economic development'] },
-      { unit: 'AP Macroeconomics', topics: ['Basic economic concepts','Economic indicators and the business cycle','National income and price determination','Financial sector and monetary policy','Stabilization policies','Economic growth and productivity','International trade and finance'] },
-      { unit: 'AP Microeconomics', topics: ['Basic economic concepts and scarcity','Supply and demand','Production, cost, and the perfect competition model','Imperfect competition (monopoly, oligopoly)','Factor markets','Market failure and the role of government','International trade'] },
-      { unit: 'AP Psychology', topics: ['History and approaches','Research methods and statistics','Biological bases of behavior','Sensation and perception','States of consciousness','Learning','Cognition and memory','Developmental psychology','Personality','Abnormal psychology and treatment','Social psychology'] },
-    ],
-    cs: [
-      { unit: 'AP Computer Science A', topics: ['Primitive types and variables','Using objects','Boolean expressions and if statements','Iteration','Writing classes','Array and ArrayList','2D arrays','Inheritance and polymorphism','Recursion','Sorting and searching algorithms'] },
-      { unit: 'AP Computer Science Principles', topics: ['Creative development','Data representation','Algorithms and programming','Computer systems and networks','Impact of computing','Explore Performance Task','Create Performance Task'] },
-    ],
-    arts: [
-      { unit: 'AP Art History', topics: ['Global prehistory','Ancient Mediterranean','Early Europe and colonial Americas','Later Europe and Americas','Indigenous Americas, Africa, and Pacific','South, East, and Southeast Asia','Contemporary art and global connections','Visual analysis and contextual inquiry'] },
-      { unit: 'AP Music Theory', topics: ['Pitch, notation, and scales','Rhythm, meter, and melody','Intervals and triads','Diatonic chords and harmonic progressions','Voice leading and part writing','Seventh chords and chromaticism','Form and analysis','Sight-singing and dictation'] },
-      { unit: 'AP Studio Art: 2-D Art and Design', topics: ['Elements and principles of design','Conceptual development','Portfolio investigation process','Breadth: range of approaches','Sustained investigation (15 works)','Final portfolio submission'] },
-      { unit: 'AP Studio Art: 3-D Art and Design', topics: ['Three-dimensional form and space','Material exploration (clay, metal, glass, fiber)','Conceptual development','Sustained investigation (15 works)','Portfolio breadth and depth'] },
-      { unit: 'AP Studio Art: Drawing', topics: ['Mark-making and gesture','Composition and space','Value and light','Figure drawing','Observational and expressive approaches','Sustained investigation portfolio'] },
-    ],
-    languages: [
-      { unit: 'AP Chinese Language and Culture', topics: ['Interpersonal communication','Presentational speaking and writing','Interpretive listening and reading','Family and community','School and education','Contemporary life','Global challenges','Cultural comparisons','Simulated conversation practice'] },
-      { unit: 'AP French Language and Culture', topics: ['Global challenges','Science and technology','Contemporary life','Personal and public identities','Families and communities','Beauty and aesthetics','Interpersonal and presentational modes','Cultural comparison essays'] },
-      { unit: 'AP German Language and Culture', topics: ['Families in different societies','Science and technology','Contemporary life in German-speaking world','Global challenges','Personal and public identity','Beauty and aesthetics','Oral and written communication'] },
-      { unit: 'AP Italian Language and Culture', topics: ['Beauty and aesthetics in Italy','Families and communities','Contemporary Italian life','Science and technology','Global challenges','Personal identity','Italian cultural products and practices'] },
-      { unit: 'AP Japanese Language and Culture', topics: ['Interpersonal communication','Presentational modes','Japanese writing systems (hiragana, katakana, kanji)','Families and communities in Japan','Contemporary Japanese life','Global challenges','Cultural comparisons'] },
-      { unit: 'AP Latin', topics: ['Caesar: Gallic War','Vergil: Aeneid','Latin prose and poetry translation','Sight reading','Latin grammar mastery','Roman history and culture','Comparative literature and analysis'] },
-      { unit: 'AP Spanish Language and Culture', topics: ['Global challenges','Science and technology','Contemporary life','Personal and public identities','Families and communities','Beauty and aesthetics','Oral presentational tasks','Argumentative essay'] },
-      { unit: 'AP Spanish Literature and Culture', topics: ['Colonial period texts','19th-century narrative','20th-century avant-garde','Contemporary voices','Poetry analysis','Drama and prose','Literary essay writing','Oral commentary'] },
-    ],
-    capstone: [
-      { unit: 'AP Seminar', topics: ['Identifying and defining problems','Research and evidence evaluation','Analyzing multiple perspectives','Argument and reasoning','Written and oral communication','Team project (TMP)','Individual research report (IWA)','End-of-course exam'] },
-      { unit: 'AP Research', topics: ['Selecting a research question','Literature review and gap identification','Research methodology','Data collection and analysis','Drawing evidence-based conclusions','Scholarly writing conventions','Academic paper (5,000 words)','Oral defense of research'] },
-    ],
-  },
-};
