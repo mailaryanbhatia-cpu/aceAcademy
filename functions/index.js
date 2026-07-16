@@ -3,20 +3,19 @@ const admin     = require("firebase-admin");
 
 admin.initializeApp();
 
-// ── Gemini API Proxy ──────────────────────────────────────────────────────────
-// Keeps the Gemini API key server-side; students never see it.
-// Call from client: POST /aiChat  { messages, system, maxTokens }
+// ── Claude API Proxy ──────────────────────────────────────────────────────────
+// Keeps the Anthropic API key server-side; students never see it.
+// Call from client: POST /claudeChat  { messages, system, maxTokens }
 // Returns: { content: "..." }  or  { error: "..." }
-// (Previously called Claude/Anthropic — switched to Gemini's free tier.)
 
-const GEMINI_MODEL    = "gemini-3.5-flash";
-const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const CLAUDE_MODEL    = "claude-haiku-4-5-20251001";
+const CLAUDE_ENDPOINT = "https://api.anthropic.com/v1/messages";
 const MAX_TOKENS_CAP  = 1500; // prevent runaway costs
 
-exports.aiChat = functions
-  .runWith({ secrets: ["GEMINI_API_KEY"], timeoutSeconds: 60 })
+exports.claudeChat = functions
+  .runWith({ secrets: ["ANTHROPIC_KEY"], timeoutSeconds: 60 })
   .https.onCall(async (data, context) => {
-    // Rate-limit: require auth (signed-in students only)
+    // Rate-limit: require auth (anonymous auth is fine)
     if (!context.auth) {
       throw new functions.https.HttpsError(
         "unauthenticated",
@@ -29,45 +28,36 @@ exports.aiChat = functions
       throw new functions.https.HttpsError("invalid-argument", "messages required");
     }
 
-    const key = process.env.GEMINI_API_KEY;
+    const key = process.env.ANTHROPIC_KEY;
     if (!key) {
       throw new functions.https.HttpsError("internal", "API key not configured.");
     }
 
-    // Gemini's REST shape differs from Anthropic's: each message becomes a
-    // { role, parts:[{text}] } entry ("assistant" -> "model"), and the system
-    // prompt goes in its own top-level "systemInstruction" field instead of
-    // living alongside the messages array.
-    const contents = messages.map(m => ({
-      role: m.role === "assistant" ? "model" : "user",
-      parts: [{ text: m.content }]
-    }));
-
     const body = {
-      contents,
-      ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
-      generationConfig: {
-        maxOutputTokens: Math.min(maxTokens || 800, MAX_TOKENS_CAP)
-      }
+      model:      CLAUDE_MODEL,
+      max_tokens: Math.min(maxTokens || 800, MAX_TOKENS_CAP),
+      messages,
+      ...(system ? { system } : {})
     };
 
-    const resp = await fetch(GEMINI_ENDPOINT, {
+    const resp = await fetch(CLAUDE_ENDPOINT, {
       method:  "POST",
       headers: {
-        "Content-Type":   "application/json",
-        "x-goog-api-key": key
+        "Content-Type":     "application/json",
+        "x-api-key":        key,
+        "anthropic-version":"2023-06-01"
       },
       body: JSON.stringify(body)
     });
 
     if (!resp.ok) {
       const err = await resp.text();
-      functions.logger.error("Gemini API error", err);
-      throw new functions.https.HttpsError("internal", "Gemini API error: " + resp.status);
+      functions.logger.error("Claude API error", err);
+      throw new functions.https.HttpsError("internal", "Claude API error: " + resp.status);
     }
 
     const json = await resp.json();
-    const text = json.candidates?.[0]?.content?.parts?.map(p => p.text).join("") ?? "";
+    const text = json.content?.[0]?.text ?? "";
     return { content: text };
   });
 

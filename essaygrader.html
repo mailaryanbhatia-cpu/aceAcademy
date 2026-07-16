@@ -51,15 +51,6 @@ textarea.essay-ta:focus{border-color:var(--accent)}
 .hist-item .ht{font-size:.72rem;color:var(--muted)}
 .sec-title{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
-<script src="/firebase-auth.js"></script>
-<script src="/firestore.js"></script>
-<script src="/sync-indicator.js"></script>
-<script src="auth-guard.js"></script>
-<script src="/claude-api.js"></script>
 <script src="theme.js"></script>
 <link rel="manifest" href="/manifest.json">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -134,8 +125,6 @@ textarea.essay-ta:focus{border-color:var(--accent)}
     <div class="ace-card">
       <h2 style="margin-bottom:14px">📋 Detailed Feedback</h2>
       <div id="feedbackContent"></div>
-      <div class="sec-title" style="margin-top:18px">🤖 AI Feedback</div>
-      <div id="aiFeedback" style="font-size:.88rem;line-height:1.75;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px">Personalized feedback will appear here.</div>
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px">
         <button class="ace-btn-ghost" onclick="gradeEssay()">🔄 Re-grade</button>
         <button class="ace-btn-ghost" onclick="clearEssay()">✏️ New Essay</button>
@@ -203,7 +192,7 @@ function saveToHistory(score,letter,type,words){
   updateStats(); renderHistory();
 }
 function clearHistory(){if(!confirm('Clear essay history?'))return;localStorage.removeItem(LS_HIST);updateStats();renderHistory();}
-async function gradeEssay(){
+function gradeEssay(){
   const text=document.getElementById('essayText').value.trim();
   if(text.length<50){alert('Please paste a longer essay.');return;}
   saveSettings();
@@ -284,23 +273,6 @@ async function gradeEssay(){
   document.getElementById('results').style.display='block';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
   saveToHistory(total,letter,essayType,words);
-  renderAIFeedback(text,essayType,total,letter);
-}
-
-async function renderAIFeedback(text,essayType,total,letter){
-  const box=document.getElementById('aiFeedback');
-  if(!box)return;
-  box.textContent='Reading your essay and writing personalized feedback\u2026';
-  const system=`You are an experienced writing teacher grading a student's ${essayType} essay. `+
-    `A quick automated rubric scored it ${total}/100 (${letter}). Read the essay and give 3-5 sentences of `+
-    `specific, encouraging, actionable feedback that references actual content from the essay -- not generic advice. `+
-    `Name one real strength and one real area to improve. Plain text only, no markdown, no headers.`;
-  try{
-    const feedback=await aceAI.call(text,system,400);
-    box.innerHTML=feedback.replace(/\n/g,'<br>');
-  }catch(e){
-    box.textContent='AI feedback unavailable right now'+(e&&e.message?' ('+e.message+')':'')+'. The rubric scores above are still accurate.';
-  }
 }
 
 </script>
