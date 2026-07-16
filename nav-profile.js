@@ -1,5 +1,9 @@
 (function(){
   function inject(){
+    // On pages that also load auth-guard.js, its pill (#ace-auth-pill)
+    // already shows avatar+name and -- critically -- a working logout
+    // button. Don't inject a second, competing pill next to it.
+    if (document.getElementById('ace-auth-pill')) return;
     var name   = localStorage.getItem('ace_profile_name') || '';
     var avatar = localStorage.getItem('ace_avatar') || '';
     var streak = JSON.parse(localStorage.getItem('ace_login_streak') || '{"count":0}');
