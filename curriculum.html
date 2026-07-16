@@ -783,13 +783,7 @@ render();
 
 
 
-<script>
-
-  const embedUrl = 'https://www.youtube-nocookie.com/embed/'+vid+'?autoplay=1&rel=0';
-  document.getElementById('vidIframe').src = embedUrl;
-  document.body.style.overflow = 'hidden';
-}
-</script>
+<!-- Removed: orphaned playVideo() fragment (missing its opening function declaration, no matching #vidIframe element anywhere on this page, and nothing calls it) -- was throwing a SyntaxError on every load. See git history if the original video-embed feature needs to be rebuilt properly. -->
 
 
 
