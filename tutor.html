@@ -90,7 +90,9 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
 <script src="/firebase-auth.js"></script>
+<script src="/claude-api.js"></script>
 <script src="/firestore.js"></script>
 <script src="/sync-indicator.js"></script>
 <script src="auth-guard.js"></script>
@@ -1157,9 +1159,8 @@ function getVariant(topic) {
   return fn(getGrade());
 }
 
-function buildResponse(input) {
+async function buildResponse(input) {
   const g = getGrade();
-  const lo = input.toLowerCase();
 
   // ── Guided mode: if a problem is in progress, process response first ───────
   if (guided) return handleGuided(input);
@@ -1180,41 +1181,27 @@ function buildResponse(input) {
   const mathResult = tryMath(input);
   if (mathResult) { lastTopicId = 'algebra_linear'; return mathResult; }
 
-  // Find best topic
-  const topic = findBestTopic(input);
+  // Everything else -- topic explanations, practice-problem requests,
+  // real-life connections, and open-ended questions -- now goes to Acer's
+  // real AI brain (Gemini, via the aceAI helper in claude-api.js) instead of
+  // the old fixed KB/topic-matcher text.
+  return await askAcerAI(input, g);
+}
 
-  if (special === 'practice') {
-    const t = topic || (lastTopicId ? KB.find(x => x.id === lastTopicId) : null);
-    if (t && t.p) { lastTopicId = t.id; return t.p(g); }
-    return `I'd love to make a practice problem! Which topic — <strong>algebra, fractions, geometry, photosynthesis, essay writing, probability</strong>? Just say the topic and I'll create one! 🎯`;
+async function askAcerAI(input, g) {
+  const gLabel = g === 'k' ? 'Kindergarten' : g === 'ap' ? 'AP' : ('Grade ' + g);
+  const system = `You are Acer, the friendly AI tutor built into aceAcademy, a K-12 study app. ` +
+    `The student is at ${gLabel} level. You cover Math, Science, ELA, History, Computer Science, and Health. ` +
+    `Explain things clearly and simply for their grade level. Keep replies focused -- a few short paragraphs at most. ` +
+    `You may use <strong> tags for key terms and <br> for line breaks, but no markdown (no #, *, or \`\`\`). ` +
+    `If asked for a practice problem, create one from scratch appropriate to their level and topic. ` +
+    `Guide understanding rather than just handing over answers to what sounds like a graded assignment or essay prompt. ` +
+    `End with a short encouraging note or a natural follow-up question when it fits.`;
+  try {
+    return await aceAI.call(input, system, 700);
+  } catch (e) {
+    return `Hmm, I'm having trouble reaching my AI brain right now${e && e.message ? ' (' + e.message + ')' : ''}. Try again in a moment! 🤔`;
   }
-
-  if (special === 'reallife') {
-    const t = topic || (lastTopicId ? KB.find(x => x.id === lastTopicId) : null);
-    if (t) return `Great question! <strong>Real-life uses of ${t.keys[0]}:</strong><br><br>` + realLifeUse(t.id, g);
-    return `Which topic are you asking about? Real-world connections make everything click — tell me the subject!`;
-  }
-
-  if (topic) {
-    lastTopicId = topic.id;
-    return getVariant(topic);
-  }
-
-  // Smart fallback: detect subject area and give targeted suggestion
-  const subjHints = [
-    { words:['math','number','calculate','multiply','divide','add','subtract','formula'], msg:`It looks like a math question! Try being more specific, e.g.:<br>• "How do I solve 4x − 2 = 10?"<br>• "What is PEMDAS?"<br>• "How do I find the area of a circle?"` },
-    { words:['science','biology','physics','chemistry','energy','force','cell','atom','plant','animal','body'], msg:`Looks like a science question! Try:<br>• "What is photosynthesis?"<br>• "Explain Newton's laws"<br>• "How does DNA work?"` },
-    { words:['history','war','president','country','revolution','colonist','government','century'], msg:`Looks like a history question! Try:<br>• "What caused World War I?"<br>• "Explain the Civil Rights Movement"<br>• "What is the Bill of Rights?"` },
-    { words:['english','writing','essay','story','poem','read','book','author','character','plot'], msg:`Looks like an ELA question! Try:<br>• "How do I write a strong thesis?"<br>• "What is a metaphor?"<br>• "How do I find the theme of a story?"` },
-    { words:['code','program','computer','python','javascript','variable','loop','function','app'], msg:`Looks like a CS question! Try:<br>• "What is a for loop?"<br>• "How do functions work in Python?"<br>• "What is an algorithm?"` },
-    { words:['health','body','food','exercise','stress','mental','nutrition','drug','sleep'], msg:`Looks like a health question! Try:<br>• "What are macronutrients?"<br>• "How does stress affect the body?"<br>• "What happens during puberty?"` },
-  ];
-  for (const hint of subjHints) {
-    if (hint.words.some(w => lo.includes(w))) {
-      return `${hint.msg}<br><br>The more specific you are, the better I can help! 😊`;
-    }
-  }
-  return FALLBACK[fi++ % FALLBACK.length](g);
 }
 
 function realLifeUse(id, g) {
@@ -1272,9 +1259,9 @@ async function sendMessage() {
   addMsg(text, 'user');
   inp.value = ''; inp.style.height = ''; isTyping = true;
   showTyping();
-  await new Promise(r => setTimeout(r, 350 + Math.random() * 350));
+  const reply = await buildResponse(text);
   removeTyping();
-  addMsg(buildResponse(text), 'acer');
+  addMsg(reply, 'acer');
   isTyping = false;
 }
 
