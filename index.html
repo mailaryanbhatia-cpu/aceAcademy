@@ -1141,201 +1141,15 @@ main#mainContent{flex:1;padding:0 36px 36px;}
 
 <script src="practice-data.js"></script>
 <script src="curriculum-browser-data.js"></script>
+<script src="index-reference-data.js"></script>
 <script>
 // PRACTICE SHEET DATA -- moved to /practice-data.js (loaded via <script src> just above)
 
 // ----------------------------------------------
 
-const CHEAT_SHEETS = {
-  math: [
-    { h: 'Algebra', items: [
-      '<strong>Slope</strong> = (y₂−y₁)/(x₂−x₁)',
-      '<strong>Slope-intercept</strong>: y = mx + b',
-      '<strong>Quadratic formula</strong>: x = (−b ± √(b²−4ac)) / 2a',
-      '<strong>FOIL</strong>: (a+b)(c+d) = ac+ad+bc+bd',
-      '<strong>Exponent rules</strong>: aᵐ·aⁿ = aᵐ⁺ⁿ, (aᵐ)ⁿ = aᵐⁿ',
-      '<strong>Percent change</strong>: (new−old)/old × 100',
-    ]},
-    { h: 'Geometry', items: [
-      '<strong>Circle</strong>: A = πr², C = 2πr',
-      '<strong>Triangle</strong>: A = ½bh',
-      '<strong>Rectangle</strong>: A = lw, P = 2(l+w)',
-      '<strong>Pythagorean thm</strong>: a² + b² = c²',
-      '<strong>Cylinder</strong>: V = πr²h',
-      '<strong>Sphere</strong>: V = 4/3πr³',
-    ]},
-    { h: 'Statistics', items: [
-      '<strong>Mean</strong>: sum ÷ count',
-      '<strong>Median</strong>: middle value when sorted',
-      '<strong>Mode</strong>: most frequent value',
-      '<strong>Range</strong>: max − min',
-      '<strong>Probability</strong>: favorable / total outcomes',
-      '<strong>IQR</strong>: Q3 − Q1',
-    ]},
-    { h: 'Trig (AP/Pre-Calc)', items: [
-      '<strong>SOH</strong>: sin = opp/hyp',
-      '<strong>CAH</strong>: cos = adj/hyp',
-      '<strong>TOA</strong>: tan = opp/adj',
-      '<strong>sin²θ + cos²θ = 1</strong>',
-      '<strong>Law of sines</strong>: a/sinA = b/sinB',
-      '<strong>Law of cosines</strong>: c² = a²+b²−2ab·cosC',
-    ]},
-  ],
-  science: [
-    { h: 'Physics', items: [
-      '<strong>F = ma</strong> (Newton&#39;s 2nd Law)',
-      '<strong>W = Fd</strong> (Work)',
-      '<strong>KE = ½mv²</strong> (Kinetic energy)',
-      '<strong>PE = mgh</strong> (Potential energy)',
-      '<strong>V = IR</strong> (Ohm&#39;s Law)',
-      '<strong>v = fλ</strong> (Wave equation)',
-    ]},
-    { h: 'Chemistry', items: [
-      '<strong>Density</strong>: D = m/V',
-      '<strong>Moles</strong>: n = m/M',
-      '<strong>PV = nRT</strong> (Ideal gas law)',
-      '<strong>pH + pOH = 14</strong>',
-      '<strong>Atomic #</strong> = protons = electrons',
-      '<strong>Mass #</strong> = protons + neutrons',
-    ]},
-    { h: 'Biology', items: [
-      '<strong>DNA bases</strong>: A-T, G-C (A-U in RNA)',
-      '<strong>Mitosis</strong>: PMAT (Prophase, Metaphase, Anaphase, Telophase)',
-      '<strong>Meiosis</strong>: produces 4 haploid cells',
-      '<strong>Photosynthesis</strong>: 6CO₂+6H₂O → C₆H₁₂O₆+6O₂',
-      '<strong>Cellular respiration</strong>: C₆H₁₂O₆+6O₂ → 6CO₂+6H₂O+ATP',
-      '<strong>Mendel&#39;s laws</strong>: Segregation & Independent Assortment',
-    ]},
-    { h: 'Earth Science', items: [
-      '<strong>Rock cycle</strong>: igneous → sedimentary → metamorphic',
-      '<strong>Plate boundaries</strong>: convergent, divergent, transform',
-      '<strong>Layers</strong>: crust, mantle, outer core, inner core',
-      '<strong>Water cycle</strong>: evaporation, condensation, precipitation',
-      '<strong>Atmosphere layers</strong>: troposphere → stratosphere → mesosphere',
-      '<strong>Richter scale</strong>: logarithmic earthquake measure',
-    ]},
-  ],
-  ela: [
-    { h: 'Literary Devices', items: [
-      '<strong>Simile</strong>: comparison using like/as',
-      '<strong>Metaphor</strong>: direct comparison',
-      '<strong>Alliteration</strong>: repeated initial consonant',
-      '<strong>Personification</strong>: human traits to non-human',
-      '<strong>Irony</strong>: opposite of what&#39;s expected',
-      '<strong>Foreshadowing</strong>: hints at future events',
-    ]},
-    { h: 'Essay Structure', items: [
-      '<strong>Intro</strong>: hook → context → thesis',
-      '<strong>Body</strong>: topic sentence → evidence → analysis',
-      '<strong>Conclusion</strong>: restate thesis → synthesize → so what?',
-      '<strong>PEEL</strong>: Point, Evidence, Explain, Link',
-      '<strong>Thesis</strong>: specific, arguable, 1-2 sentences',
-      '<strong>Transition words</strong>: furthermore, however, consequently',
-    ]},
-    { h: 'Grammar', items: [
-      '<strong>Comma splice</strong>: two clauses joined only by comma — wrong',
-      '<strong>Run-on</strong>: two sentences fused without punctuation',
-      '<strong>Fragment</strong>: incomplete sentence (no subject or verb)',
-      '<strong>Active voice</strong>: subject does action (preferred)',
-      '<strong>Parallel structure</strong>: match grammatical form in lists',
-      '<strong>Apostrophe</strong>: its (possessive) vs. it&#39;s (it is)',
-    ]},
-    { h: 'Rhetorical Appeals', items: [
-      '<strong>Ethos</strong>: appeal to credibility/authority',
-      '<strong>Pathos</strong>: appeal to emotion',
-      '<strong>Logos</strong>: appeal to logic/evidence',
-      '<strong>Kairos</strong>: appeal to timeliness',
-      '<strong>Tone</strong>: author&#39;s attitude toward subject',
-      '<strong>Diction</strong>: word choice and its effect',
-    ]},
-  ],
-  history: [
-    { h: 'U.S. Key Dates', items: [
-      '<strong>1776</strong>: Declaration of Independence',
-      '<strong>1787</strong>: Constitution drafted',
-      '<strong>1861–65</strong>: Civil War',
-      '<strong>1865</strong>: 13th Amendment (abolishes slavery)',
-      '<strong>1920</strong>: 19th Amendment (women&#39;s suffrage)',
-      '<strong>1964</strong>: Civil Rights Act',
-    ]},
-    { h: 'World Key Dates', items: [
-      '<strong>1789</strong>: French Revolution begins',
-      '<strong>1914–18</strong>: World War I',
-      '<strong>1939–45</strong>: World War II',
-      '<strong>1945</strong>: UN founded; Cold War begins',
-      '<strong>1989</strong>: Berlin Wall falls',
-      '<strong>1991</strong>: Soviet Union dissolves',
-    ]},
-    { h: 'Key Documents', items: [
-      '<strong>Magna Carta</strong> (1215): limits king&#39;s power',
-      '<strong>Declaration of Independence</strong>: natural rights, grievances',
-      '<strong>Constitution</strong>: 3 branches, federalism, Bill of Rights',
-      '<strong>Emancipation Proclamation</strong> (1863)',
-      '<strong>Treaty of Versailles</strong> (1919): ended WWI',
-      '<strong>Universal Declaration of Human Rights</strong> (1948)',
-    ]},
-    { h: 'Concepts', items: [
-      '<strong>Federalism</strong>: power split between federal & state',
-      '<strong>Checks & balances</strong>: each branch limits others',
-      '<strong>Imperialism</strong>: extending power over other nations',
-      '<strong>Nationalism</strong>: pride/loyalty to one&#39;s nation',
-      '<strong>Cold War</strong>: US vs. USSR ideological conflict',
-      '<strong>Globalization</strong>: increased global interdependence',
-    ]},
-  ],
-  cs: [
-    { h: 'Data Structures', items: [
-      '<strong>Array</strong>: indexed, fixed-size sequence',
-      '<strong>List</strong>: dynamic, ordered sequence',
-      '<strong>Stack</strong>: LIFO (Last In First Out)',
-      '<strong>Queue</strong>: FIFO (First In First Out)',
-      '<strong>Dictionary/Map</strong>: key-value pairs',
-      '<strong>Binary tree</strong>: each node has ≤ 2 children',
-    ]},
-    { h: 'Algorithms', items: [
-      '<strong>Linear search</strong>: O(n) — check each element',
-      '<strong>Binary search</strong>: O(log n) — sorted list only',
-      '<strong>Bubble sort</strong>: O(n²) — swap adjacent pairs',
-      '<strong>Merge sort</strong>: O(n log n) — divide & conquer',
-      '<strong>Recursion</strong>: function calls itself with base case',
-      '<strong>Big O</strong>: O(1) < O(log n) < O(n) < O(n²)',
-    ]},
-    { h: 'Programming', items: [
-      '<strong>Variable</strong>: named storage for a value',
-      '<strong>Loop</strong>: for, while — repeat code',
-      '<strong>Conditional</strong>: if/else — branch logic',
-      '<strong>Function</strong>: reusable block of code',
-      '<strong>Boolean</strong>: true or false',
-      '<strong>AND/OR/NOT</strong>: logical operators',
-    ]},
-  ],
-  health: [
-    { h: 'Nutrition', items: [
-      '<strong>Macronutrients</strong>: carbs, proteins, fats',
-      '<strong>Carbs</strong>: 4 cal/g — primary energy source',
-      '<strong>Protein</strong>: 4 cal/g — builds/repairs tissue',
-      '<strong>Fat</strong>: 9 cal/g — energy, hormones, vitamins',
-      '<strong>BMI</strong>: weight(kg) / height(m²)',
-      '<strong>Daily water</strong>: ~8 cups (2 liters) recommended',
-    ]},
-    { h: 'Body Systems', items: [
-      '<strong>Cardiovascular</strong>: heart, blood vessels, blood',
-      '<strong>Respiratory</strong>: lungs, diaphragm, gas exchange',
-      '<strong>Digestive</strong>: mouth → stomach → small → large intestine',
-      '<strong>Nervous</strong>: brain, spinal cord, nerves',
-      '<strong>Muscular</strong>: voluntary (skeletal) & involuntary (smooth)',
-      '<strong>Endocrine</strong>: glands producing hormones',
-    ]},
-    { h: 'Mental Health', items: [
-      '<strong>Stress response</strong>: fight-or-flight (adrenaline)',
-      '<strong>Coping strategies</strong>: exercise, sleep, mindfulness',
-      '<strong>Anxiety vs. worry</strong>: anxiety is persistent & physical',
-      '<strong>Depression signs</strong>: persistent sadness, loss of interest',
-      '<strong>7 dimensions</strong>: physical, emotional, social, intellectual, spiritual, environmental, occupational',
-      '<strong>Crisis line</strong>: 988 (call or text)',
-    ]},
-  ],
-};
+// CHEAT_SHEETS -- moved to /index-reference-data.js (loaded via <script
+// src> near the top of <body>, before any inline <script> runs)
+
 
 // SUBJECTS / AP_SUBJECTS / CURRICULUM -- moved to /curriculum-browser-data.js
 // (loaded via <script src> just above) so index.html and curriculum.html
@@ -2415,82 +2229,10 @@ function updateContinueWidget() {
   } catch (e) { card.style.display = 'none'; }
 }
 
-// -- CONCEPT EXPLAINER --------------------------------------
-const TIPS = {
-  ratio:'A ratio compares two quantities. Write as a:b, a/b, or "a to b". Simplify like fractions.',
-  proportion:'A proportion says two ratios are equal: a/b = c/d. Cross-multiply to solve: ad = bc.',
-  percent:'Percent means "per hundred." Convert: %÷10 = decimal. Use for discounts, tax, and change.',
-  fraction:'A fraction represents part of a whole. Numerator (top) ÷ denominator (bottom) = decimal.',
-  integer:'Integers are whole numbers and their negatives: …-2,-1,0,1,2… No decimals or fractions.',
-  variable:'A variable is a letter that represents an unknown number. Solving means finding that number.',
-  equation:'An equation says two expressions are equal. Solve by doing the same operation to both sides.',
-  inequality:'Like an equation but uses <, >, ≤, ≥. When multiplying/dividing by a negative, flip the sign!',
-  slope:'Slope = rise/run = (y₂-y₁)/(x₂-x₁). Positive = goes up, negative = goes down, zero = flat.',
-  function:'A function pairs each input (x) with exactly one output (y). Written as f(x).',
-  exponent:'An exponent tells how many times to multiply a base by itself. 2³ = 2×2×2 = 8.',
-  polynomial:'A polynomial is a sum of terms with variables and whole-number exponents: 3x²+2x-1.',
-  quadratic:'A quadratic has x² as the highest power. Solve by factoring, completing the square, or the quadratic formula.',
-  linear:'A linear equation makes a straight line when graphed. Form: y = mx + b.',
-  probability:'Probability = favorable outcomes ÷ total outcomes. Ranges from 0 (impossible) to 1 (certain).',
-  statistics:'Statistics summarizes data. Key: mean (average), median (middle value), mode (most frequent).',
-  geometry:'Geometry studies shapes, sizes, and positions. Key formulas: area, perimeter, volume, and angles.',
-  triangle:'Triangles have 3 sides; angles sum to 180°. Types: equilateral, isosceles, scalene, right.',
-  circle:'All points equal distance (radius) from center. Area = πr², Circumference = 2πr.',
-  volume:'Volume measures 3D space. Units are cubed (cm³). Use π for cylinders, cones, spheres.',
-  coordinate:'The coordinate plane has x-axis (horizontal) and y-axis (vertical). Points written as (x, y).',
-  symmetry:'A shape has symmetry if it looks the same after a transformation. Mirror image = line symmetry.',
-  transformation:'Transformations move shapes: translation (slide), rotation (turn), reflection (flip), dilation (scale).',
-  photosynthesis:'Plants make food using sunlight, CO₂, and water: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂.',
-  cell:'Cells are the basic unit of life. Prokaryotes have no nucleus; eukaryotes do. Plant cells have walls and chloroplasts.',
-  dna:'DNA stores genetic info in base pairs (A-T, C-G). Read to make proteins via RNA.',
-  evolution:'Evolution is change in species over generations through natural selection — survival of the fittest.',
-  atom:'Atoms have protons and neutrons in the nucleus, electrons orbiting outside. Protons = atomic number.',
-  element:'Elements are pure substances made of one atom type. The periodic table organizes 118 elements.',
-  compound:'A compound is two or more elements chemically bonded together. H₂O = 2 hydrogen + 1 oxygen.',
-  reaction:'Reactions rearrange atoms. Reactants → Products. Balanced equations have equal atoms each side.',
-  acid:'Acids have pH < 7 and donate H⁺. Bases have pH > 7 and accept H⁺. pH 7 = neutral.',
-  force:'A force is a push or pull (Newtons). Net force = sum of all forces. Unbalanced force = acceleration.',
-  energy:'Energy is the ability to do work. It cannot be created or destroyed — only converted.',
-  wave:'Waves transfer energy. Key: wavelength (λ), frequency (f), amplitude, speed (v = fλ).',
-  newton:'Newton\'s Laws: 1) Stay at rest/motion unless acted on. 2) F=ma. 3) Equal and opposite reactions.',
-  thesis:'A thesis is your essay\'s main argument — one clear, specific, arguable sentence.',
-  inference:'An inference is a conclusion drawn from evidence, not stated directly — "reading between the lines."',
-  figurative:'Figurative language: metaphor, simile, personification, hyperbole, idiom. Not meant literally.',
-  narrative:'Narrative writing tells a story with characters, setting, conflict, rising action, climax, resolution.',
-  argument:'Argumentative writing takes a position and supports it with evidence, reasoning, and counterarguments.',
-  algorithm:'An algorithm is a step-by-step procedure for solving a problem. Specific, repeatable, like a recipe.',
-  binary:'Binary is base-2: only 0s and 1s. Computers use it because circuits are on (1) or off (0).',
-  loop:'A loop repeats code. "for" loops run a set number of times; "while" loops check a condition each time.',
-  democracy:'Government by the people. Direct = citizens vote on laws. Representative = elected officials vote.',
-  constitution:'The U.S. Constitution (1787) sets up 3 branches of government and guarantees rights via amendments.',
-  revolution:'A major, rapid change in government or society. Often driven by economic or political grievances.',
-  economics:'Studies how people make decisions about scarce resources. Supply and demand determine prices.',
-};
-function getTipBtn(topic) {
-  const tl = topic.toLowerCase();
-  for (const k in TIPS) { if (tl.includes(k)) return '<button class="tip-btn" data-topic="'+topic.replace(/"/g,'&quot;')+'" onclick="showTipFromBtn(this)">?</button>'; }
-  return '';
-}
-function showTipFromBtn(btn) { showTip(btn.dataset.topic, btn); }
-function showTip(topic, btn) {
-  const tl = topic.toLowerCase();
-  let text = null;
-  for (const k in TIPS) { if (tl.includes(k)) { text = TIPS[k]; break; } }
-  if (!text) return;
-  const popup = document.getElementById('tipPopup');
-  const titleEl = document.getElementById('tipTitle');
-  const bodyEl = document.getElementById('tipBody');
-  if (!popup || !titleEl || !bodyEl) return;
-  titleEl.textContent = topic;
-  bodyEl.textContent = text;
-  const rect = btn.getBoundingClientRect();
-  const left = Math.min(rect.left + window.scrollX, window.innerWidth - 300);
-  popup.style.top = (rect.bottom + 6 + window.scrollY) + 'px';
-  popup.style.left = Math.max(8, left) + 'px';
-  popup.classList.add('open');
-}
-function closeTip() { const p = document.getElementById('tipPopup'); if (p) p.classList.remove('open'); }
-document.addEventListener('click', e => { if (!e.target.closest('.tip-btn') && !e.target.closest('#tipPopup')) closeTip(); });
+// TIPS / getTipBtn / showTip / closeTip -- moved to /index-reference-data.js
+// (loaded via <script src> near the top of <body>, before any inline
+// <script> runs -- see that file's header comment for why this needs to
+// load early).
 
 render();
 updateContinueWidget();
@@ -2840,72 +2582,9 @@ function updateMjWidget() {
 }
 
 
-// -- FORMULA REFERENCE ---------------------------------------
-const FORMULAS = {
-  Math: [
-    {name:'Area of Circle',expr:'A = πr²',desc:'r = radius'},
-    {name:'Circumference',expr:'C = 2πr',desc:'r = radius'},
-    {name:'Pythagorean Theorem',expr:'a² + b² = c²',desc:'c = hypotenuse'},
-    {name:'Slope',expr:'m = (y₂-y₁)/(x₂-x₁)',desc:'Rise over run'},
-    {name:'Slope-Intercept',expr:'y = mx + b',desc:'m = slope, b = y-intercept'},
-    {name:'Quadratic Formula',expr:'x = (-b ± √(b²-4ac)) / 2a',desc:'Roots of ax²+bx+c=0'},
-    {name:'Distance Formula',expr:'d = √((x₂-x₁)²+(y₂-y₁)²)',desc:'Between two points'},
-    {name:'Midpoint',expr:'M = ((x₁+x₂)/2, (y₁+y₂)/2)',desc:'Midpoint of a segment'},
-    {name:'Area of Triangle',expr:'A = ½bh',desc:'b = base, h = height'},
-    {name:'Area of Trapezoid',expr:'A = ½(b₁+b₂)h',desc:'Two parallel bases'},
-    {name:'Volume of Cylinder',expr:'V = πr²h',desc:'r = radius, h = height'},
-    {name:'Volume of Cone',expr:'V = ⅓πr²h',desc:'r = radius, h = height'},
-    {name:'Volume of Sphere',expr:'V = (4/3)πr³',desc:'r = radius'},
-    {name:'Simple Interest',expr:'I = Prt',desc:'P = principal, r = rate, t = time'},
-    {name:'Compound Interest',expr:'A = P(1 + r/n)^(nt)',desc:'n = compounds per year'},
-    {name:'Percent Change',expr:'% = (new-old)/old × 100',desc:'Positive = increase'},
-    {name:'Mean',expr:'x̅ = Σx / n',desc:'Sum divided by count'},
-    {name:'Combination',expr:'C(n,r) = n! / (r!(n-r)!)',desc:'Choose r from n'},
-    {name:'Permutation',expr:'P(n,r) = n! / (n-r)!',desc:'Ordered selections'},
-  ],
-  Algebra: [
-    {name:'Exponent Product',expr:'aᵐ · aⁿ = aᵐ⁺ⁿ',desc:'Same base: add exponents'},
-    {name:'Exponent Quotient',expr:'aᵐ / aⁿ = aᵐ⁻ⁿ',desc:'Same base: subtract'},
-    {name:'Power of Power',expr:'(aᵐ)ⁿ = aᵐⁿ',desc:'Multiply exponents'},
-    {name:'Zero Exponent',expr:'a⁰ = 1',desc:'Any nonzero base'},
-    {name:'Negative Exponent',expr:'a⁻ⁿ = 1/aⁿ',desc:'Flip to positive'},
-    {name:'FOIL',expr:'(a+b)(c+d) = ac+ad+bc+bd',desc:'Multiplying binomials'},
-    {name:'Difference of Squares',expr:'a²-b² = (a+b)(a-b)',desc:'Factor shortcut'},
-    {name:'Perfect Square',expr:'(a+b)² = a²+2ab+b²',desc:'Expand squared binomial'},
-    {name:'Arithmetic Sequence',expr:'aₙ = a₁ + (n-1)d',desc:'d = common difference'},
-    {name:'Geometric Sequence',expr:'aₙ = a₁ · rⁿ⁻¹',desc:'r = common ratio'},
-    {name:'Log Definition',expr:'logₐ(b)=c ↔ aᶜ=b',desc:'Log is inverse of exponent'},
-    {name:'Log Product Rule',expr:'log(xy) = log(x)+log(y)',desc:''},
-  ],
-  Science: [
-    {name:'Force',expr:'F = ma',desc:'F=Newtons, m=kg, a=m/s²'},
-    {name:'Weight',expr:'W = mg',desc:'g ≈ 9.8 m/s² on Earth'},
-    {name:'Speed',expr:'v = d/t',desc:'d=distance, t=time'},
-    {name:'Acceleration',expr:'a = (v-u)/t',desc:'v=final, u=initial velocity'},
-    {name:'Kinematic (v²)',expr:'v² = u² + 2as',desc:'s = displacement'},
-    {name:'Momentum',expr:'p = mv',desc:'m=mass, v=velocity'},
-    {name:'Kinetic Energy',expr:'KE = ½mv²',desc:'m=mass, v=velocity'},
-    {name:'Potential Energy',expr:'PE = mgh',desc:'g=gravity, h=height'},
-    {name:'Work',expr:'W = Fd cosθ',desc:'F=force, d=displacement'},
-    {name:'Power',expr:'P = W/t',desc:'W=work, t=time (watts)'},
-    {name:'Ohm\'s Law',expr:'V = IR',desc:'V=volts, I=amps, R=ohms'},
-    {name:'Density',expr:'ρ = m/V',desc:'m=mass, V=volume'},
-    {name:'Pressure',expr:'P = F/A',desc:'F=force, A=area (Pa)'},
-    {name:'Wave Speed',expr:'v = fλ',desc:'f=frequency, λ=wavelength'},
-    {name:'Ideal Gas Law',expr:'PV = nRT',desc:'n=moles, R=8.314 J/mol·K'},
-    {name:'Coulomb\'s Law',expr:'F = kq₁q₂/r²',desc:'k=8.99×10⁹ N·m²/C²'},
-  ],
-  Trig: [
-    {name:'SOH CAH TOA',expr:'sin=opp/hyp  cos=adj/hyp  tan=opp/adj',desc:'Right triangle ratios'},
-    {name:'Pythagorean Identity',expr:'sin²θ + cos²θ = 1',desc:''},
-    {name:'Law of Sines',expr:'a/sinA = b/sinB = c/sinC',desc:'Any triangle'},
-    {name:'Law of Cosines',expr:'c² = a²+b²-2ab·cosC',desc:'Any triangle'},
-    {name:'Sin of Sum',expr:'sin(A+B) = sinA cosB + cosA sinB',desc:''},
-    {name:'Cos of Sum',expr:'cos(A+B) = cosA cosB - sinA sinB',desc:''},
-    {name:'Double Angle sin',expr:'sin 2θ = 2 sinθ cosθ',desc:''},
-    {name:'Double Angle cos',expr:'cos 2θ = cos²θ - sin²θ',desc:''},
-  ]
-};
+// FORMULAS -- moved to /index-reference-data.js (loaded via <script src>
+// near the top of <body>, before any inline <script> runs)
+
 let fTab = 'Math';
 function openFormulas() {
   document.getElementById('formulaOverlay').classList.add('open');
