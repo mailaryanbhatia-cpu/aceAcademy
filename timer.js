@@ -11,9 +11,9 @@
   var SESS_KEY = 'ace_pomodoro_sessions'; // {date:'YYYY-MM-DD', count:N}
 
   var MODES = {
-    work:  { label: 'Focus Time',  short: 'FOCUS',       color: '#05875e' },
-    short: { label: 'Short Break', short: 'SHORT BREAK', color: '#07819e' },
-    long:  { label: 'Long Break',  short: 'LONG BREAK',  color: '#7c3aed' }
+    work:  { label: 'Focus Time',  short: 'FOCUS',       color: '#05875e', textColor: '#259773' },
+    short: { label: 'Short Break', short: 'SHORT BREAK', color: '#07819e', textColor: '#2590aa' },
+    long:  { label: 'Long Break',  short: 'LONG BREAK',  color: '#7c3aed', textColor: '#9b69f1' }
   };
 
   function defaultSettings(){
@@ -108,7 +108,7 @@
     + '#ace-pomo-panel.open{opacity:1;pointer-events:auto;transform:translateY(0)}'
     + '.ace-pomo-head{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;color:#fff}'
     + '.ace-pomo-head h3{margin:0;font-size:.92rem;font-weight:700}'
-    + '.ace-pomo-close{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:7px;'
+    + '.ace-pomo-close{background:rgba(0,0,0,.15);border:none;color:#fff;border-radius:7px;'
     + 'padding:3px 9px;cursor:pointer;font-size:.82rem}'
     + '.ace-pomo-close:hover{background:rgba(255,255,255,.32)}'
     + '.ace-pomo-modes{display:flex;border-bottom:1px solid #2a3a55;background:#141d33}'
@@ -142,7 +142,7 @@
     + '.ace-pomo-check-row label{font-size:.72rem;color:#aab8cc;cursor:pointer}'
     + '.ace-pomo-footer{background:#141d33;border-top:1px solid #2a3a55;padding:9px 16px;'
     + 'display:flex;align-items:center;justify-content:space-between;font-size:.7rem;color:#7a8fa8}'
-    + '.ace-pomo-footer strong{color:#059669;font-weight:800}'
+    + '.ace-pomo-footer strong{color:#259773;font-weight:800}'
     + '@media(max-width:480px){#ace-pomo-panel{left:12px;right:12px;width:auto}#ace-pomo-fab{left:12px}}';
 
   var HTML = ''
@@ -300,7 +300,7 @@
     document.querySelectorAll('.ace-pomo-mode-btn').forEach(function(btn){
       var active = btn.dataset.mode === s.mode;
       btn.classList.toggle('active', active);
-      btn.style.color = active ? MODES[btn.dataset.mode].color : '';
+      btn.style.color = active ? MODES[btn.dataset.mode].textColor : '';
     });
 
     $('ace-pomo-startbtn').textContent = s.running ? '⏸ Pause' : '▶ Start';
