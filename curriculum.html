@@ -437,8 +437,20 @@ function render() {
 
     filtered.forEach((u, i) => {
       const topicMatch = searchQuery ? u.topics.filter(t => t.toLowerCase().includes(searchQuery)) : u.topics;
-      const practiceSheets = PRACTICE[currentGrade]?.[subj.id]?.[i] || null;
-      const unitKey = `${currentGrade}-${subj.id}-${i}`;
+      // realIndex is the unit's position within the FULL (unfiltered) units list --
+      // used instead of the filtered-array index `i` because PRACTICE's legacy
+      // format is a plain array keyed by position, and `i` alone would point at
+      // the wrong sheets whenever a search is active (filtered reindexes from 0).
+      const realIndex = units.indexOf(u);
+      const subjPractice = PRACTICE[currentGrade]?.[subj.id];
+      // Prefer a stable key-based match (subjPractice as an object keyed by
+      // unit.key, immune to reordering/insertion of units) with fallback to the
+      // legacy positional-index array format for backward compatibility with
+      // existing data that hasn't been migrated yet.
+      const practiceSheets = Array.isArray(subjPractice)
+        ? (subjPractice[realIndex] || null)
+        : (subjPractice && u.key ? (subjPractice[u.key] || null) : null);
+      const unitKey = `${currentGrade}-${subj.id}-${realIndex}`;
 
       let practiceHtml = '';
       if (practiceSheets) {
