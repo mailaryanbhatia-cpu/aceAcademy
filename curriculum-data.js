@@ -5859,129 +5859,288 @@ const PRACTICE = {
       ]
     ],
     history: [
-      [
-        { title: `Ancient civilizations foundations`, problems: [
-          { q: `What are the common features of early civilizations?`, ex: `Think: agriculture, cities, writing, government, religion, specialization`, a: `Eight features: (1) Stable food supply (agriculture). (2) Social structure (classes). (3) Government. (4) Religion/cosmology. (5) Arts and architecture. (6) Public works (irrigation, roads). (7) Writing. (8) Trade. These features emerged independently in multiple locations.` },
-          { q: `What is historiography and why does it matter?`, ex: `Think: how history has been written and interpreted`, a: `Historiography: the study of how history has been recorded, interpreted, and revised over time. Matters because: all historical accounts reflect the perspective and context of who wrote them. Understanding historiography helps evaluate sources and recognize that historical interpretation changes as new evidence and perspectives emerge.` },
-          { q: `What is primary vs. secondary vs. tertiary source?`, ex: `Think: original vs. analysis vs. compilation`, a: `Primary: original document, artifact, or account from the period (Magna Carta, diary, census data). Secondary: analysis or interpretation of primary sources (biography, textbook chapter). Tertiary: compilation of secondary sources (encyclopedias, databases). Historians rely on primary sources but use secondary sources for context.` },
-          { q: `What is the difference between historical fact and historical interpretation?`, ex: `Think: what happened vs. what it means`, a: `Historical fact: verifiable events (Rome fell to Germanic tribes in 476 CE). Historical interpretation: the meaning, causes, and significance of events — these change as historians ask different questions. Most historical debates are about interpretation, not facts.` },
-        ]},
-        { title: `Greek and Roman legacy`, problems: [
-          { q: `What was direct democracy in Athens? Who was excluded?`, ex: `Think: direct participation, but for a narrow group`, a: `Direct democracy: citizens voted directly on laws and policies (not through representatives). In Athens (~450 BCE): only adult male citizens could participate. Women, enslaved people, and resident foreigners (metics) were excluded — approximately 10-15% of the population held democratic rights.` },
-          { q: `What was the Roman Republic's system of government?`, ex: `Think: consuls, Senate, assemblies, checks and balances`, a: `Two consuls (elected annually, could veto each other). Senate: advised consuls, controlled finances. Popular assemblies: could elect magistrates and pass laws. This mixed constitution influenced the US Founders directly — Madison's Republic is consciously modeled on Rome.` },
-          { q: `How did Greco-Roman culture influence Western civilization?`, ex: `Think: democracy, philosophy, law, architecture, language`, a: `Democracy (Athens), philosophy (Socrates, Plato, Aristotle), Roman law (foundation of legal systems in most of Europe and the Americas), architecture (columns, domes, arches), Latin (root of Romance languages and scientific vocabulary), literature (Homer, Virgil, Cicero).` },
-          { q: `What led to the fall of the Western Roman Empire?`, ex: `Think: multiple overlapping causes over centuries`, a: `Political instability (50+ emperors in 50 years at one point), military overextension, economic problems (currency devaluation, trade decline), reliance on mercenary armies, pressure from Germanic tribes and Huns, disease, and administrative division (East/West). Historians debate relative weight of each cause.` },
-        ]},
-        { title: `Global economics`, problems: [
-          { q: `What is mercantilism and how did it shape colonial empires?`, ex: `Think: maximize exports, minimize imports; colonies supply raw materials`, a: `Mercantilism: economic theory that wealth is finite and nations should maximize exports and accumulate gold. Colonies existed to: supply cheap raw materials to the mother country, buy manufactured goods from the mother country, and enrich the colonizing nation. Led to strict trade regulations and exploitation of colonial economies.` },
-          { q: `What is the difference between a market economy, command economy, and mixed economy?`, ex: `Think: who controls economic decisions`, a: `Market: private individuals and businesses make economic decisions through price mechanisms (supply and demand). Command: government centrally plans and controls production and distribution. Mixed: combines elements of both — most modern economies are mixed. Pure forms of either market or command economies do not exist in practice.` },
-          { q: `What are the factors of production?`, ex: `Think: land, labor, capital, entrepreneurship`, a: `Land: natural resources. Labor: human effort. Capital: tools, machinery, buildings used in production (physical capital) and education and skills (human capital). Entrepreneurship: the ability to combine the other factors innovatively to create value. All production requires some combination of these four.` },
-          { q: `What is comparative advantage and how does it explain international trade?`, ex: `Think: specialize in what you produce most efficiently relative to others`, a: `Comparative advantage: a country should specialize in producing goods for which it has the lowest opportunity cost (even if another country is absolutely better at producing everything). Trade allows both countries to consume more than if each produced everything domestically.` },
-        ]},
-      ],
-      [
- {
-  "title": "Supply and Demand",
-  "problems": [
-   {
-    "q": "What is the law of demand?",
-    "ex": "Price and quantity demanded relationship",
-    "a": "The law of demand states that, all else equal, as the price of a good rises, the quantity demanded falls, and as price falls, quantity demanded rises."
-   },
-   {
-    "q": "What is the law of supply?",
-    "ex": "Price and quantity supplied relationship",
-    "a": "The law of supply states that, all else equal, as the price of a good rises, producers are willing to supply more of it, since higher prices make production more profitable."
-   },
-   {
-    "q": "What happens at the 'equilibrium price' in a market?",
-    "ex": "Where supply meets demand",
-    "a": "At the equilibrium price, the quantity consumers want to buy exactly equals the quantity producers want to sell -- there is no shortage or surplus."
-   },
-   {
-    "q": "What causes a shortage, and what causes a surplus?",
-    "ex": "Price set below or above equilibrium",
-    "a": "A shortage occurs when price is set below equilibrium (demand exceeds supply). A surplus occurs when price is set above equilibrium (supply exceeds demand)."
-   }
-  ]
- },
- {
-  "title": "Market Structures & Economic Systems",
-  "problems": [
-   {
-    "q": "What is perfect competition, and what characterizes it?",
-    "ex": "Many sellers, identical products",
-    "a": "Perfect competition is a market with many buyers and sellers, identical products, easy entry/exit, and no single seller able to influence price."
-   },
-   {
-    "q": "What is a monopoly, and why can it lead to higher prices for consumers?",
-    "ex": "One seller controls the market",
-    "a": "A monopoly exists when a single seller controls an entire market with no close substitutes, giving that seller power to set prices higher than in a competitive market."
-   },
-   {
-    "q": "What is the difference between a market economy and a command economy?",
-    "ex": "Individual choice vs. government control",
-    "a": "In a market economy, prices and production are driven by supply and demand through individual buyers and sellers. In a command economy, the government makes central decisions about production."
-   },
-   {
-    "q": "What is a mixed economy, and why do most modern countries use one?",
-    "ex": "Combines market and government elements",
-    "a": "A mixed economy combines free-market elements with government intervention. Most modern countries use one to balance economic efficiency with social welfare and stability."
-   }
-  ]
- },
- {
-  "title": "Trade and Globalization",
-  "problems": [
-   {
-    "q": "What is comparative advantage, and why does it make trade beneficial?",
-    "ex": "Producing what you're relatively best at",
-    "a": "Comparative advantage means a country can produce a good at a lower opportunity cost than another. Even if one country is better at producing everything, both benefit by specializing and trading."
-   },
-   {
-    "q": "What is a tariff, and what is one effect it has on trade?",
-    "ex": "A tax on imported goods",
-    "a": "A tariff is a tax on imported goods. It raises import prices, which can protect domestic industries but also raises costs for consumers and can trigger retaliation."
-   },
-   {
-    "q": "What is globalization?",
-    "ex": "Increasing interconnectedness of economies",
-    "a": "Globalization is the increasing economic, cultural, and technological interconnectedness of countries worldwide, driven by trade, investment, communication, and transportation."
-   },
-   {
-    "q": "What is one benefit and one criticism commonly associated with globalization?",
-    "ex": "Lower prices/more choice vs. job losses/inequality",
-    "a": "Benefit: lower consumer prices and greater variety through specialization. Criticism: job losses in industries that can't compete with cheaper foreign labor, and rising inequality."
-   }
-  ]
- },
- {
-  "title": "Personal Finance Basics",
-  "problems": [
-   {
-    "q": "What is the difference between a budget's fixed and variable expenses?",
-    "ex": "Rent vs. groceries",
-    "a": "Fixed expenses stay the same each period (rent, car payment), while variable expenses change month to month (groceries, entertainment)."
-   },
-   {
-    "q": "What is compound interest, and why does it matter for saving early?",
-    "ex": "Interest earning interest over time",
-    "a": "Compound interest is interest calculated on both the original amount and interest already earned, so savings grow faster over time -- starting early lets compounding work over more years."
-   },
-   {
-    "q": "What is the difference between a credit score and a credit report?",
-    "ex": "A number vs. the underlying detailed history",
-    "a": "A credit report is a detailed record of your borrowing and repayment history. A credit score is a single number summarizing your creditworthiness for lenders."
-   },
-   {
-    "q": "Why is having an emergency fund considered an important part of personal finance?",
-    "ex": "Covers unexpected costs without debt",
-    "a": "An emergency fund covers unexpected expenses without relying on high-interest debt like credit cards, providing financial stability during unforeseen events."
-   }
-  ]
- }
-]
-    ],
+ [
+  {
+   "title": "Age of Revolutions",
+   "problems": [
+    {
+     "q": "What ideals from the Enlightenment inspired the French Revolution?",
+     "ex": "Liberty, equality, popular sovereignty",
+     "a": "Enlightenment thinkers argued political power should come from the consent of the governed, not divine right or birth. Ideas like liberty, equality, natural rights, and separation of powers directly inspired French revolutionaries to overthrow the monarchy and aristocratic privilege."
+    },
+    {
+     "q": "Why is the Haitian Revolution historically significant?",
+     "ex": "Only successful slave revolt to create an independent nation",
+     "a": "The Haitian Revolution (1791-1804) was the only slave revolt in history to result in the founding of an independent state, and the first nation to permanently abolish slavery. It challenged the assumption that only Europeans could achieve self-government and directly shook the institution of slavery worldwide."
+    },
+    {
+     "q": "How did the French Revolution's outcome differ from what many revolutionaries initially hoped for?",
+     "ex": "Ended in a monarchy again... sort of",
+     "a": "The Revolution began aiming to establish a constitutional monarchy or republic based on rights and equality, but cycled through radical phases (the Terror), instability, and eventually Napoleon's rise to power as an emperor -- a far cry from the democratic ideals that started it."
+    },
+    {
+     "q": "What common causes link the Age of Revolutions across different countries?",
+     "ex": "Enlightenment ideas, economic strain, inequality",
+     "a": "Common threads include the spread of Enlightenment ideas about rights and self-government, economic hardship and inequality, resentment of unaccountable rulers, and the example set by earlier successful revolutions (American, then French) inspiring others."
+    }
+   ]
+  },
+  {
+   "title": "Nationalism, Imperialism & Industrialization",
+   "problems": [
+    {
+     "q": "What is nationalism, and how did it reshape 19th-century Europe?",
+     "ex": "Shared identity driving unification/independence movements",
+     "a": "Nationalism is the belief that people sharing a language, culture, or history should govern themselves as a nation. It drove the unification of Germany and Italy from fragmented states, and fueled independence movements among ethnic groups within multi-ethnic empires like Austria-Hungary."
+    },
+    {
+     "q": "What motivated European imperialism in Africa and Asia in this period?",
+     "ex": "Economic resources, national prestige, 'civilizing mission'",
+     "a": "Motivations included access to raw materials and markets, competition among European powers for prestige and territory, strategic/military advantage, and a paternalistic ('civilizing mission') ideology used to justify domination of other peoples."
+    },
+    {
+     "q": "How did the Industrial Revolution spread beyond Britain in the 19th century?",
+     "ex": "Adopted by other nations at different rates",
+     "a": "Industrialization spread to Belgium, Germany, France, the US, and eventually Japan and Russia, though at different speeds and often with state-directed investment (unlike Britain's more private, gradual process). This shifted global economic and military power toward industrialized nations."
+    },
+    {
+     "q": "How are nationalism, imperialism, and industrialization connected?",
+     "ex": "Industrial power fueled the ability to build empires",
+     "a": "Industrialization gave nations the economic and military capacity to pursue empire; imperialism was often justified using nationalist ideas of superiority; and competition for colonies and resources in turn intensified nationalist rivalries between European powers."
+    }
+   ]
+  },
+  {
+   "title": "World War I: Causes & Effects",
+   "problems": [
+    {
+     "q": "What are the long-term (underlying) causes of World War I?",
+     "ex": "M-A-I-N: Militarism, Alliances, Imperialism, Nationalism",
+     "a": "Militarism (arms races), a tangled system of Alliances (dividing Europe into two armed camps), Imperial rivalries over colonies, and Nationalism (including ethnic tensions in the Balkans) created a tense, unstable Europe primed for a wider conflict."
+    },
+    {
+     "q": "What was the immediate trigger (spark) of World War I?",
+     "ex": "An assassination in Sarajevo",
+     "a": "The assassination of Archduke Franz Ferdinand of Austria-Hungary by a Serbian nationalist in June 1914 set off a chain reaction of alliance obligations that rapidly escalated a regional crisis into a general European war."
+    },
+    {
+     "q": "What made World War I different from earlier wars in terms of how it was fought?",
+     "ex": "Trench warfare, new industrial weapons",
+     "a": "New industrial-age weapons (machine guns, poison gas, tanks, airplanes) combined with trench warfare created a devastating stalemate on the Western Front, producing casualties on an unprecedented scale compared to earlier 19th-century wars."
+    },
+    {
+     "q": "What were some major effects of World War I on the world?",
+     "ex": "Empires collapsed, millions died, map of Europe redrawn",
+     "a": "The war caused roughly 17 million deaths, toppled four empires (Russian, German, Austro-Hungarian, Ottoman), redrew national borders, and set conditions (economic hardship, resentment) that contributed directly to World War II."
+    }
+   ]
+  },
+  {
+   "title": "The Treaty of Versailles",
+   "problems": [
+    {
+     "q": "What were the main terms Germany faced under the Treaty of Versailles?",
+     "ex": "War guilt, reparations, territory, military limits",
+     "a": "Germany was forced to accept blame for the war (the 'war guilt' clause), pay heavy reparations, lose territory and its overseas colonies, and accept strict limits on the size of its military."
+    },
+    {
+     "q": "Why is the 'War Guilt Clause' (Article 231) considered controversial?",
+     "ex": "Placed full blame for the war on Germany alone",
+     "a": "It assigned Germany sole responsibility for causing the war, which many Germans saw as unjust given the war's complex, multi-nation causes -- fueling deep resentment that nationalist movements later exploited."
+    },
+    {
+     "q": "How did the Treaty of Versailles contribute to the rise of extremism in Germany?",
+     "ex": "Economic hardship + humiliation created fertile ground",
+     "a": "The treaty's harsh reparations and territorial losses caused economic hardship and national humiliation, which extremist movements (including the Nazis) exploited by promising to restore German pride and reverse the treaty's terms."
+    },
+    {
+     "q": "What was the goal of the League of Nations, established alongside the treaty, and why did it struggle?",
+     "ex": "Prevent future wars through collective security",
+     "a": "The League of Nations aimed to prevent future wars through diplomacy and collective security, but it struggled because it lacked its own military force, key powers (like the US) never joined, and it had no effective way to enforce its decisions."
+    }
+   ]
+  }
+ ],
+ [
+  {
+   "title": "Supply and Demand",
+   "problems": [
+    {
+     "q": "What is the law of demand?",
+     "ex": "Price and quantity demanded relationship",
+     "a": "The law of demand states that, all else equal, as the price of a good rises, the quantity demanded falls, and as price falls, quantity demanded rises."
+    },
+    {
+     "q": "What is the law of supply?",
+     "ex": "Price and quantity supplied relationship",
+     "a": "The law of supply states that, all else equal, as the price of a good rises, producers are willing to supply more of it, since higher prices make production more profitable."
+    },
+    {
+     "q": "What happens at the 'equilibrium price' in a market?",
+     "ex": "Where supply meets demand",
+     "a": "At the equilibrium price, the quantity consumers want to buy exactly equals the quantity producers want to sell -- there is no shortage or surplus."
+    },
+    {
+     "q": "What causes a shortage, and what causes a surplus?",
+     "ex": "Price set below or above equilibrium",
+     "a": "A shortage occurs when price is set below equilibrium (demand exceeds supply). A surplus occurs when price is set above equilibrium (supply exceeds demand)."
+    }
+   ]
+  },
+  {
+   "title": "Market Structures & Economic Systems",
+   "problems": [
+    {
+     "q": "What is perfect competition, and what characterizes it?",
+     "ex": "Many sellers, identical products",
+     "a": "Perfect competition is a market with many buyers and sellers, identical products, easy entry/exit, and no single seller able to influence price."
+    },
+    {
+     "q": "What is a monopoly, and why can it lead to higher prices for consumers?",
+     "ex": "One seller controls the market",
+     "a": "A monopoly exists when a single seller controls an entire market with no close substitutes, giving that seller power to set prices higher than in a competitive market."
+    },
+    {
+     "q": "What is the difference between a market economy and a command economy?",
+     "ex": "Individual choice vs. government control",
+     "a": "In a market economy, prices and production are driven by supply and demand through individual buyers and sellers. In a command economy, the government makes central decisions about production."
+    },
+    {
+     "q": "What is a mixed economy, and why do most modern countries use one?",
+     "ex": "Combines market and government elements",
+     "a": "A mixed economy combines free-market elements with government intervention. Most modern countries use one to balance economic efficiency with social welfare and stability."
+    }
+   ]
+  },
+  {
+   "title": "Trade and Globalization",
+   "problems": [
+    {
+     "q": "What is comparative advantage, and why does it make trade beneficial?",
+     "ex": "Producing what you're relatively best at",
+     "a": "Comparative advantage means a country can produce a good at a lower opportunity cost than another. Even if one country is better at producing everything, both benefit by specializing and trading."
+    },
+    {
+     "q": "What is a tariff, and what is one effect it has on trade?",
+     "ex": "A tax on imported goods",
+     "a": "A tariff is a tax on imported goods. It raises import prices, which can protect domestic industries but also raises costs for consumers and can trigger retaliation."
+    },
+    {
+     "q": "What is globalization?",
+     "ex": "Increasing interconnectedness of economies",
+     "a": "Globalization is the increasing economic, cultural, and technological interconnectedness of countries worldwide, driven by trade, investment, communication, and transportation."
+    },
+    {
+     "q": "What is one benefit and one criticism commonly associated with globalization?",
+     "ex": "Lower prices/more choice vs. job losses/inequality",
+     "a": "Benefit: lower consumer prices and greater variety through specialization. Criticism: job losses in industries that can't compete with cheaper foreign labor, and rising inequality."
+    }
+   ]
+  },
+  {
+   "title": "Personal Finance Basics",
+   "problems": [
+    {
+     "q": "What is the difference between a budget's fixed and variable expenses?",
+     "ex": "Rent vs. groceries",
+     "a": "Fixed expenses stay the same each period (rent, car payment), while variable expenses change month to month (groceries, entertainment)."
+    },
+    {
+     "q": "What is compound interest, and why does it matter for saving early?",
+     "ex": "Interest earning interest over time",
+     "a": "Compound interest is interest calculated on both the original amount and interest already earned, so savings grow faster over time -- starting early lets compounding work over more years."
+    },
+    {
+     "q": "What is the difference between a credit score and a credit report?",
+     "ex": "A number vs. the underlying detailed history",
+     "a": "A credit report is a detailed record of your borrowing and repayment history. A credit score is a single number summarizing your creditworthiness for lenders."
+    },
+    {
+     "q": "Why is having an emergency fund considered an important part of personal finance?",
+     "ex": "Covers unexpected costs without debt",
+     "a": "An emergency fund covers unexpected expenses without relying on high-interest debt like credit cards, providing financial stability during unforeseen events."
+    }
+   ]
+  }
+ ],
+ [
+  {
+   "title": "Government and civics",
+   "problems": [
+    {
+     "q": "What is federalism and how does it work in the United States?",
+     "ex": "Think: power shared between national and state governments",
+     "a": "Federalism: a system dividing governmental authority between a central government and constituent units (states). US federalism: federal government has enumerated powers (declared war, coin money, regulate interstate commerce). States have reserved powers (education, police, licensing). Shared powers: taxes, courts. Necessary and proper clause expands federal power."
+    },
+    {
+     "q": "What is the difference between civil liberties and civil rights?",
+     "ex": "Think: freedom from government vs. protection from discrimination",
+     "a": "Civil liberties: protections from government overreach (First Amendment freedoms, Fourth Amendment against unreasonable search). Civil rights: protection from discrimination by government and private actors -- right to equal treatment regardless of race, sex, religion. Both protected by Constitution and federal law."
+    },
+    {
+     "q": "What are the major political ideologies in the United States?",
+     "ex": "Think: liberal/progressive, conservative, libertarian, socialist",
+     "a": "Liberal/progressive: active government role in social welfare and equality; regulate markets. Conservative: limited government, traditional values, free markets, strong national defense. Libertarian: maximum individual liberty, minimal government in both economic and social spheres. Democratic socialist: government ownership or strong regulation of key industries with strong social safety net. Most Americans hold complex, mixed positions."
+    },
+    {
+     "q": "What is the role of political parties in American democracy?",
+     "ex": "Think: coordinate political activity, connect voters to government",
+     "a": "Political parties: recruit and support candidates, organize government (majority/minority caucuses), mobilize voters, develop platforms (policy positions). Two-party system reinforced by winner-take-all elections. Critics: parties prioritize winning over governing; partisan polarization gridlocks government."
+    }
+   ]
+  },
+  {
+   "title": "Contemporary issues",
+   "problems": [
+    {
+     "q": "What is income inequality and how is it measured?",
+     "ex": "Think: Gini coefficient; wealth concentrated at the top",
+     "a": "Income inequality: the unequal distribution of income across a population. Measured by: Gini coefficient (0 = perfect equality, 1 = one person has everything), income shares (top 1% or 10% of income), or wealth distribution. US income inequality is among the highest of wealthy nations and has increased significantly since the 1970s."
+    },
+    {
+     "q": "What are the arguments for and against immigration?",
+     "ex": "Think: economic benefits vs. labor competition; cultural arguments",
+     "a": "For: economic growth (immigrants start businesses, fill labor shortages, pay taxes, drive innovation), humanitarian obligations, cultural enrichment, demographic replacement of aging population. Against: competition for low-wage jobs, cultural change, strain on public services, national security concerns. Evidence generally supports net economic benefits from immigration."
+    },
+    {
+     "q": "What is climate justice?",
+     "ex": "Think: unequal distribution of climate change burdens",
+     "a": "Climate justice: the recognition that climate change disproportionately affects those who contributed least to it -- low-income countries, indigenous communities, coastal populations, and future generations. The wealthiest nations (who emitted most historically) face less immediate threat than poorer, more vulnerable nations."
+    },
+    {
+     "q": "What is the debate around free speech vs. harmful speech?",
+     "ex": "Think: First Amendment limits vs. real-world harms",
+     "a": "Free speech principle: governments should not restrict speech based on content (even offensive speech). Limits: the First Amendment only restricts government, not private actors. Some argue harmful speech (hate speech, incitement) causes real harm. Others argue restricting speech is more dangerous than the speech itself. The debate involves competing values: liberty vs. equality vs. safety."
+    }
+   ]
+  },
+  {
+   "title": "Historical thinking skills",
+   "problems": [
+    {
+     "q": "What is chronological reasoning?",
+     "ex": "Think: understanding change and continuity over time",
+     "a": "Chronological reasoning: understanding when events happened, how long processes took, and how causation operates over time. Includes: periodization (how we divide history into eras and why), continuity and change (what persists vs. what transforms), and historical causation (immediate, proximate, and underlying causes)."
+    },
+    {
+     "q": "What is the difference between causation and correlation in historical analysis?",
+     "ex": "Think: one event causing another vs. two events occurring together",
+     "a": "Historians must distinguish: correlation (two events occurring together -- rising CO2 and rising temperatures) from causation (one causing the other). Historical causation requires: temporal priority (cause precedes effect), correlation, and elimination of alternative causes. Multiple causes are almost always present."
+    },
+    {
+     "q": "What is historical empathy and why is it important?",
+     "ex": "Think: understanding past people in their own context",
+     "a": "Historical empathy: understanding why historical actors made the decisions they did within their own context -- not the same as sympathy or approval. Avoids presentism (judging the past by today's standards). Helps explain rather than simply condemn. Essential for understanding why reasonable people in the past believed and did things we now recognize as wrong."
+    },
+    {
+     "q": "What are the 5 Cs of historical thinking?",
+     "ex": "Think: Change, Causality, Context, Contingency, Complexity",
+     "a": "Change and Continuity: what transforms vs. persists. Causality: why events occurred. Context: understanding the broader setting. Contingency: things could have gone differently (history is not inevitable). Complexity: avoiding simple explanations for complex events. Together these form the foundation of rigorous historical analysis."
+    }
+   ]
+  }
+ ]
+],
     cs: [
       [
         { title: `Advanced programming concepts`, problems: [
@@ -6343,149 +6502,288 @@ const PRACTICE = {
       ]
     ],
     ela: [
-      [
- {
-  "title": "Puritan & Colonial Literature",
-  "problems": [
-   {
-    "q": "What were the main purposes of Puritan writing in colonial America?",
-    "ex": "Think: religion, morality, community",
-    "a": "Puritan writing aimed to guide moral and spiritual life, record providential history (signs of God's will), and reinforce communal religious values, through sermons, journals, and captivity narratives."
-   },
-   {
-    "q": "What is a 'plain style' in Puritan literature, and why did Puritans favor it?",
-    "ex": "Simplicity over ornamentation",
-    "a": "Plain style uses direct, unadorned language rather than elaborate metaphors. Puritans favored it because they believed religious truth should be communicated clearly, without ornamentation that might glorify the writer instead of God."
-   },
-   {
-    "q": "What is a captivity narrative? Name a well-known example.",
-    "ex": "A colonist's account of being captured",
-    "a": "A captivity narrative is a first-person account of a colonist captured by Native Americans, often framing the ordeal as a test of faith. Mary Rowlandson's account is a famous example."
-   },
-   {
-    "q": "How did Puritan literature reflect the concept of 'divine providence'?",
-    "ex": "Everything happens for a religious reason",
-    "a": "Puritans believed all events were part of God's plan. Writers interpreted personal and historical events as signs of divine judgment, warning, or favor, reinforcing that life was a spiritual test."
-   }
-  ]
- },
- {
-  "title": "Romanticism & Transcendentalism",
-  "problems": [
-   {
-    "q": "What core beliefs define American Romanticism?",
-    "ex": "Emotion, nature, the individual",
-    "a": "American Romanticism emphasized emotion over reason, the beauty and spiritual power of nature, imagination, and the value of the individual over society's institutions."
-   },
-   {
-    "q": "What is Transcendentalism, and how does it relate to Romanticism?",
-    "ex": "A philosophical offshoot of Romantic ideas",
-    "a": "Transcendentalism (led by Emerson and Thoreau) holds that people can transcend the physical world through intuition and a personal connection to nature and the divine, building on Romantic ideals with a specific philosophy of self-reliance."
-   },
-   {
-    "q": "What does Emerson mean by 'self-reliance'?",
-    "ex": "Trusting your own judgment over social conformity",
-    "a": "Self-reliance is Emerson's idea that individuals should trust their own intuition and judgment rather than conforming to society's expectations -- nonconformity as a path to authentic living."
-   },
-   {
-    "q": "Why did Thoreau go to Walden Pond, and what did he hope to learn?",
-    "ex": "'I went to the woods because I wished to live deliberately'",
-    "a": "Thoreau moved to Walden Pond to live simply and deliberately, away from society's distractions, to test whether he could strip life down to its essentials and discover what was truly necessary."
-   }
-  ]
- },
- {
-  "title": "Realism & Naturalism",
-  "problems": [
-   {
-    "q": "How does Realism differ from Romanticism in its portrayal of life?",
-    "ex": "Ordinary life vs. idealized emotion",
-    "a": "Realism portrays everyday life and characters truthfully and objectively, focusing on believable experiences, in contrast to Romanticism's idealized emotion and connection to nature."
-   },
-   {
-    "q": "What is Naturalism, and how does it push Realism further?",
-    "ex": "Characters as products of forces beyond their control",
-    "a": "Naturalism extends Realism by portraying characters as shaped and often trapped by heredity, environment, and social forces beyond their control, often with a bleak or deterministic tone."
-   },
-   {
-    "q": "What role does setting typically play in a Naturalist story?",
-    "ex": "An indifferent or hostile force",
-    "a": "Setting in Naturalism often acts as an indifferent or hostile force shaping characters' fates -- nature or society doesn't care about the individual's struggles."
-   },
-   {
-    "q": "Give an example of a theme common to both Realist and Naturalist literature.",
-    "ex": "Social class, survival, human limitation",
-    "a": "Common themes include the struggle for survival, the limits of free will, social class and economic hardship, and the gap between appearance and reality."
-   }
-  ]
- },
- {
-  "title": "The Harlem Renaissance",
-  "problems": [
-   {
-    "q": "What was the Harlem Renaissance, and roughly when did it occur?",
-    "ex": "1920s-30s, New York City",
-    "a": "The Harlem Renaissance was a flourishing of African American art, literature, music, and intellectual life centered in Harlem, New York, roughly during the 1920s into the 1930s."
-   },
-   {
-    "q": "What themes did Harlem Renaissance writers commonly explore?",
-    "ex": "Identity, pride, racial injustice",
-    "a": "Common themes included Black identity and pride, the African American experience and heritage, racial injustice, and the search for self-expression free from stereotypes."
-   },
-   {
-    "q": "Name one major writer of the Harlem Renaissance and one work associated with them.",
-    "ex": "Langston Hughes, Zora Neale Hurston...",
-    "a": "Examples include Langston Hughes ('The Negro Speaks of Rivers'), Zora Neale Hurston ('Their Eyes Were Watching God'), and Claude McKay ('If We Must Die')."
-   },
-   {
-    "q": "How did the Harlem Renaissance influence American literature and culture more broadly?",
-    "ex": "Jazz, dialect, new voices",
-    "a": "It introduced new literary voices and forms, challenged racist stereotypes, and helped establish African American literature as a vital, influential part of the broader American literary tradition."
-   }
-  ]
- }
+ [
+  {
+   "title": "Puritan & Colonial Literature",
+   "problems": [
+    {
+     "q": "What were the main purposes of Puritan writing in colonial America?",
+     "ex": "Think: religion, morality, community",
+     "a": "Puritan writing aimed to guide moral and spiritual life, record providential history (signs of God's will), and reinforce communal religious values, through sermons, journals, and captivity narratives."
+    },
+    {
+     "q": "What is a 'plain style' in Puritan literature, and why did Puritans favor it?",
+     "ex": "Simplicity over ornamentation",
+     "a": "Plain style uses direct, unadorned language rather than elaborate metaphors. Puritans favored it because they believed religious truth should be communicated clearly, without ornamentation that might glorify the writer instead of God."
+    },
+    {
+     "q": "What is a captivity narrative? Name a well-known example.",
+     "ex": "A colonist's account of being captured",
+     "a": "A captivity narrative is a first-person account of a colonist captured by Native Americans, often framing the ordeal as a test of faith. Mary Rowlandson's account is a famous example."
+    },
+    {
+     "q": "How did Puritan literature reflect the concept of 'divine providence'?",
+     "ex": "Everything happens for a religious reason",
+     "a": "Puritans believed all events were part of God's plan. Writers interpreted personal and historical events as signs of divine judgment, warning, or favor, reinforcing that life was a spiritual test."
+    }
+   ]
+  },
+  {
+   "title": "Romanticism & Transcendentalism",
+   "problems": [
+    {
+     "q": "What core beliefs define American Romanticism?",
+     "ex": "Emotion, nature, the individual",
+     "a": "American Romanticism emphasized emotion over reason, the beauty and spiritual power of nature, imagination, and the value of the individual over society's institutions."
+    },
+    {
+     "q": "What is Transcendentalism, and how does it relate to Romanticism?",
+     "ex": "A philosophical offshoot of Romantic ideas",
+     "a": "Transcendentalism (led by Emerson and Thoreau) holds that people can transcend the physical world through intuition and a personal connection to nature and the divine, building on Romantic ideals with a specific philosophy of self-reliance."
+    },
+    {
+     "q": "What does Emerson mean by 'self-reliance'?",
+     "ex": "Trusting your own judgment over social conformity",
+     "a": "Self-reliance is Emerson's idea that individuals should trust their own intuition and judgment rather than conforming to society's expectations -- nonconformity as a path to authentic living."
+    },
+    {
+     "q": "Why did Thoreau go to Walden Pond, and what did he hope to learn?",
+     "ex": "'I went to the woods because I wished to live deliberately'",
+     "a": "Thoreau moved to Walden Pond to live simply and deliberately, away from society's distractions, to test whether he could strip life down to its essentials and discover what was truly necessary."
+    }
+   ]
+  },
+  {
+   "title": "Realism & Naturalism",
+   "problems": [
+    {
+     "q": "How does Realism differ from Romanticism in its portrayal of life?",
+     "ex": "Ordinary life vs. idealized emotion",
+     "a": "Realism portrays everyday life and characters truthfully and objectively, focusing on believable experiences, in contrast to Romanticism's idealized emotion and connection to nature."
+    },
+    {
+     "q": "What is Naturalism, and how does it push Realism further?",
+     "ex": "Characters as products of forces beyond their control",
+     "a": "Naturalism extends Realism by portraying characters as shaped and often trapped by heredity, environment, and social forces beyond their control, often with a bleak or deterministic tone."
+    },
+    {
+     "q": "What role does setting typically play in a Naturalist story?",
+     "ex": "An indifferent or hostile force",
+     "a": "Setting in Naturalism often acts as an indifferent or hostile force shaping characters' fates -- nature or society doesn't care about the individual's struggles."
+    },
+    {
+     "q": "Give an example of a theme common to both Realist and Naturalist literature.",
+     "ex": "Social class, survival, human limitation",
+     "a": "Common themes include the struggle for survival, the limits of free will, social class and economic hardship, and the gap between appearance and reality."
+    }
+   ]
+  },
+  {
+   "title": "The Harlem Renaissance",
+   "problems": [
+    {
+     "q": "What was the Harlem Renaissance, and roughly when did it occur?",
+     "ex": "1920s-30s, New York City",
+     "a": "The Harlem Renaissance was a flourishing of African American art, literature, music, and intellectual life centered in Harlem, New York, roughly during the 1920s into the 1930s."
+    },
+    {
+     "q": "What themes did Harlem Renaissance writers commonly explore?",
+     "ex": "Identity, pride, racial injustice",
+     "a": "Common themes included Black identity and pride, the African American experience and heritage, racial injustice, and the search for self-expression free from stereotypes."
+    },
+    {
+     "q": "Name one major writer of the Harlem Renaissance and one work associated with them.",
+     "ex": "Langston Hughes, Zora Neale Hurston...",
+     "a": "Examples include Langston Hughes ('The Negro Speaks of Rivers'), Zora Neale Hurston ('Their Eyes Were Watching God'), and Claude McKay ('If We Must Die')."
+    },
+    {
+     "q": "How did the Harlem Renaissance influence American literature and culture more broadly?",
+     "ex": "Jazz, dialect, new voices",
+     "a": "It introduced new literary voices and forms, challenged racist stereotypes, and helped establish African American literature as a vital, influential part of the broader American literary tradition."
+    }
+   ]
+  }
+ ],
+ [
+  {
+   "title": "Theme and Central Idea",
+   "problems": [
+    {
+     "q": "What is the difference between a theme and a topic?",
+     "ex": "Topic = subject; theme = message about that subject",
+     "a": "A topic is what a text is about (e.g., war). A theme is the author's insight or message about that topic (e.g., 'War destroys innocence')."
+    },
+    {
+     "q": "How do you identify theme in a story?",
+     "ex": "Look for recurring ideas, character changes, and resolutions",
+     "a": "Identify what the main character learns or how they change. Look for repeated symbols or ideas. Ask: what is the author trying to say about human nature or life?"
+    },
+    {
+     "q": "What is a universal theme? Give an example.",
+     "ex": "A theme that applies across cultures and time periods",
+     "a": "A universal theme is a message relevant to all humans across time and culture. Example: 'Love requires sacrifice' or 'Power corrupts.'"
+    },
+    {
+     "q": "How can two texts have the same topic but different themes?",
+     "ex": "Authors convey different messages about the same subject",
+     "a": "Example: Two novels about war -- one might argue war is honorable, another that it is pointless. Same topic (war), different themes (honor vs. futility)."
+    }
+   ]
+  },
+  {
+   "title": "Character Analysis",
+   "problems": [
+    {
+     "q": "What is the difference between a dynamic and a static character?",
+     "ex": "Dynamic = changes; static = stays the same",
+     "a": "A dynamic character undergoes significant change during the story. A static character remains essentially the same throughout."
+    },
+    {
+     "q": "How do authors reveal character? List at least three methods.",
+     "ex": "STEAL: Speech, Thoughts, Effect on others, Actions, Looks",
+     "a": "Authors reveal character through: (1) dialogue and speech, (2) actions and decisions, (3) thoughts and feelings, (4) how other characters react to them, (5) physical description."
+    },
+    {
+     "q": "What is a foil character and why do authors use them?",
+     "ex": "A character who contrasts with another",
+     "a": "A foil is a character whose traits contrast with the protagonist's, highlighting the protagonist's qualities. Example: Draco Malfoy as a foil to Harry Potter."
+    },
+    {
+     "q": "Analyze how a character's flaw might drive the plot.",
+     "ex": "Tragic heroes often have a fatal flaw (hamartia)",
+     "a": "A character's weakness or flaw (hamartia) creates conflict. Example: Macbeth's ambition leads him to murder, which causes his downfall. The flaw is both the cause and consequence."
+    }
+   ]
+  },
+  {
+   "title": "Literary Devices",
+   "problems": [
+    {
+     "q": "What is the difference between a simile and a metaphor? Give examples.",
+     "ex": "Both compare; simile uses 'like' or 'as'",
+     "a": "Simile: 'Her smile is LIKE sunshine.' Metaphor: 'Her smile IS sunshine.' Similes use like/as; metaphors state equivalence directly."
+    },
+    {
+     "q": "What is dramatic irony? Give an example.",
+     "ex": "Audience knows something the character doesn't",
+     "a": "Dramatic irony: the audience has knowledge that a character lacks. Example: In Romeo and Juliet, we know Juliet is alive when Romeo finds her, but he believes she is dead."
+    },
+    {
+     "q": "Explain how symbolism works in literature. Give an example.",
+     "ex": "An object or element represents something beyond itself",
+     "a": "Symbolism is when an author uses something concrete to represent an abstract idea. Example: The green light in The Great Gatsby symbolizes Gatsby's dreams and the American Dream."
+    },
+    {
+     "q": "What is the effect of using imagery in a text?",
+     "ex": "Imagery appeals to the senses",
+     "a": "Imagery creates vivid mental pictures by appealing to sight, sound, smell, taste, or touch. It helps readers experience what characters experience, creating emotional connection."
+    }
+   ]
+  },
+  {
+   "title": "Analyzing Narrative Structure",
+   "problems": [
+    {
+     "q": "What are the five parts of Freytag's Pyramid?",
+     "ex": "Rising action leads to climax leads to resolution",
+     "a": "1. Exposition (introduction). 2. Rising Action (conflict builds). 3. Climax (turning point). 4. Falling Action (consequences). 5. Resolution/Denouement (outcome)."
+    },
+    {
+     "q": "What is a frame narrative? Give an example.",
+     "ex": "A story within a story",
+     "a": "A frame narrative is an outer story that contains one or more inner stories. Example: In The Princess Bride, the grandfather reading to his grandson is the frame; the story of Westley is the inner narrative."
+    },
+    {
+     "q": "How does point of view affect how a story is told?",
+     "ex": "Who is telling the story changes what we know",
+     "a": "First person (I/me) gives intimacy but limited perspective. Third person limited focuses on one character's thoughts. Third person omniscient knows all characters' inner thoughts."
+    },
+    {
+     "q": "What is in medias res and why do authors use it?",
+     "ex": "Latin: 'in the middle of things'",
+     "a": "In medias res means starting the story in the middle of the action, then using flashbacks to fill in background. It creates immediate intrigue and engages readers faster."
+    }
+   ]
+  }
+ ],
+ [
+  {
+   "title": "Elements of an Argument",
+   "problems": [
+    {
+     "q": "What are the three main parts of a classical argument (Aristotle)?",
+     "ex": "Ethos, pathos, logos",
+     "a": "Ethos (credibility/ethics), Pathos (emotion/audience connection), Logos (logic/evidence). Effective arguments use all three."
+    },
+    {
+     "q": "What is a claim in an argumentative essay?",
+     "ex": "The main position or thesis",
+     "a": "A claim is the writer's central assertion \u2014 the position they are arguing for. It should be debatable, specific, and provable."
+    },
+    {
+     "q": "What is the difference between a claim and a counterclaim?",
+     "ex": "Your position vs. the opposing position",
+     "a": "A claim is your position. A counterclaim is an opposing argument. Strong essays acknowledge and refute counterclaims to strengthen their own position."
+    },
+    {
+     "q": "What makes evidence 'strong' in an argument?",
+     "ex": "Think: relevant, credible, sufficient",
+     "a": "Strong evidence is: (1) Relevant to the claim. (2) From a credible source. (3) Specific (statistics, expert testimony, examples). (4) Accurately cited."
+    }
+   ]
+  },
+  {
+   "title": "Logical Fallacies",
+   "problems": [
+    {
+     "q": "What is an ad hominem fallacy?",
+     "ex": "Attacking the person instead of the argument",
+     "a": "An ad hominem fallacy attacks the character or motives of an opponent rather than addressing the argument itself. Example: 'You can't trust his views on climate change \u2014 he's not a scientist.'"
+    },
+    {
+     "q": "What is a straw man fallacy?",
+     "ex": "Misrepresenting an opponent's argument",
+     "a": "A straw man fallacy involves misrepresenting or oversimplifying an opponent's position to make it easier to attack. Example: 'They want stricter gun laws \u2014 they want to take everyone's guns away!'"
+    },
+    {
+     "q": "What is a slippery slope fallacy?",
+     "ex": "Assuming one event leads inevitably to extreme outcomes",
+     "a": "Slippery slope: claiming that one event will inevitably lead to a chain of extreme consequences. Example: 'If we allow this, next we'll be doing that, and then everything will fall apart.'"
+    },
+    {
+     "q": "What is circular reasoning (begging the question)?",
+     "ex": "Using the conclusion as evidence for itself",
+     "a": "Circular reasoning uses the claim as its own evidence. Example: 'This book is the best because it is the greatest book ever written.' The conclusion ('best') is restated as the evidence."
+    }
+   ]
+  },
+  {
+   "title": "Writing and Revision",
+   "problems": [
+    {
+     "q": "What is the purpose of a thesis statement in an argumentative essay?",
+     "ex": "The roadmap of your argument",
+     "a": "A thesis states your main claim and often previews your supporting reasons. It tells readers what you are arguing and why."
+    },
+    {
+     "q": "What is the PEEL paragraph structure?",
+     "ex": "Point, Evidence, Explain, Link",
+     "a": "PEEL: (P)oint \u2014 state your argument. (E)vidence \u2014 provide support. (E)xplain \u2014 analyze how evidence supports your point. (L)ink \u2014 connect back to the thesis or transition to next point."
+    },
+    {
+     "q": "What is the difference between paraphrasing and quoting? When should you use each?",
+     "ex": "Restate in own words vs. use exact words",
+     "a": "Paraphrasing restates the idea in your own words (better for integrating ideas smoothly). Direct quoting uses the author's exact words (better when the specific wording matters)."
+    },
+    {
+     "q": "What should you include in a rebuttal paragraph?",
+     "ex": "Acknowledge the counterclaim, then refute it",
+     "a": "A rebuttal paragraph: (1) Acknowledges the opposing view fairly. (2) Explains why it is weaker than your position. (3) Reinforces your claim with additional evidence."
+    }
+   ]
+  }
+ ]
 ],
-      [
-        { title: `Elements of an Argument`, problems: [
-          { q: `What are the three main parts of a classical argument (Aristotle)?`, ex: `Ethos, pathos, logos`, a: `Ethos (credibility/ethics), Pathos (emotion/audience connection), Logos (logic/evidence). Effective arguments use all three.` },
-          { q: `What is a claim in an argumentative essay?`, ex: `The main position or thesis`, a: `A claim is the writer's central assertion — the position they are arguing for. It should be debatable, specific, and provable.` },
-          { q: `What is the difference between a claim and a counterclaim?`, ex: `Your position vs. the opposing position`, a: `A claim is your position. A counterclaim is an opposing argument. Strong essays acknowledge and refute counterclaims to strengthen their own position.` },
-          { q: `What makes evidence 'strong' in an argument?`, ex: `Think: relevant, credible, sufficient`, a: `Strong evidence is: (1) Relevant to the claim. (2) From a credible source. (3) Specific (statistics, expert testimony, examples). (4) Accurately cited.` },
-        ]},
-        { title: `Logical Fallacies`, problems: [
-          { q: `What is an ad hominem fallacy?`, ex: `Attacking the person instead of the argument`, a: `An ad hominem fallacy attacks the character or motives of an opponent rather than addressing the argument itself. Example: 'You can't trust his views on climate change — he's not a scientist.'` },
-          { q: `What is a straw man fallacy?`, ex: `Misrepresenting an opponent's argument`, a: `A straw man fallacy involves misrepresenting or oversimplifying an opponent's position to make it easier to attack. Example: 'They want stricter gun laws — they want to take everyone's guns away!'` },
-          { q: `What is a slippery slope fallacy?`, ex: `Assuming one event leads inevitably to extreme outcomes`, a: `Slippery slope: claiming that one event will inevitably lead to a chain of extreme consequences. Example: 'If we allow this, next we'll be doing that, and then everything will fall apart.'` },
-          { q: `What is circular reasoning (begging the question)?`, ex: `Using the conclusion as evidence for itself`, a: `Circular reasoning uses the claim as its own evidence. Example: 'This book is the best because it is the greatest book ever written.' The conclusion ('best') is restated as the evidence.` },
-        ]},
-        { title: `Writing and Revision`, problems: [
-          { q: `What is the purpose of a thesis statement in an argumentative essay?`, ex: `The roadmap of your argument`, a: `A thesis states your main claim and often previews your supporting reasons. It tells readers what you are arguing and why.` },
-          { q: `What is the PEEL paragraph structure?`, ex: `Point, Evidence, Explain, Link`, a: `PEEL: (P)oint — state your argument. (E)vidence — provide support. (E)xplain — analyze how evidence supports your point. (L)ink — connect back to the thesis or transition to next point.` },
-          { q: `What is the difference between paraphrasing and quoting? When should you use each?`, ex: `Restate in own words vs. use exact words`, a: `Paraphrasing restates the idea in your own words (better for integrating ideas smoothly). Direct quoting uses the author's exact words (better when the specific wording matters).` },
-          { q: `What should you include in a rebuttal paragraph?`, ex: `Acknowledge the counterclaim, then refute it`, a: `A rebuttal paragraph: (1) Acknowledges the opposing view fairly. (2) Explains why it is weaker than your position. (3) Reinforces your claim with additional evidence.` },
-        ]},
-      ],
-      [
-        { title: `Evaluating Sources`, problems: [
-          { q: `What does CRAAP stand for in source evaluation?`, ex: `Criteria for evaluating source credibility`, a: `Currency (how recent), Relevance (fits your topic), Authority (who wrote it), Accuracy (verifiable facts), Purpose (why it was written — bias?).` },
-          { q: `What is the difference between a primary and secondary source?`, ex: `Firsthand vs. secondhand account`, a: `Primary sources are firsthand accounts (diaries, original research, speeches). Secondary sources analyze or interpret primary sources (textbooks, articles, biographies).` },
-          { q: `Why is it important to consult multiple sources?`, ex: `One source may be biased or incomplete`, a: `Multiple sources help verify information, provide different perspectives, reduce the risk of relying on biased or incomplete information, and build a more complete understanding.` },
-          { q: `What is confirmation bias and how can it affect research?`, ex: `Seeking out information that confirms existing beliefs`, a: `Confirmation bias is the tendency to favor information that supports what you already believe. It can cause researchers to overlook contradictory evidence and produce biased conclusions.` },
-        ]},
-        { title: `Reading Informational Texts`, problems: [
-          { q: `What is the difference between an implicit and explicit main idea?`, ex: `Stated vs. unstated`, a: `Explicit main idea is directly stated in the text. Implicit main idea must be inferred from details, structure, and context.` },
-          { q: `What are text structures? List three.`, ex: `The organizational pattern of a nonfiction text`, a: `Text structures include: (1) Cause and Effect. (2) Compare and Contrast. (3) Problem and Solution. (4) Sequence/Chronological. (5) Description. Signal words help identify each.` },
-          { q: `How do you distinguish fact from opinion in a text?`, ex: `Facts can be proven; opinions are beliefs or judgments`, a: `A fact is verifiable and objective ('Water boils at 100°C'). An opinion expresses a belief, attitude, or judgment ('Water is the best drink'). Look for opinion signal words: believe, think, should, best.` },
-          { q: `What is the author's purpose (PIE) and how does it affect the content?`, ex: `PIE: Persuade, Inform, Entertain`, a: `An author's purpose shapes their choices. To PERSUADE: uses argument and evidence. To INFORM: uses facts and explanations. To ENTERTAIN: uses narrative and emotional engagement.` },
-        ]},
-        { title: `Research Process and Citation`, problems: [
-          { q: `What are the steps of the research process in order?`, ex: `Think: question, search, evaluate, synthesize, cite`, a: `1. Choose and narrow a topic. 2. Develop research questions. 3. Find and evaluate sources. 4. Take notes. 5. Organize and synthesize information. 6. Write and cite.` },
-          { q: `What information do you need for an MLA citation of a website?`, ex: `Author, title, site name, date, URL`, a: `Author's last name, first name. 'Title of Page.' Name of Website, Day Month Year of publication, URL.` },
-          { q: `What is plagiarism and how can you avoid it?`, ex: `Using others' ideas/words without credit`, a: `Plagiarism is presenting someone else's words or ideas as your own. Avoid it by: quoting and citing sources, paraphrasing accurately, using your own analysis, and tracking all sources.` },
-          { q: `What is the difference between a bibliography and an annotated bibliography?`, ex: `List of sources vs. list of sources with summaries`, a: `A bibliography lists sources. An annotated bibliography includes a brief summary and evaluation of each source, explaining its relevance and credibility.` },
-        ]},
-      ]
-    ],
     history: [
       [
         { title: `Mesopotamia and Egypt`, problems: [
@@ -7468,161 +7766,313 @@ The 'with' statement automatically closes the file when done.` },
       ]
     ],
     history: [
-      [
-        { title: `US Government Structure`, problems: [
-          { q: `What is federalism and how does it work in the US?`, ex: `Division of power between national and state governments`, a: `Federalism divides government powers between the federal (national) government and state governments. The Constitution grants specific powers to federal government (coining money, military); reserves others to states (education, most police powers); and shares some (taxation).` },
-          { q: `What are the checks and balances built into the US government?`, ex: `Each branch limits the others`, a: `Congress makes laws (legislative); President can veto them (executive); Courts can declare them unconstitutional (judicial). Congress can override vetoes with 2/3 vote. President appoints judges; Senate confirms. This prevents any branch from becoming too powerful.` },
-          { q: `What is the role of the Supreme Court and what is judicial review?`, ex: `Highest court; interprets the Constitution`, a: `The Supreme Court is the final interpreter of the Constitution. Judicial review (established in Marbury v. Madison, 1803) gives courts the power to strike down laws that violate the Constitution. Justices serve lifetime appointments to ensure independence.` },
-          { q: `What is the difference between a democracy, a republic, and an oligarchy?`, ex: `Different systems of governance`, a: `Democracy: citizens directly make decisions. Republic: citizens elect representatives to make decisions on their behalf (what the US is). Oligarchy: small group of powerful people (wealthy, military) rule. These categories often overlap in practice.` },
-        ]},
-        { title: `Political Parties and Elections`, problems: [
-          { q: `What are the main differences between the Democratic and Republican parties today?`, ex: `Core values and policy positions`, a: `Democrats: tend to favor government programs for social welfare, environmental regulation, progressive taxation, and social liberalism. Republicans: tend to favor smaller government, lower taxes, less regulation, and social conservatism. Both parties contain diverse coalitions.` },
-          { q: `What is gerrymandering and how does it affect elections?`, ex: `Manipulating district boundaries for partisan advantage`, a: `Gerrymandering is the manipulation of electoral district boundaries to favor one party. It can create 'packed' districts (concentrating opposition voters) and 'cracked' districts (diluting opposition). It can allow a party to win more seats than their vote share would proportionally warrant.` },
-          { q: `What is the Electoral College and why is it controversial?`, ex: `US system for electing the President`, a: `The Electoral College: each state gets electors = its representatives + senators. A candidate needs 270 of 538 electoral votes to win. It's controversial because: (1) a candidate can win the popular vote but lose the election, (2) it gives smaller states disproportionate influence.` },
-          { q: `What is voter turnout and what factors affect it?`, ex: `Percentage of eligible voters who vote`, a: `Voter turnout is the percentage of eligible citizens who actually vote. Factors: age (older people vote more), education, income (higher = more voting), voter registration requirements, geographic location, and competitive elections. US turnout is comparatively low among democracies.` },
-        ]},
-        { title: `Constitutional Issues`, problems: [
-          { q: `How has the First Amendment been interpreted by the courts?`, ex: `Freedom of religion, speech, press, assembly, and petition`, a: `The First Amendment protects speech but not all speech — courts have ruled some speech unprotected (incitement to imminent lawless action, true threats, obscenity). Public school students have limited First Amendment rights; government employees more so than private employees.` },
-          { q: `What does the Fourth Amendment protect against?`, ex: `Unreasonable searches and seizures`, a: `The Fourth Amendment protects against unreasonable searches and seizures and requires warrants based on probable cause. Courts have debated its application to digital data, cell phone searches, and surveillance in the digital age.` },
-          { q: `What is due process and what does it guarantee?`, ex: `Fair legal procedures`, a: `Due process (Fifth and Fourteenth Amendments): the government must follow fair procedures before depriving citizens of life, liberty, or property. Includes: right to notice, right to be heard, and right to a fair and impartial decision-maker.` },
-          { q: `How does the 14th Amendment's Equal Protection Clause work?`, ex: `Government must treat similarly situated people equally`, a: `Equal protection requires government to treat people equally under the law. Courts scrutinize laws that classify people by race (strict scrutiny) or sex (intermediate scrutiny). Key cases: Brown v. Board (desegregation), Obergefell v. Hodges (marriage equality).` },
-        ]},
-        { title: `Policy Making`, problems: [
-          { q: `What is public policy and how is it made?`, ex: `Government actions to address public issues`, a: `Public policy is what governments choose to do (or not do) about public issues. It's made through: identifying problems, agenda-setting, formulation (developing options), adoption (passing laws), implementation (carrying out), and evaluation (assessing effectiveness).` },
-          { q: `What are interest groups and how do they influence policy?`, ex: `Organizations that advocate for specific causes`, a: `Interest groups represent corporations, professions, causes, or ideologies and try to influence government policy through: lobbying (direct contact with legislators), campaign contributions, public advocacy, litigation, and grassroots organizing.` },
-          { q: `What is the role of the media in a democracy?`, ex: `The 'Fourth Estate' — checking power and informing citizens`, a: `Media serves democracy by: informing citizens about government actions, setting the public agenda (what issues people think about), providing a forum for debate, and holding government accountable through investigative journalism. Media bias and misinformation are ongoing challenges.` },
-          { q: `What is the difference between fiscal policy and monetary policy?`, ex: `Two main economic policy tools`, a: `Fiscal policy: government decisions about taxing and spending (controlled by Congress and President). Monetary policy: decisions about money supply and interest rates (controlled by the Federal Reserve/central bank). Both are used to stabilize the economy.` },
-        ]},
-      ],
-      [
-        { title: `Economic Principles`, problems: [
-          { q: `What is economics and what are the two main branches?`, ex: `Study of scarcity and resource allocation`, a: `Economics studies how individuals, businesses, and governments allocate scarce resources. Microeconomics: behavior of individuals and businesses. Macroeconomics: behavior of entire economies (inflation, unemployment, GDP).` },
-          { q: `What is GDP and what does it measure?`, ex: `Gross Domestic Product`, a: `GDP is the total market value of all goods and services produced within a country in a year. It measures economic output and is used to compare economic size and growth. GDP per capita adjusts for population size.` },
-          { q: `What is inflation and what causes it?`, ex: `General rise in prices over time`, a: `Inflation is the general increase in prices (and decrease in purchasing power) over time. Causes: demand-pull (too much money chasing too few goods), cost-push (rising production costs), and money supply growth. Measured by CPI (Consumer Price Index).` },
-          { q: `What is unemployment and what are its types?`, ex: `People able and willing to work but without jobs`, a: `Types of unemployment: Frictional (between jobs, normal). Structural (skills don't match jobs available, often from technological change). Cyclical (from economic recession). Natural unemployment rate = frictional + structural. Zero unemployment is impossible and undesirable.` },
-        ]},
-        { title: `Market Structures`, problems: [
-          { q: `What is the difference between perfect competition and a monopoly?`, ex: `Many competitive firms vs. one dominant firm`, a: `Perfect competition: many firms selling identical products, no pricing power (e.g., wheat markets). Monopoly: one firm dominates with no close substitutes, has significant pricing power (e.g., utilities). Most markets fall between these extremes.` },
-          { q: `What is a market failure and what can cause it?`, ex: `When markets fail to allocate resources efficiently`, a: `Market failures occur when: externalities (costs/benefits not reflected in prices), public goods (non-excludable, non-rival — like national defense), information asymmetry (one party knows more), or monopoly power distort efficient allocation.` },
-          { q: `What is an externality? Give examples of positive and negative externalities.`, ex: `Side effects of economic activity affecting third parties`, a: `Externalities are costs or benefits imposed on third parties not directly involved in a transaction. Negative: factory pollution harms nearby residents (not in the price). Positive: vaccination benefits the whole community beyond the individual who gets vaccinated.` },
-          { q: `What is the law of supply and demand?`, ex: `Core principle of market economics`, a: `Law of Demand: as price increases, quantity demanded decreases (inverse relationship). Law of Supply: as price increases, quantity supplied increases (direct relationship). Equilibrium: the price where quantity demanded equals quantity supplied.` },
-        ]},
-        { title: `Global Economics`, problems: [
-          { q: `What is comparative advantage and how does it justify trade?`, ex: `Principle underlying international trade`, a: `Comparative advantage: a country should produce and export goods it can produce at a LOWER OPPORTUNITY COST than other countries, even if it can produce everything more efficiently (absolute advantage). Trade based on comparative advantage benefits all parties.` },
-          { q: `What is the difference between free trade and protectionism?`, ex: `Open markets vs. protecting domestic industries`, a: `Free trade: no barriers to international commerce (lower prices, greater choice, efficiency). Protectionism: tariffs, quotas, or subsidies to shield domestic industries from foreign competition (protects jobs and industries but raises prices for consumers).` },
-          { q: `What is the role of the World Trade Organization (WTO)?`, ex: `International body regulating global trade`, a: `The WTO provides a framework for international trade rules, facilitates trade negotiations, resolves trade disputes between member countries, and promotes free trade by reducing barriers. Critics argue it favors wealthy nations.` },
-          { q: `What is income inequality and how is it measured?`, ex: `Gap between high and low earners in an economy`, a: `Income inequality is the unequal distribution of income across society. Measured by: the Gini coefficient (0 = perfect equality, 1 = perfect inequality), and income share ratios (top 1% vs. bottom 50%). Inequality has grown in most developed countries since the 1980s.` },
-        ]},
-        { title: `Personal and Applied Economics`, problems: [
-          { q: `What is the difference between needs and wants in economics?`, ex: `Necessities vs. desires`, a: `Needs: goods and services necessary for survival and basic wellbeing (food, shelter, healthcare, clothing). Wants: goods and services desired but not essential (luxury goods, entertainment). Understanding this distinction is foundational for personal financial decision-making.` },
-          { q: `What is a market economy vs. a command economy?`, ex: `Decentralized vs. centralized economic decisions`, a: `Market economy: individual buyers and sellers make economic decisions through prices (US, most developed nations). Command economy: government makes central decisions about production and distribution (North Korea, historical Soviet Union). Most economies are mixed.` },
-          { q: `What is behavioral economics?`, ex: `How psychology affects economic decision-making`, a: `Behavioral economics combines psychology and economics to explain why people don't always make rational decisions. Key concepts: loss aversion (losses feel worse than equal gains feel good), anchoring (initial price influences decisions), and status quo bias (preferring the current state).` },
-          { q: `How does the stock market work?`, ex: `Public market for buying and selling company shares`, a: `Companies issue shares (stock) to raise capital. Investors buy shares, hoping to profit from company growth (price appreciation) or dividends. Stock prices reflect investors' expectations of future earnings. Major indices (S&P 500, Dow Jones) track overall market performance.` },
-        ]},
-      ],
-      [
- {
-  "title": "Branches of Philosophy",
-  "problems": [
-   {
-    "q": "What are the main branches of philosophy, and what does each study?",
-    "ex": "Think: knowledge, reality, values...",
-    "a": "Major branches include metaphysics (the nature of reality), epistemology (the nature and limits of knowledge), ethics (right and wrong conduct), logic (valid reasoning), and political philosophy (justice, power, governance)."
-   },
-   {
-    "q": "What is the difference between metaphysics and epistemology?",
-    "ex": "What exists vs. what we can know",
-    "a": "Metaphysics asks what fundamentally exists, while epistemology asks how we can know anything at all and what counts as justified belief or knowledge."
-   },
-   {
-    "q": "What kinds of questions does political philosophy address?",
-    "ex": "Justice, authority, rights",
-    "a": "Political philosophy examines what makes a government legitimate, what justice requires, what rights individuals have, and how power should be distributed and limited."
-   },
-   {
-    "q": "Why is logic considered foundational to all other branches of philosophy?",
-    "ex": "Tool for evaluating arguments",
-    "a": "Logic provides the tools for constructing and evaluating valid arguments -- since philosophy relies heavily on reasoned argument, sound logic is necessary to properly do metaphysics, ethics, or any other branch."
-   }
-  ]
- },
- {
-  "title": "Ethical Theories",
-  "problems": [
-   {
-    "q": "What is utilitarianism, and how does it determine right action?",
-    "ex": "Greatest good for the greatest number",
-    "a": "Utilitarianism holds that the morally right action is the one that produces the greatest overall good for the greatest number of people, judging actions by their consequences."
-   },
-   {
-    "q": "What is deontological ethics, and how does it differ from utilitarianism?",
-    "ex": "Duty-based, not outcome-based",
-    "a": "Deontological ethics (associated with Kant) judges actions based on whether they follow moral duties or rules, regardless of consequences -- unlike utilitarianism's focus on outcomes."
-   },
-   {
-    "q": "What is a criticism commonly raised against utilitarianism?",
-    "ex": "Could justify harming a minority for majority benefit",
-    "a": "Critics argue it could justify harming or sacrificing a minority if it produces greater overall happiness for the majority, potentially conflicting with individual rights or justice."
-   },
-   {
-    "q": "What is virtue ethics, and how does it differ from both utilitarianism and deontology?",
-    "ex": "Focus on character, not rules or outcomes",
-    "a": "Virtue ethics (rooted in Aristotle) focuses on developing good character traits rather than following rules or calculating outcomes -- the question is 'what would a virtuous person do?'"
-   }
-  ]
- },
- {
-  "title": "Social Contract Theory",
-  "problems": [
-   {
-    "q": "What is the basic idea behind social contract theory?",
-    "ex": "People agree to form government for mutual benefit",
-    "a": "Social contract theory holds that legitimate government arises from an implicit agreement among individuals to give up some freedoms and submit to authority in exchange for protection of their remaining rights."
-   },
-   {
-    "q": "How did Hobbes describe life without government (the 'state of nature')?",
-    "ex": "'Solitary, poor, nasty, brutish, and short'",
-    "a": "Hobbes described it as a war of all against all, where without a strong central authority, life would be 'solitary, poor, nasty, brutish, and short' -- justifying a powerful sovereign."
-   },
-   {
-    "q": "How did Locke's view of the social contract differ from Hobbes's?",
-    "ex": "Natural rights, limited government, right to revolt",
-    "a": "Locke believed people have natural rights even before government exists, and government's job is to protect those rights. Unlike Hobbes, Locke argued people retain the right to overthrow a government that fails them."
-   },
-   {
-    "q": "How did Rousseau's version of the social contract differ from Hobbes and Locke?",
-    "ex": "'General will,' collective sovereignty",
-    "a": "Rousseau argued legitimate authority comes from the 'general will' of the people acting collectively for the common good, with sovereignty resting with the people themselves."
-   }
-  ]
- },
- {
-  "title": "Applied Ethics & Critical Thinking",
-  "problems": [
-   {
-    "q": "What is applied ethics, and how does it differ from theoretical ethics?",
-    "ex": "Real-world dilemmas vs. abstract theory",
-    "a": "Applied ethics uses ethical theories to analyze specific real-world moral issues -- such as medical or environmental ethics -- rather than debating ethical theory in the abstract."
-   },
-   {
-    "q": "What is a logical fallacy? Give an example.",
-    "ex": "A flaw in reasoning that weakens an argument",
-    "a": "A logical fallacy is an error in reasoning that undermines an argument's logic. Example: ad hominem -- attacking the person making an argument instead of addressing the argument itself."
-   },
-   {
-    "q": "What does it mean to evaluate an argument's 'validity' versus its 'soundness'?",
-    "ex": "Structure vs. structure + true premises",
-    "a": "An argument is valid if its conclusion logically follows from its premises. It is sound if it is valid AND all its premises are actually true."
-   },
-   {
-    "q": "Why is critical thinking important when evaluating ethical dilemmas?",
-    "ex": "Avoids bias, considers multiple perspectives",
-    "a": "Critical thinking helps identify hidden assumptions, weigh competing values fairly, spot fallacious reasoning, and reach a well-justified conclusion rather than relying on gut reaction alone."
-   }
-  ]
- }
-]
-    ],
+ [
+  {
+   "title": "Thematic Analysis Across Eras",
+   "problems": [
+    {
+     "q": "What does it mean to analyze US history \"thematically\" rather than just chronologically?",
+     "ex": "Tracking a theme (e.g., migration) across many time periods",
+     "a": "Thematic analysis traces how a single theme -- such as identity, migration, work/exchange, or governance -- develops, shifts, and connects across multiple time periods, rather than just studying events in isolated chronological order."
+    },
+    {
+     "q": "Name two of the College Board's AP US History thematic categories.",
+     "ex": "Think: American and National Identity, Politics and Power...",
+     "a": "Examples include American and National Identity, Politics and Power, Work, Exchange, and Technology, Migration and Settlement, and Social Structures -- these threads are meant to be tracked across every period studied."
+    },
+    {
+     "q": "Why is thematic thinking especially useful for the Long Essay Question (LEQ)?",
+     "ex": "LEQs often ask you to trace change/continuity in one theme",
+     "a": "Many LEQ prompts ask students to analyze change and continuity in one specific theme over a span of time -- students who've practiced tracking themes across periods can draw on evidence from multiple eras rather than being limited to one moment."
+    },
+    {
+     "q": "Give an example of how the theme of \"migration\" connects two very different eras of US history.",
+     "ex": "Colonial immigration and modern immigration",
+     "a": "Colonial-era migration (voluntary European settlement and forced African enslavement) and 19th/20th-century immigration waves (Irish, Southern/Eastern European, Latin American, Asian) both reshaped the population, labor force, and cultural identity of the country, though under very different conditions."
+    }
+   ]
+  },
+  {
+   "title": "Primary Source Analysis",
+   "problems": [
+    {
+     "q": "What should you identify first when analyzing a primary source (HIPP)?",
+     "ex": "Historical context, Intended audience, Purpose, Point of view",
+     "a": "HIPP: Historical context (when/where was it created and what was happening), Intended audience (who was it written for), Purpose (why was it created), and Point of view (the author's perspective/bias) -- identifying these shapes how reliable and useful the source is."
+    },
+    {
+     "q": "Why does a source's intended audience matter when evaluating it?",
+     "ex": "A speech to voters vs. a private diary differ in honesty/framing",
+     "a": "A document meant to persuade a specific audience (like a political speech) may exaggerate or omit information for effect, while something private (a diary or personal letter) may reflect more candid views -- audience shapes what's said and how."
+    },
+    {
+     "q": "What is the difference between primary and secondary sources?",
+     "ex": "Created during the event vs. written about it later",
+     "a": "A primary source was created during or very close to the time period being studied by someone who directly experienced or observed it (letters, speeches, photos). A secondary source is created later by someone analyzing or interpreting primary sources (textbooks, historical articles)."
+    },
+    {
+     "q": "How can point of view affect the reliability of a primary source?",
+     "ex": "The author's position/interests shape what they emphasize",
+     "a": "A source's reliability isn't about whether it's 'true' or 'false' but about understanding whose perspective it represents -- a factory owner and a factory worker describing the same strike would emphasize very different things based on their own interests and position."
+    }
+   ]
+  },
+  {
+   "title": "Writing the LEQ (Long Essay Question)",
+   "problems": [
+    {
+     "q": "What are the core scoring components of an LEQ?",
+     "ex": "Thesis, contextualization, evidence, reasoning/complexity",
+     "a": "A strong LEQ needs: a defensible thesis answering the prompt, contextualization (situating the argument in broader historical context), specific supporting evidence, and reasoning that shows historical skills like causation, comparison, or continuity/change."
+    },
+    {
+     "q": "What makes an LEQ thesis \"defensible\"?",
+     "ex": "Makes a historical argument, not just a summary",
+     "a": "A defensible thesis takes a clear, arguable position that responds directly to the prompt and can be supported with evidence -- not just a restatement of the question or a purely descriptive summary of what happened."
+    },
+    {
+     "q": "What is \"contextualization\" in an LEQ, and where does it usually go?",
+     "ex": "Broader historical situation, typically in the intro",
+     "a": "Contextualization connects the topic to broader historical events, trends, or processes occurring before, during, or after the time frame in question -- usually placed near the beginning of the essay to set up the argument."
+    },
+    {
+     "q": "How is an LEQ different from a DBQ?",
+     "ex": "No provided documents; relies on outside knowledge",
+     "a": "An LEQ requires students to construct an argument using their own outside historical knowledge, with no documents provided -- unlike the DBQ, which requires analyzing and incorporating a set of given primary source documents."
+    }
+   ]
+  },
+  {
+   "title": "Writing the DBQ (Document-Based Question)",
+   "problems": [
+    {
+     "q": "How many documents must a strong DBQ response typically use as evidence?",
+     "ex": "At least a majority of the provided documents",
+     "a": "A strong DBQ response typically uses at least six of the usually seven provided documents to support its argument, integrating them as evidence rather than just summarizing each one."
+    },
+    {
+     "q": "What does it mean to analyze a document's \"sourcing\" in a DBQ?",
+     "ex": "Explaining why the source's point of view/purpose matters to the argument",
+     "a": "Sourcing analysis means explaining how a document's author, audience, purpose, or historical situation affects its content or reliability, and connecting that explanation to the essay's overall argument -- not just noting who wrote it."
+    },
+    {
+     "q": "Besides the provided documents, what else should a DBQ response include?",
+     "ex": "Outside historical evidence beyond the documents",
+     "a": "A strong DBQ response also incorporates at least one piece of specific historical evidence beyond what's in the documents, showing broader outside knowledge of the time period, not just reliance on the document set."
+    },
+    {
+     "q": "Why is it important to group or synthesize documents rather than address them one by one?",
+     "ex": "Shows argument-building, not just summary",
+     "a": "Grouping documents by theme, perspective, or argument shows the ability to synthesize evidence into a cohesive argument, which scores higher than simply describing each document in isolation without connecting them to a larger point."
+    }
+   ]
+  }
+ ],
+ [
+  {
+   "title": "US Government Structure",
+   "problems": [
+    {
+     "q": "What is federalism and how does it work in the US?",
+     "ex": "Division of power between national and state governments",
+     "a": "Federalism divides government powers between the federal (national) government and state governments. The Constitution grants specific powers to federal government (coining money, military); reserves others to states (education, most police powers); and shares some (taxation)."
+    },
+    {
+     "q": "What are the checks and balances built into the US government?",
+     "ex": "Each branch limits the others",
+     "a": "Congress makes laws (legislative); President can veto them (executive); Courts can declare them unconstitutional (judicial). Congress can override vetoes with 2/3 vote. President appoints judges; Senate confirms. This prevents any branch from becoming too powerful."
+    },
+    {
+     "q": "What is the role of the Supreme Court and what is judicial review?",
+     "ex": "Highest court; interprets the Constitution",
+     "a": "The Supreme Court is the final interpreter of the Constitution. Judicial review (established in Marbury v. Madison, 1803) gives courts the power to strike down laws that violate the Constitution. Justices serve lifetime appointments to ensure independence."
+    },
+    {
+     "q": "What is the difference between a democracy, a republic, and an oligarchy?",
+     "ex": "Different systems of governance",
+     "a": "Democracy: citizens directly make decisions. Republic: citizens elect representatives to make decisions on their behalf (what the US is). Oligarchy: small group of powerful people (wealthy, military) rule. These categories often overlap in practice."
+    }
+   ]
+  },
+  {
+   "title": "Political Parties and Elections",
+   "problems": [
+    {
+     "q": "What are the main differences between the Democratic and Republican parties today?",
+     "ex": "Core values and policy positions",
+     "a": "Democrats: tend to favor government programs for social welfare, environmental regulation, progressive taxation, and social liberalism. Republicans: tend to favor smaller government, lower taxes, less regulation, and social conservatism. Both parties contain diverse coalitions."
+    },
+    {
+     "q": "What is gerrymandering and how does it affect elections?",
+     "ex": "Manipulating district boundaries for partisan advantage",
+     "a": "Gerrymandering is the manipulation of electoral district boundaries to favor one party. It can create 'packed' districts (concentrating opposition voters) and 'cracked' districts (diluting opposition). It can allow a party to win more seats than their vote share would proportionally warrant."
+    },
+    {
+     "q": "What is the Electoral College and why is it controversial?",
+     "ex": "US system for electing the President",
+     "a": "The Electoral College: each state gets electors = its representatives + senators. A candidate needs 270 of 538 electoral votes to win. It's controversial because: (1) a candidate can win the popular vote but lose the election, (2) it gives smaller states disproportionate influence."
+    },
+    {
+     "q": "What is voter turnout and what factors affect it?",
+     "ex": "Percentage of eligible voters who vote",
+     "a": "Voter turnout is the percentage of eligible citizens who actually vote. Factors: age (older people vote more), education, income (higher = more voting), voter registration requirements, geographic location, and competitive elections. US turnout is comparatively low among democracies."
+    }
+   ]
+  },
+  {
+   "title": "Constitutional Issues",
+   "problems": [
+    {
+     "q": "How has the First Amendment been interpreted by the courts?",
+     "ex": "Freedom of religion, speech, press, assembly, and petition",
+     "a": "The First Amendment protects speech but not all speech -- courts have ruled some speech unprotected (incitement to imminent lawless action, true threats, obscenity). Public school students have limited First Amendment rights; government employees more so than private employees."
+    },
+    {
+     "q": "What does the Fourth Amendment protect against?",
+     "ex": "Unreasonable searches and seizures",
+     "a": "The Fourth Amendment protects against unreasonable searches and seizures and requires warrants based on probable cause. Courts have debated its application to digital data, cell phone searches, and surveillance in the digital age."
+    },
+    {
+     "q": "What is due process and what does it guarantee?",
+     "ex": "Fair legal procedures",
+     "a": "Due process (Fifth and Fourteenth Amendments): the government must follow fair procedures before depriving citizens of life, liberty, or property. Includes: right to notice, right to be heard, and right to a fair and impartial decision-maker."
+    },
+    {
+     "q": "How does the 14th Amendment's Equal Protection Clause work?",
+     "ex": "Government must treat similarly situated people equally",
+     "a": "Equal protection requires government to treat people equally under the law. Courts scrutinize laws that classify people by race (strict scrutiny) or sex (intermediate scrutiny). Key cases: Brown v. Board (desegregation), Obergefell v. Hodges (marriage equality)."
+    }
+   ]
+  },
+  {
+   "title": "Policy Making",
+   "problems": [
+    {
+     "q": "What is public policy and how is it made?",
+     "ex": "Government actions to address public issues",
+     "a": "Public policy is what governments choose to do (or not do) about public issues. It's made through: identifying problems, agenda-setting, formulation (developing options), adoption (passing laws), implementation (carrying out), and evaluation (assessing effectiveness)."
+    },
+    {
+     "q": "What are interest groups and how do they influence policy?",
+     "ex": "Organizations that advocate for specific causes",
+     "a": "Interest groups represent corporations, professions, causes, or ideologies and try to influence government policy through: lobbying (direct contact with legislators), campaign contributions, public advocacy, litigation, and grassroots organizing."
+    },
+    {
+     "q": "What is the role of the media in a democracy?",
+     "ex": "The 'Fourth Estate' -- checking power and informing citizens",
+     "a": "Media serves democracy by: informing citizens about government actions, setting the public agenda (what issues people think about), providing a forum for debate, and holding government accountable through investigative journalism. Media bias and misinformation are ongoing challenges."
+    },
+    {
+     "q": "What is the difference between fiscal policy and monetary policy?",
+     "ex": "Two main economic policy tools",
+     "a": "Fiscal policy: government decisions about taxing and spending (controlled by Congress and President). Monetary policy: decisions about money supply and interest rates (controlled by the Federal Reserve/central bank). Both are used to stabilize the economy."
+    }
+   ]
+  }
+ ],
+ [
+  {
+   "title": "Branches of Philosophy",
+   "problems": [
+    {
+     "q": "What are the main branches of philosophy, and what does each study?",
+     "ex": "Think: knowledge, reality, values...",
+     "a": "Major branches include metaphysics (the nature of reality), epistemology (the nature and limits of knowledge), ethics (right and wrong conduct), logic (valid reasoning), and political philosophy (justice, power, governance)."
+    },
+    {
+     "q": "What is the difference between metaphysics and epistemology?",
+     "ex": "What exists vs. what we can know",
+     "a": "Metaphysics asks what fundamentally exists, while epistemology asks how we can know anything at all and what counts as justified belief or knowledge."
+    },
+    {
+     "q": "What kinds of questions does political philosophy address?",
+     "ex": "Justice, authority, rights",
+     "a": "Political philosophy examines what makes a government legitimate, what justice requires, what rights individuals have, and how power should be distributed and limited."
+    },
+    {
+     "q": "Why is logic considered foundational to all other branches of philosophy?",
+     "ex": "Tool for evaluating arguments",
+     "a": "Logic provides the tools for constructing and evaluating valid arguments -- since philosophy relies heavily on reasoned argument, sound logic is necessary to properly do metaphysics, ethics, or any other branch."
+    }
+   ]
+  },
+  {
+   "title": "Ethical Theories",
+   "problems": [
+    {
+     "q": "What is utilitarianism, and how does it determine right action?",
+     "ex": "Greatest good for the greatest number",
+     "a": "Utilitarianism holds that the morally right action is the one that produces the greatest overall good for the greatest number of people, judging actions by their consequences."
+    },
+    {
+     "q": "What is deontological ethics, and how does it differ from utilitarianism?",
+     "ex": "Duty-based, not outcome-based",
+     "a": "Deontological ethics (associated with Kant) judges actions based on whether they follow moral duties or rules, regardless of consequences -- unlike utilitarianism's focus on outcomes."
+    },
+    {
+     "q": "What is a criticism commonly raised against utilitarianism?",
+     "ex": "Could justify harming a minority for majority benefit",
+     "a": "Critics argue it could justify harming or sacrificing a minority if it produces greater overall happiness for the majority, potentially conflicting with individual rights or justice."
+    },
+    {
+     "q": "What is virtue ethics, and how does it differ from both utilitarianism and deontology?",
+     "ex": "Focus on character, not rules or outcomes",
+     "a": "Virtue ethics (rooted in Aristotle) focuses on developing good character traits rather than following rules or calculating outcomes -- the question is 'what would a virtuous person do?'"
+    }
+   ]
+  },
+  {
+   "title": "Social Contract Theory",
+   "problems": [
+    {
+     "q": "What is the basic idea behind social contract theory?",
+     "ex": "People agree to form government for mutual benefit",
+     "a": "Social contract theory holds that legitimate government arises from an implicit agreement among individuals to give up some freedoms and submit to authority in exchange for protection of their remaining rights."
+    },
+    {
+     "q": "How did Hobbes describe life without government (the 'state of nature')?",
+     "ex": "'Solitary, poor, nasty, brutish, and short'",
+     "a": "Hobbes described it as a war of all against all, where without a strong central authority, life would be 'solitary, poor, nasty, brutish, and short' -- justifying a powerful sovereign."
+    },
+    {
+     "q": "How did Locke's view of the social contract differ from Hobbes's?",
+     "ex": "Natural rights, limited government, right to revolt",
+     "a": "Locke believed people have natural rights even before government exists, and government's job is to protect those rights. Unlike Hobbes, Locke argued people retain the right to overthrow a government that fails them."
+    },
+    {
+     "q": "How did Rousseau's version of the social contract differ from Hobbes and Locke?",
+     "ex": "'General will,' collective sovereignty",
+     "a": "Rousseau argued legitimate authority comes from the 'general will' of the people acting collectively for the common good, with sovereignty resting with the people themselves."
+    }
+   ]
+  },
+  {
+   "title": "Applied Ethics & Critical Thinking",
+   "problems": [
+    {
+     "q": "What is applied ethics, and how does it differ from theoretical ethics?",
+     "ex": "Real-world dilemmas vs. abstract theory",
+     "a": "Applied ethics uses ethical theories to analyze specific real-world moral issues -- such as medical or environmental ethics -- rather than debating ethical theory in the abstract."
+    },
+    {
+     "q": "What is a logical fallacy? Give an example.",
+     "ex": "A flaw in reasoning that weakens an argument",
+     "a": "A logical fallacy is an error in reasoning that undermines an argument's logic. Example: ad hominem -- attacking the person making an argument instead of addressing the argument itself."
+    },
+    {
+     "q": "What does it mean to evaluate an argument's 'validity' versus its 'soundness'?",
+     "ex": "Structure vs. structure + true premises",
+     "a": "An argument is valid if its conclusion logically follows from its premises. It is sound if it is valid AND all its premises are actually true."
+    },
+    {
+     "q": "Why is critical thinking important when evaluating ethical dilemmas?",
+     "ex": "Avoids bias, considers multiple perspectives",
+     "a": "Critical thinking helps identify hidden assumptions, weigh competing values fairly, spot fallacious reasoning, and reach a well-justified conclusion rather than relying on gut reaction alone."
+    }
+   ]
+  }
+ ]
+],
     cs: [
       [
         { title: `Software Development Process`, problems: [
