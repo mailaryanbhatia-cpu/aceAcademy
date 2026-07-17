@@ -1,0 +1,17 @@
+{
+  "name": "aceacademy",
+  "version": "1.0.0",
+  "description": "AcerAcademy -- static K-12 & AP curriculum, tools, and study-tool site",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/site-audit.js && node tests/run-all.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mailaryanbhatia-cpu/aceAcademy.git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  }
+}

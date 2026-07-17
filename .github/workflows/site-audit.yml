@@ -14,5 +14,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '18'
+      - name: Install dependencies (jsdom, for the functional test suite)
+        run: npm install
       - name: Run site-wide syntax + link audit
         run: node scripts/site-audit.js
+      - name: Run functional smoke tests (curriculum, tutor, essaygrader, xp-system)
+        run: node tests/run-all.js
