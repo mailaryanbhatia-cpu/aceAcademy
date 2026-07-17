@@ -2415,6 +2415,83 @@ function updateContinueWidget() {
   } catch (e) { card.style.display = 'none'; }
 }
 
+// -- CONCEPT EXPLAINER --------------------------------------
+const TIPS = {
+  ratio:'A ratio compares two quantities. Write as a:b, a/b, or "a to b". Simplify like fractions.',
+  proportion:'A proportion says two ratios are equal: a/b = c/d. Cross-multiply to solve: ad = bc.',
+  percent:'Percent means "per hundred." Convert: %÷10 = decimal. Use for discounts, tax, and change.',
+  fraction:'A fraction represents part of a whole. Numerator (top) ÷ denominator (bottom) = decimal.',
+  integer:'Integers are whole numbers and their negatives: …-2,-1,0,1,2… No decimals or fractions.',
+  variable:'A variable is a letter that represents an unknown number. Solving means finding that number.',
+  equation:'An equation says two expressions are equal. Solve by doing the same operation to both sides.',
+  inequality:'Like an equation but uses <, >, ≤, ≥. When multiplying/dividing by a negative, flip the sign!',
+  slope:'Slope = rise/run = (y₂-y₁)/(x₂-x₁). Positive = goes up, negative = goes down, zero = flat.',
+  function:'A function pairs each input (x) with exactly one output (y). Written as f(x).',
+  exponent:'An exponent tells how many times to multiply a base by itself. 2³ = 2×2×2 = 8.',
+  polynomial:'A polynomial is a sum of terms with variables and whole-number exponents: 3x²+2x-1.',
+  quadratic:'A quadratic has x² as the highest power. Solve by factoring, completing the square, or the quadratic formula.',
+  linear:'A linear equation makes a straight line when graphed. Form: y = mx + b.',
+  probability:'Probability = favorable outcomes ÷ total outcomes. Ranges from 0 (impossible) to 1 (certain).',
+  statistics:'Statistics summarizes data. Key: mean (average), median (middle value), mode (most frequent).',
+  geometry:'Geometry studies shapes, sizes, and positions. Key formulas: area, perimeter, volume, and angles.',
+  triangle:'Triangles have 3 sides; angles sum to 180°. Types: equilateral, isosceles, scalene, right.',
+  circle:'All points equal distance (radius) from center. Area = πr², Circumference = 2πr.',
+  volume:'Volume measures 3D space. Units are cubed (cm³). Use π for cylinders, cones, spheres.',
+  coordinate:'The coordinate plane has x-axis (horizontal) and y-axis (vertical). Points written as (x, y).',
+  symmetry:'A shape has symmetry if it looks the same after a transformation. Mirror image = line symmetry.',
+  transformation:'Transformations move shapes: translation (slide), rotation (turn), reflection (flip), dilation (scale).',
+  photosynthesis:'Plants make food using sunlight, CO₂, and water: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂.',
+  cell:'Cells are the basic unit of life. Prokaryotes have no nucleus; eukaryotes do. Plant cells have walls and chloroplasts.',
+  dna:'DNA stores genetic info in base pairs (A-T, C-G). Read to make proteins via RNA.',
+  evolution:'Evolution is change in species over generations through natural selection — survival of the fittest.',
+  atom:'Atoms have protons and neutrons in the nucleus, electrons orbiting outside. Protons = atomic number.',
+  element:'Elements are pure substances made of one atom type. The periodic table organizes 118 elements.',
+  compound:'A compound is two or more elements chemically bonded together. H₂O = 2 hydrogen + 1 oxygen.',
+  reaction:'Reactions rearrange atoms. Reactants → Products. Balanced equations have equal atoms each side.',
+  acid:'Acids have pH < 7 and donate H⁺. Bases have pH > 7 and accept H⁺. pH 7 = neutral.',
+  force:'A force is a push or pull (Newtons). Net force = sum of all forces. Unbalanced force = acceleration.',
+  energy:'Energy is the ability to do work. It cannot be created or destroyed — only converted.',
+  wave:'Waves transfer energy. Key: wavelength (λ), frequency (f), amplitude, speed (v = fλ).',
+  newton:'Newton\'s Laws: 1) Stay at rest/motion unless acted on. 2) F=ma. 3) Equal and opposite reactions.',
+  thesis:'A thesis is your essay\'s main argument — one clear, specific, arguable sentence.',
+  inference:'An inference is a conclusion drawn from evidence, not stated directly — "reading between the lines."',
+  figurative:'Figurative language: metaphor, simile, personification, hyperbole, idiom. Not meant literally.',
+  narrative:'Narrative writing tells a story with characters, setting, conflict, rising action, climax, resolution.',
+  argument:'Argumentative writing takes a position and supports it with evidence, reasoning, and counterarguments.',
+  algorithm:'An algorithm is a step-by-step procedure for solving a problem. Specific, repeatable, like a recipe.',
+  binary:'Binary is base-2: only 0s and 1s. Computers use it because circuits are on (1) or off (0).',
+  loop:'A loop repeats code. "for" loops run a set number of times; "while" loops check a condition each time.',
+  democracy:'Government by the people. Direct = citizens vote on laws. Representative = elected officials vote.',
+  constitution:'The U.S. Constitution (1787) sets up 3 branches of government and guarantees rights via amendments.',
+  revolution:'A major, rapid change in government or society. Often driven by economic or political grievances.',
+  economics:'Studies how people make decisions about scarce resources. Supply and demand determine prices.',
+};
+function getTipBtn(topic) {
+  const tl = topic.toLowerCase();
+  for (const k in TIPS) { if (tl.includes(k)) return '<button class="tip-btn" data-topic="'+topic.replace(/"/g,'&quot;')+'" onclick="showTipFromBtn(this)">?</button>'; }
+  return '';
+}
+function showTipFromBtn(btn) { showTip(btn.dataset.topic, btn); }
+function showTip(topic, btn) {
+  const tl = topic.toLowerCase();
+  let text = null;
+  for (const k in TIPS) { if (tl.includes(k)) { text = TIPS[k]; break; } }
+  if (!text) return;
+  const popup = document.getElementById('tipPopup');
+  const titleEl = document.getElementById('tipTitle');
+  const bodyEl = document.getElementById('tipBody');
+  if (!popup || !titleEl || !bodyEl) return;
+  titleEl.textContent = topic;
+  bodyEl.textContent = text;
+  const rect = btn.getBoundingClientRect();
+  const left = Math.min(rect.left + window.scrollX, window.innerWidth - 300);
+  popup.style.top = (rect.bottom + 6 + window.scrollY) + 'px';
+  popup.style.left = Math.max(8, left) + 'px';
+  popup.classList.add('open');
+}
+function closeTip() { const p = document.getElementById('tipPopup'); if (p) p.classList.remove('open'); }
+document.addEventListener('click', e => { if (!e.target.closest('.tip-btn') && !e.target.closest('#tipPopup')) closeTip(); });
+
 render();
 updateContinueWidget();
 try { updateXpWidget(); } catch(e) {}
@@ -2865,82 +2942,17 @@ function renderFormulaModal() {
   filterFormulas('');
 }
 
-// -- CONCEPT EXPLAINER --------------------------------------
-const TIPS = {
-  ratio:'A ratio compares two quantities. Write as a:b, a/b, or "a to b". Simplify like fractions.',
-  proportion:'A proportion says two ratios are equal: a/b = c/d. Cross-multiply to solve: ad = bc.',
-  percent:'Percent means "per hundred." Convert: %÷10 = decimal. Use for discounts, tax, and change.',
-  fraction:'A fraction represents part of a whole. Numerator (top) ÷ denominator (bottom) = decimal.',
-  integer:'Integers are whole numbers and their negatives: …-2,-1,0,1,2… No decimals or fractions.',
-  variable:'A variable is a letter that represents an unknown number. Solving means finding that number.',
-  equation:'An equation says two expressions are equal. Solve by doing the same operation to both sides.',
-  inequality:'Like an equation but uses <, >, ≤, ≥. When multiplying/dividing by a negative, flip the sign!',
-  slope:'Slope = rise/run = (y₂-y₁)/(x₂-x₁). Positive = goes up, negative = goes down, zero = flat.',
-  function:'A function pairs each input (x) with exactly one output (y). Written as f(x).',
-  exponent:'An exponent tells how many times to multiply a base by itself. 2³ = 2×2×2 = 8.',
-  polynomial:'A polynomial is a sum of terms with variables and whole-number exponents: 3x²+2x-1.',
-  quadratic:'A quadratic has x² as the highest power. Solve by factoring, completing the square, or the quadratic formula.',
-  linear:'A linear equation makes a straight line when graphed. Form: y = mx + b.',
-  probability:'Probability = favorable outcomes ÷ total outcomes. Ranges from 0 (impossible) to 1 (certain).',
-  statistics:'Statistics summarizes data. Key: mean (average), median (middle value), mode (most frequent).',
-  geometry:'Geometry studies shapes, sizes, and positions. Key formulas: area, perimeter, volume, and angles.',
-  triangle:'Triangles have 3 sides; angles sum to 180°. Types: equilateral, isosceles, scalene, right.',
-  circle:'All points equal distance (radius) from center. Area = πr², Circumference = 2πr.',
-  volume:'Volume measures 3D space. Units are cubed (cm³). Use π for cylinders, cones, spheres.',
-  coordinate:'The coordinate plane has x-axis (horizontal) and y-axis (vertical). Points written as (x, y).',
-  symmetry:'A shape has symmetry if it looks the same after a transformation. Mirror image = line symmetry.',
-  transformation:'Transformations move shapes: translation (slide), rotation (turn), reflection (flip), dilation (scale).',
-  photosynthesis:'Plants make food using sunlight, CO₂, and water: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂.',
-  cell:'Cells are the basic unit of life. Prokaryotes have no nucleus; eukaryotes do. Plant cells have walls and chloroplasts.',
-  dna:'DNA stores genetic info in base pairs (A-T, C-G). Read to make proteins via RNA.',
-  evolution:'Evolution is change in species over generations through natural selection — survival of the fittest.',
-  atom:'Atoms have protons and neutrons in the nucleus, electrons orbiting outside. Protons = atomic number.',
-  element:'Elements are pure substances made of one atom type. The periodic table organizes 118 elements.',
-  compound:'A compound is two or more elements chemically bonded together. H₂O = 2 hydrogen + 1 oxygen.',
-  reaction:'Reactions rearrange atoms. Reactants → Products. Balanced equations have equal atoms each side.',
-  acid:'Acids have pH < 7 and donate H⁺. Bases have pH > 7 and accept H⁺. pH 7 = neutral.',
-  force:'A force is a push or pull (Newtons). Net force = sum of all forces. Unbalanced force = acceleration.',
-  energy:'Energy is the ability to do work. It cannot be created or destroyed — only converted.',
-  wave:'Waves transfer energy. Key: wavelength (λ), frequency (f), amplitude, speed (v = fλ).',
-  newton:'Newton\'s Laws: 1) Stay at rest/motion unless acted on. 2) F=ma. 3) Equal and opposite reactions.',
-  thesis:'A thesis is your essay\'s main argument — one clear, specific, arguable sentence.',
-  inference:'An inference is a conclusion drawn from evidence, not stated directly — "reading between the lines."',
-  figurative:'Figurative language: metaphor, simile, personification, hyperbole, idiom. Not meant literally.',
-  narrative:'Narrative writing tells a story with characters, setting, conflict, rising action, climax, resolution.',
-  argument:'Argumentative writing takes a position and supports it with evidence, reasoning, and counterarguments.',
-  algorithm:'An algorithm is a step-by-step procedure for solving a problem. Specific, repeatable, like a recipe.',
-  binary:'Binary is base-2: only 0s and 1s. Computers use it because circuits are on (1) or off (0).',
-  loop:'A loop repeats code. "for" loops run a set number of times; "while" loops check a condition each time.',
-  democracy:'Government by the people. Direct = citizens vote on laws. Representative = elected officials vote.',
-  constitution:'The U.S. Constitution (1787) sets up 3 branches of government and guarantees rights via amendments.',
-  revolution:'A major, rapid change in government or society. Often driven by economic or political grievances.',
-  economics:'Studies how people make decisions about scarce resources. Supply and demand determine prices.',
-};
-function getTipBtn(topic) {
-  const tl = topic.toLowerCase();
-  for (const k in TIPS) { if (tl.includes(k)) return '<button class="tip-btn" data-topic="'+topic.replace(/"/g,'&quot;')+'" onclick="showTipFromBtn(this)">?</button>'; }
-  return '';
-}
-function showTipFromBtn(btn) { showTip(btn.dataset.topic, btn); }
-function showTip(topic, btn) {
-  const tl = topic.toLowerCase();
-  let text = null;
-  for (const k in TIPS) { if (tl.includes(k)) { text = TIPS[k]; break; } }
-  if (!text) return;
-  const popup = document.getElementById('tipPopup');
-  const titleEl = document.getElementById('tipTitle');
-  const bodyEl = document.getElementById('tipBody');
-  if (!popup || !titleEl || !bodyEl) return;
-  titleEl.textContent = topic;
-  bodyEl.textContent = text;
-  const rect = btn.getBoundingClientRect();
-  const left = Math.min(rect.left + window.scrollX, window.innerWidth - 300);
-  popup.style.top = (rect.bottom + 6 + window.scrollY) + 'px';
-  popup.style.left = Math.max(8, left) + 'px';
-  popup.classList.add('open');
-}
-function closeTip() { const p = document.getElementById('tipPopup'); if (p) p.classList.remove('open'); }
-document.addEventListener('click', e => { if (!e.target.closest('.tip-btn') && !e.target.closest('#tipPopup')) closeTip(); });
+// TIPS / getTipBtn / showTip / closeTip -- moved earlier in the file (into
+// the first <script> block, right before the initial render() call) on
+// 2026-07-17: render() calls getTipBtn() while building unit cards, but this
+// definition used to live in a LATER <script> tag, so on first page load
+// render() threw "ReferenceError: getTipBtn is not defined" -- function
+// declarations only hoist within their own <script> block, not across
+// separate tags. That uncaught error silently killed every line after the
+// initial render() call in that script block, including
+// updateHeroGreeting()/updateHomeStats()/showWelcomeBackScreen(), the
+// ace-auth-ready listener, and dcSidebarInit() (which is why the Daily
+// Challenge grade/subject dropdowns rendered empty).
 
 // -- PROGRESS SNAPSHOT EXPORT ---------------------------------
 function exportSnapshot() {
