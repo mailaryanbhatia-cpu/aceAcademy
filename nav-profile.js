@@ -52,6 +52,7 @@
     if (avatar) {
       var img = document.createElement('img');
       img.src = avatar;
+      img.alt = ''; // decorative -- the adjacent name text already conveys identity
       img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
       av.appendChild(img);
     } else {

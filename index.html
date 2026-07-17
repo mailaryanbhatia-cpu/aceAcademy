@@ -854,8 +854,8 @@ main#mainContent{flex:1;padding:0 36px 36px;}
       </div>
       <div class="dc-sidebar-body" id="dcSidebarBody">
         <div class="dc-sidebar-picker">
-          <select class="dc-select" id="dc-sel-grade" onchange="dcUpdateSubjects(this.value)"></select>
-          <select class="dc-select" id="dc-sel-subj"></select>
+          <select class="dc-select" id="dc-sel-grade" aria-label="Daily Challenge grade level" onchange="dcUpdateSubjects(this.value)"></select>
+          <select class="dc-select" id="dc-sel-subj" aria-label="Daily Challenge subject"></select>
           <button class="dc-btn dc-pick-btn" onclick="dcApplyPick()" style="width:100%;margin-top:4px;">🎲 New Question</button>
         </div>
         <div class="dc-sidebar-meta" id="dcSidebarMeta">Grade 6 · Math</div>
@@ -909,7 +909,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
         <div class="goal-body" id="goalBody">
           <div class="goal-bar-wrap"><div class="goal-bar-fill" id="goalBarFill"></div></div>
           <div class="goal-status" id="goalStatus">0 of 5 topics today</div>
-          <select class="goal-select" id="goalTargetSel" onchange="setGoalTarget(this.value)">
+          <select class="goal-select" id="goalTargetSel" aria-label="Daily goal target" onchange="setGoalTarget(this.value)">
             <option value="3">Goal: 3 topics</option>
             <option value="5" selected>Goal: 5 topics</option>
             <option value="10">Goal: 10 topics</option>
@@ -3212,7 +3212,7 @@ window.addEventListener('online', () => { const b = document.getElementById('off
   <div class="vg-modal">
     <div class="vg-header">
       <span>🎮 Vocab Game</span>
-      <select class="dc-select" id="vgSubj" onchange="loadVocabGame()" style="max-width:140px">
+      <select class="dc-select" id="vgSubj" aria-label="Vocab game subject" onchange="loadVocabGame()" style="max-width:140px">
         <option value="math">Math</option>
         <option value="science">Science</option>
         <option value="ela">ELA</option>
@@ -3269,11 +3269,11 @@ window.addEventListener('online', () => { const b = document.getElementById('off
     </div>
     <div class="quiz-body" id="quizBody">
       <div class="quiz-setup" id="quizSetup">
-        <label>Grade</label>
+        <label for="quizGrade">Grade</label>
         <select class="quiz-select" id="quizGrade" onchange="quizUpdateSubjects()"></select>
-        <label>Subject</label>
+        <label for="quizSubj">Subject</label>
         <select class="quiz-select" id="quizSubj"></select>
-        <label>Questions</label>
+        <label for="quizCount">Questions</label>
         <select class="quiz-select" id="quizCount">
           <option value="5">5 questions</option>
           <option value="10" selected>10 questions</option>
