@@ -208,7 +208,7 @@ window.AceXP = (function () {
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e293b;font-size:.78rem">'
         + '<span style="color:#94a3b8">' + l.reason + '</span>'
         + '<span style="font-weight:700;color:#a5b4fc">+' + l.amount + ' XP</span></div>';
-    }).join('') || '<div style="color:#475569;text-align:center;padding:12px">No XP earned yet — complete a test, flashcard session, or mark a topic practiced.</div>';
+    }).join('') || '<div style="color:#717c8c;text-align:center;padding:12px">No XP earned yet — complete a test, flashcard session, or mark a topic practiced.</div>';
 
     var overlay = document.createElement('div');
     overlay.className = 'ace-xp-overlay';

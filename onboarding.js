@@ -32,7 +32,7 @@ function injectCSS(){
     ._ob_cta{width:100%;padding:13px;border:none;border-radius:11px;font-size:.92rem;font-weight:800;cursor:pointer;color:#fff;background:var(--_g,linear-gradient(135deg,#6366f1,#8b5cf6));transition:.15s}
     ._ob_cta:hover{opacity:.9;transform:translateY(-1px)}
     ._ob_cta:disabled{opacity:.5;transform:none;cursor:default}
-    ._ob_ghost{background:none;border:none;color:#475569;font-size:.78rem;cursor:pointer;padding:4px;font-weight:600;text-align:center}
+    ._ob_ghost{background:none;border:none;color:#717c8c;font-size:.78rem;cursor:pointer;padding:4px;font-weight:600;text-align:center}
     ._ob_ghost:hover{color:#94a3b8}
     ._ob_inp{width:100%;box-sizing:border-box;background:#0d1526;border:1.5px solid #1e293b;border-radius:9px;padding:10px 12px;color:#e2e8f0;font-size:.85rem;outline:none;font-family:inherit;resize:none}
     ._ob_inp:focus{border-color:#6366f1}
@@ -40,7 +40,7 @@ function injectCSS(){
     ._ob_tag{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:99px;font-weight:700;margin-bottom:8px}
     ._ob_run{background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:8px;color:#fff;padding:7px 16px;font-size:.78rem;font-weight:800;cursor:pointer;margin-top:8px}
     ._ob_run:disabled{opacity:.5;cursor:default}
-    ._ob_hint{font-size:.72rem;color:#475569;margin-top:6px}
+    ._ob_hint{font-size:.72rem;color:#717c8c;margin-top:6px}
     ._ob_bar{height:7px;background:#1e293b;border-radius:99px;overflow:hidden;margin:4px 0 8px}
     ._ob_fill{height:100%;border-radius:99px;transition:width 1s cubic-bezier(.4,0,.2,1)}
     ._ob_key_err{color:#f87171;font-size:.75rem;margin-top:6px;display:none}
@@ -79,7 +79,7 @@ function stepWelcome(){
         return '<div style="background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);border-radius:99px;padding:7px 14px;font-size:.78rem;font-weight:700;color:#a5b4fc">'+t+'</div>';
       }).join('')}
     </div>
-    <div style="margin-top:14px;font-size:.78rem;color:#475569">👆 You'll interact with each of these in the next steps</div>`,
+    <div style="margin-top:14px;font-size:.78rem;color:#717c8c">👆 You'll interact with each of these in the next steps</div>`,
     cta:'Start Interactive Tour →', ctaId:'_ob_cta_welcome'
   };
 }
@@ -147,7 +147,7 @@ function stepTracker(){
           '<div class="_ob_bar"><div class="_ob_fill" id="_ob_bar_'+r.subj.replace(/ /g,'_')+'" style="width:0%;background:'+r.color+'"></div></div>'+
           '</div>';
       }).join('')}
-      <div style="font-size:.72rem;color:#475569;margin-top:4px">↑ bars animate to show your projected growth</div>
+      <div style="font-size:.72rem;color:#717c8c;margin-top:4px">↑ bars animate to show your projected growth</div>
     </div>`,
     cta:'Next →', link:'improvementtracker.html', linkLabel:'Open Improvement Tracker',
     onEnter: function(){ animateBars(); }

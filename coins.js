@@ -69,7 +69,7 @@ window.AceCoins = (function(){
         +'<span style="color:#94a3b8">'+l.reason+'</span>'
         +'<span style="font-weight:700;color:'+col+'">'+sign+l.amount+' 🪙</span>'
         +'</div>';
-    }).join('') || '<div style="color:#475569;text-align:center;padding:12px">No activity yet</div>';
+    }).join('') || '<div style="color:#717c8c;text-align:center;padding:12px">No activity yet</div>';
 
     panel.innerHTML = '<div style="font-weight:800;font-size:.95rem;color:#fbbf24;margin-bottom:10px">🪙 '+getBalance().toLocaleString()+' Coins</div>' + rows
       + '<button onclick="this.parentNode.remove();document.querySelector(\'.ace-coin-overlay\').remove();" style="margin-top:12px;width:100%;background:#1e293b;color:#94a3b8;border:none;padding:7px;border-radius:8px;cursor:pointer;font-size:.8rem">Close</button>';

@@ -11,8 +11,8 @@
   var SESS_KEY = 'ace_pomodoro_sessions'; // {date:'YYYY-MM-DD', count:N}
 
   var MODES = {
-    work:  { label: 'Focus Time',  short: 'FOCUS',       color: '#059669' },
-    short: { label: 'Short Break', short: 'SHORT BREAK', color: '#0891b2' },
+    work:  { label: 'Focus Time',  short: 'FOCUS',       color: '#05875e' },
+    short: { label: 'Short Break', short: 'SHORT BREAK', color: '#07819e' },
     long:  { label: 'Long Break',  short: 'LONG BREAK',  color: '#7c3aed' }
   };
 
@@ -92,7 +92,7 @@
   // ── DOM injection ────────────────────────────────────────────
   var CSS = ''
     + '#ace-pomo-fab{position:fixed;bottom:20px;left:20px;width:52px;height:52px;border-radius:50%;'
-    + 'background:#059669;color:#fff;border:none;font-size:1.3rem;cursor:pointer;z-index:9995;'
+    + 'background:#05875e;color:#fff;border:none;font-size:1.3rem;cursor:pointer;z-index:9995;'
     + 'box-shadow:0 4px 18px rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;'
     + 'transition:transform .15s,box-shadow .15s;font-family:inherit}'
     + '#ace-pomo-fab:hover{transform:scale(1.08)}'
@@ -291,7 +291,7 @@
     $('ace-pomo-fab-time').textContent = fmt(left);
     $('ace-pomo-head').style.background = info.color;
     $('ace-pomo-arc').style.stroke = info.color;
-    $('ace-pomo-fab').style.background = s.running ? info.color : '#059669';
+    $('ace-pomo-fab').style.background = s.running ? info.color : '#05875e';
 
     var pct = total > 0 ? left / total : 0;
     var dash = 283 * (1 - pct);

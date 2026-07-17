@@ -57,9 +57,9 @@
       const logoutBtn = document.createElement('button');
       logoutBtn.title = 'Sign out';
       logoutBtn.textContent = '⏻';
-      logoutBtn.style.cssText = 'background:none;border:1px solid rgba(255,255,255,.08);border-radius:7px;color:#475569;width:28px;height:28px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;';
+      logoutBtn.style.cssText = 'background:none;border:1px solid rgba(255,255,255,.08);border-radius:7px;color:#717c8c;width:28px;height:28px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;';
       logoutBtn.onmouseenter = function(){ this.style.background='rgba(239,68,68,.12)';this.style.color='#f87171';this.style.borderColor='rgba(239,68,68,.3)'; };
-      logoutBtn.onmouseleave = function(){ this.style.background='none';this.style.color='#475569';this.style.borderColor='rgba(255,255,255,.08)'; };
+      logoutBtn.onmouseleave = function(){ this.style.background='none';this.style.color='#717c8c';this.style.borderColor='rgba(255,255,255,.08)'; };
       logoutBtn.onclick = function(){ aceLogout(); };
 
       pill.appendChild(av);

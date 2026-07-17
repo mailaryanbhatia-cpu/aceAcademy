@@ -25,7 +25,7 @@
       '@keyframes ace-sp-dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}',
       '.ace-sp-logo{width:96px;height:96px;border-radius:22px;animation:ace-sp-logo-in .55s cubic-bezier(.34,1.56,.64,1)}',
       '.ace-sp-name{font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;font-size:1.8rem;font-weight:900;color:#e2e8f0;margin-top:18px;letter-spacing:-.02em;animation:ace-sp-text-in .5s .2s ease both}',
-      '.ace-sp-sub{font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;font-size:.85rem;color:#475569;margin-top:5px;animation:ace-sp-text-in .5s .35s ease both}',
+      '.ace-sp-sub{font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;font-size:.85rem;color:#717c8c;margin-top:5px;animation:ace-sp-text-in .5s .35s ease both}',
       '.ace-sp-dots{display:flex;gap:7px;margin-top:36px;animation:ace-sp-text-in .5s .5s ease both}',
       '.ace-sp-dot{width:8px;height:8px;border-radius:50%;background:#6366f1}',
       '.ace-sp-dot:nth-child(1){animation:ace-sp-dot 1.2s .0s infinite ease-in-out}',
