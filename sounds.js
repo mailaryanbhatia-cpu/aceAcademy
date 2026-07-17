@@ -1,4 +1,4 @@
-// ── aceAcademy Sound Engine ────────────────────────────────────
+// ── AcerAcademy Sound Engine ────────────────────────────────────
 // Uses Web Audio API — no files needed, all synthesized
 window.AceSound = (function(){
   var ctx = null;

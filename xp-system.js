@@ -1,4 +1,4 @@
-// ── aceAcademy XP & Study Streak System ──────────────────────────
+// ── AcerAcademy XP & Study Streak System ──────────────────────────
 // Single source of truth for total XP, level, and the activity streak
 // (current + longest + calendar history). Mirrors the coins.js /
 // streak.js module pattern already used on this site so it fits the

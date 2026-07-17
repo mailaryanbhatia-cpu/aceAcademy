@@ -1,5 +1,5 @@
 /**
- * firestore.js — aceAcademy Sync Engine v3
+ * firestore.js — AcerAcademy Sync Engine v3
  *
  * Architecture:
  *   localStorage = write-through cache (instant reads/writes, works offline)

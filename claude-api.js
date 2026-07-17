@@ -1,5 +1,5 @@
 /**
- * claude-api.js  —  aceAcademy AI helper
+ * claude-api.js  —  AcerAcademy AI helper
  *
  * Priority:
  *   1. Firebase Cloud Function (claudeChat) — no student key needed, server-side key

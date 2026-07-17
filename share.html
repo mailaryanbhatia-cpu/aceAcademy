@@ -4,11 +4,11 @@
 <script src="/timer.js"></script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Student Progress — aceAcademy</title>
+<title>Student Progress — AcerAcademy</title>
 <link rel="stylesheet" href="/ace-shared.css"/>
 <link rel="stylesheet" href="/mobile.css"/>
-<meta property="og:title" content="My aceAcademy Progress"/>
-<meta property="og:description" content="Check out my AP study progress on aceAcademy"/>
+<meta property="og:title" content="My AcerAcademy Progress"/>
+<meta property="og:description" content="Check out my AP study progress on AcerAcademy"/>
 <meta property="og:image" content="/icon-192.png"/>
 <style>
 .page-wrap{max-width:700px;margin:0 auto;padding:24px 16px 80px}
@@ -48,7 +48,7 @@
     <div style="font-size:2rem;margin-bottom:12px">🔒</div>
     <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;margin-bottom:8px">Profile not found</div>
     <div style="color:#64748b;font-size:.85rem;margin-bottom:20px">This share link may have expired or been removed.</div>
-    <a href="index.html" style="color:#818cf8;font-size:.85rem">Go to aceAcademy →</a>
+    <a href="index.html" style="color:#818cf8;font-size:.85rem">Go to AcerAcademy →</a>
   </div>
 </div>
 
@@ -78,7 +78,7 @@ function getShareToken(){
 }
 
 function renderProfile(data){
-  var name     = data.name || 'aceAcademy Student';
+  var name     = data.name || 'AcerAcademy Student';
   var grade    = data.grade || '';
   var initials = name.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase() || '🎓';
   var streak   = data.streak || 0;
@@ -105,7 +105,7 @@ function renderProfile(data){
   html += '<div class="hero-card">';
   html += '<div class="avatar-ring">'+(data.avatar?'<img src="'+data.avatar+'" style="width:80px;height:80px;border-radius:50%;object-fit:cover"/>':initials)+'</div>';
   html += '<div class="student-name">'+name+'</div>';
-  html += '<div class="student-sub">'+(grade?grade+' · ':'')+'aceAcademy Student</div>';
+  html += '<div class="student-sub">'+(grade?grade+' · ':'')+'AcerAcademy Student</div>';
   // Stats row
   var stats = [];
   if(visible.streak) stats.push({num:streak+'🔥', lbl:'Day Streak', color:'#ef4444'});
@@ -156,7 +156,7 @@ function renderProfile(data){
 
   // Footer
   html += '<div class="share-footer">';
-  html += '<div class="powered">Powered by <strong style="color:#818cf8">AcerAcademy</strong> — AI-powered AP study</div>';
+  html += '<div class="powered">Powered by <strong style="color:#818cf8">AcerAcademy</strong> — Free AP study tools</div>';
   html += '<a href="index.html" class="join-btn">Start Studying Free →</a>';
   html += '<div class="privacy-note">Only information the student chose to share is shown here.</div>';
   html += '</div>';
@@ -164,7 +164,7 @@ function renderProfile(data){
   document.getElementById('mainContent').innerHTML = html;
   document.getElementById('loadingState').style.display  = 'none';
   document.getElementById('mainContent').style.display   = '';
-  document.title = name + "'s Progress — aceAcademy";
+  document.title = name + "'s Progress — AcerAcademy";
 }
 
 // Load from Firestore

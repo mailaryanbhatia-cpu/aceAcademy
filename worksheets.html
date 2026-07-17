@@ -201,7 +201,7 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 
 <!-- TOP NAV -->
 <header class="ace-header">
-  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-brand">🎓 AcerAcademy</a>
   <a href="index.html" class="ace-nav-link">← Home</a>
   
   <div class="ace-spacer"></div>
@@ -619,7 +619,7 @@ buildSidebar(6);
     const blob = new Blob([allNotes], {type:'text/plain'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'aceAcademy-notes.txt';
+    a.download = 'AcerAcademy-notes.txt';
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -837,7 +837,7 @@ buildSidebar(6);
     }
     // Update page title while running
     if(running){
-      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — aceAcademy';
+      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — AcerAcademy';
     } else {
       document.title = document.title.replace(/^⏱.*?—\s*/,'');
     }

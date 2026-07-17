@@ -1063,7 +1063,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
         <div class="feature-icon">🎓</div>
         <div class="feature-label">AI Tutor</div>
         <div class="feature-desc">Ask anything. Gets Socratic hints, not just answers.</div>
-        <span class="popular-badge">Powered by AI</span>
+        <span class="popular-badge">Guided Q&amp;A</span>
       </a>
     </div>
 
@@ -1112,7 +1112,7 @@ main#mainContent{flex:1;padding:0 36px 36px;}
       <a href="essaygrader.html" class="feature-card">
         <div class="feature-icon">🖋️</div>
         <div class="feature-label">Essay Grader</div>
-        <div class="feature-desc">AI feedback on writing</div>
+        <div class="feature-desc">Instant writing feedback</div>
       </a>
       <a href="apcountdown.html" class="feature-card">
         <div class="feature-icon">⏳</div>
@@ -2421,6 +2421,16 @@ try { updateXpWidget(); } catch(e) {}
 try { updateHeroGreeting(); } catch(e) {}
 try { updateHomeStats(); } catch(e) {}
 try { showWelcomeBackScreen(); } catch(e) {}
+// Firebase's onAuthStateChanged commonly fires once with a "logged out"
+// state before it finishes restoring a real persisted session -- that
+// briefly clears aceSession from localStorage, which can leave the
+// greeting/stats stuck on the logged-out view even for a returning user.
+// Re-run once Firebase confirms the real state (ace-auth-ready, dispatched
+// by firebase-auth.js) so the UI catches up.
+document.addEventListener('ace-auth-ready', function () {
+  try { updateHeroGreeting(); } catch (e) {}
+  try { updateHomeStats(); } catch (e) {}
+});
 dcSidebarInit();
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', dcSidebarInit);

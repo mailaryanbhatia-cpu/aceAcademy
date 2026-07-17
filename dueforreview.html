@@ -4,7 +4,7 @@
 <script src="/timer.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Due for Review — aceAcademy</title>
+<title>Due for Review — AcerAcademy</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -66,7 +66,7 @@ h1{font-size:1.5rem;font-weight:900;margin-bottom:4px}
 </head>
 <body>
 <header>
-  <a href="index.html" class="brand">🎓 aceAcademy</a>
+  <a href="index.html" class="brand">🎓 AcerAcademy</a>
   <a href="index.html" class="nav-link">← Home</a>
   <div class="spacer"></div>
   <a href="flashcards.html" class="nav-link">Flashcards</a>
@@ -82,7 +82,7 @@ h1{font-size:1.5rem;font-weight:900;margin-bottom:4px}
     <div class="notif-icon">🔔</div>
     <div class="notif-text">
       <h3>Get notified when items are due</h3>
-      <p>Enable push notifications and aceAcademy will remind you on your phone or computer when review items are due — even when the site is closed.</p>
+      <p>Enable push notifications and AcerAcademy will remind you on your phone or computer when review items are due — even when the site is closed.</p>
     </div>
     <button class="btn" id="notifBtn" onclick="requestNotifications()">Enable Notifications</button>
   </div>
@@ -113,7 +113,7 @@ async function requestNotifications() {
     localStorage.setItem('ace_notif_enabled', '1');
     updateNotifBanner();
     scheduleReviewNotification();
-    new Notification('aceAcademy 🎓', {
+    new Notification('AcerAcademy 🎓', {
       body: 'Notifications enabled! You\'ll be reminded when review items are due.',
       icon: '/icon-192.png'
     });
@@ -140,7 +140,7 @@ function updateNotifBanner() {
     banner.querySelector('h3').textContent = '✅ Notifications enabled';
     banner.querySelector('p').textContent = 'You\'ll get a reminder when review items are due. Check back here anytime.';
     btn.textContent = 'Test Notification';
-    btn.onclick = () => new Notification('aceAcademy 🎓', { body: 'Test notification — review items are waiting!', icon: '/icon-192.png' });
+    btn.onclick = () => new Notification('AcerAcademy 🎓', { body: 'Test notification — review items are waiting!', icon: '/icon-192.png' });
   }
 }
 

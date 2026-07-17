@@ -486,7 +486,7 @@ async function doSignIn(){
   if(!user||!pass) return showMsg('signin-msg','Please fill in both fields.','error');
   const accounts=getAccounts();
   if(!accounts[user]) return showMsg('signin-msg','No account found for that username.','error');
-  const hash=await sha256('aceAcademy:'+user+':'+pass);
+  const hash=await sha256('AcerAcademy:'+user+':'+pass);
   if(hash!==accounts[user].hash) return showMsg('signin-msg','Incorrect password.','error');
   localStorage.setItem('aceSession',JSON.stringify({username:user,name:accounts[user].name||user,loginTime:Date.now()}));
   sessionStorage.setItem('ace_welcome_pending','1');
@@ -504,7 +504,7 @@ async function doSignUp(){
   if(pass!==pass2) return showMsg('signup-msg','Passwords do not match.','error');
   const accounts=getAccounts();
   if(accounts[user]) return showMsg('signup-msg','Username already taken.','error');
-  const hash=await sha256('aceAcademy:'+user+':'+pass);
+  const hash=await sha256('AcerAcademy:'+user+':'+pass);
   accounts[user]={hash,name:user,created:Date.now()};
   saveAccounts(accounts);
   localStorage.setItem('aceSession',JSON.stringify({username:user,name:user,loginTime:Date.now()}));

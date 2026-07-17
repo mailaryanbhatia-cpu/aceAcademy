@@ -126,7 +126,7 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 </head>
 <body>
 <header class="ace-header">
-  <a href="index.html" class="ace-brand">🎓 aceAcademy</a>
+  <a href="index.html" class="ace-brand">🎓 AcerAcademy</a>
   <a href="index.html" class="ace-nav-link">← Home</a>
   
   <div class="ace-spacer"></div>
@@ -176,7 +176,7 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
       <div class="welcome" id="welcome">
         <div class="acer-big">&#129302;</div>
         <h2>Hi, I'm Acer!</h2>
-        <p>aceAcademy's smart tutor — type an equation and I'll guide you through solving it yourself. Ask me anything about any subject too!</p>
+        <p>AcerAcademy's smart tutor — type an equation and I'll guide you through solving it yourself. Ask me anything about any subject too!</p>
         <div class="welcome-chips">
           <div class="welcome-chip" onclick="quickAsk('How do I solve equations with variables on both sides?')">Algebra help</div>
           <div class="welcome-chip" onclick="quickAsk('What is photosynthesis and how does it work?')">Photosynthesis</div>
@@ -527,7 +527,7 @@ function handleGuided(input) {
 
 function gLabel(g){ return g==='k' ? 'Kindergarten' : g==='ap' ? 'AP' : 'Grade ' + g; }
 const GREETINGS = [
-  g=>`Hey! 👋 I'm <strong>Acer</strong>, your aceAcademy smart tutor. I can explain concepts, solve math problems, and generate practice questions for ${gLabel(g)}.<br><br>What are you working on today?`,
+  g=>`Hey! 👋 I'm <strong>Acer</strong>, your AcerAcademy smart tutor. I can explain concepts, solve math problems, and generate practice questions for ${gLabel(g)}.<br><br>What are you working on today?`,
   g=>`Hi there! 😊 Ready to learn? I'm Acer. Tell me what topic you're studying for ${gLabel(g)} and I'll break it down step by step.`,
   g=>`Hello! Great to meet you. I'm Acer — I cover Math, Science, ELA, History, CS, and Health. What shall we tackle for ${gLabel(g)}?`,
 ];
@@ -694,7 +694,7 @@ window.onload = () => {
     showTyping();
     setTimeout(() => {
       removeTyping();
-      addMsg(`Hey! 👋 I'm <strong>Acer</strong>, your aceAcademy smart tutor. I can solve math equations, explain any concept step by step, and generate practice problems — for <strong>Math, Science, ELA, History, CS, and Health</strong>.<br><br>💡 Try typing an equation like <strong>3x + 5 = 20</strong> and I'll solve it! Or ask me any question.`, 'acer');
+      addMsg(`Hey! 👋 I'm <strong>Acer</strong>, your AcerAcademy smart tutor. I can solve math equations, explain any concept step by step, and generate practice problems — for <strong>Math, Science, ELA, History, CS, and Health</strong>.<br><br>💡 Try typing an equation like <strong>3x + 5 = 20</strong> and I'll solve it! Or ask me any question.`, 'acer');
     }, 900);
   }, 400);
 };
@@ -869,7 +869,7 @@ window.onload = () => {
     const blob = new Blob([allNotes], {type:'text/plain'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'aceAcademy-notes.txt';
+    a.download = 'AcerAcademy-notes.txt';
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -1087,7 +1087,7 @@ window.onload = () => {
     }
     // Update page title while running
     if(running){
-      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — aceAcademy';
+      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — AcerAcademy';
     } else {
       document.title = document.title.replace(/^⏱.*?—\s*/,'');
     }

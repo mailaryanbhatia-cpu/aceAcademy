@@ -1,4 +1,4 @@
-// ── aceAcademy Pomodoro Study Timer (site-wide floating widget) ──────────
+// ── AcerAcademy Pomodoro Study Timer (site-wide floating widget) ──────────
 // Self-contained: injects its own CSS + HTML + logic. Just include this
 // script anywhere in a page — no per-page markup needed. State persists in
 // localStorage so the timer keeps running (and stays in sync) across page

@@ -20,10 +20,10 @@
     setData(d);
   }
 
-  // Derive tool name from page title: "Essay Grader — aceAcademy" → "Essay Grader"
+  // Derive tool name from page title: "Essay Grader — AcerAcademy" → "Essay Grader"
   function getToolName(){
     const title = document.title || '';
-    return title.replace(/\s*[—\-–]\s*aceAcademy.*$/i,'').trim() || null;
+    return title.replace(/\s*[—\-–]\s*AcerAcademy.*$/i,'').trim() || null;
   }
 
   // Top N tools sorted by visits

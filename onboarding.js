@@ -1,5 +1,5 @@
 /**
- * onboarding.js v2 — aceAcademy interactive AI feature tour
+ * onboarding.js v2 — AcerAcademy interactive AI feature tour
  * Each step has a live demo the user can interact with.
  * Re-trigger: aceOnboarding.show() or localStorage.removeItem('ace_onboarding_done_v2')
  */
@@ -72,7 +72,7 @@ function stepWelcome(){
   return {
     icon:'🎓', title:'Welcome to AcerAcademy',
     sub:'Your AI-powered AP study companion',
-    body:'This tour shows you the AI features that make aceAcademy different. Each step has a live demo — try them!',
+    body:'This tour shows you the AI features that make AcerAcademy different. Each step has a live demo — try them!',
     grad:'linear-gradient(135deg,#6366f1,#8b5cf6)',
     demo: `<div style="display:flex;flex-wrap:wrap;gap:8px">
       ${['📝 AI Essay Grader','🎯 AI Thesis Gen','⚔️ AI Debate Coach','📈 Improvement Tracker','🃏 Flashcards','📊 50+ Tools'].map(function(t){

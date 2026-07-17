@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Weekly Digest — aceAcademy</title>
+<title>Weekly Digest — AcerAcademy</title>
 <link rel="stylesheet" href="ace-theme.css"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -53,7 +53,7 @@ h1{font-size:1.8rem;font-weight:900;margin:0 0 4px;background:linear-gradient(13
 </head>
 <body>
 <nav class="nav">
-  <a href="index.html">🎓 aceAcademy</a>
+  <a href="index.html">🎓 AcerAcademy</a>
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="progress.html">Progress</a>
@@ -301,13 +301,13 @@ function shareDigest() {
   var weekTests = tests.filter(function(t){ return t.date && dateInRange(t.date.split('T')[0], range); });
   var avgScore = weekTests.length ? Math.round(weekTests.reduce(function(a,t){ return a+(t.pct||0); },0)/weekTests.length) : null;
 
-  var text = '📋 My aceAcademy Week\n'
+  var text = '📋 My AcerAcademy Week\n'
     + '🔥 Streak: ' + (streakD.count||0) + ' days\n'
     + '📝 Tests: ' + weekTests.length + (avgScore !== null ? ' (avg ' + avgScore + '%)' : '') + '\n'
-    + '🌐 aceAcademy: https://mailaryanbhatia-cpu.github.io/';
+    + '🌐 AcerAcademy: https://mailaryanbhatia-cpu.github.io/';
 
   if (navigator.share) {
-    navigator.share({ title: 'My aceAcademy Weekly Digest', text: text });
+    navigator.share({ title: 'My AcerAcademy Weekly Digest', text: text });
   } else {
     navigator.clipboard.writeText(text).then(function(){
       alert('Copied to clipboard!');

@@ -1,4 +1,4 @@
-// ── aceAcademy Study Coins ─────────────────────────────────────
+// ── AcerAcademy Study Coins ─────────────────────────────────────
 window.AceCoins = (function(){
   var KEY = 'ace_coins';
   var LOG_KEY = 'ace_coin_log';

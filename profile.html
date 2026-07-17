@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/ace-shared.css">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>My Profile — aceAcademy</title>
+<title>My Profile — AcerAcademy</title>
 <link rel="stylesheet" href="ace-theme.css"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -106,7 +106,7 @@ body{font-family:var(--font);background:var(--bg);color:#e2e8f0;margin:0}
 </head>
 <body>
 <nav class="nav">
-  <a href="index.html">🎓 aceAcademy</a>
+  <a href="index.html">🎓 AcerAcademy</a>
   <div class="nav-links">
     <a href="digest.html">Digest</a>
     <a href="progress.html">Progress</a>
@@ -129,7 +129,7 @@ body{font-family:var(--font);background:var(--bg);color:#e2e8f0;margin:0}
         <span id="displayName">Student</span>
         <span id="topBadgeEl" style="font-size:1.4rem"></span>
       </div>
-      <div class="hero-sub" id="heroSub">aceAcademy student</div>
+      <div class="hero-sub" id="heroSub">AcerAcademy student</div>
       <button class="edit-btn" onclick="openEditModal()">✏️ Edit Profile</button>
     </div>
   </div>
@@ -359,7 +359,7 @@ function loadProfile() {
 
   // Name + grade
   document.getElementById('displayName').textContent = name || 'Student';
-  document.getElementById('heroSub').textContent = (grade ? grade + ' · ' : '') + 'aceAcademy student';
+  document.getElementById('heroSub').textContent = (grade ? grade + ' · ' : '') + 'AcerAcademy student';
 
   // Top badge
   var topBadge = null;

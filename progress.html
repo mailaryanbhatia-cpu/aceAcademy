@@ -805,7 +805,7 @@ render();
     }
     // Update page title while running
     if(running){
-      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — aceAcademy';
+      document.title='⏱ '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' — AcerAcademy';
     } else {
       document.title = document.title.replace(/^⏱.*?—\s*/,'');
     }
@@ -853,7 +853,7 @@ function exportData(){
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   var d = new Date().toISOString().split('T')[0];
-  a.download = 'aceAcademy-backup-' + d + '.json';
+  a.download = 'AcerAcademy-backup-' + d + '.json';
   a.click();
   URL.revokeObjectURL(a.href);
   showToast('✅ Data exported! Keep this file safe.', 'ok');
@@ -866,7 +866,7 @@ function importData(input){
   reader.onload = function(e){
     try {
       var data = JSON.parse(e.target.result);
-      if(data._app !== 'AcerAcademy') throw new Error('Not an aceAcademy backup file.');
+      if(data._app !== 'AcerAcademy') throw new Error('Not an AcerAcademy backup file.');
       var count = 0;
       Object.keys(data).forEach(function(k){
         if(k.startsWith('_')) return;
@@ -884,7 +884,7 @@ function importData(input){
 }
 
 function clearData(){
-  if(!confirm('Clear ALL aceAcademy data? This cannot be undone.')) return;
+  if(!confirm('Clear ALL AcerAcademy data? This cannot be undone.')) return;
   if(!confirm('Are you sure? All test scores, flashcards, streaks, and goals will be deleted.')) return;
   localStorage.clear();
   showToast('🗑 All data cleared.', 'ok');

@@ -1,4 +1,4 @@
-// theme.js — aceAcademy dark theme
+// theme.js — AcerAcademy dark theme
 (function(){
   function applyTheme(t){
     document.documentElement.setAttribute('data-theme',t);
