@@ -586,15 +586,6 @@
   .export-btn:hover{background:var(--surface)}
 
 
-  /* ── DARK MODE ───────────────────── */
-  [data-theme="dark"] {
-    --bg: #0f172a; --surface: #ffffff; --border: #b0bece;
-    --text: #f1f5f9; --muted: #94a3b8; --accent: #60a5fa;
-    --accent-light: #1e3a5f;
-  }
-  .theme-toggle { background:none; border:1px solid var(--border); border-radius:8px; padding:5px 10px; font-size:.78rem; cursor:pointer; color:var(--text); display:flex; align-items:center; gap:5px; }
-  .theme-toggle:hover { background:var(--surface); }
-
   /* ── UNIT RING ───────────────────── */
   .unit-ring { flex-shrink:0; margin-right:6px; }
 
@@ -835,7 +826,6 @@ main#mainContent{flex:1;padding:0 36px 36px;}
   </div>
   <div class="nav-spacer"></div>
   <span class="nav-badge">Grades K–12 Learning Platform</span>
-  <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark</button>
 </header>
 <div id="globalSearchResults"></div>
 
@@ -2711,26 +2701,13 @@ function exportSnapshot() {
 }
 
 
-// -- DARK / LIGHT MODE ---------------------------------------
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  const next = isDark ? 'light' : 'dark';
-  html.setAttribute('data-theme', next);
-  try { localStorage.setItem('color-theme', next); } catch(e) {}
-  const btn = document.getElementById('themeToggleBtn');
-  if (btn) btn.textContent = next === 'dark' ? '☀️ Light' : '🌙 Dark';
-}
-(function initTheme() {
-  try {
-    const saved = localStorage.getItem('color-theme');
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
-      const btn = document.getElementById('themeToggleBtn');
-      if (btn) btn.textContent = saved === 'dark' ? '☀️ Light' : '🌙 Dark';
-    }
-  } catch(e) {}
-})();
+// Dark/light toggle removed 2026-07-18 -- it never actually worked (a CSS
+// specificity/source-order bug meant no color ever changed when clicked),
+// and making a REAL light mode work would require a light-equivalent for
+// ~75 hardcoded dark colors across the shared ace-theme.css stylesheet
+// (scoped so the other 104 pages, which have no toggle, are unaffected) --
+// out of scope for now. Removed rather than ship a button that silently did
+// nothing.
 
 
 
