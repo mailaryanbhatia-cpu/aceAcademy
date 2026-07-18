@@ -1139,11 +1139,28 @@ main#mainContent{flex:1;padding:0 36px 36px;}
 
 <footer>AcerAcademy — Free grades K–12 curriculum, aligned to Common Core, NGSS &amp; CSTA standards.</footer>
 
-<script src="practice-data.js"></script>
 <script src="curriculum-browser-data.js"></script>
 <script src="index-reference-data.js"></script>
 <script>
-// PRACTICE SHEET DATA -- moved to /practice-data.js (loaded via <script src> just above)
+// PRACTICE SHEET DATA -- moved to /practice-data.js. Unlike the other data
+// files, this one is loaded LAZILY (dynamically injected below, not a
+// blocking <script src> tag) because it's ~1.4MB (the single largest file
+// on the homepage) and only two things need it: the curriculum-browser
+// section's practice sheets (built by render()) and the Daily Challenge
+// sidebar (dcSidebarInit()). Both of those are deferred until this
+// resolves -- see the bottom of this script block -- while everything
+// else on the page (hero, stats, tool grid, nav) renders immediately,
+// unaffected. This drops the homepage's initial/blocking payload by
+// ~486KB gzipped without losing any content -- practice sheets and the
+// Daily Challenge question just populate a moment after first paint
+// instead of being present in the very first render.
+const _practiceDataReady = new Promise((resolve, reject) => {
+  const s = document.createElement('script');
+  s.src = 'practice-data.js';
+  s.onload = resolve;
+  s.onerror = reject;
+  document.head.appendChild(s);
+});
 
 // ----------------------------------------------
 
@@ -1164,6 +1181,12 @@ let activeSubject = 'all';
 let searchQuery = '';
 
 function render() {
+  // PRACTICE is lazy-loaded (see _practiceDataReady near the top of this
+  // script block) and this function reads it unconditionally below. If a
+  // user clicks a grade/subject link in the brief window before that load
+  // finishes, re-queue this same call for when it's ready instead of
+  // throwing a ReferenceError.
+  if (typeof PRACTICE === 'undefined') { _practiceDataReady.then(render); return; }
   const gradeData = CURRICULUM[currentGrade];
   const main = document.getElementById('mainContent');
   if (!gradeData || !main) return;
@@ -2234,8 +2257,9 @@ function updateContinueWidget() {
 // <script> runs -- see that file's header comment for why this needs to
 // load early).
 
-render();
-updateContinueWidget();
+// These don't touch PRACTICE, so they run immediately -- no reason to
+// wait on the lazy-loaded practice-data.js for the parts of the page that
+// don't need it.
 try { updateXpWidget(); } catch(e) {}
 try { updateHeroGreeting(); } catch(e) {}
 try { updateHomeStats(); } catch(e) {}
@@ -2250,10 +2274,22 @@ document.addEventListener('ace-auth-ready', function () {
   try { updateHeroGreeting(); } catch (e) {}
   try { updateHomeStats(); } catch (e) {}
 });
-dcSidebarInit();
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', dcSidebarInit);
-}
+
+// render() and dcSidebarInit() both read PRACTICE synchronously and
+// unconditionally (not optional-chained on PRACTICE itself), so they can
+// only run once the lazy-loaded practice-data.js has actually resolved.
+_practiceDataReady.then(() => {
+  render();
+  updateContinueWidget();
+  dcSidebarInit();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', dcSidebarInit);
+  }
+}).catch(err => {
+  console.error('practice-data.js failed to load:', err);
+  const qEl = document.getElementById('dcSidebarQ');
+  if (qEl) qEl.textContent = 'Could not load practice data -- try refreshing the page.';
+});
 </script>
 
 <!-- ══ FLOATING NOTES WIDGET ══════════════════════════════════════════ -->
@@ -2789,6 +2825,7 @@ let quizQs = [], quizIdx = 0, quizCorrect = 0, quizWrong = 0, quizCount = 10;
 
 function openQuiz() {
   document.getElementById('quizOverlay').classList.add('open');
+  if (typeof PRACTICE === 'undefined') { _practiceDataReady.then(setupQuizGrades); return; }
   setupQuizGrades();
   document.getElementById('quizSetup').style.display = 'flex';
   document.getElementById('quizQuestion').style.display = 'none';

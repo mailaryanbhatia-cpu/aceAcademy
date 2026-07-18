@@ -11,6 +11,7 @@ const tests = [
   'tutor.test.js',
   'essaygrader.test.js',
   'xp-system.test.js',
+  'index-lazyload.test.js',
 ];
 
 let anyFailed = false;
