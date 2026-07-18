@@ -270,6 +270,15 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 let lang = 'mandarin';
 let mode = 'flashcards';
 let activeCat = 'all';
+let searchTerm = ''; // was only ever assigned inside render()'s search-bar-visibility branch and
+// onVocabSearch() -- never actually declared, so any read before one of those ran (e.g.
+// filteredVocab() on the very first render() call, since default mode is flashcards and
+// that branch is skipped when the search bar isn't shown) threw a silent ReferenceError.
+// This crashed the FIRST render() call for every visitor and left the flashcards grid
+// permanently empty -- render() calls renderContent()->renderFlashcards()->filteredVocab(),
+// and an uncaught error there aborts render() entirely, so mainArea never gets populated
+// on initial load. Declaring it here (before the single render() call at the bottom of this
+// script) fixes it structurally: it's guaranteed to exist by the time anything can read it.
 let quizQueue = [], quizIdx = 0, quizScore = 0, quizMode = 'mc';
 let writingSelected = null;
 let drawingCtx = null, isDrawing = false, lastX = 0, lastY = 0;

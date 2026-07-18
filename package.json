@@ -4,9 +4,10 @@
   "description": "AcerAcademy -- static K-12 & AP curriculum, tools, and study-tool site",
   "private": true,
   "scripts": {
-    "test": "node scripts/site-audit.js && node tests/run-all.js && node scripts/build-data.js --check",
+    "test": "node scripts/site-audit.js && node tests/run-all.js && node scripts/build-data.js --check && node scripts/check-page-errors.js",
     "build:data": "node scripts/build-data.js",
-    "verify:data": "node scripts/build-data.js --check"
+    "verify:data": "node scripts/build-data.js --check",
+    "check:pages": "node scripts/check-page-errors.js"
   },
   "repository": {
     "type": "git",

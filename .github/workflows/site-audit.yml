@@ -22,3 +22,5 @@ jobs:
         run: node tests/run-all.js
       - name: Verify data-source/ and shipped data files haven't drifted apart
         run: node scripts/build-data.js --check
+      - name: Site-wide load-time error check (catches the recurring script-order bug class)
+        run: node scripts/check-page-errors.js
