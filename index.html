@@ -682,17 +682,13 @@
   <link rel="stylesheet" href="ace-theme.css">
 
 <style id="ace-nav-css">
-:root {
-  --bg: #f9f9f9;
-  --surface: #ffffff;
-  --border: #e2e2e2;
-  --text: #1a1a1a;
-  --muted: #6b7280;
-  --accent: #2563eb;
-  --accent-light: #eff6ff;
-  --radius: 8px;
-  --font: 'Segoe UI', system-ui, sans-serif;
-}
+/* NOTE: --bg/--surface/--border/--text/--muted/--accent/--accent-light are
+   deliberately NOT redeclared here (removed 2026-07-18) -- this used to be a
+   byte-identical copy of the light-theme :root block above, which was always
+   dead code: it's immediately superseded a few lines down by the real,
+   unconditional dark-theme :root that this whole site actually renders with.
+   --radius/--font are already covered by the first :root block above (same
+   values), so nothing is lost by removing the duplicate. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 body{font-family:'Inter','Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
 nav.topnav{background:#080e1c!important;border-bottom:1px solid #2a3a55!important;box-shadow:0 1px 0 #2a3a55,0 4px 20px rgba(0,0,0,.5)!important;padding:0 20px!important;height:60px!important;display:flex!important;align-items:center!important;gap:2px!important;position:sticky!important;top:0!important;z-index:500!important;overflow-x:auto!important;}
