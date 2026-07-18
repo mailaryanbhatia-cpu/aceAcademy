@@ -20,3 +20,5 @@ jobs:
         run: node scripts/site-audit.js
       - name: Run functional smoke tests (curriculum, tutor, essaygrader, xp-system)
         run: node tests/run-all.js
+      - name: Verify data-source/ and shipped data files haven't drifted apart
+        run: node scripts/build-data.js --check
