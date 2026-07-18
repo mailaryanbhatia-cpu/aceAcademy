@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin — AcerAcademy</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="stylesheet" href="/ace-shared.css">
+<link rel="stylesheet" href="ace-theme.css"/>
+<script src="curriculum-browser-data.js"></script>
+<style>
+body{font-family:var(--font);background:var(--bg);color:#e2e8f0;margin:0}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:#0f172a;border-bottom:1px solid #2a3a55}
+.nav a{color:#e2e8f0;text-decoration:none;font-weight:700;font-size:1.1rem}
+.nav-links{display:flex;gap:14px;align-items:center}
+.nav-links a{color:#94a3b8;text-decoration:none;font-size:.88rem}
+.nav-links a:hover{color:#e2e8f0}
+.container{max-width:920px;margin:0 auto;padding:32px 20px}
+
+.gate{max-width:440px;margin:80px auto;text-align:center;background:#0f172a;border:1px solid #2a3a55;border-radius:20px;padding:40px 32px}
+.gate h1{font-size:1.3rem;margin:0 0 10px}
+.gate p{color:#94a3b8;font-size:.9rem;margin:0 0 20px;line-height:1.5}
+.btn{background:#6265ef;color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:.9rem;font-weight:700;cursor:pointer;}
+.btn:hover{background:#4f52d9}
+.btn-ghost{background:none;border:1px solid #2a3a55;color:#e2e8f0}
+.btn-ghost:hover{background:rgba(255,255,255,.05)}
+.btn-danger{background:#ef4444}
+.btn-danger:hover{background:#dc2626}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid #2a3a55}
+.tab-btn{background:none;border:none;color:#94a3b8;padding:10px 16px;font-size:.85rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent}
+.tab-btn.active{color:#e2e8f0;border-bottom-color:#6265ef}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.section{background:#0f172a;border:1px solid #2a3a55;border-radius:16px;padding:22px;margin-bottom:18px}
+.section h2{margin:0 0 14px;font-size:.95rem;font-weight:800;color:#a5b4fc}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+select,input,textarea{background:#111827;border:1px solid #2a3a55;color:#e2e8f0;border-radius:8px;padding:8px 12px;font-size:.85rem;font-family:inherit}
+select:focus,input:focus,textarea:focus{outline:none;border-color:#6265ef}
+textarea{width:100%;box-sizing:border-box;resize:vertical;line-height:1.5}
+label{display:block;font-size:.72rem;font-weight:700;color:#8296ad;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.field{margin-bottom:14px}
+
+.unit-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;margin-bottom:16px}
+.unit-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;border:1px solid #2a3a55;border-radius:8px;cursor:pointer;font-size:.85rem}
+.unit-row:hover{border-color:#6265ef}
+.unit-row.has-override{border-color:#eab308}
+.unit-row .ov-badge{font-size:.68rem;color:#eab308;font-weight:700}
+
+.msg{font-size:.82rem;padding:9px 12px;border-radius:8px;margin-bottom:12px}
+.msg.success{background:rgba(34,197,94,.12);color:#4ade80}
+.msg.error{background:rgba(239,68,68,.12);color:#f87171}
+.hint{font-size:.75rem;color:#8296ad;margin-top:4px;line-height:1.4}
+
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #2a3a55}
+th{color:#8296ad;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html">🎓 AcerAcademy</a>
+  <div class="nav-links">
+    <a href="profile.html">Profile</a>
+    <a href="alltools.html">All Tools</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Signed-out / not-authorized gate -->
+  <div class="gate" id="gate">
+    <h1>🔒 Admin</h1>
+    <p id="gateMsg">Checking your sign-in status…</p>
+    <button class="btn" id="gateSignIn" style="display:none" onclick="handleAdminSignIn()">Continue with Google</button>
+  </div>
+
+  <!-- Admin content (hidden until authorized) -->
+  <div id="adminApp" style="display:none">
+    <h1 style="font-size:1.5rem;margin:0 0 4px">Admin</h1>
+    <p style="color:#94a3b8;font-size:.85rem;margin:0 0 20px" id="signedInAs"></p>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tabBtnContent" onclick="switchTab('content')">📝 Content Overrides</button>
+      <button class="tab-btn" id="tabBtnAnalytics" onclick="switchTab('analytics')">📊 Analytics</button>
+    </div>
+
+    <!-- ══ CONTENT OVERRIDES TAB ══ -->
+    <div class="tab-panel active" id="panel-content">
+      <div class="section">
+        <h2>Pick a unit</h2>
+        <div class="row">
+          <div>
+            <label for="admGrade">Grade</label>
+            <select id="admGrade" onchange="renderUnitList()"></select>
+          </div>
+          <div>
+            <label for="admSubj">Subject</label>
+            <select id="admSubj" onchange="renderUnitList()"></select>
+          </div>
+        </div>
+        <div class="unit-list" id="unitList"></div>
+        <p class="hint">Units with a <span style="color:#eab308;font-weight:700">yellow border</span> already have a saved override. Overrides are public read, so they show up live on curriculum.html / index.html for every visitor — no page reload of the data files needed.</p>
+      </div>
+
+      <div class="section" id="editorSection" style="display:none">
+        <h2 id="editorTitle">Edit unit</h2>
+        <div id="editorMsg"></div>
+        <div class="field">
+          <label for="ovTitle">Unit title (leave as-is to keep the original)</label>
+          <input type="text" id="ovTitle" style="width:100%;box-sizing:border-box">
+        </div>
+        <div class="field">
+          <label for="ovTopics">Topics (one per line — leave blank to keep the original list)</label>
+          <textarea id="ovTopics" rows="5"></textarea>
+        </div>
+        <div class="field">
+          <label for="ovSheets">Extra practice sheets (JSON array, appended to any existing sheets — leave blank for none)</label>
+          <textarea id="ovSheets" rows="8" placeholder='[{"title":"Extra Practice","problems":[{"q":"2 + 2 = ?","a":"4","ex":"Count on your fingers if it helps."}]}]'></textarea>
+          <p class="hint">Each sheet: <code>{"title": "...", "problems": [{"q":"question","a":"answer","ex":"optional hint"}]}</code></p>
+        </div>
+        <div class="row">
+          <button class="btn" onclick="saveOverride()">Save override</button>
+          <button class="btn btn-ghost" onclick="closeEditor()">Cancel</button>
+          <button class="btn btn-danger" id="clearOvBtn" style="display:none" onclick="clearOverride()">Delete this override</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ANALYTICS TAB ══ -->
+    <div class="tab-panel" id="panel-analytics">
+      <div class="section">
+        <h2>Page views — last 7 days</h2>
+        <p class="hint" style="margin-bottom:14px">
+          Counts come from signed-in visitors only (writes to this collection require sign-in, to
+          keep the counters free from spam/abuse without needing a paid Cloud Functions backend —
+          see analytics.js). Anonymous browsing isn't reflected here.
+        </p>
+        <div id="analyticsLoading" style="color:#94a3b8;font-size:.85rem">Loading…</div>
+        <table id="analyticsTable" style="display:none">
+          <thead><tr><th>Date</th><th>Page</th><th>Views</th></tr></thead>
+          <tbody id="analyticsBody"></tbody>
+        </table>
+        <p id="analyticsEmpty" style="display:none;color:#94a3b8;font-size:.85rem">No analytics data yet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/firebase-auth.js"></script>
+<script>
+// ── Hardcoded admin allowlist. Matches firestore.rules' isAdmin() check --
+// that rule is the REAL enforcement (this client-side check is only about
+// showing/hiding the UI; someone editing this file locally couldn't write
+// anything Firestore would actually accept). ──
+const ADMIN_EMAILS = ['jagasia.deepti@gmail.com'];
+
+function handleAdminSignIn() {
+  document.getElementById('gateSignIn').disabled = true;
+  aceGoogleSignIn().catch(function(err){
+    document.getElementById('gateMsg').textContent = err.message || 'Sign-in failed. Try again.';
+    document.getElementById('gateSignIn').disabled = false;
+  });
+}
+
+function showGate(msg, showBtn) {
+  document.getElementById('gate').style.display = '';
+  document.getElementById('adminApp').style.display = 'none';
+  document.getElementById('gateMsg').textContent = msg;
+  document.getElementById('gateSignIn').style.display = showBtn ? '' : 'none';
+}
+
+function showAdminApp(user) {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('adminApp').style.display = '';
+  document.getElementById('signedInAs').textContent = 'Signed in as ' + (user.email || user.displayName || 'you');
+  initGradeSubjSelects();
+  renderUnitList();
+  loadAnalytics();
+}
+
+document.addEventListener('ace-auth-ready', function(e) {
+  const user = e.detail;
+  if (!user) { showGate('Sign in with the AcerAcademy admin account to manage content and view analytics.', true); return; }
+  if (ADMIN_EMAILS.indexOf(user.email) === -1) {
+    showGate('Signed in as ' + user.email + ', which isn\'t an admin account on this site.', false);
+    return;
+  }
+  showAdminApp(user);
+});
+// If ace-auth-ready doesn't fire within a few seconds (e.g. Firebase SDK
+// blocked/slow), stop showing an indefinite "checking..." message.
+setTimeout(function() {
+  if (document.getElementById('gate').style.display !== 'none' &&
+      document.getElementById('gateMsg').textContent.indexOf('Checking') === 0) {
+    showGate('Sign in with the AcerAcademy admin account to manage content and view analytics.', true);
+  }
+}, 4000);
+
+// ── Tabs ──────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.getElementById('tabBtnContent').classList.toggle('active', name === 'content');
+  document.getElementById('tabBtnAnalytics').classList.toggle('active', name === 'analytics');
+  document.getElementById('panel-content').classList.toggle('active', name === 'content');
+  document.getElementById('panel-analytics').classList.toggle('active', name === 'analytics');
+}
+
+// ── Content overrides ─────────────────────────────────────────────
+const GRADE_NAMES = { k:'Kindergarten', 1:'1st',2:'2nd',3:'3rd',4:'4th',5:'5th',6:'6th',7:'7th',8:'8th',9:'9th',10:'10th',11:'11th',12:'12th', ap:'AP' };
+let _overridesCache = {}; // unitKey -> override data, loaded once per session
+let _currentEditUnit = null;
+
+function initGradeSubjSelects() {
+  const gradeSel = document.getElementById('admGrade');
+  const grades = ['k','1','2','3','4','5','6','7','8','9','10','11','12','ap'];
+  gradeSel.innerHTML = grades.map(g => `<option value="${g}">${GRADE_NAMES[g]}</option>`).join('');
+
+  function refreshSubjects() {
+    const grade = gradeSel.value;
+    const subjList = grade === 'ap' ? AP_SUBJECTS : SUBJECTS;
+    document.getElementById('admSubj').innerHTML = subjList.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+  }
+  gradeSel.onchange = function(){ refreshSubjects(); renderUnitList(); };
+  refreshSubjects();
+}
+
+function db() { return firebase.firestore(); }
+
+function renderUnitList() {
+  const grade = document.getElementById('admGrade').value;
+  const subj = document.getElementById('admSubj').value;
+  const units = (CURRICULUM[grade] && CURRICULUM[grade][subj]) || [];
+  const listEl = document.getElementById('unitList');
+
+  if (!units.length) { listEl.innerHTML = '<p class="hint">No units for this grade/subject.</p>'; return; }
+
+  listEl.innerHTML = units.map(u => {
+    const hasOv = !!_overridesCache[u.key];
+    return `<div class="unit-row${hasOv ? ' has-override' : ''}" onclick="openEditor('${u.key}')">
+      <span>${u.unit}</span>
+      ${hasOv ? '<span class="ov-badge">OVERRIDE SAVED</span>' : ''}
+    </div>`;
+  }).join('');
+
+  // Fetch overrides for exactly these units (cheap -- one read per unit
+  // shown, not the whole collection) so the "has override" badge and
+  // pre-filled editor are accurate without needing a full collection scan.
+  units.forEach(u => {
+    if (_overridesCache[u.key] !== undefined) return; // already fetched
+    db().collection('contentOverrides').doc(u.key).get().then(doc => {
+      _overridesCache[u.key] = doc.exists ? doc.data() : null;
+      renderUnitList();
+    }).catch(() => { _overridesCache[u.key] = null; });
+  });
+}
+
+function findUnit(key) {
+  const grade = document.getElementById('admGrade').value;
+  const subj = document.getElementById('admSubj').value;
+  const units = (CURRICULUM[grade] && CURRICULUM[grade][subj]) || [];
+  return units.find(u => u.key === key);
+}
+
+function openEditor(key) {
+  const unit = findUnit(key);
+  if (!unit) return;
+  _currentEditUnit = unit;
+  const ov = _overridesCache[key];
+
+  document.getElementById('editorSection').style.display = '';
+  document.getElementById('editorTitle').textContent = 'Edit: ' + unit.unit;
+  document.getElementById('editorMsg').innerHTML = '';
+  document.getElementById('ovTitle').value = (ov && ov.unit) || '';
+  document.getElementById('ovTitle').placeholder = unit.unit;
+  document.getElementById('ovTopics').value = (ov && ov.topics) ? ov.topics.join('\n') : '';
+  document.getElementById('ovTopics').placeholder = unit.topics.join('\n');
+  document.getElementById('ovSheets').value = (ov && ov.extraPracticeSheets) ? JSON.stringify(ov.extraPracticeSheets, null, 2) : '';
+  document.getElementById('clearOvBtn').style.display = ov ? '' : 'none';
+
+  document.getElementById('editorSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeEditor() {
+  document.getElementById('editorSection').style.display = 'none';
+  _currentEditUnit = null;
+}
+
+function showEditorMsg(text, type) {
+  document.getElementById('editorMsg').innerHTML = `<div class="msg ${type}">${text}</div>`;
+}
+
+function saveOverride() {
+  if (!_currentEditUnit) return;
+  const key = _currentEditUnit.key;
+  const titleVal = document.getElementById('ovTitle').value.trim();
+  const topicsVal = document.getElementById('ovTopics').value.trim();
+  const sheetsVal = document.getElementById('ovSheets').value.trim();
+
+  const payload = { updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  if (titleVal) payload.unit = titleVal;
+  if (topicsVal) payload.topics = topicsVal.split('\n').map(t => t.trim()).filter(Boolean);
+  if (sheetsVal) {
+    try {
+      const parsed = JSON.parse(sheetsVal);
+      if (!Array.isArray(parsed)) throw new Error('must be a JSON array');
+      payload.extraPracticeSheets = parsed;
+    } catch (e) {
+      showEditorMsg('Extra practice sheets JSON is invalid: ' + e.message, 'error');
+      return;
+    }
+  }
+
+  if (Object.keys(payload).length === 1) {
+    showEditorMsg('Nothing to save — fill in at least one field, or use "Delete this override" if one already exists.', 'error');
+    return;
+  }
+
+  db().collection('contentOverrides').doc(key).set(payload, { merge: true })
+    .then(() => {
+      _overridesCache[key] = Object.assign({}, _overridesCache[key], payload);
+      showEditorMsg('Saved. Live on the site immediately.', 'success');
+      renderUnitList();
+    })
+    .catch(err => showEditorMsg('Save failed: ' + err.message, 'error'));
+}
+
+function clearOverride() {
+  if (!_currentEditUnit) return;
+  const key = _currentEditUnit.key;
+  if (!confirm('Delete this override? The unit will revert to its original content.')) return;
+  db().collection('contentOverrides').doc(key).delete()
+    .then(() => {
+      _overridesCache[key] = null;
+      showEditorMsg('Override deleted.', 'success');
+      renderUnitList();
+      setTimeout(closeEditor, 800);
+    })
+    .catch(err => showEditorMsg('Delete failed: ' + err.message, 'error'));
+}
+
+// ── Analytics ─────────────────────────────────────────────────────
+function loadAnalytics() {
+  const today = new Date();
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    dates.push(d.toISOString().slice(0, 10));
+  }
+
+  Promise.all(dates.map(date => db().collection('analyticsSummary').doc(date).get()))
+    .then(docs => {
+      const rows = [];
+      docs.forEach((doc, i) => {
+        if (!doc.exists) return;
+        const data = doc.data() || {};
+        Object.keys(data).forEach(page => {
+          if (page === 'updatedAt') return;
+          rows.push({ date: dates[i], page, views: data[page] });
+        });
+      });
+      document.getElementById('analyticsLoading').style.display = 'none';
+      if (!rows.length) {
+        document.getElementById('analyticsEmpty').style.display = '';
+        return;
+      }
+      rows.sort((a, b) => (a.date === b.date ? b.views - a.views : b.date.localeCompare(a.date)));
+      document.getElementById('analyticsBody').innerHTML = rows.map(r =>
+        `<tr><td>${r.date}</td><td>${r.page}</td><td>${r.views}</td></tr>`
+      ).join('');
+      document.getElementById('analyticsTable').style.display = '';
+    })
+    .catch(err => {
+      document.getElementById('analyticsLoading').textContent = 'Could not load analytics: ' + err.message;
+    });
+}
+</script>
+</body>
+</html>

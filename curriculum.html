@@ -286,6 +286,7 @@ footer{background:var(--bg)!important;color:var(--muted2)!important;border-top:1
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="/firebase-auth.js"></script>
 <script src="/firestore.js"></script>
+<script src="/content-overrides.js"></script>
 <script src="/sync-indicator.js"></script>
 <script src="auth-guard.js"></script>
 <script src="theme.js"></script>
@@ -436,7 +437,6 @@ function render() {
       <div class="units">`;
 
     filtered.forEach((u, i) => {
-      const topicMatch = searchQuery ? u.topics.filter(t => t.toLowerCase().includes(searchQuery)) : u.topics;
       // realIndex is the unit's position within the FULL (unfiltered) units list --
       // used instead of the filtered-array index `i` because PRACTICE's legacy
       // format is a plain array keyed by position, and `i` alone would point at
@@ -447,10 +447,22 @@ function render() {
       // unit.key, immune to reordering/insertion of units) with fallback to the
       // legacy positional-index array format for backward compatibility with
       // existing data that hasn't been migrated yet.
-      const practiceSheets = Array.isArray(subjPractice)
+      let practiceSheets = Array.isArray(subjPractice)
         ? (subjPractice[realIndex] || null)
         : (subjPractice && u.key ? (subjPractice[u.key] || null) : null);
       const unitKey = `${currentGrade}-${subj.id}-${realIndex}`;
+
+      // Hybrid content-management overrides (content-overrides.js, admin.html):
+      // an admin-edited title/topics list, and/or extra admin-added practice
+      // sheets appended after whatever's already in the static data. Doesn't
+      // touch the original CURRICULUM/PRACTICE objects -- `u` itself is left
+      // alone, only the DISPLAYED title/topics come from `displayUnit`.
+      const displayUnit = typeof applyContentOverride === 'function' ? applyContentOverride(u) : u;
+      if (typeof getExtraPracticeSheets === 'function') {
+        const extraSheets = getExtraPracticeSheets(u.key);
+        if (extraSheets.length) practiceSheets = (practiceSheets || []).concat(extraSheets);
+      }
+      const topicMatch = searchQuery ? displayUnit.topics.filter(t => t.toLowerCase().includes(searchQuery)) : displayUnit.topics;
 
       let practiceHtml = '';
       if (practiceSheets) {
@@ -488,7 +500,7 @@ function render() {
         <div class="unit-header" onclick="toggleUnit('${subj.id}-${i}')">
           <span class="unit-num">Unit ${i+1}</span>
           <span style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
-            <span class="unit-name" style="flex:none">${highlight(u.unit)}</span>
+            <span class="unit-name" style="flex:none">${highlight(displayUnit.unit)}</span>
           </span>
           <span class="unit-toggle">▼</span>
         </div>
@@ -602,6 +614,11 @@ document.getElementById('searchInput').addEventListener('input', e => {
 // Initial render
 updateSidebarSubjectBtns();
 render();
+
+// Re-render (silently) if admin-added content overrides come back from
+// Firestore after the initial render already happened -- see
+// content-overrides.js. Harmless no-op if none exist (the common case).
+document.addEventListener('ace-content-overrides-updated', render);
 </script>
 
 <!-- ══ FLOATING NOTES WIDGET ══════════════════════════════════════════ -->

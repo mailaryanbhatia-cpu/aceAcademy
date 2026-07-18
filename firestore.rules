@@ -1,0 +1,78 @@
+rules_version = '2';
+
+// AcerAcademy — Firestore Security Rules
+// ─────────────────────────────────────────────────────────────────────────
+// This is the "server-side validation" layer for the site: since AcerAcademy
+// is a static site (no backend server), Firestore itself enforces who can
+// read/write what. Deploy via the Firebase console (Firestore Database ->
+// Rules tab -> paste this in -> Publish) or `firebase deploy --only
+// firestore:rules` if you have the Firebase CLI set up locally.
+//
+// Three collections, matching what firestore.js / the new admin tooling
+// use:
+//   1. users/{uid}         — existing per-user sync data (XP, streaks,
+//                            notes, quiz history, etc. — see firestore.js).
+//                            Owner-only, both read and write.
+//   2. contentOverrides/{} — hybrid content-management overrides (curriculum
+//                            unit / practice-sheet edits made through
+//                            admin.html). Public READ (every visitor's page
+//                            needs to merge these in), admin-only WRITE.
+//   3. analyticsSummary/{} — site-wide aggregate counters (page-view counts
+//                            per day, written via increment() from any
+//                            signed-in visitor's browser -- see
+//                            analytics.js). Admin-only READ (so random
+//                            visitors can't see your traffic), signed-in-
+//                            only WRITE.
+//
+// ADMIN ACCOUNT: hardcoded by email below. If you ever sign in with a
+// different Google account and want IT to be the admin instead, update
+// isAdmin() and republish these rules -- there's no way to manage this from
+// the site itself without a backend, so it lives here.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'jagasia.deepti@gmail.com';
+    }
+
+    // ── 1. Per-user sync data (existing, firestore.js) ──────────────────
+    match /users/{uid} {
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ── 2. Content-management overrides (new, admin.html) ───────────────
+    // Doc IDs are the same stable unit keys already used across the site,
+    // e.g. "9-history-world-history-modern-era" (see
+    // curriculum-browser-data.js). Kept intentionally loose on write-shape
+    // validation (content edits are free-form: title/body/practice-sheet
+    // fields vary by unit type) but locked to the admin account only.
+    match /contentOverrides/{unitKey} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── 3. Site-wide analytics counters (new, analytics.js) ─────────────
+    // Doc ID = a date string, e.g. "2026-07-19". Fields are per-page visit
+    // counters incremented via FieldValue.increment(1). Firestore rules
+    // can't strictly enforce "this write may ONLY be an increment of an
+    // existing numeric field" -- that level of granularity needs a Cloud
+    // Function (which requires the Blaze plan, deliberately avoided here).
+    // As a practical middle ground: require sign-in to write at all (so an
+    // anonymous script can't spam-inflate counters or run up read/write
+    // costs), and keep reads admin-only so visitor counts stay private.
+    match /analyticsSummary/{date} {
+      allow read: if isAdmin();
+      allow write: if isSignedIn();
+    }
+
+    // ── Default deny ─────────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

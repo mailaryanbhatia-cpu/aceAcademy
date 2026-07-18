@@ -12,6 +12,7 @@ const tests = [
   'essaygrader.test.js',
   'xp-system.test.js',
   'index-lazyload.test.js',
+  'content-overrides.test.js',
 ];
 
 let anyFailed = false;
