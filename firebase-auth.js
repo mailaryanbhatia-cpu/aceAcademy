@@ -36,13 +36,35 @@
   };
 
   // ── Auth state observer ──────────────────────────────
+  // A real (Google) sign-in dispatches 'ace-auth-ready' and persists the
+  // session -- everything on the site that gates on being "signed in"
+  // (admin.html, login.html, firestore.js's cross-device sync, the
+  // homepage greeting) keys off that event, so it must mean a real account.
+  //
+  // An anonymous Firebase identity (see the else-branch below) is NOT
+  // treated as a real session: no event, no localStorage session. It
+  // exists purely so firebase.auth().currentUser is non-null for every
+  // visitor -- letting analytics.js's site-wide counters and
+  // contentOverrides writes satisfy firestore.rules' "signed in" check
+  // even for visitors who never click "Sign in with Google" (con #3 fix,
+  // 2026-07-19).
   auth.onAuthStateChanged(function (user) {
-    if (user) {
+    if (user && !user.isAnonymous) {
       _saveSession(user);
       // Notify any listeners
       document.dispatchEvent(new CustomEvent('ace-auth-ready', { detail: user }));
+    } else if (user && user.isAnonymous) {
+      // Already have an anonymous identity for this browser -- nothing to do.
     } else {
       localStorage.removeItem('aceSession');
+      // No session of any kind yet -- get an anonymous one. Requires the
+      // Anonymous provider to be enabled in the Firebase console
+      // (Authentication -> Sign-in method); fails silently and harmlessly
+      // if it isn't (analytics/content-override writes just stay
+      // signed-out-only, same as before this change).
+      auth.signInAnonymously().catch(function (err) {
+        console.warn('[firebase-auth] anonymous sign-in failed:', err.message);
+      });
     }
   });
 

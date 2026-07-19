@@ -299,7 +299,14 @@
     try {
       if (typeof firebase !== 'undefined' && firebase.auth) {
         firebase.auth().onAuthStateChanged(function(user) {
-          if (user) { onUserSignedIn(user.uid); }
+          // Anonymous identities (added 2026-07-19 so analytics can count
+          // signed-out visitors -- see firebase-auth.js) must NOT trigger
+          // the cross-device sync engine below: they're a throwaway
+          // per-browser id with no continuity, so syncing to
+          // users/{anonUid} would just pollute Firestore with one
+          // never-reused doc per anonymous visitor, and wouldn't restore
+          // anything real for the visitor either.
+          if (user && !user.isAnonymous) { onUserSignedIn(user.uid); }
           else { onUserSignedOut(); }
         });
       }

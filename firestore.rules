@@ -24,10 +24,13 @@ rules_version = '2';
 //                            visitors can't see your traffic), signed-in-
 //                            only WRITE.
 //
-// ADMIN ACCOUNT: hardcoded by email below. If you ever sign in with a
-// different Google account and want IT to be the admin instead, update
-// isAdmin() and republish these rules -- there's no way to manage this from
-// the site itself without a backend, so it lives here.
+// ADMIN ACCOUNTS: hardcoded by email below (a list, so more than one admin
+// can be added -- matches admin.html's own ADMIN_EMAILS array, which is the
+// client-side copy of this same list. Keep both in sync: this one is the
+// REAL enforcement, admin.html's copy only controls whether the UI shows
+// itself). To add or change an admin, edit ADMIN_EMAILS in both files and
+// republish these rules -- there's no way to manage this from the site
+// itself without a backend, so it lives here.
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -36,8 +39,9 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Keep in sync with admin.html's ADMIN_EMAILS array.
     function isAdmin() {
-      return isSignedIn() && request.auth.token.email == 'jagasia.deepti@gmail.com';
+      return isSignedIn() && request.auth.token.email in ['jagasia.deepti@gmail.com'];
     }
 
     // ── 1. Per-user sync data (existing, firestore.js) ──────────────────
