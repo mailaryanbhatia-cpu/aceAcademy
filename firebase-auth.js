@@ -14,6 +14,37 @@
 
   // Init Firebase (guard against double-init)
   if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+
+  // ── App Check (added 2026-07-19) ────────────────────
+  // Loaded dynamically rather than as a 4th <script> tag on every one of
+  // the ~85 pages that already load the Firebase SDK -- keeps this a
+  // one-file change instead of a mechanical multi-page edit. Uses
+  // reCAPTCHA v3 (site key below is public/client-side by design, same as
+  // any reCAPTCHA site key -- the secret key that actually matters for
+  // security lives only in the Firebase Console, never in this code).
+  //
+  // NOTE: App Check enforcement is OFF by default per Firebase service
+  // (Firestore, Auth, etc.) until explicitly turned on in the App Check
+  // console tab -- so loading this can't break anything on its own. Once
+  // you're ready to enforce it, there's a small timing gap to know about:
+  // this script loads asynchronously, so the very first Firestore write
+  // on a page (e.g. the initial anonymous sign-in) could theoretically
+  // fire before activate() finishes -- fine while unenforced, worth
+  // revisiting if enforcement is ever turned on and early writes start
+  // getting rejected.
+  (function loadAppCheck() {
+    var s = document.createElement('script');
+    s.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js';
+    s.onload = function () {
+      try {
+        firebase.appCheck().activate('6Lcbo1stAAAAAN-ehDQCRZel1wjb5p3-FQfLnW7D', true);
+      } catch (e) {
+        console.warn('[firebase-auth] App Check activation failed:', e.message);
+      }
+    };
+    document.head.appendChild(s);
+  })();
+
   const auth = firebase.auth();
   const provider = new firebase.auth.GoogleAuthProvider();
   provider.addScope('email');
