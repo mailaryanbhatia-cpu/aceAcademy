@@ -8,7 +8,7 @@ rules_version = '2';
 // Rules tab -> paste this in -> Publish) or `firebase deploy --only
 // firestore:rules` if you have the Firebase CLI set up locally.
 //
-// Three collections, matching what firestore.js / the new admin tooling
+// Four collections, matching what firestore.js / the new admin tooling
 // use:
 //   1. users/{uid}         — existing per-user sync data (XP, streaks,
 //                            notes, quiz history, etc. — see firestore.js).
@@ -23,6 +23,12 @@ rules_version = '2';
 //                            analytics.js). Admin-only READ (so random
 //                            visitors can't see your traffic), signed-in-
 //                            only WRITE.
+//   4. errorLogs/{}         — in-house error monitoring (page errors +
+//                            unhandled promise rejections, written from any
+//                            signed-in visitor's browser -- see
+//                            analytics.js' pushErrorLog()). Same
+//                            admin-only-READ / signed-in-only-WRITE shape
+//                            as analyticsSummary, and for the same reason.
 //
 // ADMIN ACCOUNTS: hardcoded by email below (a list, so more than one admin
 // can be added -- matches admin.html's own ADMIN_EMAILS array, which is the
@@ -70,6 +76,16 @@ service cloud.firestore {
     // anonymous script can't spam-inflate counters or run up read/write
     // costs), and keep reads admin-only so visitor counts stay private.
     match /analyticsSummary/{date} {
+      allow read: if isAdmin();
+      allow write: if isSignedIn();
+    }
+
+    // ── 4. In-house error monitoring (new, analytics.js pushErrorLog) ────
+    // Auto-generated doc IDs, one per logged error (capped client-side at
+    // 3 per page load -- see analytics.js). Same shape as analyticsSummary
+    // above and for the same reason: signed-in (including anonymous) can
+    // write, only the admin can read.
+    match /errorLogs/{docId} {
       allow read: if isAdmin();
       allow write: if isSignedIn();
     }

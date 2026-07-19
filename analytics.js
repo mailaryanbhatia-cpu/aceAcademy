@@ -111,5 +111,47 @@
     }
   });
 
+  // ── Basic in-house error monitoring (added 2026-07-19) ──────────────
+  // Deliberately NOT a third-party service (e.g. Sentry) -- wiring one in
+  // would mean creating a new external account, which isn't something to
+  // do on someone else's behalf. Instead: real page errors get written to
+  // the same free-tier Firestore project everything else here already
+  // uses, viewable in admin.html's Errors tab.
+  //
+  // Capped at MAX_ERRORS_PER_LOAD per page load so a page stuck in an
+  // error loop (e.g. a bug that throws on every animation frame) can't
+  // burn through the Firestore free-tier write quota by itself.
+  const MAX_ERRORS_PER_LOAD = 3;
+  let _errorsLogged = 0;
+
+  function pushErrorLog(message, extra){
+    try {
+      if (_errorsLogged >= MAX_ERRORS_PER_LOAD) return;
+      if (typeof firebase === 'undefined' || !firebase.firestore || !firebase.auth) return;
+      const user = firebase.auth().currentUser;
+      if (!user) return; // same signed-in-including-anonymous gate as pushSiteWideCount
+      _errorsLogged++;
+      const entry = Object.assign({
+        message: String(message || '').slice(0, 500),
+        page: getToolName() || document.title || location.pathname,
+        url: location.pathname,
+        userAgent: navigator.userAgent.slice(0, 200),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      }, extra || {});
+      firebase.firestore().collection('errorLogs').add(entry)
+        .catch(err => console.warn('[analytics] error log write failed:', err.message));
+    } catch (e) {
+      console.warn('[analytics] error log write failed:', e.message);
+    }
+  }
+
+  window.addEventListener('error', (e) => {
+    pushErrorLog(e.message, { source: e.filename ? e.filename.split('/').pop() : '', line: e.lineno });
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    const reason = e.reason && e.reason.message ? e.reason.message : String(e.reason);
+    pushErrorLog('Unhandled promise rejection: ' + reason, { source: 'promise' });
+  });
+
   window.aceAnalytics = { track, getData, topTools, recentTools, totalVisits, getToolName };
 })();

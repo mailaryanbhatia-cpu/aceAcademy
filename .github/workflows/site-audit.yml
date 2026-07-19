@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true  # data-source/*.js is LFS-tracked (con #3, 2026-07-19) -- without this, actions/checkout only pulls LFS pointer files, and build-data.js --check fails trying to parse them as JS.
       - uses: actions/setup-node@v4
         with:
           node-version: '18'

@@ -85,6 +85,7 @@ th{color:#8296ad;font-weight:700;font-size:.72rem;text-transform:uppercase;lette
     <div class="tabs">
       <button class="tab-btn active" id="tabBtnContent" onclick="switchTab('content')">📝 Content Overrides</button>
       <button class="tab-btn" id="tabBtnAnalytics" onclick="switchTab('analytics')">📊 Analytics</button>
+      <button class="tab-btn" id="tabBtnErrors" onclick="switchTab('errors')">🐞 Errors</button>
     </div>
 
     <!-- ══ CONTENT OVERRIDES TAB ══ -->
@@ -146,6 +147,24 @@ th{color:#8296ad;font-weight:700;font-size:.72rem;text-transform:uppercase;lette
         <p id="analyticsEmpty" style="display:none;color:#94a3b8;font-size:.85rem">No analytics data yet.</p>
       </div>
     </div>
+
+    <!-- ══ ERRORS TAB ══ -->
+    <div class="tab-panel" id="panel-errors">
+      <div class="section">
+        <h2>Recent errors</h2>
+        <p class="hint" style="margin-bottom:14px">
+          Real page errors and unhandled promise rejections, reported by visitors' browsers (up
+          to 3 per page load, so one bad bug can't flood this list -- see analytics.js). Not a
+          replacement for the CI test suite, just visibility into what's actually happening live.
+        </p>
+        <div id="errorsLoading" style="color:#94a3b8;font-size:.85rem">Loading…</div>
+        <table id="errorsTable" style="display:none">
+          <thead><tr><th>When</th><th>Page</th><th>Message</th><th>Source</th></tr></thead>
+          <tbody id="errorsBody"></tbody>
+        </table>
+        <p id="errorsEmpty" style="display:none;color:#94a3b8;font-size:.85rem">No errors reported. 🎉</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -182,6 +201,7 @@ function showAdminApp(user) {
   initGradeSubjSelects();
   renderUnitList();
   loadAnalytics();
+  loadErrors();
 }
 
 document.addEventListener('ace-auth-ready', function(e) {
@@ -206,8 +226,10 @@ setTimeout(function() {
 function switchTab(name) {
   document.getElementById('tabBtnContent').classList.toggle('active', name === 'content');
   document.getElementById('tabBtnAnalytics').classList.toggle('active', name === 'analytics');
+  document.getElementById('tabBtnErrors').classList.toggle('active', name === 'errors');
   document.getElementById('panel-content').classList.toggle('active', name === 'content');
   document.getElementById('panel-analytics').classList.toggle('active', name === 'analytics');
+  document.getElementById('panel-errors').classList.toggle('active', name === 'errors');
 }
 
 // ── Content overrides ─────────────────────────────────────────────
@@ -377,6 +399,28 @@ function loadAnalytics() {
     })
     .catch(err => {
       document.getElementById('analyticsLoading').textContent = 'Could not load analytics: ' + err.message;
+    });
+}
+
+// ── Errors ──────────────────────────────────────────────────────────
+function loadErrors() {
+  db().collection('errorLogs').orderBy('createdAt', 'desc').limit(50).get()
+    .then(snap => {
+      document.getElementById('errorsLoading').style.display = 'none';
+      if (snap.empty) {
+        document.getElementById('errorsEmpty').style.display = '';
+        return;
+      }
+      const esc = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      document.getElementById('errorsBody').innerHTML = snap.docs.map(doc => {
+        const d = doc.data();
+        const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '—';
+        return `<tr><td>${when}</td><td>${esc(d.page)}</td><td>${esc(d.message)}</td><td>${esc(d.source)}${d.line ? ':' + d.line : ''}</td></tr>`;
+      }).join('');
+      document.getElementById('errorsTable').style.display = '';
+    })
+    .catch(err => {
+      document.getElementById('errorsLoading').textContent = 'Could not load errors: ' + err.message;
     });
 }
 </script>
