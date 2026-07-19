@@ -1,1 +1,5 @@
+# data-source/ holds the human-readable originals of the site's 9 largest
+# data files (restored 2026-07-17 so they stay hand-editable -- see that
+# commit and scripts/build-data.js). Tracked via Git LFS so their ~9.6MB
+# doesn't count against the main repository's regular object storage.
 data-source/*.js filter=lfs diff=lfs merge=lfs -text
