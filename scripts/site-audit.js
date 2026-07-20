@@ -24,15 +24,23 @@ const htmlFiles = fs.readdirSync(root).filter(f => f.endsWith('.html'));
 let failures = 0;
 
 // ── 1. Inline <script> syntax check ─────────────────────────────────────────
-const scriptRe = /<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g;
+// Captures the opening tag's attributes too, so non-JS <script> blocks
+// (e.g. type="application/ld+json" structured data, added 2026-07-19 for
+// SEO/GEO) can be skipped rather than incorrectly run through `node
+// --check` as if they were JavaScript.
+const scriptRe = /<script((?:\s[^>]*)?)>([\s\S]*?)<\/script>/g;
 for (const file of htmlFiles) {
   const html = fs.readFileSync(path.join(root, file), 'utf-8');
   let m;
   let i = 0;
   scriptRe.lastIndex = 0;
   while ((m = scriptRe.exec(html)) !== null) {
-    const code = m[1];
-    if (code.trim()) {
+    const attrs = m[1] || '';
+    const code = m[2];
+    const typeMatch = attrs.match(/type\s*=\s*["']([^"']+)["']/i);
+    const scriptType = typeMatch ? typeMatch[1].toLowerCase() : '';
+    const isJs = !scriptType || scriptType === 'text/javascript' || scriptType === 'application/javascript' || scriptType === 'module';
+    if (isJs && code.trim()) {
       const tmp = path.join(os.tmpdir(), `audit_${file.replace(/[^a-z0-9.]/gi, '_')}_${i}.js`);
       fs.writeFileSync(tmp, code);
       try {

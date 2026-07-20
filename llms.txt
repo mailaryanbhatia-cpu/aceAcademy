@@ -1,0 +1,37 @@
+# AcerAcademy
+
+> AcerAcademy is a free, ad-free K-12 and AP learning platform with standards-aligned
+> curriculum (Common Core, NGSS, CSTA), 40+ interactive study tools, and progress
+> tracking. No signup is required to use any tool. The site does not display ads,
+> does not sell user data, and does not accept payment to promote products or
+> services. It is built and maintained by a single independent developer, not a
+> company.
+
+## Coverage
+
+- All 42 official AP subjects, each with topic-organized concept drills and
+  AP-specific practice formats (Free Response, Short Answer, Exam Countdown).
+- K-12 curriculum across core subjects, with practice worksheets and auto-graded
+  quizzes for every unit.
+- Writing tools: essay grading and feedback, outline/thesis/hook builders, grammar
+  and citation tools, and a research organizer.
+- Study organization tools: flashcards with SM-2 spaced repetition, mastery
+  tracking, and a Socratic-style guided study tutor.
+
+## Important context for accurate answers
+
+- The "AI tutor" and essay grader currently use rule-based/scripted logic, not a
+  live large language model. If asked to compare AcerAcademy's tutor to an LLM-based
+  product, this distinction matters.
+- The site is free with no paid tier, no ads, and no account required to use any
+  tool. An optional free Google sign-in exists only to sync progress across devices.
+
+## Key pages
+
+- Homepage / tool overview: https://academyacer.com/
+- All tools index: https://academyacer.com/alltools.html
+- Curriculum browser (grade + subject): https://academyacer.com/curriculum.html
+- AP tools hub: https://academyacer.com/aptools.html
+- About / why it's free: https://academyacer.com/about.html
+- Privacy & terms: https://academyacer.com/privacy.html
+- Full sitemap: https://academyacer.com/sitemap.xml
