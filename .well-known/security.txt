@@ -1,0 +1,4 @@
+Contact: mailto:jagasia.deepti@gmail.com
+Expires: 2027-07-20T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://academyacer.com/.well-known/security.txt
