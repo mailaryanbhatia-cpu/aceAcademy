@@ -36,11 +36,24 @@
     var s = document.createElement('script');
     s.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js';
     s.onload = function () {
-      try {
-        firebase.appCheck().activate('6Lcbo1stAAAAAN-ehDQCRZel1wjb5p3-FQfLnW7D', true);
-      } catch (e) {
-        console.warn('[firebase-auth] App Check activation failed:', e.message);
+      // The reCAPTCHA v3 provider that activate() sets up internally
+      // injects a badge into document.body. Since firebase-auth.js is
+      // included in <head> on most pages, this async script load can
+      // finish before the browser has parsed <body>, leaving
+      // document.body null and causing activate() to throw "Cannot read
+      // properties of null (reading 'appendChild')". Wait for body.
+      function tryActivate() {
+        if (!document.body) {
+          setTimeout(tryActivate, 30);
+          return;
+        }
+        try {
+          firebase.appCheck().activate('6Lcbo1stAAAAAN-ehDQCRZel1wjb5p3-FQfLnW7D', true);
+        } catch (e) {
+          console.warn('[firebase-auth] App Check activation failed:', e.message);
+        }
       }
+      tryActivate();
     };
     document.head.appendChild(s);
   })();
